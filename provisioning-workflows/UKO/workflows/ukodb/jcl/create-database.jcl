@@ -5,7 +5,7 @@
 //* Create the databases and transfer ownership
 //UKODB   EXEC PGM=IKJEFT01,REGION=0M               
 //         EXPORT SYMLIST=*
-//         SET DBSCHEMA=${instance-DB_CURRENT_SCHEMA}
+//         SET DBSQLID=${instance-DB_CURRENT_SQLID}
 //STEPLIB  DD DISP=SHR,DSN=${instance-DB2_HLQ}.SDSNLOAD               
 //SYSTSPRT DD SYSOUT=*,DCB=BLKSIZE=131                         
 //SYSPRINT DD SYSOUT=*                                         
@@ -17,19 +17,25 @@
 //SYSIN     DD    *,SYMBOLS=(JCLONLY)
 SET CURRENT SQLID = '${instance-UKO_ADMIN_DB}';   
 
-CREATE DATABASE ${instance-DB_NAME_UKO} STOGROUP ${instance-DB_STOGROUP};          
+CREATE DATABASE ${instance-DB_NAME_UKO} 
+ BUFFERPOOL ${instance-DB_BUFFERPOOL_DEFAULT} 
+ INDEXBP    ${instance-DB_BUFFERPOOL_INDEX} 
+STOGROUP ${instance-DB_STOGROUP};               
 TRANSFER OWNERSHIP OF DATABASE ${instance-DB_NAME_UKO} 
- TO USER ${instance-DB_CURRENT_SCHEMA} REVOKE PRIVILEGES;                                    
+ TO USER &DBSQLID REVOKE PRIVILEGES;                                    
 
 COMMIT;                                                
 
-CREATE DATABASE ${instance-DB_NAME_DATASET_ENCRYPTION_STATUS} STOGROUP ${instance-DB_STOGROUP};          
+CREATE DATABASE ${instance-DB_NAME_DATASET_ENCRYPTION_STATUS} 
+ BUFFERPOOL ${instance-DB_BUFFERPOOL_DEFAULT} 
+ INDEXBP    ${instance-DB_BUFFERPOOL_INDEX} 
+STOGROUP ${instance-DB_STOGROUP};                       
 TRANSFER OWNERSHIP OF DATABASE ${instance-DB_NAME_DATASET_ENCRYPTION_STATUS}  
- TO USER ${instance-DB_CURRENT_SCHEMA} REVOKE PRIVILEGES;                                    
+ TO USER &DBSQLID REVOKE PRIVILEGES;                                    
 
 COMMIT;                                                
 
-SET CURRENT SQLID = '${instance-DB_CURRENT_SCHEMA}';  
+SET CURRENT SQLID = '&DBSQLID';  
 
 
 /*

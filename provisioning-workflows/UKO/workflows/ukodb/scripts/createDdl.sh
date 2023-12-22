@@ -7,7 +7,7 @@ sedstring="";
 #  /* FOR SQLID, SCHEMA                  */
 #  "CHANGE 'KMGSQLID' 'KMGSQLID' ALL"
 #  "CHANGE 'KRYTEST1' 'KRYTEST1' ALL"
-sedstring="${sedstring} s/KMGSQLID/${instance-DB_CURRENT_SCHEMA}/g;"
+sedstring="${sedstring} s/KMGSQLID/${instance-DB_CURRENT_SQLID}/g;"
 sedstring="${sedstring} s/KRYTEST1/${instance-DB_CURRENT_SCHEMA}/g;"
 
 #  /* FOR DATABASE, STORAGE GROUP */
@@ -20,11 +20,13 @@ sedstring="${sedstring} s/GKMG0001/${instance-DB_STOGROUP}/g;"
 
 #  /* FOR tablespace bufferpools */
 #  "CHANGE 'BUFFERPOOL BP8K0' 'BUFFERPOOL BP8K0' ALL"
-sedstring="${sedstring} s/BP8K0/${instance-DB_BUFFERPOOL}/g;"
+sedstring="${sedstring} s/BP8K0/${instance-DB_BUFFERPOOL_TABLESPACE}/g;"
 
 #  /* FOR DATABASE bufferpools */
 #  "CHANGE 'BUFFERPOOL BP1' 'BUFFERPOOL BP1' ALL"
 #  "CHANGE 'INDEXBP    BP2' 'INDEXBP    BP2' ALL"
+sedstring="${sedstring} s/BP1/${instance-DB_BUFFERPOOL_DEFAULT}/g;"
+sedstring="${sedstring} s/BP2/${instance-DB_BUFFERPOOL_INDEX}/g;"
 
 #  /* MISC   */
 #  "CHANGE 'PRIQTY 28 SECQTY 28' 'PRIQTY 28 SECQTY 28' ALL"
@@ -34,7 +36,7 @@ sedstring="${sedstring} s/BP8K0/${instance-DB_BUFFERPOOL}/g;"
 #  "CHANGE 'PCTFREE 10'        'PCTFREE 10'            ALL"
 
 # echo "sedstring: $sedstring"
-# echo "instance variables: ${instance-DB_NAME_UKO}, ${instance-DB_NAME_DATASET_ENCRYPTION_STATUS}, ${instance-DB_BUFFERPOOL}, ${instance-DB_STOGROUP}"
+# echo "instance variables: ${instance-DB_NAME_UKO}, ${instance-DB_NAME_DATASET_ENCRYPTION_STATUS}, ${instance-DB_BUFFERPOOL_TABLESPACE}, ${instance-DB_STOGROUP}"
 
 
 #########################################

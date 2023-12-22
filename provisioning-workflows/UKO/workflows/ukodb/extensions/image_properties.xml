@@ -23,6 +23,8 @@
 
 <atCreate name="UKO_SERVER_STC_USER" scope="instance" prompt="true" required="false"/>
 <atCreate name="DB_CURRENT_SCHEMA" scope="instance" prompt="true" required="false"/>
+<atCreate name="DB_CURRENT_SQLID" scope="instance" prompt="true" required="false"/>
+
 <atCreate name="DB_NAME_UKO" scope="instance" prompt="true" required="false"/>
 <atCreate name="DB_NAME_DATASET_ENCRYPTION_STATUS" scope="instance" prompt="true" required="false"/>
 

@@ -115,6 +115,7 @@
             <variableValue name="DB_JDBC_PORT" scope="instance" noPromptIfSet="false" required="false"/>
             <variableValue name="DB_JDBC_SECPORT" scope="instance" noPromptIfSet="false" required="false"/>
             <variableValue name="UKO_KEY_PREFIX" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="DB_CURRENT_SCHEMA" scope="instance" noPromptIfSet="false" required="false"/>
             <instructions substitution="true">Submit shell script to execute step</instructions>
             <weight>1</weight>
             <autoEnable>true</autoEnable>

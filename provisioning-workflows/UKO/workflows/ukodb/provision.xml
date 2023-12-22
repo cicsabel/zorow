@@ -57,6 +57,8 @@
         <variableValue name="DB2_HLQ" scope="instance" noPromptIfSet="false" required="false"/>
         <variableValue name="DB2_JCC_SSID" scope="instance" noPromptIfSet="false" required="false"/>
         <variableValue name="UKO_FILE_SYSTEM_HLQ" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="DB_BUFFERPOOL_DEFAULT" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="DB_BUFFERPOOL_INDEX" scope="instance" noPromptIfSet="false" required="false"/>
         <instructions substitution="true">Submit jcl to execute step</instructions>
         <weight>1</weight>
         <autoEnable>true</autoEnable>
@@ -89,7 +91,7 @@
         <variableValue name="DB_NAME_UKO" scope="instance" noPromptIfSet="false" required="false"/>
         <variableValue name="DB_NAME_DATASET_ENCRYPTION_STATUS" scope="instance" noPromptIfSet="false" required="false"/>
         <variableValue name="DB_CODEPAGE" scope="instance" noPromptIfSet="false" required="false"/>
-        <variableValue name="DB_BUFFERPOOL" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="DB_BUFFERPOOL_TABLESPACE" scope="instance" noPromptIfSet="false" required="false"/>
         <variableValue name="DB_STOGROUP" scope="instance" noPromptIfSet="false" required="false"/>
         <instructions substitution="true">Submit shell script to execute step</instructions>
         <weight>1</weight>
@@ -115,11 +117,11 @@
                 # replacing the default values in the ddls
                 sedstring="s/DKMGWEB/${instance-DB_NAME_UKO}/g;"
                 sedstring="${sedstring} s/DKMGPE1/${instance-DB_NAME_DATASET_ENCRYPTION_STATUS}/g;"
-                sedstring="${sedstring} s/BP8K0/${instance-DB_BUFFERPOOL}/g;"
+                sedstring="${sedstring} s/BP8K0/${instance-DB_BUFFERPOOL_TABLESPACE}/g;"
                 sedstring="${sedstring} s/GKMG0001/${instance-DB_STOGROUP}/g"
 
                 tempversion="";
-                echo "SET CURRENT SQLID = '${instance-DB_CURRENT_SCHEMA}' ;" > ${instance-TEMP_DIR}/zosmf-${_workflow-workflowKey}.ddl;
+                echo "SET CURRENT SQLID = '${instance-DB_CURRENT_SQLID}' ;" > ${instance-TEMP_DIR}/zosmf-${_workflow-workflowKey}.ddl;
                 for i in `ls  *.ddl | xargs echo`; do
                     tempversion=$(echo $i | cut -c 1-6);
 
@@ -204,7 +206,7 @@
         <variableValue name="DB_NAME_UKO" scope="instance" noPromptIfSet="false" required="false"/>
         <variableValue name="DB_NAME_DATASET_ENCRYPTION_STATUS" scope="instance" noPromptIfSet="false" required="false"/>
         <variableValue name="DB_CODEPAGE" scope="instance" noPromptIfSet="false" required="false"/>
-        <variableValue name="DB_BUFFERPOOL" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="DB_BUFFERPOOL_TABLESPACE" scope="instance" noPromptIfSet="false" required="false"/>
         <variableValue name="DB_STOGROUP" scope="instance" noPromptIfSet="false" required="false"/>
         <instructions substitution="true">Submit shell script to execute step</instructions>
         <weight>1</weight>

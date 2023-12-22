@@ -61,6 +61,10 @@
                 </extendStateExpression>
             </targetStateSet>
         </condition> 
+        <variableValue name="UKO_CA_LABEL" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="UKO_TLS_KEY_STORE_SERVER_CERT_CN" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="UKO_TLS_KEY_STORE_SERVER_CERT_OU" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="UKO_TLS_KEY_STORE_SERVER_CERT_O" scope="instance" noPromptIfSet="false" required="false"/>
         <instructions>Executes a REXX program to create a certificate authority</instructions>
         <weight>1</weight>
         <autoEnable>true</autoEnable>
@@ -88,6 +92,13 @@
                 </extendStateExpression>
             </targetStateSet>
         </condition> 
+        <variableValue name="UKO_SERVER_STC_USER" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="UKO_CA_LABEL" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="UKO_TLS_KEY_STORE_SERVER_CERT" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="UKO_OIDC_PROVIDER_CERT" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="UKO_TLS_KEY_STORE_SERVER_CERT_CN" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="UKO_TLS_KEY_STORE_SERVER_CERT_OU" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="UKO_TLS_KEY_STORE_SERVER_CERT_O" scope="instance" noPromptIfSet="false" required="false"/>
         <instructions>Executes a REXX program to create a certificates</instructions>
         <weight>1</weight>
         <autoEnable>true</autoEnable>
@@ -115,6 +126,9 @@
                 </extendStateExpression>
             </targetStateSet>
         </condition> 
+        <variableValue name="UKO_SERVER_STC_USER" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="UKO_TLS_KEY_STORE_KEY_RING" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="UKO_TLS_TRUST_STORE_KEY_RING" scope="instance" noPromptIfSet="false" required="false"/>
         <instructions>Executes a REXX program to create the key ring and potentially trust ring</instructions>
         <weight>1</weight>
         <autoEnable>true</autoEnable>
@@ -130,6 +144,12 @@
         <description>Add certificate(s) and CA to keyring(s) if anything was newly created</description>
         <runAsUser substitution="true">$!{instance-UKO_ADMIN_SECURITY}</runAsUser>
         <approver substitution="true">$!{instance-UKO_APPROVER_SECURITY}</approver>
+        <variableValue name="UKO_SERVER_STC_USER" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="UKO_CA_LABEL" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="UKO_TLS_KEY_STORE_SERVER_CERT" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="UKO_OIDC_PROVIDER_CERT" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="UKO_TLS_KEY_STORE_KEY_RING" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="UKO_TLS_TRUST_STORE_KEY_RING" scope="instance" noPromptIfSet="false" required="false"/>
         <instructions>Executes a REXX program to add certificates and the CA to the key ring and potentially trust ring</instructions>
         <weight>1</weight>
         <autoEnable>true</autoEnable>
@@ -145,6 +165,8 @@
         <description>Add trusted certificates to the server's trust keyring, for example to connect to cloud keystores</description>
         <runAsUser substitution="true">$!{instance-UKO_ADMIN_SECURITY}</runAsUser>
         <approver substitution="true">$!{instance-UKO_APPROVER_SECURITY}</approver>
+        <variableValue name="UKO_SERVER_STC_USER" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="UKO_TLS_TRUST_STORE_KEY_RING" scope="instance" noPromptIfSet="false" required="false"/>
         <instructions>Adjust and execute this REXX program to add additional certificates to the trust keyring, adjust the names to reflect your own local certificate labels</instructions>
         <weight>1</weight>
         <autoEnable>true</autoEnable>

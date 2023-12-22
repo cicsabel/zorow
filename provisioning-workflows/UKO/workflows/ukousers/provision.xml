@@ -49,6 +49,14 @@
         <description>Define technical user IDs and groups</description>
         <runAsUser substitution="true">$!{instance-UKO_ADMIN_SECURITY}</runAsUser>
         <approver substitution="true">$!{instance-UKO_APPROVER_SECURITY}</approver>
+        <variableValue name="UKO_AGENT_STC_USER" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="UKO_AGENT_STC_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="UKO_AGENT_CLIENT_USER" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="UKO_AGENT_CLIENT_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="UKO_SERVER_STC_USER" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="UKO_SERVER_STC_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="UKO_UNAUTHENTICATED_USER" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="UKO_UNAUTHENTICATED_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
         <instructions substitution="true">Submit rexx exec to execute step</instructions>
         <weight>1</weight>
         <autoEnable>true</autoEnable>
@@ -64,6 +72,14 @@
         <description>Define users and groups</description>
         <runAsUser substitution="true">$!{instance-UKO_ADMIN_SECURITY}</runAsUser>
         <approver substitution="true">$!{instance-UKO_APPROVER_SECURITY}</approver>
+        <variableValue name="UKO_KEY_ADMIN" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="UKO_KEY_ADMIN_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="UKO_KEY_CUSTODIAN1" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="UKO_KEY_CUSTODIAN1_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="UKO_KEY_CUSTODIAN2" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="UKO_KEY_CUSTODIAN2_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="UKO_AUDITOR" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="UKO_AUDITOR_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
         <instructions substitution="true">Submit rexx exec to execute step</instructions>
         <weight>1</weight>
         <autoEnable>true</autoEnable>
@@ -79,6 +95,7 @@
         <description>Define the key prefix from CSFKEYS</description>
         <runAsUser substitution="true">$!{instance-UKO_ADMIN_SECURITY}</runAsUser>
 	    <approver substitution="true">$!{instance-UKO_APPROVER_SECURITY}</approver>
+        <variableValue name="UKO_KEY_PREFIX" scope="instance" noPromptIfSet="false" required="false"/>
         <instructions substitution="true">Define the appropriate SAF profiles created by this workflow</instructions>
         <weight>1</weight>
         <autoEnable>true</autoEnable>
@@ -94,6 +111,11 @@
         <description>Define the group for the schema access</description>
         <runAsUser substitution="true">$!{instance-UKO_ADMIN_SECURITY}</runAsUser>
 	    <approver substitution="true">$!{instance-UKO_APPROVER_SECURITY}</approver>
+        <variableValue name="DB_CURRENT_SQLID" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="UKO_AGENT_STC_USER" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="UKO_AGENT_CLIENT_USER" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="UKO_SERVER_STC_USER" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="UKO_UNAUTHENTICATED_USER" scope="instance" noPromptIfSet="false" required="false"/>
         <instructions substitution="true">Define the appropriate SAF profiles created by this workflow</instructions>
         <weight>1</weight>
         <autoEnable>true</autoEnable>

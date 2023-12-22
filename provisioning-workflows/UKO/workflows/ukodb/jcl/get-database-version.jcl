@@ -4,7 +4,7 @@
 //**********************************************************************/
 //UKODB   EXEC PGM=IKJEFT01,REGION=0M               
 //         EXPORT SYMLIST=*
-//         SET DBSCHEMA=${instance-DB_CURRENT_SCHEMA}
+//         SET DBSQLID=${instance-DB_CURRENT_SQLID}
 //STEPLIB  DD DISP=SHR,DSN=${instance-DB2_HLQ}.SDSNLOAD               
 //SYSTSPRT DD SYSOUT=*,DCB=BLKSIZE=131                         
 //SYSPRINT DD PATHOPTS=(ORDWR,OCREAT),
@@ -16,7 +16,7 @@
  RUN PROGRAM(${instance-DB_PROGRAM}) PLAN(${instance-DB_PLAN}) LIB('${instance-DB2_RUNLIB}') 
  END                                                           
 //SYSIN     DD    *,SYMBOLS=(JCLONLY)
-SET CURRENT SQLID = '${instance-DB_CURRENT_SCHEMA}';  
+SET CURRENT SQLID = '&DBSQLID';  
 SELECT VERSION
 FROM EKMF_META
 WHERE VERSION=(SELECT max(VERSION) FROM EKMF_META);

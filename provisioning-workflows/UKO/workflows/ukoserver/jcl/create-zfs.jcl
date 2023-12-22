@@ -12,7 +12,7 @@
  DEFINE CLUSTER ( -
             NAME( -
             ${instance-UKO_FILE_SYSTEM_HLQ}.${instance-UKO_SERVER_STC_NAME}) -
-            LINEAR CYL(300 10) SHAREOPTIONS(2) -
+            ZFS CYL(300 10) -
 #if(${instance-UKO_ZFS_DATACLASS} && $!{instance-UKO_ZFS_DATACLASS} != "")
       DATACLAS(${instance-UKO_ZFS_DATACLASS}))
 #else
@@ -25,14 +25,15 @@
 /*
 //*******************************************************
 //* Format new config zfs
+//* not required anymore since z/OS 2.3
 //*******************************************************
-//CREATE   EXEC   PGM=IOEAGFMT,REGION=0M,
-// PARM=('-aggregate ${instance-UKO_FILE_SYSTEM_HLQ}.${instance-UKO_SERVER_STC_NAME} -compat')
-//SYSPRINT DD     SYSOUT=*
-//STDOUT   DD     SYSOUT=*
-//STDERR   DD     SYSOUT=*
-//SYSUDUMP DD     SYSOUT=*
-//CEEDUMP  DD     SYSOUT=*
+//*CREATE   EXEC   PGM=IOEAGFMT,REGION=0M,
+//* PARM=('-aggregate ${instance-UKO_FILE_SYSTEM_HLQ}.${instance-UKO_SERVER_STC_NAME} -compat')
+//*SYSPRINT DD     SYSOUT=*
+//*STDOUT   DD     SYSOUT=*
+//*STDERR   DD     SYSOUT=*
+//*SYSUDUMP DD     SYSOUT=*
+//*CEEDUMP  DD     SYSOUT=*
 //*
 //*******************************************************
 //* MKDIR into which to mount the config directory
@@ -56,7 +57,7 @@
  DEFINE CLUSTER ( -
             NAME( -
             ${instance-UKO_FILE_SYSTEM_HLQ}.${instance-UKO_SERVER_STC_NAME}.OUTPUT) -
-            LINEAR CYL(300 10) SHAREOPTIONS(2) -
+            ZFS CYL(300 10) -
 #if(${instance-UKO_ZFS_DATACLASS} && $!{instance-UKO_ZFS_DATACLASS} != "")
       DATACLAS(${instance-UKO_ZFS_DATACLASS}))
 #else
@@ -69,14 +70,15 @@
 /*
 //*******************************************************
 //* Format new output zfs
+//* not required anymore since z/OS 2.3
 //*******************************************************
-//CREATEO   EXEC   PGM=IOEAGFMT,REGION=0M,
-// PARM=('-aggregate ${instance-UKO_FILE_SYSTEM_HLQ}.${instance-UKO_SERVER_STC_NAME}.OUTPUT -compat')
-//SYSPRINT DD     SYSOUT=*
-//STDOUT   DD     SYSOUT=*
-//STDERR   DD     SYSOUT=*
-//SYSUDUMP DD     SYSOUT=*
-//CEEDUMP  DD     SYSOUT=*
+//*CREATEO   EXEC   PGM=IOEAGFMT,REGION=0M,
+//* PARM=('-aggregate ${instance-UKO_FILE_SYSTEM_HLQ}.${instance-UKO_SERVER_STC_NAME}.OUTPUT -compat')
+//*SYSPRINT DD     SYSOUT=*
+//*STDOUT   DD     SYSOUT=*
+//*STDERR   DD     SYSOUT=*
+//*SYSUDUMP DD     SYSOUT=*
+//*CEEDUMP  DD     SYSOUT=*
 //*
 //*******************************************************
 //* MKDIR into which to mount the output directory

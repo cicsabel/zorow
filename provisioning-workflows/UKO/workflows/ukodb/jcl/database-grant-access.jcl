@@ -17,7 +17,7 @@
  RUN PROGRAM(${instance-DB_PROGRAM}) PLAN(${instance-DB_PLAN}) LIB('${instance-DB2_RUNLIB}') 
  END                                                           
 //SYSIN     DD    *,SYMBOLS=(JCLONLY)
-SET CURRENT SQLID = '${instance-DB_CURRENT_SCHEMA}' ;
+SET CURRENT SQLID = '${instance-DB_CURRENT_SQLID}' ;
 
 GRANT SELECT ON AUD_CONT TO &WEBUSER;
 GRANT SELECT ON AUD_REG TO &WEBUSER;

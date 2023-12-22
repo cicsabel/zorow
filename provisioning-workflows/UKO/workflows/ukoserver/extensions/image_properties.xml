@@ -56,7 +56,8 @@
 
 <atCreate name="UKO_TLS_TRUST_STORE_KEY_RING" scope="instance" prompt="true" required="false"/>
 
-<atCreate name="DB_CURRENT_SCHEMA" scope="instance" prompt="true" required="false"/>
+<atCreate name="DB_CURRENT_SCHEMA" scope="instance" prompt="true" required="false"/> 
+<atCreate name="DB_LOCATION" scope="instance" prompt="true" required="false"/> 
 <atCreate name="UKO_AGENT_STC_NAME" scope="instance" prompt="true" required="false"/>
 <atCreate name="WORKSTATION_ACCESS_REQUIRED" scope="instance" prompt="true" required="false"/>
       

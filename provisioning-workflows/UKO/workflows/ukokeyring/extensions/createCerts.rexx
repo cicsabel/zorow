@@ -20,7 +20,7 @@ Say "Define "||TLS_KEY_STORE_SERVER_CERT||" for "||SERVER_STC_USER||" with CA "|
       " O('${instance-UKO_TLS_KEY_STORE_SERVER_CERT_O}'))",
    " WITHLABEL("||"'"||TLS_KEY_STORE_SERVER_CERT||"'"||")", 
    " SIGNWITH(CERTAUTH LABEL("||"'"||CA_LABEL||"'"||"))",
-   " NOTAFTER(DATE(2023-12-31) TIME(23:59:59))",
+   " NOTAFTER(DATE(2025-12-31) TIME(23:59:59))",
    " RSA SIZE(2048)"
  if RC <> 0 then do
     exit RC
@@ -34,7 +34,7 @@ Say "Define "||OIDC_PROVIDER_CERT||" for "||SERVER_STC_USER||" with CA "||CA_LAB
       " O('${instance-UKO_TLS_KEY_STORE_SERVER_CERT_O}'))",
    " WITHLABEL("||"'"||OIDC_PROVIDER_CERT||"'"||")", 
    " SIGNWITH(CERTAUTH LABEL("||"'"||CA_LABEL||"'"||"))",
-   " NOTAFTER(DATE(2023-12-31) TIME(23:59:59))",
+   " NOTAFTER(DATE(2025-12-31) TIME(23:59:59))",
    " RSA SIZE(2048)"
  if RC <> 0 then do
     exit RC

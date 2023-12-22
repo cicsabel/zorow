@@ -980,6 +980,14 @@
   <string />
 </variable>
 
+<variable name="DB_CURRENT_SQLID" visibility="public">
+  <label>DB_CURRENT_SQLID</label>
+  <abstract>The DB_CURRENT_SQLID</abstract>
+  <description>The current SQL ID of the Db2 database</description>
+  <category>String Variables</category>
+  <string />
+</variable>
+
 <variable name="DB_NAME_UKO" visibility="public">
   <label>DB_NAME_UKO</label>
   <abstract>The DB_NAME_UKO</abstract>
@@ -1028,10 +1036,26 @@
   <string />
 </variable>
 
-<variable name="DB_BUFFERPOOL" visibility="private">
-  <label>DB_BUFFERPOOL</label>
-  <abstract>The Db2 DB_BUFFERPOOL</abstract>
-  <description>The DB_BUFFERPOOL of the Db2 database</description>
+<variable name="DB_BUFFERPOOL_TABLESPACE" visibility="private">
+  <label>DB_BUFFERPOOL_TABLESPACE</label>
+  <abstract>The Db2 bufferpool for table spaces</abstract>
+  <description>The buffer pool for table spaces created in the Db2 database</description>
+  <category>String Variables</category>
+  <string />
+</variable>
+
+<variable name="DB_BUFFERPOOL_DEFAULT" visibility="private">
+  <label>DB_BUFFERPOOL_DEFAULT</label>
+  <abstract>The Db2 default bufferpool for table spaces</abstract>
+  <description>Specifies the default buffer pool name to be used for table spaces created within the database.</description>
+  <category>String Variables</category>
+  <string />
+</variable>
+
+<variable name="DB_BUFFERPOOL_INDEX" visibility="private">
+  <label>DB_BUFFERPOOL_INDEX</label>
+  <abstract>The Db2 default bufferpool for indexes</abstract>
+  <description>Specifies the default buffer pool name to be used for the indexes created within the database.</description>
   <category>String Variables</category>
   <string />
 </variable>
@@ -1060,7 +1084,7 @@
   <string />
 </variable>
 
-<variable name="DB_LOCATION" visibility="private">
+<variable name="DB_LOCATION" visibility="public">
   <label>DB_LOCATION</label>
   <abstract>The Db2 DB_LOCATION</abstract>
   <description>The location of the Db2 database</description>

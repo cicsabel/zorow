@@ -38,4 +38,5 @@
 <atCreate name="UKO_AUDITOR" scope="instance" prompt="true" required="false"/>
 <atCreate name="UKO_AUDITOR_GROUP" scope="instance" prompt="true" required="false"/>
 <atCreate name="DB_CURRENT_SCHEMA" scope="instance" prompt="true" required="false"/>
+<atCreate name="DB_CURRENT_SQLID" scope="instance" prompt="true" required="false"/>
 <atCreate name="UKO_KEY_PREFIX" scope="instance" prompt="true" required="false"/>
