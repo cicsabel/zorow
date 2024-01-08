@@ -18,7 +18,9 @@
 //            SPACE=(TRK,(1,1),RLSE)
 /*
 //COPYPARM EXEC PGM=IKJEFT01
-//IN DD PATH='${instance-TEMP_DIR}/zosmf-${_workflow-workflowKey}-load'
+// EXPORT SYMLIST=*
+// SET ZFSFILE='zosmf-${_workflow-workflowKey}-load'
+//IN DD PATH='${instance-TEMP_DIR}/&ZFSFILE'
 //OUT DD DISP=SHR,DSN=${instance-DB2_TEMP_HLQ}.${instance-DB_CURRENT_SCHEMA}.LOADCONF
 //SYSTSPRT DD SYSOUT=*
 //SYSTSIN DD *

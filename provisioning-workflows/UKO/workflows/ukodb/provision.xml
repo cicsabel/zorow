@@ -86,7 +86,7 @@
                 </extendStateExpression>
             </targetStateSet>
         </condition>
-        <variableValue name="DB_CURRENT_SCHEMA" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="DB_CURRENT_SQLID" scope="instance" noPromptIfSet="false" required="false"/>
         <variableValue name="DB_FILE_INSTALL_PATH" scope="instance" noPromptIfSet="false" required="false"/>
         <variableValue name="DB_NAME_UKO" scope="instance" noPromptIfSet="false" required="false"/>
         <variableValue name="DB_NAME_DATASET_ENCRYPTION_STATUS" scope="instance" noPromptIfSet="false" required="false"/>
@@ -202,6 +202,7 @@
             </targetStateSet>
         </condition>
         <variableValue name="DB_CURRENT_SCHEMA" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="DB_CURRENT_SQLID" scope="instance" noPromptIfSet="false" required="false"/>
         <variableValue name="DB_DATASET_INSTALL_HLQ" scope="instance" noPromptIfSet="false" required="false"/>
         <variableValue name="DB_NAME_UKO" scope="instance" noPromptIfSet="false" required="false"/>
         <variableValue name="DB_NAME_DATASET_ENCRYPTION_STATUS" scope="instance" noPromptIfSet="false" required="false"/>
@@ -266,7 +267,7 @@
                     </extendStateExpression>
                 </targetStateSet>
             </condition>
-            <variableValue name="DB_CURRENT_SCHEMA" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="DB_CURRENT_SQLID" scope="instance" noPromptIfSet="false" required="false"/>
             <variableValue name="DB_AGENT_PACKAGE" scope="instance" noPromptIfSet="false" required="false"/>
             <instructions substitution="true">Submit jcl to execute step</instructions>
             <weight>1</weight>
@@ -300,7 +301,6 @@
                     </extendStateExpression>
                 </targetStateSet>
             </condition>
-            <variableValue name="DB_CURRENT_SCHEMA" scope="instance" noPromptIfSet="false" required="false"/>
             <variableValue name="DB_AGENT_PACKAGE" scope="instance" noPromptIfSet="false" required="false"/>
             <variableValue name="DB_AGENT_PLAN" scope="instance" noPromptIfSet="false" required="false"/>
             <instructions substitution="true">Submit jcl to execute step</instructions>
@@ -374,7 +374,7 @@
                     </extendStateExpression>
                 </targetStateSet>
             </condition>
-            <variableValue name="DB_CURRENT_SCHEMA" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="DB_CURRENT_SQLID" scope="instance" noPromptIfSet="false" required="false"/>
             <variableValue name="UKO_AGENT_CLIENT_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
             <instructions substitution="true">Submit jcl to execute step</instructions>
             <weight>1</weight>

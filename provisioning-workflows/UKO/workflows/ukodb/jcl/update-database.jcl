@@ -21,10 +21,12 @@
 /*
 //* copy the temp ddl from HFS to seq dataset
 //COPYPARM EXEC PGM=IKJEFT01
-//IN DD PATH='${instance-TEMP_DIR}/zosmf-${_workflow-workflowKey}.ddl'
+// EXPORT SYMLIST=*
+// SET ZFSFILE='zosmf-${_workflow-workflowKey}.ddl'
+//IN DD PATH='${instance-TEMP_DIR}/&ZFSFILE'
 //OUT DD DISP=SHR,DSN=${instance-DB2_TEMP_HLQ}.${instance-DB_CURRENT_SCHEMA}.TEMPDDL
 //SYSTSPRT DD SYSOUT=*
-//SYSTSIN DD *
+//SYSTSIN  DD *,SYMBOLS=(JCLONLY)
 OCOPY INDD(IN) OUTDD(OUT) TEXT
 /*
 //* Execute the SQL

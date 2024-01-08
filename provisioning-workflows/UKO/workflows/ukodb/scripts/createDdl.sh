@@ -62,5 +62,5 @@ for i in `cat ${instance-TEMP_DIR}/zosmf-${_workflow-workflowKey}.files`; do
   rm ${instance-TEMP_DIR}/zosmf-${_workflow-workflowKey}.conv.ddl
 done;
 
-echo "making ${instance-UKO_ADMIN_DB} the owner of the ddl file zosmf-${_workflow-workflowKey}.ddl"
-chown ${instance-UKO_ADMIN_DB} ${instance-TEMP_DIR}/zosmf-${_workflow-workflowKey}.ddl
+echo "Changing permissions of zosmf-${_workflow-workflowKey}.ddl to ensure other user IDs can read it"
+chmod 777 ${instance-TEMP_DIR}/zosmf-${_workflow-workflowKey}.ddl

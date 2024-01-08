@@ -62,6 +62,7 @@
             <description>Queries the EKMF_META content from the Db2 database and puts the result in a temp file</description>
             <runAsUser substitution="true">$!{instance-UKO_ADMIN_DB}</runAsUser>
             <approver substitution="true">$!{instance-UKO_APPROVER_DB}</approver>
+            <variableValue name="DB_CURRENT_SQLID" scope="instance" noPromptIfSet="false" required="false"/>
             <variableValue name="DB_CURRENT_SCHEMA" scope="instance" noPromptIfSet="false" required="false"/>
             <variableValue name="DB2_HLQ" scope="instance" noPromptIfSet="false" required="false"/>
             <variableValue name="TEMP_DIR" scope="instance" noPromptIfSet="false" required="false"/>
@@ -234,6 +235,8 @@
                         </extendStateExpression>
                     </targetStateSet>
                 </condition>
+                <variableValue name="DB_CURRENT_SQLID" scope="instance" noPromptIfSet="false" required="false"/>
+                <variableValue name="DB_CURRENT_SCHEMA" scope="instance" noPromptIfSet="false" required="false"/>
                 <variableValue name="DB_DATASET_INSTALL_HLQ" scope="instance" noPromptIfSet="false" required="false"/>
                 <variableValue name="DB_NAME_UKO" scope="instance" noPromptIfSet="false" required="false"/>
                 <variableValue name="DB_NAME_DATASET_ENCRYPTION_STATUS" scope="instance" noPromptIfSet="false" required="false"/>
@@ -312,7 +315,7 @@
             <description>Additional fixes that need to be applied after the previous updates when upgrading to version 3.1.0</description>
 
             <step name="createDdlListToV3R1M0part2" optional="false">
-                <title>Create list of DDLs after V3R1M0 upgrade</title>
+                <title>Create list of DDLs for upgrade to V3R1M0 part 2</title>
                 <description>Create the list of DDLs to be executed</description>
                 <prereqStep name="currentVersion"/>                
                 <runAsUser substitution="true">$!{instance-UKO_ADMIN_ZFS}</runAsUser>
@@ -351,7 +354,7 @@
             </step>
             
             <step name="createDDLToV3R1M0part2" optional="false">
-                <title>Create DDL after V3R1M0 upgrade</title>
+                <title>Create DDL for upgrade to V3R1M0 part 2</title>
                 <description>Create the DDL to be executed</description>
                 <prereqStep name="currentVersion"/>                
                 <runAsUser substitution="true">$!{instance-UKO_ADMIN_ZFS}</runAsUser>
@@ -378,7 +381,7 @@
             </step>
 
             <step name="ExecuteUpdateDDLToV3R1M0part2">
-                <title>Execute DDL after V3R1M0 upgrade</title>
+                <title>Execute DDL for upgrade to V3R1M0 part 2</title>
                 <description>Execute the list of DDLs that have ben created before</description>
                 <prereqStep name="currentVersion"/>                
                 <runAsUser substitution="true">$!{instance-UKO_ADMIN_DB}</runAsUser>
@@ -480,9 +483,13 @@
                         </extendStateExpression>
                     </targetStateSet>
                 </condition>  
+                <variableValue name="DB_CURRENT_SQLID" scope="instance" noPromptIfSet="false" required="false"/>
+                <variableValue name="DB_CURRENT_SCHEMA" scope="instance" noPromptIfSet="false" required="false"/>
                 <variableValue name="DB_DATASET_INSTALL_HLQ" scope="instance" noPromptIfSet="false" required="false"/>
                 <variableValue name="DB_NAME_UKO" scope="instance" noPromptIfSet="false" required="false"/>
                 <variableValue name="DB_NAME_DATASET_ENCRYPTION_STATUS" scope="instance" noPromptIfSet="false" required="false"/>
+                <variableValue name="DB_STOGROUP" scope="instance" noPromptIfSet="false" required="false"/>
+                <variableValue name="DB_BUFFERPOOL_TABLESPACE" scope="instance" noPromptIfSet="false" required="false"/>
                 <instructions substitution="true">Submit shell script to execute step</instructions>
                 <weight>1</weight>
                 <autoEnable>true</autoEnable>
@@ -714,7 +721,7 @@
                     </extendStateExpression>
                 </targetStateSet>
             </condition>
-            <variableValue name="DB_CURRENT_SCHEMA" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="DB_CURRENT_SQLID" scope="instance" noPromptIfSet="false" required="false"/>
             <variableValue name="UKO_AGENT_CLIENT_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
             <instructions substitution="true">Submit jcl to execute step</instructions>
             <weight>1</weight>
