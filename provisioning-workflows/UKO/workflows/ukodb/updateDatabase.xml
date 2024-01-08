@@ -162,12 +162,6 @@
                         # Update from EKMFWEB V2R20 to V2R31 level (EKMFweb V2.1.0.5/7 upgrade)
                         tempversion="V2R3M1";
                         if [[ "$currentversion" &lt; "$tempversion" ]]; then
-                            # SPECIFIC drop views
-                            filelist="${filelist} KMGUW231"
-                            # REDO EKMF VIEWS
-                            filelist="${filelist} KMGCVUKT"
-                            # REDO EKMF VIEWS
-                            filelist="${filelist} KMGCVUK7"
                             # DEF TABLESPACE PARAM
                             filelist="${filelist} KMGCSPRM"
                             # DEF TABLE PARAM
@@ -303,7 +297,6 @@
                     </extendStateExpression>
                 </targetStateSet>
             </condition>            
-            <variableValue name="DB2_TEMP_HLQ" scope="instance" noPromptIfSet="false" required="false"/>
             <instructions substitution="true">Submit jcl to execute step</instructions>
             <weight>1</weight>
             <autoEnable>true</autoEnable>
@@ -651,13 +644,16 @@
                             <targetState>skipped</targetState>
                         </extendStateExpression>
                     </targetStateSet>
-                </condition>  
-                <instructions substitution="true">Submit jcl to execute step</instructions>
+                </condition>
+                <instructions substitution="true">Submit jcl to execute step. Check the return codes
+                    carefully and verify that all SQL statements ran successfully. RC 8 can occur if
+                    the VTSSPARAM view already exists. In this case, it can be ignored</instructions>
                 <weight>1</weight>
                 <autoEnable>true</autoEnable>
                 <template>
                     <fileTemplate substitution="true">jcl/update-database.jcl</fileTemplate>
-                    <submitAs maxRc="4">JCL</submitAs>
+                    <!-- Setting RC up because the VTSSPARAM view might already exist -->
+                    <submitAs maxRc="8">JCL</submitAs>
                     <maxLrecl>80</maxLrecl>
                 </template>
             </step>
