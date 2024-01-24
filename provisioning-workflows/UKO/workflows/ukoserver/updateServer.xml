@@ -38,16 +38,74 @@
 	<!--     Include variables used by the following steps     -->
 	<!--+++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
 	&variables;
+
+    <variable name="UKO_SERVER_UPDATE" scope="instance" visibility="public">
+        <label>UKO_SERVER_UPDATE</label>
+        <abstract>Server version after update</abstract>
+        <description>Which version of UKO has been updated to?</description>
+        <category>String Variables</category>
+        <string />
+    </variable>
+
 	<atCreate name="UKO_INSTALL_DIR" scope="instance" prompt="true" required="false"/>
 	<atCreate name="START_SERVER" scope="instance" prompt="true" required="false"/>
     <atCreate name="UKO_VAULT_ID" scope="instance" prompt="true" required="false"/>
     <atCreate name="JAVA_HOME" scope="instance" prompt="true" required="false"/>
-    
+    <atCreate name="DB2_LIBPATH" scope="instance" prompt="true" required="false"/>
+    <atCreate name="DB2_CLASSPATH" scope="instance" prompt="true" required="false"/>
+    <!-- those variables don't need to be queried because they are provieded from the instance -->
+    <!-- <atCreate name="UKO_TLS_KEY_STORE_SERVER_CERT" scope="instance" prompt="true" required="false"/> -->
+    <!-- <atCreate name="UKO_OIDC_PROVIDER_CERT" scope="instance" prompt="true" required="false"/> -->
+    <!-- <atCreate name="UKO_UNAUTHENTICATED_USER" scope="instance" prompt="true" required="false"/> -->
+
     <!--++++++++++++++++++++++-->
     <!--   Stop the server    -->
     <!--++++++++++++++++++++++-->  
 
      &step_stop_server;
+
+    <!--++++++++++++++++++++++-->
+    <!--   check versions     -->
+    <!--++++++++++++++++++++++-->  
+
+    <step name="createVersionVariables" optional="false">
+        <title>Create variables for the versions</title>
+        <description>Retrieves the current and the new version and puts the results in variables to be used by later steps</description>
+        <runAsUser substitution="true">$!{instance-UKO_ADMIN_ZFS}</runAsUser>
+        <approver substitution="true">$!{instance-UKO_APPROVER_ZFS}</approver>
+        <variableValue name="UKO_SERVER_DIRECTORY" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="UKO_INSTALL_DIR" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="TEMP_DIR" scope="instance" noPromptIfSet="false" required="false"/>
+        <instructions substitution="true">Submit shell script to execute step</instructions>
+        <weight>1</weight>
+        <autoEnable>true</autoEnable>
+        <template>
+            <inlineTemplate substitution="true">
+        
+                # Get the current version
+                currentversion=$(iconv -t IBM037 -f utf-8 ${instance-UKO_SERVER_DIRECTORY}/EkmfWeb.properties | grep com.ibm.websphere.productVersion | sed -E 's/.*=([^\$])/\1/')
+
+                if [[ "${currentversion}" &lt; "2" ]]; then
+                    echo "The current version is a version from the EKMF Web Service:" ${currentversion}
+                    # Grabbing the last character of the current version
+                    microversion=$(echo $currentversion | sed 's/.*\(.\)/\1/')
+                    currentversion="2.1.0.${microversion}"
+                    echo "The version has been converted to the product version:" ${currentversion}
+                fi
+
+                # Get the new version
+                newversion=$(iconv -t IBM037 -f utf-8 ${instance-UKO_INSTALL_DIR}/EkmfWeb.properties | grep com.ibm.websphere.productVersion | sed -E 's/.*=([^\$])/\1/')
+
+                
+                echo "UKO_SERVER_VERSION ${currentversion}" >> ${instance-TEMP_DIR}/zosmf-${_workflow-workflowKey}.properties
+                echo "UKO_SERVER_UPDATE ${newversion}" >> ${instance-TEMP_DIR}/zosmf-${_workflow-workflowKey}.properties
+
+                chmod 744 ${instance-TEMP_DIR}/zosmf-${_workflow-workflowKey}.properties
+            </inlineTemplate>
+            <submitAs>shell-JCL</submitAs>
+            <output substitution="true" needResolveConflicts="false">${instance-TEMP_DIR}/zosmf-${_workflow-workflowKey}.properties</output>
+        </template>
+    </step>
 
     <!--++++++++++++++++++++++++++-->
     <!--  Update the server dir   -->
@@ -69,7 +127,7 @@
             <template>
                 <inlineTemplate substitution="true">
                     # Get the current version
-                    currentversion=$(iconv -t IBM037 -f utf-8 ${instance-UKO_SERVER_DIRECTORY}/EkmfWeb.properties | grep com.ibm.websphere.productVersion | sed -E 's/.*=([^\$])/\1/')
+                    currentversion=${instance-UKO_SERVER_VERSION}
 
                     # create backup directory
                     mkdir ${instance-UKO_SERVER_DIRECTORY}/backup_${_workflow-workflowKey};
@@ -101,8 +159,8 @@
             </template>
         </step>
 
-        <step name="substituteJvmOptions">
-		    <title>Substitute jvm.options</title>
+        <step name="migrateJvmOptions">
+		    <title>Migrate jvm.options</title>
 	        <description>replace values in jvm.options with template variable values</description>
 	        <runAsUser substitution="true">$!{instance-UKO_ADMIN_SERVER}</runAsUser>
 	        <approver substitution="true">$!{instance-UKO_APPROVER_SERVER}</approver>
@@ -163,17 +221,16 @@
                         echo "All parameters were transferred" >> ${instance-UKO_SERVER_DIRECTORY}/backup_${_workflow-workflowKey}/migration.log;
                     else
                         echo "The following variable(s) can NOT be transferred automatically: ${nottransfered} \nVerify whether they still exist in the new version." >> ${instance-UKO_SERVER_DIRECTORY}/backup_${_workflow-workflowKey}/migration.log;
-                        echo "# Verify the following parameters:\n${nottransfered}" >> ${instance-UKO_SERVER_DIRECTORY}/jvm.options;
+                        echo "# The following parameters might have been deprecated:\n${nottransfered}" >> ${instance-UKO_SERVER_DIRECTORY}/jvm.options;
                     fi     
 
                 </inlineTemplate>
             	<submitAs>shell-JCL</submitAs>
-                <!-- <output substitution="true" needResolveConflicts="false">${instance-TEMP_DIR}/zosmf-${_workflow-workflowKey}.properties</output> -->
         	</template>
         </step>
 
-        <step name="substituteServerEnv">
-		    <title>Substitute server.env</title>
+        <step name="migrateServerEnv">
+		    <title>Migrate server.env</title>
 	        <description>replace values in server.env with template variable values</description>
 	        <runAsUser substitution="true">$!{instance-UKO_ADMIN_SERVER}</runAsUser>
 	        <approver substitution="true">$!{instance-UKO_APPROVER_SERVER}</approver>
@@ -228,16 +285,11 @@
                         echo "All parameters were transferred" >> ${instance-UKO_SERVER_DIRECTORY}/backup_${_workflow-workflowKey}/migration.log;
                     else
                         echo "The following variable(s) can NOT be transferred automatically: $nottransfered \nVerify whether they still exist in the new version." >> ${instance-UKO_SERVER_DIRECTORY}/backup_${_workflow-workflowKey}/migration.log;
-                        echo "# Verify the following parameters:\n${nottransfered}" >> ${instance-UKO_SERVER_DIRECTORY}/server.env;
+                        echo "# The following parameters might have been deprecated:\n${nottransfered}" >> ${instance-UKO_SERVER_DIRECTORY}/server.env;
                     fi     
-
-                    currentversion=$(iconv -t IBM037 -f utf-8 ${instance-UKO_INSTALL_DIR}/EkmfWeb.properties | grep com.ibm.websphere.productVersion | sed -E 's/.*=([^\$])/\1/')
-
-                    # echo "{\"name\":\"UKO_SERVER_VERSION\",\"value\":\"$currentversion\",\"visibility\":\"public\"}" >> ${instance-TEMP_DIR}/zosmf-${_workflow-workflowKey}.properties;
 
                     </inlineTemplate>
             	<submitAs>shell-JCL</submitAs>
-                <!-- <output substitution="true" needResolveConflicts="false">${instance-TEMP_DIR}/zosmf-${_workflow-workflowKey}.properties</output> -->
         	</template>
         </step>
 
@@ -257,9 +309,9 @@
                 #if(${instance-UKO_SERVER_STC_GROUP} != "" &amp;&amp; ${instance-UKO_SERVER_STC_GROUP})
                     echo "Ensure that ${instance-UKO_SERVER_STC_GROUP} has read access to ${instance-UKO_SERVER_DIRECTORY}/server.env and jvm.options"
                     chown ${instance-UKO_SERVER_STC_USER}:${instance-UKO_SERVER_STC_GROUP} ${instance-UKO_SERVER_DIRECTORY}/server.env
-                    chmod 770 ${instance-UKO_SERVER_DIRECTORY}/server.env
+                    chmod 644 ${instance-UKO_SERVER_DIRECTORY}/server.env
                     chown ${instance-UKO_SERVER_STC_USER}:${instance-UKO_SERVER_STC_GROUP} ${instance-UKO_SERVER_DIRECTORY}/jvm.options
-                    chmod 770 ${instance-UKO_SERVER_DIRECTORY}/jvm.options
+                    chmod 644 ${instance-UKO_SERVER_DIRECTORY}/jvm.options
                 #else
                     echo "Ensure that ${instance-UKO_SERVER_STC_USER} has read access to ${instance-UKO_SERVER_DIRECTORY}/server.env and jvm.options"
                     chown ${instance-UKO_SERVER_STC_USER} ${instance-UKO_SERVER_DIRECTORY}/server.env
@@ -317,19 +369,170 @@
         <title>Additional migration steps</title>
         <description>Additional steps to be executed after the directories have been migrated</description>
 
-        <step name="verifyJavaHome">
-		    <title>Verify Java home</title>
-	        <description>The new version might need a newer version of Java, verify the version now.</description>
+        <step name="backupFiles">
+		    <title>Backup files before parameter migration</title>
+	        <description>Create a backup of the individual files before migrating single parameters</description>
 	        <runAsUser substitution="true">$!{instance-UKO_ADMIN_SERVER}</runAsUser>
 	        <approver substitution="true">$!{instance-UKO_APPROVER_SERVER}</approver>
-            <variableValue name="JAVA_HOME" scope="instance" noPromptIfSet="false" required="false"/>
             <instructions substitution="true">Submit shell script to execute step</instructions>
             <weight>1</weight>
             <autoEnable>true</autoEnable>
             <template>
    		        <inlineTemplate substitution="true">
                     cp ${instance-UKO_SERVER_DIRECTORY}/server.env ${instance-UKO_SERVER_DIRECTORY}/server.env_backup
-                    sed "s#JAVA_HOME=.*#JAVA_HOME=${instance-JAVA_HOME}#g" ${instance-UKO_SERVER_DIRECTORY}/server.env_backup > ${instance-UKO_SERVER_DIRECTORY}/server.env;
+                </inlineTemplate>
+            	<submitAs>shell-JCL</submitAs>
+        	</template>
+        </step>
+
+        <step name="addUnauthenticatedUser">
+		    <title>Add unauthenticated user</title>
+	        <description>Adding the unauthenticated user to the server.env</description>
+	        <runAsUser substitution="true">$!{instance-UKO_ADMIN_SERVER}</runAsUser>
+	        <approver substitution="true">$!{instance-UKO_APPROVER_SERVER}</approver>
+            <condition>
+                <expression><![CDATA[${createVersionVariables.stepState} == "Complete"]]></expression>
+                <description>Version variables must have been set</description>
+                <targetStateSet>
+                    <description>Skip this step if we are on a high enough version</description>
+                    <extendStateExpression>
+                        <description>Skip if the current version is already 2.1.0.4 or higher</description>
+                        <expression>${instance-UKO_SERVER_VERSION} >= "2.1.0.4"</expression>
+                        <targetState>skipped</targetState>
+                    </extendStateExpression>
+                </targetStateSet>
+            </condition>
+            <variableValue name="UKO_UNAUTHENTICATED_USER" scope="instance" noPromptIfSet="false" required="false"/>
+            <instructions substitution="true">Submit shell script to execute step</instructions>
+            <weight>1</weight>
+            <autoEnable>true</autoEnable>
+            <template>
+   		        <inlineTemplate substitution="true">
+                    # creating a copy of the server.env to work on, otherwise the sed command does not work
+                    cp ${instance-UKO_SERVER_DIRECTORY}/server.env ${instance-UKO_SERVER_DIRECTORY}/server.env_temp
+
+                    sed "s#^[ \#]*SAF_UNAUTHENTICATED_USER_ID=.*#SAF_UNAUTHENTICATED_USER_ID=${instance-UKO_UNAUTHENTICATED_USER}#g" ${instance-UKO_SERVER_DIRECTORY}/server.env_temp > ${instance-UKO_SERVER_DIRECTORY}/server.env;
+
+                    # deleting the copy
+                    rm ${instance-UKO_SERVER_DIRECTORY}/server.env_temp
+
+                </inlineTemplate>
+            	<submitAs>shell-JCL</submitAs>
+        	</template>
+        </step>
+
+        <step name="addCertificates">
+		    <title>Add individual certificate names</title>
+	        <description>Adding the individual vertificate names for server and OIDC to the server.env</description>
+	        <runAsUser substitution="true">$!{instance-UKO_ADMIN_SERVER}</runAsUser>
+	        <approver substitution="true">$!{instance-UKO_APPROVER_SERVER}</approver>
+            <condition>
+                <expression><![CDATA[${createVersionVariables.stepState} == "Complete"]]></expression>
+                <description>Version variables must have been set</description>
+                <targetStateSet>
+                    <description>Skip this step if we are on a high enough version</description>
+                    <extendStateExpression>
+                        <description>Skip if the current version is already 2.1.0.4 or higher</description>
+                        <expression>${instance-UKO_SERVER_VERSION} >= "2.1.0.4"</expression>
+                        <targetState>skipped</targetState>
+                    </extendStateExpression>
+                </targetStateSet>
+            </condition>
+            <variableValue name="UKO_TLS_KEY_STORE_SERVER_CERT" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="UKO_OIDC_PROVIDER_CERT" scope="instance" noPromptIfSet="false" required="false"/>
+            <instructions substitution="true">Submit shell script to execute step</instructions>
+            <weight>1</weight>
+            <autoEnable>true</autoEnable>
+            <template>
+   		        <inlineTemplate substitution="true">
+                    # creating a copy of the server.env to work on, otherwise the sed command does not work
+                    cp ${instance-UKO_SERVER_DIRECTORY}/server.env ${instance-UKO_SERVER_DIRECTORY}/server.env_temp
+
+                    sed "s#^[ \#]*TLS_KEY_STORE_SERVER_CERT=.*#TLS_KEY_STORE_SERVER_CERT=${instance-UKO_TLS_KEY_STORE_SERVER_CERT}#g;
+                        s#^[ \#]*OIDC_PROVIDER_TRUST_ALIAS_NAME=.*#OIDC_PROVIDER_TRUST_ALIAS_NAME=${instance-UKO_OIDC_PROVIDER_CERT}#g;
+                        s#^[ \#]*OIDC_PROVIDER_KEY_ALIAS_NAME=.*#OIDC_PROVIDER_KEY_ALIAS_NAME=${instance-UKO_OIDC_PROVIDER_CERT}#g" ${instance-UKO_SERVER_DIRECTORY}/server.env_temp > ${instance-UKO_SERVER_DIRECTORY}/server.env;
+
+                    # deleting the copy
+                    rm ${instance-UKO_SERVER_DIRECTORY}/server.env_temp
+
+                </inlineTemplate>
+            	<submitAs>shell-JCL</submitAs>
+        	</template>
+        </step>
+
+        <step name="verifyJavaHome">
+		    <title>Verify Java home</title>
+	        <description>The new version might need a newer version of Java, verify the version now.</description>
+	        <runAsUser substitution="true">$!{instance-UKO_ADMIN_SERVER}</runAsUser>
+	        <approver substitution="true">$!{instance-UKO_APPROVER_SERVER}</approver>
+            <condition>
+                <expression><![CDATA[${createVersionVariables.stepState} == "Complete"]]></expression>
+                <description>Version variables must have been set</description>
+                <targetStateSet>
+                    <description>Skip this step if we are on V3 or higher</description>
+                    <extendStateExpression>
+                        <description>Skip if the current version is already V3 or higher</description>
+                        <expression>${instance-UKO_SERVER_VERSION} >= "3.1.0.0"</expression>
+                        <targetState>skipped</targetState>
+                    </extendStateExpression>
+                </targetStateSet>
+            </condition>
+            <variableValue name="JAVA_HOME" scope="instance" noPromptIfSet="false" required="false"/>
+            <instructions substitution="true">Submit shell script to execute step</instructions>
+            <weight>1</weight>
+            <autoEnable>true</autoEnable>
+            <template>
+   		        <inlineTemplate substitution="true">
+                    # creating a copy of the server.env to work on, otherwise the sed command does not work
+                    cp ${instance-UKO_SERVER_DIRECTORY}/server.env ${instance-UKO_SERVER_DIRECTORY}/server.env_temp
+
+                    sed "s#JAVA_HOME=.*#JAVA_HOME=${instance-JAVA_HOME}#g" ${instance-UKO_SERVER_DIRECTORY}/server.env_temp > ${instance-UKO_SERVER_DIRECTORY}/server.env;
+
+                    # deleting the copy
+                    rm ${instance-UKO_SERVER_DIRECTORY}/server.env_temp
+
+                </inlineTemplate>
+            	<submitAs>shell-JCL</submitAs>
+        	</template>
+        </step>
+
+        <step name="verifyDb2Paths">
+		    <title>Verify Db2 paths</title>
+	        <description>The new version might need different Db2 paths from V3.1.0.2</description>
+	        <runAsUser substitution="true">$!{instance-UKO_ADMIN_SERVER}</runAsUser>
+	        <approver substitution="true">$!{instance-UKO_APPROVER_SERVER}</approver>
+            <condition>
+                <expression><![CDATA[${createVersionVariables.stepState} == "Complete"]]></expression>
+                <description>Version variables must have been set</description>
+                <targetStateSet>
+                    <description>Skip this step if we are on 3.1.0.2 or higher</description>
+                    <extendStateExpression>
+                        <description>Skip if the current version is already 3.1.0.2 or higher</description>
+                        <expression>${instance-UKO_SERVER_VERSION} >= "3.1.0.2"</expression>
+                        <targetState>skipped</targetState>
+                    </extendStateExpression>
+                    <extendStateExpression>
+                        <description>Skip if you are upgrading to version lower than 3.1.0.2</description>
+                        <expression>${instance-UKO_SERVER_UPDATE} &lt; "3.1.0.2"</expression>
+                        <targetState>skipped</targetState>
+                    </extendStateExpression>
+                </targetStateSet>
+            </condition>
+            <variableValue name="DB2_LIBPATH" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="DB2_CLASSPATH" scope="instance" noPromptIfSet="false" required="false"/>
+            <instructions substitution="true">Submit shell script to execute step</instructions>
+            <weight>1</weight>
+            <autoEnable>true</autoEnable>
+            <template>
+   		        <inlineTemplate substitution="true">
+                    # creating a copy of the server.env to work on, otherwise the sed command does not work
+                    cp ${instance-UKO_SERVER_DIRECTORY}/server.env ${instance-UKO_SERVER_DIRECTORY}/server.env_temp
+
+                    sed "s#^[ \#]*DB2_LIBPATH=.*#DB2_LIBPATH=${instance-DB2_LIBPATH}#g;
+                        s#^[ \#]*DB2_CLASSPATH=.*#DB2_CLASSPATH=${instance-DB2_CLASSPATH}#g" ${instance-UKO_SERVER_DIRECTORY}/server.env_temp > ${instance-UKO_SERVER_DIRECTORY}/server.env;
+
+                    # deleting the copy
+                    rm ${instance-UKO_SERVER_DIRECTORY}/server.env_temp
 
                 </inlineTemplate>
             	<submitAs>shell-JCL</submitAs>
@@ -347,6 +550,18 @@
             <description>Defines the general roles across all vaults</description>
             <runAsUser substitution="true">$!{instance-UKO_ADMIN_SECURITY}</runAsUser>
             <approver substitution="true">$!{instance-UKO_APPROVER_SECURITY}</approver>
+            <condition>
+                <expression><![CDATA[${createVersionVariables.stepState} == "Complete"]]></expression>
+                <description>Version variables must have been set</description>
+                <targetStateSet>
+                    <description>Skip this step if we are on V3 or higher</description>
+                    <extendStateExpression>
+                        <description>Skip if the current version is already V3 or higher</description>
+                        <expression>${instance-UKO_SERVER_VERSION} >= "3.1.0.0"</expression>
+                        <targetState>skipped</targetState>
+                    </extendStateExpression>
+                </targetStateSet>
+            </condition>
             <variableValue name="UKO_KEY_ADMIN_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
             <variableValue name="UKO_KEY_CUSTODIAN1_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
             <variableValue name="UKO_KEY_CUSTODIAN2_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
@@ -366,6 +581,18 @@
             <description>Defines the vault-specific roles</description>
             <runAsUser substitution="true">$!{instance-UKO_ADMIN_SECURITY}</runAsUser>
             <approver substitution="true">$!{instance-UKO_APPROVER_SECURITY}</approver>
+            <condition>
+                <expression><![CDATA[${createVersionVariables.stepState} == "Complete"]]></expression>
+                <description>Version variables must have been set</description>
+                <targetStateSet>
+                    <description>Skip this step if we are on V3 or higher</description>
+                    <extendStateExpression>
+                        <description>Skip if the current version is already V3 or higher</description>
+                        <expression>${instance-UKO_SERVER_VERSION} >= "3.1.0.0"</expression>
+                        <targetState>skipped</targetState>
+                    </extendStateExpression>
+                </targetStateSet>
+            </condition>
             <variableValue name="UKO_VAULT_ID" scope="instance" noPromptIfSet="false" required="false"/>
             <variableValue name="UKO_KEY_ADMIN_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
             <variableValue name="UKO_KEY_CUSTODIAN1_GROUP" scope="instance" noPromptIfSet="false" required="false"/>

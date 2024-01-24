@@ -25,6 +25,7 @@
  END                                                           
 //SYSIN     DD    *                                            
 SET CURRENT SQLID = '${instance-UKO_ADMIN_DB}';   
+SET CURRENT SCHEMA = '${instance-DB_CURRENT_SCHEMA}' ;
 
 DROP DATABASE ${instance-DB_NAME_UKO} ;
 

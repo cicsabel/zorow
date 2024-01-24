@@ -126,8 +126,9 @@
             <variableValue name="UKO_TLS_KEY_STORE_SERVER_CERT" scope="instance" noPromptIfSet="false" required="false"/>
             <variableValue name="DB_LOCATION" scope="instance" noPromptIfSet="false" required="false"/>
             <variableValue name="DB_CURRENT_SCHEMA" scope="instance" noPromptIfSet="false" required="false"/>
-            <variableValue name="DB2_PRODUCT_PATH" scope="instance" noPromptIfSet="false" required="false"/>
+            <!-- <variableValue name="DB2_PRODUCT_PATH" scope="instance" noPromptIfSet="false" required="false"/> -->
             <variableValue name="DB2_LIBPATH" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="DB2_CLASSPATH" scope="instance" noPromptIfSet="false" required="false"/>
             <variableValue name="UKO_HTTP_PORT" scope="instance" noPromptIfSet="false" required="false"/>
             <variableValue name="UKO_HTTPS_PORT" scope="instance" noPromptIfSet="false" required="false"/>
             <variableValue name="UKO_UNAUTHENTICATED_USER" scope="instance" noPromptIfSet="false" required="false"/>
@@ -165,11 +166,13 @@
                         s#^[ \#]*TLS_KEY_STORE_KEY_RING=.*#TLS_KEY_STORE_KEY_RING=${instance-UKO_TLS_KEY_STORE_KEY_RING}#g;
                         s#^[ \#]*TLS_TRUST_STORE_KEY_RING=.*#TLS_TRUST_STORE_KEY_RING=${instance-UKO_TLS_TRUST_STORE_KEY_RING}#g;
                         s#^[ \#]*TLS_KEY_STORE_SERVER_CERT=.*#TLS_KEY_STORE_SERVER_CERT=${instance-UKO_TLS_KEY_STORE_SERVER_CERT}#g;
-                        s#^[ \#]*DB_NAME_UKO=.*#DB_NAME_UKO=${instance-DB_LOCATION}#g;
-                        s#^[ \#]*DB_NAME_DATASET_ENCRYPTION_STATUS=.*#DB_NAME_DATASET_ENCRYPTION_STATUS=${instance-DB_LOCATION}#g;
+                        s#^[ \#]*EKMF_API_DB_NAME=.*#EKMF_API_DB_NAME=${instance-DB_LOCATION}#g;
+                        s#^[ \#]*DATA_SET_DB_NAME=.*#DATA_SET_DB_NAME=${instance-DB_LOCATION}#g;
                         s#^[ \#]*DB_CURRENT_SCHEMA=.*#DB_CURRENT_SCHEMA=${instance-DB_CURRENT_SCHEMA}#g;
                         s#^[ \#]*DB2_PRODUCT_PATH=.*#DB2_PRODUCT_PATH=${instance-DB2_PRODUCT_PATH}#g;
                         s#^[ \#]*LIBPATH=.*#LIBPATH=${instance-DB2_LIBPATH}#g;
+                        s#^[ \#]*DB2_LIBPATH=.*#DB2_LIBPATH=${instance-DB2_LIBPATH}#g;
+                        s#^[ \#]*DB2_CLASSPATH=.*#DB2_CLASSPATH=${instance-DB2_CLASSPATH}#g;
                         s#^[ \#]*HTTP_PORT=.*#HTTP_PORT=${instance-UKO_HTTP_PORT}#g;
                         s#^[ \#]*HTTPS_PORT=.*#HTTPS_PORT=${instance-UKO_HTTPS_PORT}#g;
                         s#^[ \#]*SAF_UNAUTHENTICATED_USER_ID=.*#SAF_UNAUTHENTICATED_USER_ID=${instance-UKO_UNAUTHENTICATED_USER}#g;
@@ -232,7 +235,7 @@
                 #if(${instance-UKO_SERVER_STC_GROUP} != "" &amp;&amp; ${instance-UKO_SERVER_STC_GROUP})
                     echo "Ensure that ${instance-UKO_SERVER_STC_GROUP} has read access to ${instance-WLP_USER_DIR}/servers/${instance-UKO_SERVER_STC_NAME}"
                     chown -R ${instance-UKO_SERVER_STC_USER}:${instance-UKO_SERVER_STC_GROUP} ${instance-WLP_USER_DIR}/servers/${instance-UKO_SERVER_STC_NAME}
-                    chmod -R 770 ${instance-WLP_USER_DIR}/servers/${instance-UKO_SERVER_STC_NAME}
+                    chmod -R 644 ${instance-WLP_USER_DIR}/servers/${instance-UKO_SERVER_STC_NAME}
                 #else
                     echo "Ensure that ${instance-UKO_SERVER_STC_USER} has read access to ${instance-WLP_USER_DIR}/servers/${instance-UKO_SERVER_STC_NAME}"
                     chown -R ${instance-UKO_SERVER_STC_USER} ${instance-WLP_USER_DIR}/servers/${instance-UKO_SERVER_STC_NAME}

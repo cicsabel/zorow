@@ -217,23 +217,6 @@
             </template>
         </step>
 
-        <step name="defineLinkEncryption">
-            <title>Define link encryption</title>
-            <description>Define link encryption between the agent and clients</description>
-            <runAsUser substitution="true">$!{instance-UKO_ADMIN_SECURITY}</runAsUser>
-            <approver substitution="true">$!{instance-UKO_APPROVER_SECURITY}</approver>
-            <variableValue name="UKO_SERVER_PUBLIC_KEY_HASH" scope="instance" noPromptIfSet="false" required="false"/>
-            <variableValue name="UKO_AGENT_STC_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
-            <instructions substitution="true">Submit rexx exec to execute step</instructions>
-            <weight>1</weight>
-            <autoEnable>true</autoEnable>
-            <template>
-                <fileTemplate substitution="true">extensions/defineLinkEncryption.rexx</fileTemplate>
-                <submitAs maxRc="0">TSO-REXX-JCL</submitAs>
-                <maxLrecl>1024</maxLrecl>
-            </template>
-        </step>
-
         <step name="defineKeyAccess">
             <title>Key prefix creation</title>
             <description>Create entry in CSFKEYS class and grant access</description>
@@ -250,6 +233,22 @@
             </template>
         </step>
 
+        <step name="defineLinkEncryption">
+            <title>Define link encryption</title>
+            <description>Define link encryption between the agent and clients</description>
+            <runAsUser substitution="true">$!{instance-UKO_ADMIN_SECURITY}</runAsUser>
+            <approver substitution="true">$!{instance-UKO_APPROVER_SECURITY}</approver>
+            <variableValue name="UKO_SERVER_PUBLIC_KEY_HASH" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="UKO_AGENT_STC_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
+            <instructions substitution="true">Submit rexx exec to execute step</instructions>
+            <weight>1</weight>
+            <autoEnable>true</autoEnable>
+            <template>
+                <fileTemplate substitution="true">extensions/defineLinkEncryption.rexx</fileTemplate>
+                <submitAs maxRc="0">TSO-REXX-JCL</submitAs>
+                <maxLrecl>1024</maxLrecl>
+            </template>
+        </step>
 
 	</step>
 

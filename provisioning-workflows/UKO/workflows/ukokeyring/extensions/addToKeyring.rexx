@@ -27,17 +27,21 @@ Say "Connect TLS server  certificate to key ring"
       " RING("||TLS_KEY_STORE_KEY_RING||")",
       " DEFAULT USAGE(PERSONAL))"
  if RC <> 0 then do
-    exit RC
+   Say "connecting server cert to key ring failed, exiting"
+   exit RC
  end
 
+#if($!{instance-UKO_TLS_KEY_STORE_SERVER_CERT} != $!{instance-UKO_OIDC_PROVIDER_CERT} )
 Say "Connect OIDC provider certificate to key ring"
 "RACDCERT ID("||SERVER_STC_USER||")",
    " CONNECT(LABEL("||"'"||OIDC_PROVIDER_CERT||"'"||")",
    " RING("||TLS_KEY_STORE_KEY_RING||")",
    " USAGE(PERSONAL))"
  if RC <> 0 then do
-    exit RC
+   Say "connecting oidc cert to key ring failed, exiting"
+   exit RC
  end
+#end
 
    #if($!{instance-UKO_TLS_KEY_STORE_KEY_RING} != $!{instance-UKO_TLS_TRUST_STORE_KEY_RING} )
 Say "Connect OIDC provider certificate to trust ring"
@@ -46,7 +50,8 @@ Say "Connect OIDC provider certificate to trust ring"
    " RING("||TLS_TRUST_STORE_KEY_RING||")",
    " USAGE(PERSONAL))"
  if RC <> 0 then do
-    exit RC
+   Say "connecting oidc cert to trust ring failed, exiting"
+   exit RC
  end
    #end
 
@@ -62,7 +67,8 @@ Say "Connect CA to trust ring"
    " RING("||TLS_TRUST_STORE_KEY_RING||")",
    " USAGE(CERTAUTH))"
  if RC <> 0 then do
-    exit RC
+   Say "connecting CA to trust ring failed, exiting"
+   exit RC
  end
 
 #end
@@ -74,7 +80,8 @@ Say "List the key ring for diagnostics"
 "RACDCERT ID("||SERVER_STC_USER||")",
    " LISTRING("||TLS_KEY_STORE_KEY_RING||")"
  if RC <> 0 then do
-    exit RC
+   Say "listing the key ring failed, exiting"
+   exit RC
  end
 
 #if($!{instance-UKO_TLS_KEY_STORE_KEY_RING} != $!{instance-UKO_TLS_TRUST_STORE_KEY_RING} )
@@ -82,7 +89,8 @@ Say "List the trust ring for diagnostics"
 "RACDCERT ID("||SERVER_STC_USER||")",
    " LISTRING("||TLS_TRUST_STORE_KEY_RING||")"
  if RC <> 0 then do
-    exit RC
+   Say "listing the trust ring failed, exiting"
+   exit RC
  end
 #end
 

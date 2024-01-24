@@ -122,6 +122,7 @@
 
                 tempversion="";
                 echo "SET CURRENT SQLID = '${instance-DB_CURRENT_SQLID}' ;" > ${instance-TEMP_DIR}/zosmf-${_workflow-workflowKey}.ddl;
+                echo "SET CURRENT SCHEMA = '${instance-DB_CURRENT_SCHEMA}' ;" >> ${instance-TEMP_DIR}/zosmf-${_workflow-workflowKey}.ddl;
                 for i in `ls  *.ddl | xargs echo`; do
                     tempversion=$(echo $i | cut -c 1-6);
 
@@ -404,14 +405,10 @@
             <template>
                 <inlineTemplate substitution="true">
 
-                    rm ${instance-TEMP_DIR}/zosmf-${_workflow-workflowKey}.ddl
+                    # Remove temporary files created by the workflow
+                    rm ${instance-TEMP_DIR}/zosmf-${_workflow-workflowKey}*
                     if [ $? -gt 0 ]; then 
-                        echo "no temp ddl needed to be deleted"
-                    fi
-                    
-                    rm ${instance-TEMP_DIR}/zosmf-${_workflow-workflowKey}.version
-                    if [ $? -gt 0 ]; then 
-                        echo "no temp version needed to be deleted"
+                        echo "no temp files needed to be deleted"
                     fi
 
                 </inlineTemplate>

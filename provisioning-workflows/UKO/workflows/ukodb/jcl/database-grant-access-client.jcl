@@ -18,6 +18,7 @@
  END                                                           
 //SYSIN     DD    *,SYMBOLS=(JCLONLY)
 SET CURRENT SQLID = '${instance-DB_CURRENT_SQLID}' ;
+SET CURRENT SCHEMA = '${instance-DB_CURRENT_SCHEMA}' ;
 
 GRANT SELECT ON V1KMGELT TO &CLUSER;
 GRANT SELECT ON V2KMGELT TO &CLUSER;

@@ -518,10 +518,23 @@
 
 <variable name="UKO_ZFS_DATACLASS" scope="instance" visibility="private">
   <label>UKO_ZFS_DATACLASS</label>
-  <abstract>zFS DataClass used to define the zFS dataset</abstract>
-  <description>zFS DataClass used to define the zFS dataset</description>
+  <abstract>zFS DataClass for zFS dataset, ignored if UKO_ZOS_VSAM_VOLUME=SMS</abstract>
+  <description>zFS DataClass used to define the zFS dataset, If the value for UKO_ZOS_VSAM_VOLUME 
+    is specified as SMS (Storage Management Subsystem), this value is ignored</description>
   <category>String Variables</category>
   <string />
+</variable>
+
+<variable name="UKO_ZOS_VSAM_VOLUME" scope="instance" visibility="private">
+  <label>ZOS_VSAM_VOLUME</label>
+  <abstract>Volume for Datasets or SMS</abstract>
+  <description>VOLUME value to be used when creating Datasets (eg SYSDA), set to SMS if SMS is used. 
+    If SMS is not used, you also must specify the DATACLASS.</description>
+  <category>String Variables</category>
+  <string>
+    <minLength>1</minLength>
+    <maxLength>25</maxLength>
+  </string>
 </variable>
 
 <!-- STC JOBS -->
@@ -543,17 +556,6 @@
   <category>String Variables</category>
   <string>
     <validationType>DSNAME</validationType>
-  </string>
-</variable>
-
-<variable name="UKO_ZOS_VSAM_VOLUME" scope="instance" visibility="private">
-  <label>ZOS_VSAM_VOLUME</label>
-  <abstract>Volume for Datasets or SMS</abstract>
-  <description>VOLUME value to be used when creating Datasets (eg SYSDA), set to SMS if SMS is used</description>
-  <category>String Variables</category>
-  <string>
-    <minLength>1</minLength>
-    <maxLength>25</maxLength>
   </string>
 </variable>
 
@@ -1107,6 +1109,17 @@
   <label>DB2_LIBPATH</label>
   <abstract>The Db2 library path</abstract>
   <description>The location of the Db2 libraries</description>
+  <category>String Variables</category>
+  <string>
+    <!-- Path validation, has to start with slash, may contain slashes, must not end with slash or whitespace -->
+    <regularExpression>^\/([A-z0-9-_+\.]+\/)*([A-z0-9-_+\.])*[^\/\s]$</regularExpression>
+  </string>
+</variable>
+
+<variable name="DB2_CLASSPATH" visibility="private">
+  <label>DB2_CLASSPATH</label>
+  <abstract>The Db2 class path</abstract>
+  <description>The location of the Db2 classes</description>
   <category>String Variables</category>
   <string>
     <!-- Path validation, has to start with slash, may contain slashes, must not end with slash or whitespace -->

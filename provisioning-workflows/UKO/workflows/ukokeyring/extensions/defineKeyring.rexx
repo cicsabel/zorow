@@ -18,7 +18,8 @@ Say "Generate the key ring"
 "RACDCERT ADDRING("||TLS_KEY_STORE_KEY_RING||")",
    " ID("||SERVER_STC_USER||")"
  if RC <> 0 then do
-    exit RC
+   Say "key ring creation failed, exiting"
+   exit RC
  end
 
 #if($!{instance-UKO_TLS_KEY_STORE_KEY_RING} != $!{instance-UKO_TLS_TRUST_STORE_KEY_RING} )
@@ -26,7 +27,8 @@ Say "Generate the trust ring"
 "RACDCERT ADDRING("||TLS_TRUST_STORE_KEY_RING||")",
    " ID("||SERVER_STC_USER||")"
  if RC <> 0 then do
-    exit RC
+   Say "trust ring creation failed, exiting"
+   exit RC
  end
 #end
 

@@ -18,6 +18,7 @@
  END                                                           
 //SYSIN     DD    *,SYMBOLS=(JCLONLY)
 SET CURRENT SQLID = '&DBSQLID';  
+SET CURRENT SCHEMA = '${instance-DB_CURRENT_SCHEMA}' ;
 SELECT VERSION
 FROM EKMF_META
 WHERE VERSION=(SELECT max(VERSION) FROM EKMF_META);

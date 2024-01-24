@@ -15,7 +15,13 @@
  RUN PROGRAM(${instance-DB_PROGRAM}) PLAN(${instance-DB_PLAN}) LIB('${instance-DB2_RUNLIB}') 
  END                                                           
 //SYSIN     DD    *,SYMBOLS=(JCLONLY)
+#if(${instance-UKO_ADMIN_DB} &amp;&amp; ${instance-UKO_ADMIN_DB} != "")
 SET CURRENT SQLID = '${instance-UKO_ADMIN_DB}';   
+#else
+SET CURRENT SQLID = '${_step-stepOwner}';   
+#end
+
+SET CURRENT SCHEMA = '${instance-DB_CURRENT_SCHEMA}' ;
 
 CREATE DATABASE ${instance-DB_NAME_UKO} 
  BUFFERPOOL ${instance-DB_BUFFERPOOL_DEFAULT} 

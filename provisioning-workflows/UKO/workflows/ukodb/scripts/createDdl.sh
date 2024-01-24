@@ -63,4 +63,4 @@ for i in `cat ${instance-TEMP_DIR}/zosmf-${_workflow-workflowKey}.files`; do
 done;
 
 echo "Changing permissions of zosmf-${_workflow-workflowKey}.ddl to ensure other user IDs can read it"
-chmod 777 ${instance-TEMP_DIR}/zosmf-${_workflow-workflowKey}.ddl
+chmod 644 ${instance-TEMP_DIR}/zosmf-${_workflow-workflowKey}.ddl
