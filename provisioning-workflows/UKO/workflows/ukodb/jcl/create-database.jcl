@@ -6,16 +6,16 @@
 //UKODB   EXEC PGM=IKJEFT01,REGION=0M               
 //         EXPORT SYMLIST=*
 //         SET DBSQLID=${instance-DB_CURRENT_SQLID}
-//STEPLIB  DD DISP=SHR,DSN=${instance-DB2_HLQ}.SDSNLOAD               
+//STEPLIB  DD DISP=SHR,DSN=${instance-DB_HLQ}.SDSNLOAD               
 //SYSTSPRT DD SYSOUT=*,DCB=BLKSIZE=131                         
 //SYSPRINT DD SYSOUT=*                                         
 //SYSUDUMP DD SYSOUT=*                                         
 //SYSTSIN  DD *                                                
- DSN SYSTEM(${instance-DB2_JCC_SSID})                                              
- RUN PROGRAM(${instance-DB_PROGRAM}) PLAN(${instance-DB_PLAN}) LIB('${instance-DB2_RUNLIB}') 
+ DSN SYSTEM(${instance-DB_JCC_SSID})                                              
+ RUN PROGRAM(${instance-DB_PROGRAM}) PLAN(${instance-DB_PLAN}) LIB('${instance-DB_RUNLIB}') 
  END                                                           
 //SYSIN     DD    *,SYMBOLS=(JCLONLY)
-#if(${instance-UKO_ADMIN_DB} &amp;&amp; ${instance-UKO_ADMIN_DB} != "")
+#if(${instance-UKO_ADMIN_DB} && ${instance-UKO_ADMIN_DB} != "")
 SET CURRENT SQLID = '${instance-UKO_ADMIN_DB}';   
 #else
 SET CURRENT SQLID = '${_step-stepOwner}';   

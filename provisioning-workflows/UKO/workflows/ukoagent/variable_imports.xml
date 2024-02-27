@@ -920,8 +920,8 @@
 <!--++++++++++++++++++++++++++++++-->
 <!-- Db2 variables                -->
 <!--++++++++++++++++++++++++++++++-->
-<variable name="DB2_TEMP_HLQ" visibility="private">
-  <label>DB2_TEMP_HLQ</label>
+<variable name="DB_TEMP_HLQ" visibility="private">
+  <label>DB_TEMP_HLQ</label>
   <abstract>HLQ for temporary datasets</abstract>
   <description>HLQ for temporary datasets that are created to store temporary DDLs and other files created 
     during database creation, update and load. All files will be created under UKO_FILE_SYSTEM_HLQ.DB_CURRENT_SCHEMA.*</description>
@@ -931,9 +931,9 @@
   </string>
 </variable>
 
-<variable name="DB2_HLQ" visibility="private">
-  <label>DB2_HLQ</label>
-  <abstract>The DB2_HLQ dataset</abstract>
+<variable name="DB_HLQ" visibility="private">
+  <label>DB_HLQ</label>
+  <abstract>The DB_HLQ dataset</abstract>
   <description>The HLQ of where Db2 is installed</description>
   <category>String Variables</category>
   <string>
@@ -941,9 +941,9 @@
   </string>
 </variable>
 
-<variable name="DB2_RUNLIB" visibility="private">
-  <label>DB2_RUNLIB</label>
-  <abstract>The DB2_RUNLIB dataset</abstract>
+<variable name="DB_RUNLIB" visibility="private">
+  <label>DB_RUNLIB</label>
+  <abstract>The DB_RUNLIB dataset</abstract>
   <description>The HLQ of the Db2 runlib</description>
   <category>String Variables</category>
   <string>
@@ -951,9 +951,9 @@
   </string>
 </variable>
 
-<variable name="DB2_JCC_SSID" visibility="private">
-  <label>DB2_JCC_SSID</label>
-  <abstract>The DB2_JCC_SSID </abstract>
+<variable name="DB_JCC_SSID" visibility="private">
+  <label>DB_JCC_SSID</label>
+  <abstract>The DB_JCC_SSID </abstract>
   <description>The SSID of Db2</description>
   <category>String Variables</category>
   <string>
@@ -1094,8 +1094,8 @@
   <string />
 </variable>
 
-<variable name="DB2_PRODUCT_PATH" visibility="private">
-  <label>DB2_PRODUCT_PATH</label>
+<variable name="DB_PRODUCT_PATH" visibility="private">
+  <label>DB_PRODUCT_PATH</label>
   <abstract>The Db2 product path</abstract>
   <description>The HFS path of Db2</description>
   <category>String Variables</category>
@@ -1105,8 +1105,8 @@
   </string>
 </variable>
 
-<variable name="DB2_LIBPATH" visibility="private">
-  <label>DB2_LIBPATH</label>
+<variable name="DB_LIBPATH" visibility="private">
+  <label>DB_LIBPATH</label>
   <abstract>The Db2 library path</abstract>
   <description>The location of the Db2 libraries</description>
   <category>String Variables</category>
@@ -1116,8 +1116,8 @@
   </string>
 </variable>
 
-<variable name="DB2_CLASSPATH" visibility="private">
-  <label>DB2_CLASSPATH</label>
+<variable name="DB_CLASSPATH" visibility="private">
+  <label>DB_CLASSPATH</label>
   <abstract>The Db2 class path</abstract>
   <description>The location of the Db2 classes</description>
   <category>String Variables</category>

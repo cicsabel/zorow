@@ -51,8 +51,8 @@
 	<atCreate name="START_SERVER" scope="instance" prompt="true" required="false"/>
     <atCreate name="UKO_VAULT_ID" scope="instance" prompt="true" required="false"/>
     <atCreate name="JAVA_HOME" scope="instance" prompt="true" required="false"/>
-    <atCreate name="DB2_LIBPATH" scope="instance" prompt="true" required="false"/>
-    <atCreate name="DB2_CLASSPATH" scope="instance" prompt="true" required="false"/>
+    <atCreate name="DB_LIBPATH" scope="instance" prompt="true" required="false"/>
+    <atCreate name="DB_CLASSPATH" scope="instance" prompt="true" required="false"/>
     <!-- those variables don't need to be queried because they are provieded from the instance -->
     <!-- <atCreate name="UKO_TLS_KEY_STORE_SERVER_CERT" scope="instance" prompt="true" required="false"/> -->
     <!-- <atCreate name="UKO_OIDC_PROVIDER_CERT" scope="instance" prompt="true" required="false"/> -->
@@ -309,9 +309,9 @@
                 #if(${instance-UKO_SERVER_STC_GROUP} != "" &amp;&amp; ${instance-UKO_SERVER_STC_GROUP})
                     echo "Ensure that ${instance-UKO_SERVER_STC_GROUP} has read access to ${instance-UKO_SERVER_DIRECTORY}/server.env and jvm.options"
                     chown ${instance-UKO_SERVER_STC_USER}:${instance-UKO_SERVER_STC_GROUP} ${instance-UKO_SERVER_DIRECTORY}/server.env
-                    chmod 644 ${instance-UKO_SERVER_DIRECTORY}/server.env
+                    chmod 755 ${instance-UKO_SERVER_DIRECTORY}/server.env
                     chown ${instance-UKO_SERVER_STC_USER}:${instance-UKO_SERVER_STC_GROUP} ${instance-UKO_SERVER_DIRECTORY}/jvm.options
-                    chmod 644 ${instance-UKO_SERVER_DIRECTORY}/jvm.options
+                    chmod 755 ${instance-UKO_SERVER_DIRECTORY}/jvm.options
                 #else
                     echo "Ensure that ${instance-UKO_SERVER_STC_USER} has read access to ${instance-UKO_SERVER_DIRECTORY}/server.env and jvm.options"
                     chown ${instance-UKO_SERVER_STC_USER} ${instance-UKO_SERVER_DIRECTORY}/server.env
@@ -518,8 +518,8 @@
                     </extendStateExpression>
                 </targetStateSet>
             </condition>
-            <variableValue name="DB2_LIBPATH" scope="instance" noPromptIfSet="false" required="false"/>
-            <variableValue name="DB2_CLASSPATH" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="DB_LIBPATH" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="DB_CLASSPATH" scope="instance" noPromptIfSet="false" required="false"/>
             <instructions substitution="true">Submit shell script to execute step</instructions>
             <weight>1</weight>
             <autoEnable>true</autoEnable>
@@ -528,8 +528,10 @@
                     # creating a copy of the server.env to work on, otherwise the sed command does not work
                     cp ${instance-UKO_SERVER_DIRECTORY}/server.env ${instance-UKO_SERVER_DIRECTORY}/server.env_temp
 
-                    sed "s#^[ \#]*DB2_LIBPATH=.*#DB2_LIBPATH=${instance-DB2_LIBPATH}#g;
-                        s#^[ \#]*DB2_CLASSPATH=.*#DB2_CLASSPATH=${instance-DB2_CLASSPATH}#g" ${instance-UKO_SERVER_DIRECTORY}/server.env_temp > ${instance-UKO_SERVER_DIRECTORY}/server.env;
+                    sed "s#^[ \#]*DB2_LIBPATH=.*#DB2_LIBPATH=${instance-DB_LIBPATH}#g;
+                        s#^[ \#]*DB_LIBPATH=.*#DB_LIBPATH=${instance-DB_LIBPATH}#g;
+                        s#^[ \#]*DB2_CLASSPATH=.*#DB2_CLASSPATH=${instance-DB_CLASSPATH}#g;
+                        s#^[ \#]*DB_CLASSPATH=.*#DB_CLASSPATH=${instance-DB_CLASSPATH}#g" ${instance-UKO_SERVER_DIRECTORY}/server.env_temp > ${instance-UKO_SERVER_DIRECTORY}/server.env;
 
                     # deleting the copy
                     rm ${instance-UKO_SERVER_DIRECTORY}/server.env_temp

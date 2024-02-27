@@ -53,9 +53,9 @@
         <variableValue name="DB_NAME_DATASET_ENCRYPTION_STATUS" scope="instance" noPromptIfSet="false" required="false"/>
         <variableValue name="DB_PROGRAM" scope="instance" noPromptIfSet="false" required="false"/>
         <variableValue name="DB_PLAN" scope="instance" noPromptIfSet="false" required="false"/>
-        <variableValue name="DB2_RUNLIB" scope="instance" noPromptIfSet="false" required="false"/>
-        <variableValue name="DB2_HLQ" scope="instance" noPromptIfSet="false" required="false"/>
-        <variableValue name="DB2_JCC_SSID" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="DB_RUNLIB" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="DB_HLQ" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="DB_JCC_SSID" scope="instance" noPromptIfSet="false" required="false"/>
         <variableValue name="UKO_FILE_SYSTEM_HLQ" scope="instance" noPromptIfSet="false" required="false"/>
         <variableValue name="DB_BUFFERPOOL_DEFAULT" scope="instance" noPromptIfSet="false" required="false"/>
         <variableValue name="DB_BUFFERPOOL_INDEX" scope="instance" noPromptIfSet="false" required="false"/>
@@ -227,10 +227,10 @@
         <approver substitution="true">$!{instance-UKO_APPROVER_DB}</approver>
         <!-- <variableValue name="DB_PROGRAM" scope="instance" noPromptIfSet="false" required="false"/>
         <variableValue name="DB_PLAN" scope="instance" noPromptIfSet="false" required="false"/>
-        <variableValue name="DB2_RUNLIB" scope="instance" noPromptIfSet="false" required="false"/>
-        <variableValue name="DB2_HLQ" scope="instance" noPromptIfSet="false" required="false"/>
-        <variableValue name="DB2_JCC_SSID" scope="instance" noPromptIfSet="false" required="false"/> -->
-        <variableValue name="DB2_TEMP_HLQ" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="DB_RUNLIB" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="DB_HLQ" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="DB_JCC_SSID" scope="instance" noPromptIfSet="false" required="false"/> -->
+        <variableValue name="DB_TEMP_HLQ" scope="instance" noPromptIfSet="false" required="false"/>
         <instructions substitution="true">Submit jcl to execute step</instructions>
         <weight>1</weight>
         <autoEnable>true</autoEnable>

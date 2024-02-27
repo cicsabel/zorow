@@ -176,9 +176,9 @@ Say "Refreshing EJBROLE"
 /* Granting access to Db2 Naming protected access profiles */
 /***********************************************************************/
 Say "Defining RRSAF profile in DSNR class"
-"RDEFINE DSNR ${instance-DB2_JCC_SSID}.RRSAF UACC(NONE)"
+"RDEFINE DSNR ${instance-DB_JCC_SSID}.RRSAF UACC(NONE)"
 Say "Granting access to RRSAF profile to "||SERVER_STC_USER||" "
-"PERMIT ${instance-DB2_JCC_SSID}.RRSAF CLASS(DSNR)",
+"PERMIT ${instance-DB_JCC_SSID}.RRSAF CLASS(DSNR)",
    " ACCESS(READ) ID("||SERVER_STC_USER||")"                 
 
 Say "Refreshing DSNR"

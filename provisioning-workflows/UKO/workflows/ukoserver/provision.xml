@@ -126,9 +126,9 @@
             <variableValue name="UKO_TLS_KEY_STORE_SERVER_CERT" scope="instance" noPromptIfSet="false" required="false"/>
             <variableValue name="DB_LOCATION" scope="instance" noPromptIfSet="false" required="false"/>
             <variableValue name="DB_CURRENT_SCHEMA" scope="instance" noPromptIfSet="false" required="false"/>
-            <!-- <variableValue name="DB2_PRODUCT_PATH" scope="instance" noPromptIfSet="false" required="false"/> -->
-            <variableValue name="DB2_LIBPATH" scope="instance" noPromptIfSet="false" required="false"/>
-            <variableValue name="DB2_CLASSPATH" scope="instance" noPromptIfSet="false" required="false"/>
+            <!-- <variableValue name="DB_PRODUCT_PATH" scope="instance" noPromptIfSet="false" required="false"/> -->
+            <variableValue name="DB_LIBPATH" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="DB_CLASSPATH" scope="instance" noPromptIfSet="false" required="false"/>
             <variableValue name="UKO_HTTP_PORT" scope="instance" noPromptIfSet="false" required="false"/>
             <variableValue name="UKO_HTTPS_PORT" scope="instance" noPromptIfSet="false" required="false"/>
             <variableValue name="UKO_UNAUTHENTICATED_USER" scope="instance" noPromptIfSet="false" required="false"/>
@@ -169,10 +169,12 @@
                         s#^[ \#]*EKMF_API_DB_NAME=.*#EKMF_API_DB_NAME=${instance-DB_LOCATION}#g;
                         s#^[ \#]*DATA_SET_DB_NAME=.*#DATA_SET_DB_NAME=${instance-DB_LOCATION}#g;
                         s#^[ \#]*DB_CURRENT_SCHEMA=.*#DB_CURRENT_SCHEMA=${instance-DB_CURRENT_SCHEMA}#g;
-                        s#^[ \#]*DB2_PRODUCT_PATH=.*#DB2_PRODUCT_PATH=${instance-DB2_PRODUCT_PATH}#g;
-                        s#^[ \#]*LIBPATH=.*#LIBPATH=${instance-DB2_LIBPATH}#g;
-                        s#^[ \#]*DB2_LIBPATH=.*#DB2_LIBPATH=${instance-DB2_LIBPATH}#g;
-                        s#^[ \#]*DB2_CLASSPATH=.*#DB2_CLASSPATH=${instance-DB2_CLASSPATH}#g;
+                        s#^[ \#]*DB2_PRODUCT_PATH=.*#DB2_PRODUCT_PATH=${instance-DB_PRODUCT_PATH}#g;
+                        s#^[ \#]*LIBPATH=.*#LIBPATH=${instance-DB_LIBPATH}#g;
+                        s#^[ \#]*DB2_LIBPATH=.*#DB2_LIBPATH=${instance-DB_LIBPATH}#g;
+                        s#^[ \#]*DB2_CLASSPATH=.*#DB2_CLASSPATH=${instance-DB_CLASSPATH}#g;
+                        s#^[ \#]*DB_LIBPATH=.*#DB_LIBPATH=${instance-DB_LIBPATH}#g;
+                        s#^[ \#]*DB_CLASSPATH=.*#DB_CLASSPATH=${instance-DB_CLASSPATH}#g;
                         s#^[ \#]*HTTP_PORT=.*#HTTP_PORT=${instance-UKO_HTTP_PORT}#g;
                         s#^[ \#]*HTTPS_PORT=.*#HTTPS_PORT=${instance-UKO_HTTPS_PORT}#g;
                         s#^[ \#]*SAF_UNAUTHENTICATED_USER_ID=.*#SAF_UNAUTHENTICATED_USER_ID=${instance-UKO_UNAUTHENTICATED_USER}#g;
@@ -186,13 +188,82 @@
         	</template>
         </step>
 
+        <!-- <step name="configureJdbcType4">
+            <title>Configure type 4 instead of type 2 connection to database</title>
+            <description>The default connection type is type 2. This step changes this to type 4</description>
+            <runAsUser substitution="true">$!{instance-UKO_ADMIN_SERVER}</runAsUser>
+            <approver substitution="true">$!{instance-UKO_APPROVER_SERVER}</approver>
+            <condition>
+                <expression>"1"=="1"</expression>
+                <description>always true</description>
+                <targetStateSet>
+                    <description>Only execute for workstation access</description>
+                    <extendStateExpression>
+                        <description>Skip if no workstation access is required</description>
+                        <expression>${instance-DB_DRIVER_TYPE} != "4"</expression>
+                        <targetState>Skipped</targetState>
+                    </extendStateExpression>
+                </targetStateSet>
+            </condition>
+            <variableValue name="DB_SSL" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="DB_JDBC_PORT" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="DB_JDBC_SECPORT" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="DB_SERVER_NAME" scope="instance" noPromptIfSet="false" required="false"/>
+            <instructions substitution="true">Submit shell script to change the defaut database connection from type 2 to type 4</instructions>
+            <weight>1</weight>
+            <autoEnable>true</autoEnable>
+            <template>
+                    <inlineTemplate substitution="true">
+
+
+                        must be created: 
+                        ${instance-DB_DRIVER_TYPE}
+                        DB_SSL=${instance-DB_SSL}true
+                        DB_SERVER_NAME=${DB_SERVER_NAME}winmvs3n.hursley.ibm.com
+                        
+                        exist: 
+                        DB_SERVER_PORT=${instance-DB_JDBC_PORT}43100
+                        DB_SERVER_PORT=${instance-DB_JDBC_SECPORT}33100
+
+                        server userid ok? or should I create another variable
+                        DB_USER=UKO09SU
+                        # Use the security utility, described here:
+                        # https://www.ibm.com/docs/en/was-liberty/zos?topic=applications-securityutility-command
+                        # To encrypt the password
+                        #DB_PASSWORD=changeme
+
+
+
+                        echo "workstation access is required, using sample options member KMGOPDB2"
+                        # getting rid of potential dashes in the codepage
+                        ccsid=$(echo "${instance-DB_CODEPAGE}" | sed 's/-//g')
+
+                        echo "/* Agent configuration parameters */" > ${instance-TEMP_DIR}/${instance-UKO_AGENT_STC_NAME}-KMGPARM;    
+                        sed "s#^\&amp;IP-PORT.*#\&amp;IP-PORT(${instance-UKO_AGENT_PORT})#g;
+                            s#^\&amp;SYS-RSAKEK-PREFIX.*#\&amp;SYS-RSAKEK-PREFIX(${instance-UKO_KEY_PREFIX}.RSAKEK)#g;
+                            s#^\&amp;SYS-ECCSIGN-PREFIX.*#\&amp;SYS-ECCSIGN-PREFIX(${instance-UKO_KEY_PREFIX}.ECCSIGN)#g;
+                            s#^\&amp;DB2-PLAN.*#\&amp;DB2-PLAN(${instance-DB_AGENT_PLAN})#g;
+                            s#^\&amp;DB2-SYSTEM.*#\&amp;DB2-SYSTEM(${instance-DB_JCC_SSID})#g;
+                            s#^\&amp;SYS-CCSID.*#\&amp;SYS-CCSID(${ccsid})#g;
+                            s#^\&amp;SYS-JDBC-LOCATION.*#\&amp;SYS-JDBC-LOCATION(${instance-DB_LOCATION})#g;
+                            s#^\&amp;SYS-JDBC-PORT.*#\&amp;SYS-JDBC-PORT(${instance-DB_JDBC_PORT})#g;
+                            s#^\&amp;SYS-JDBC-SECPORT.*#\&amp;SYS-JDBC-SECPORT(${instance-DB_JDBC_SECPORT})#g;
+                            s#^\&amp;WEBCLIENT.*#\&amp;WEBCLIENT(${instance-UKO_AGENT_CLIENT_USER})#g" "//'${instance-UKO_AGENT_HLQ}.SKMGSAMP(KMGOPDB2)'" >> ${instance-TEMP_DIR}/${instance-UKO_AGENT_STC_NAME}-KMGPARM;
+
+                        echo "&amp;DB2-QUALIFIER(${instance-DB_CURRENT_SCHEMA})" >> ${instance-TEMP_DIR}/${instance-UKO_AGENT_STC_NAME}-KMGPARM;    
+                            
+                    </inlineTemplate>
+                <submitAs>shell-JCL</submitAs>
+            </template>
+        </step> -->
+
         <step name="substituteJvmOptions">
 		    <title>Substitute jvm.options</title>
 	        <description>replace values in jvm.options with template variable values</description>
 	        <runAsUser substitution="true">$!{instance-UKO_ADMIN_SERVER}</runAsUser>
 	        <approver substitution="true">$!{instance-UKO_APPROVER_SERVER}</approver>
             <variableValue name="WLP_ANGEL_NAME" scope="instance" noPromptIfSet="false" required="false"/>
-            <variableValue name="DB2_JCC_SSID" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="DB_JCC_SSID" scope="instance" noPromptIfSet="false" required="false"/>
             <instructions substitution="true">Submit shell script to execute step</instructions>
             <weight>1</weight>
             <autoEnable>true</autoEnable>
@@ -202,7 +273,7 @@
                         #if(${instance-WLP_ANGEL_NAME} &amp;&amp; ${instance-WLP_ANGEL_NAME} != "")
                             s#^[ \#]*-Dcom.ibm.ws.zos.core.angelName=.*#-Dcom.ibm.ws.zos.core.angelName=${instance-WLP_ANGEL_NAME}#g;
                         #end
-                        s#^[ \#]*-Ddb2.jcc.ssid=.*#-Ddb2.jcc.ssid=${instance-DB2_JCC_SSID}#g" ${instance-UKO_INSTALL_DIR}/jvm.options > ${instance-WLP_USER_DIR}/servers/${instance-UKO_SERVER_STC_NAME}/jvm.options;
+                        s#^[ \#]*-Ddb2.jcc.ssid=.*#-Ddb2.jcc.ssid=${instance-DB_JCC_SSID}#g" ${instance-UKO_INSTALL_DIR}/jvm.options > ${instance-WLP_USER_DIR}/servers/${instance-UKO_SERVER_STC_NAME}/jvm.options;
              	 </inlineTemplate>
             	<submitAs>shell-JCL</submitAs>
         	</template>
@@ -233,12 +304,14 @@
                 #end
 
                 #if(${instance-UKO_SERVER_STC_GROUP} != "" &amp;&amp; ${instance-UKO_SERVER_STC_GROUP})
-                    echo "Ensure that ${instance-UKO_SERVER_STC_GROUP} has read access to ${instance-WLP_USER_DIR}/servers/${instance-UKO_SERVER_STC_NAME}"
+                    echo "Transfer ownership of ${instance-WLP_USER_DIR}/servers/${instance-UKO_SERVER_STC_NAME} to ${instance-UKO_SERVER_STC_USER} : ${instance-UKO_SERVER_STC_GROUP}"
                     chown -R ${instance-UKO_SERVER_STC_USER}:${instance-UKO_SERVER_STC_GROUP} ${instance-WLP_USER_DIR}/servers/${instance-UKO_SERVER_STC_NAME}
-                    chmod -R 644 ${instance-WLP_USER_DIR}/servers/${instance-UKO_SERVER_STC_NAME}
+                    echo "Change access of ${instance-WLP_USER_DIR}/servers/${instance-UKO_SERVER_STC_NAME} to 750"
+                    chmod -R 750 ${instance-WLP_USER_DIR}/servers/${instance-UKO_SERVER_STC_NAME}
                 #else
-                    echo "Ensure that ${instance-UKO_SERVER_STC_USER} has read access to ${instance-WLP_USER_DIR}/servers/${instance-UKO_SERVER_STC_NAME}"
+                    echo "Transfer ownership of ${instance-WLP_USER_DIR}/servers/${instance-UKO_SERVER_STC_NAME} to ${instance-UKO_SERVER_STC_USER}"
                     chown -R ${instance-UKO_SERVER_STC_USER} ${instance-WLP_USER_DIR}/servers/${instance-UKO_SERVER_STC_NAME}
+                    echo "Change access of ${instance-WLP_USER_DIR}/servers/${instance-UKO_SERVER_STC_NAME} to 700"
                     chmod -R 700 ${instance-WLP_USER_DIR}/servers/${instance-UKO_SERVER_STC_NAME}
                 #end
     
@@ -269,21 +342,49 @@
 
                     # Create symlinks to the installation folder of UKO
                     cd ${instance-WLP_USER_DIR}/servers/${instance-UKO_SERVER_STC_NAME}
+                    echo "creating symlink to ${instance-UKO_INSTALL_DIR}/EkmfWeb.properties"
                     ln -s ${instance-UKO_INSTALL_DIR}/EkmfWeb.properties EkmfWeb.properties
+                    echo "creating symlink to ${instance-UKO_INSTALL_DIR}/apps"
                     ln -s ${instance-UKO_INSTALL_DIR}/apps apps
 
                     if [ -d "${instance-UKO_INSTALL_DIR}/includes" ] 
                     then
+                        echo "creating symlink to ${instance-UKO_INSTALL_DIR}/includes"
                         ln -s ${instance-UKO_INSTALL_DIR}/includes includes; 
                     fi
+
+                    echo "creating symlink to ${instance-UKO_INSTALL_DIR}/resources"
+                    ln -s ${instance-UKO_INSTALL_DIR}/resources resources
+                    echo "creating symlink to ${instance-UKO_INSTALL_DIR}/server.xml"
+                    ln -s ${instance-UKO_INSTALL_DIR}/server.xml server.xml			    
+
+                    #if(${instance-WLP_OUTPUT_DIR} != "" &amp;&amp; ${instance-WLP_OUTPUT_DIR})
+                        echo "Creating a symlink to the ${instance-WLP_OUTPUT_DIR}/${instance-UKO_SERVER_STC_NAME} output directory for convenience"
+                        ln -s ${instance-WLP_OUTPUT_DIR}/${instance-UKO_SERVER_STC_NAME} output
+                    #end
+
                     if [ -d "${instance-UKO_INSTALL_DIR}/configDropins" ] 
                     then
-                        ln -s ${instance-UKO_INSTALL_DIR}/configDropins configDropins; 
-                    fi
+                        echo "configDropins folder found in ${instance-UKO_INSTALL_DIR}"
+                        echo "creating ${instance-WLP_USER_DIR}/servers/${instance-UKO_SERVER_STC_NAME}/configDropins"
+                        mkdir configDropins
+                        echo "creating ${instance-WLP_USER_DIR}/servers/${instance-UKO_SERVER_STC_NAME}/configDropins/overrides"
+                        mkdir configDropins/overrides   
+                                              
+                        echo "creating symlinks to the configDropins folder"
 
-                    ln -s ${instance-UKO_INSTALL_DIR}/resources resources
-                    ln -s ${instance-UKO_INSTALL_DIR}/server.xml server.xml			    
-                    ln -s ${instance-WLP_OUTPUT_DIR}/${instance-UKO_SERVER_STC_NAME} output
+                        echo "creating symlink to ${instance-UKO_INSTALL_DIR}/configDropins/defaults"
+                        ln -s ${instance-UKO_INSTALL_DIR}/configDropins/defaults configDropins/defaults
+
+                        echo "creating symlink to ${instance-UKO_INSTALL_DIR}/configDropins/options"
+                        ln -s ${instance-UKO_INSTALL_DIR}/configDropins/options configDropins/options
+
+                        chown ${instance-UKO_SERVER_STC_USER} configDropins
+                        chown ${instance-UKO_SERVER_STC_USER} configDropins/overrides
+
+                        echo "Finished setting up configDropins:"
+                        ls -al configDropins/
+                    fi  
                 </inlineTemplate>
                 <submitAs>shell-JCL</submitAs>
             </template>
@@ -297,7 +398,7 @@
            <runAsUser substitution="true">$!{instance-UKO_ADMIN_TSO}</runAsUser>
            <approver substitution="true">$!{instance-UKO_APPROVER_TSO}</approver>
         <variableValue name="UKO_ZOS_PROCLIB" scope="instance" noPromptIfSet="false" required="false"/>
-        <variableValue name="DB2_HLQ" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="DB_HLQ" scope="instance" noPromptIfSet="false" required="false"/>
         <instructions substitution="true">Submit JCL to execute step</instructions>
         <weight>5</weight>
         <autoEnable>true</autoEnable>

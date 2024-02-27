@@ -35,9 +35,9 @@
 //*
 //STEP1    EXEC PGM=BPXBATSL,REGION=0M,TIME=NOLIMIT,
 //  PARM='PGM &WLPHOME./lib/native/zos/s390x/bbgzsrv --clean &PARMS.'
-//STEPLIB  DD DSN=${instance-DB2_HLQ}.SDSNEXIT,DISP=SHR
-//         DD DSN=${instance-DB2_HLQ}.SDSNLOAD,DISP=SHR
-//         DD DSN=${instance-DB2_HLQ}.SDSNLOD2,DISP=SHR
+//STEPLIB  DD DSN=${instance-DB_HLQ}.SDSNEXIT,DISP=SHR
+//         DD DSN=${instance-DB_HLQ}.SDSNLOAD,DISP=SHR
+//         DD DSN=${instance-DB_HLQ}.SDSNLOD2,DISP=SHR
 //STDOUT   DD   SYSOUT=*
 //STDERR   DD   SYSOUT=*
 //STDIN    DD   DUMMY

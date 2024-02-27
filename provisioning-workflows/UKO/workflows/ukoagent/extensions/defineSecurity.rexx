@@ -113,9 +113,9 @@ Say "Granting "||AGENT_STC_GROUP||" access to KMG.WEBCLIENT."||AGENT_CLIENT_USER
 /* Granting access to Db2 DSNR */
 /***********************************************************************/
 Say "Defining BATCH profile in DSNR class"
-"RDEFINE DSNR ${instance-DB2_JCC_SSID}.BATCH UACC(NONE)"
+"RDEFINE DSNR ${instance-DB_JCC_SSID}.BATCH UACC(NONE)"
 Say "Granting access to BATCH profile to "||AGENT_STC_USER||" "
-"PERMIT ${instance-DB2_JCC_SSID}.BATCH CLASS(DSNR)",
+"PERMIT ${instance-DB_JCC_SSID}.BATCH CLASS(DSNR)",
    " ACCESS(READ) ID("||AGENT_STC_USER||")"                 
 
 Say "Refreshing DSNR"

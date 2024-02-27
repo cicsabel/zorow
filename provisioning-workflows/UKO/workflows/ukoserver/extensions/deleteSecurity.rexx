@@ -35,7 +35,7 @@ Say "Refreshing STARTED"
 /* Removing access to Db2 Naming protected access profiles */
 /***********************************************************************/
 Say "Removing access to RRSAF profile from "||SERVER_STC_USER||" "
-"PERMIT ${instance-DB2_JCC_SSID}.RRSAF CLASS(DSNR)",
+"PERMIT ${instance-DB_JCC_SSID}.RRSAF CLASS(DSNR)",
    " DELETE ID("||SERVER_STC_USER||")"                 
 
 Say "Refreshing DSNR"

@@ -8,13 +8,13 @@
 //EKMFSQL  EXEC PGM=IKJEFT01,REGION=0M               
 //         EXPORT SYMLIST=*
 //         SET WEBUSER='${instance-UKO_SERVER_STC_USER}'
-//STEPLIB  DD DISP=SHR,DSN=${instance-DB2_HLQ}.SDSNLOAD               
+//STEPLIB  DD DISP=SHR,DSN=${instance-DB_HLQ}.SDSNLOAD               
 //SYSTSPRT DD SYSOUT=*,DCB=BLKSIZE=131                         
 //SYSPRINT DD SYSOUT=*                                         
 //SYSUDUMP DD SYSOUT=*                                         
 //SYSTSIN  DD *                                                
- DSN SYSTEM(${instance-DB2_JCC_SSID})                                              
- RUN PROGRAM(${instance-DB_PROGRAM}) PLAN(${instance-DB_PLAN}) LIB('${instance-DB2_RUNLIB}') 
+ DSN SYSTEM(${instance-DB_JCC_SSID})                                              
+ RUN PROGRAM(${instance-DB_PROGRAM}) PLAN(${instance-DB_PLAN}) LIB('${instance-DB_RUNLIB}') 
  END                                                           
 //SYSIN     DD    *,SYMBOLS=(JCLONLY)
 

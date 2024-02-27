@@ -110,7 +110,7 @@
             <variableValue name="UKO_AGENT_CLIENT_USER" scope="instance" noPromptIfSet="false" required="false"/>
             <variableValue name="UKO_AGENT_PORT" scope="instance" noPromptIfSet="false" required="false"/>
             <variableValue name="DB_AGENT_PLAN" scope="instance" noPromptIfSet="false" required="false"/>
-            <variableValue name="DB2_JCC_SSID" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="DB_JCC_SSID" scope="instance" noPromptIfSet="false" required="false"/>
             <variableValue name="DB_LOCATION" scope="instance" noPromptIfSet="false" required="false"/>
             <variableValue name="DB_JDBC_PORT" scope="instance" noPromptIfSet="false" required="false"/>
             <variableValue name="DB_JDBC_SECPORT" scope="instance" noPromptIfSet="false" required="false"/>
@@ -130,7 +130,7 @@
                             s#^\&amp;SYS-RSAKEK-PREFIX.*#\&amp;SYS-RSAKEK-PREFIX(${instance-UKO_KEY_PREFIX}.RSAKEK)#g;
                             s#^\&amp;SYS-ECCSIGN-PREFIX.*#\&amp;SYS-ECCSIGN-PREFIX(${instance-UKO_KEY_PREFIX}.ECCSIGN)#g;
                             s#^\&amp;DB2-PLAN.*#\&amp;DB2-PLAN(${instance-DB_AGENT_PLAN})#g;
-                            s#^\&amp;DB2-SYSTEM.*#\&amp;DB2-SYSTEM(${instance-DB2_JCC_SSID})#g;
+                            s#^\&amp;DB2-SYSTEM.*#\&amp;DB2-SYSTEM(${instance-DB_JCC_SSID})#g;
                             s#^\&amp;SYS-CCSID.*#\&amp;SYS-CCSID(${ccsid})#g;
                             s#^\&amp;SYS-JDBC-LOCATION.*#\&amp;SYS-JDBC-LOCATION(${instance-DB_LOCATION})#g;
                             s#^\&amp;SYS-JDBC-PORT.*#\&amp;SYS-JDBC-PORT(${instance-DB_JDBC_PORT})#g;

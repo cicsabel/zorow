@@ -80,7 +80,7 @@ Say "Deleting KMG.WEBCLIENT."||AGENT_CLIENT_USER||" in the XFACILIT class"
 /* Removing access from Db2 DSNR */
 /***********************************************************************/
 Say "Removing access to BATCH profile from "||AGENT_STC_USER||" "
-"PERMIT ${instance-DB2_JCC_SSID}.BATCH CLASS(DSNR)",
+"PERMIT ${instance-DB_JCC_SSID}.BATCH CLASS(DSNR)",
    " DELETE ID("||AGENT_STC_USER||")"                 
 
 Say "Refreshing DSNR"

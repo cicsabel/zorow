@@ -17,7 +17,7 @@
 //STEPLIB  DD DSN=${instance-UKO_AGENT_RUN_HLQ},DISP=SHR 
 //         DD DSN=${instance-TCPIP_HLQ}.SEZATCP,DISP=SHR
 #if(${instance-WORKSTATION_ACCESS_REQUIRED} && $!{instance-WORKSTATION_ACCESS_REQUIRED} == "true")
-//         DD DSN=${instance-DB2_HLQ}.SDSNLOAD,DISP=SHR
+//         DD DSN=${instance-DB_HLQ}.SDSNLOAD,DISP=SHR
 #end
 //*        DD DSN=CSF.SCSFMOD0,DISP=SHR
 //KMGPARM  DD DSN=${instance-UKO_ZOS_PARMLIB}(&M),DISP=SHR

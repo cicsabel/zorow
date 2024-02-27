@@ -4,8 +4,8 @@
 // EXPORT SYMLIST=*
 // SET UKODB=&UKODB
 // SET UKOSPAC=&UKOSPAC
-//REORG1 EXEC DSNUPROC,SYSTEM=${instance-DB2_JCC_SSID},
-//             LIB='${instance-DB2_HLQ}.SDSNLOAD',
+//REORG1 EXEC DSNUPROC,SYSTEM=${instance-DB_JCC_SSID},
+//             LIB='${instance-DB_HLQ}.SDSNLOAD',
 //             UID='REORGUKO'
 //DSNUPROC.SYSPUNCH DD DISP=(NEW,DELETE),
 //             SPACE=(CYL,(100,100),RLSE),
