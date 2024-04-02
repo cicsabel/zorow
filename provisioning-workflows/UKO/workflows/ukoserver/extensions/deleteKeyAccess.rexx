@@ -4,6 +4,8 @@
 /* PDX-License-Identifier: Apache-2.0                             */
 /*----------------------------------------------------------------*/
 
+address tso
+
 KEY_PREFIX="${instance-UKO_KEY_PREFIX}"
 SERVER_STC_USER="${instance-UKO_SERVER_STC_USER}"
 
@@ -18,5 +20,3 @@ Say "Remove access to "||KEY_PREFIX||".** from "||SERVER_STC_USER||" "
 
 Say "Refreshing CSFKEYS"
 "SETROPTS RACLIST(CSFKEYS) REFRESH"
-
-exit

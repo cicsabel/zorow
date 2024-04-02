@@ -4,6 +4,10 @@
 /* PDX-License-Identifier: Apache-2.0                             */
 /*----------------------------------------------------------------*/
 
+address tso
+
+VAULT_ADMIN="${instance-UKO_VAULT_ADMIN}"
+VAULT_ADMIN_GROUP="${instance-UKO_VAULT_ADMIN_GROUP}"
 
 KEY_ADMIN="${instance-UKO_KEY_ADMIN}"
 KEY_ADMIN_GROUP="${instance-UKO_KEY_ADMIN_GROUP}"
@@ -22,6 +26,8 @@ UKO_AUDITOR_GROUP="${instance-UKO_AUDITOR_GROUP}"
 /* Creating the required groups                                        */
 /***********************************************************************/
 Say "Creating the required groups"
+Say "Creating the vault administrator group"
+"ADDGROUP "||VAULT_ADMIN_GROUP||" SUPGROUP(SYS1) OMVS(AUTOGID)"
 Say "Creating the key administrator group"
 "ADDGROUP "||KEY_ADMIN_GROUP||" SUPGROUP(SYS1) OMVS(AUTOGID)"
 Say "Creating the key custodian1 group"
@@ -37,6 +43,19 @@ Say "Creating the auditor group"
 /* Creating all required user ids                                      */
 /***********************************************************************/
 
+Say "Adding the vault administrator user"
+"ADDUSER "||VAULT_ADMIN||" NOOIDCARD ",
+   " DFLTGRP("||VAULT_ADMIN_GROUP||") NAME('VAULT ADMIN')",
+   " PHRASE('pass4youpass4you')",
+   " TSO( acctnum(DEFAULT) holdclass(H) ",
+      "  msgclass(H) sysoutclass(H) proc(ISPFCCC) ",
+      "  size(500000) unit(SYSALLDA)) ",
+   " OMVS(AUTOUID PROGRAM('/bin/sh')",
+   " HOME("||"'"||"/u/"||VAULT_ADMIN||"'"||")) "
+"PERMIT DEFAULT CL(ACCTNUM ) ACCESS(READ) ID("||VAULT_ADMIN||")" 
+"PERMIT  * CL(TSOPROC ) ACCESS(READ) ID("||VAULT_ADMIN||")" 
+"SETROPTS RACLIST(TSOPROC) REFRESH "
+
 Say "Adding the key administrator user"
 "ADDUSER "||KEY_ADMIN||" NOOIDCARD ",
    " DFLTGRP("||KEY_ADMIN_GROUP||") NAME('KEY ADMIN')",
@@ -50,9 +69,9 @@ Say "Adding the key administrator user"
 "PERMIT  * CL(TSOPROC ) ACCESS(READ) ID("||KEY_ADMIN||")" 
 "SETROPTS RACLIST(TSOPROC) REFRESH "
 
-Say "Adding the key administrator user"
+Say "Adding the key custodian 1 user"
 "ADDUSER "||KEY_CUSTODIAN1||" NOOIDCARD ",
-   " DFLTGRP("||KEY_CUSTODIAN1_GROUP||") NAME('KEY ADMIN')",
+   " DFLTGRP("||KEY_CUSTODIAN1_GROUP||") NAME('KEY CUSTODIAN 1')",
    " PHRASE('pass4youpass4you')",
    " TSO( acctnum(DEFAULT) holdclass(H) ",
       "  msgclass(H) sysoutclass(H) proc(ISPFCCC) ",
@@ -64,9 +83,9 @@ Say "Adding the key administrator user"
 "SETROPTS RACLIST(TSOPROC) REFRESH "
 
 
-Say "Adding the key administrator user"
+Say "Adding the key custodian 2 user"
 "ADDUSER "||KEY_CUSTODIAN2||" NOOIDCARD ",
-   " DFLTGRP("||KEY_CUSTODIAN2_GROUP||") NAME('KEY ADMIN')",
+   " DFLTGRP("||KEY_CUSTODIAN2_GROUP||") NAME('KEY CUSTODIAN 2')",
    " PHRASE('pass4youpass4you')",
    " TSO( acctnum(DEFAULT) holdclass(H) ",
       "  msgclass(H) sysoutclass(H) proc(ISPFCCC) ",
@@ -78,9 +97,9 @@ Say "Adding the key administrator user"
 "SETROPTS RACLIST(TSOPROC) REFRESH "
 
 
-Say "Adding the key administrator user"
+Say "Adding the auditor user"
 "ADDUSER "||UKO_AUDITOR||" NOOIDCARD ",
-   " DFLTGRP("||UKO_AUDITOR_GROUP||") NAME('KEY ADMIN')",
+   " DFLTGRP("||UKO_AUDITOR_GROUP||") NAME('KEY AUDITOR')",
    " PHRASE('pass4youpass4you')",
    " TSO( acctnum(DEFAULT) holdclass(H) ",
       "  msgclass(H) sysoutclass(H) proc(ISPFCCC) ",

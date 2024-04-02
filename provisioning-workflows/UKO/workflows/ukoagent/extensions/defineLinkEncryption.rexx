@@ -4,6 +4,8 @@
 /* PDX-License-Identifier: Apache-2.0                             */
 /*----------------------------------------------------------------*/
 
+address tso
+
 AGENT_STC_GROUP="${instance-UKO_AGENT_STC_GROUP}"
 PUBLIC_KEY_HASH="${instance-UKO_SERVER_PUBLIC_KEY_HASH}"
 
@@ -47,5 +49,3 @@ Say "Granting access to KMG.LG.* class(XFACILIT) to "||AGENT_STC_GROUP||" "
 
 "SETROPTS RACL(XFACILIT) REFRESH"
 
-
-exit

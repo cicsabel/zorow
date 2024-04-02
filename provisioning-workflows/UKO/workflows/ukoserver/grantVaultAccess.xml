@@ -39,6 +39,7 @@
 	<!--+++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
 	&variables;
     <atCreate name="UKO_VAULT_ID" scope="instance" prompt="true" required="false"/>
+    <atCreate name="UKO_VAULT_ADMIN_GROUP" scope="instance" prompt="true" required="false"/>
     <atCreate name="UKO_KEY_ADMIN_GROUP" scope="instance" prompt="true" required="false"/>
     <atCreate name="UKO_KEY_CUSTODIAN1_GROUP" scope="instance" prompt="true" required="false"/>
     <atCreate name="UKO_KEY_CUSTODIAN2_GROUP" scope="instance" prompt="true" required="false"/>
@@ -49,7 +50,20 @@
         <description>Defines the vault-specific roles</description>
         <runAsUser substitution="true">$!{instance-UKO_ADMIN_SECURITY}</runAsUser>
         <approver substitution="true">$!{instance-UKO_APPROVER_SECURITY}</approver>
+        <condition>
+            <expression><![CDATA["1" == "1"]]></expression>
+            <description>Should the step be executed, based on the UKO_VAULT_ID setting</description>
+            <targetStateSet>
+              <description/>
+                <extendStateExpression>
+                    <description>Skip if UKO_VAULT_ID == ekmfwebv2</description>
+                  <expression><![CDATA[ ${instance-UKO_VAULT_ID} == "ekmfwebv2"]]></expression>
+                    <targetState>Skipped</targetState>
+                </extendStateExpression>
+            </targetStateSet>
+        </condition>        
         <variableValue name="UKO_VAULT_ID" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="UKO_VAULT_ADMIN_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
         <variableValue name="UKO_KEY_ADMIN_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
         <variableValue name="UKO_KEY_CUSTODIAN1_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
         <variableValue name="UKO_KEY_CUSTODIAN2_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
@@ -62,6 +76,84 @@
             <submitAs maxRc="4">TSO-REXX-JCL</submitAs>
             <maxLrecl>1024</maxLrecl>
         </template>
+    </step>
+
+    <step name="defineRolesLegacy">
+        <title>Define legacy roles for EKMF V2</title>
+        <description>Legacy, defines roles for EKMF Web Version 2.x before vaults were introduced. This is only executed if the vault ID is set to ekmfwebv2</description>
+        <runAsUser substitution="true">$!{instance-UKO_ADMIN_SECURITY}</runAsUser>
+        <approver substitution="true">$!{instance-UKO_APPROVER_SECURITY}</approver>
+        <condition>
+            <expression><![CDATA["1" == "1"]]></expression>
+            <description>Should the step be executed, based on the UKO_VAULT_ID setting</description>
+            <targetStateSet>
+            <description/>
+                <extendStateExpression>
+                    <description>Skip if UKO_VAULT_ID != ekmfwebv2</description>
+                <expression><![CDATA[ ${instance-UKO_VAULT_ID} != "ekmfwebv2"]]></expression>
+                    <targetState>Skipped</targetState>
+                </extendStateExpression>
+            </targetStateSet>
+        </condition>
+        <variableValue name="UKO_KEY_ADMIN_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="UKO_KEY_CUSTODIAN1_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="UKO_KEY_CUSTODIAN2_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="UKO_AUDITOR_GROUP" scope="instance" noPromptIfSet="false" required="false"/>        
+        <instructions>Executes a REXX program to create EJB roles and grant access</instructions>
+        <weight>1</weight>
+        <autoEnable>true</autoEnable>
+        <template>
+            <fileTemplate substitution="true">extensions/defineRolesLegacy.rexx</fileTemplate>
+            <submitAs maxRc="4">TSO-REXX-JCL</submitAs>
+            <maxLrecl>1024</maxLrecl>
+        </template>
+    </step>
+
+    <step name="optionalSteps">
+        <title>Optional steps</title>
+        <description>For new users or groups, you might also need to execute the following steps</description>
+
+        <step name="defineRolesGeneral">
+            <title>Define general UKO roles</title>
+            <description>Defines the general roles across all vaults</description>
+            <runAsUser substitution="true">$!{instance-UKO_ADMIN_SECURITY}</runAsUser>
+            <approver substitution="true">$!{instance-UKO_APPROVER_SECURITY}</approver>
+            <condition>
+                <expression><![CDATA["1" == "1"]]></expression>
+                <description>Should the step be executed, based on the UKO_VAULT_ID setting</description>
+                <targetStateSet>
+                  <description/>
+                    <extendStateExpression>
+                        <description>Skip if UKO_VAULT_ID == ekmfwebv2</description>
+                      <expression><![CDATA[ ${instance-UKO_VAULT_ID} == "ekmfwebv2"]]></expression>
+                        <targetState>Skipped</targetState>
+                    </extendStateExpression>
+                </targetStateSet>
+            </condition>
+            <instructions>Executes a REXX program to create EJB roles and grant access</instructions>
+            <weight>1</weight>
+            <autoEnable>true</autoEnable>
+            <template>
+                <fileTemplate substitution="true">extensions/defineRolesGeneral.rexx</fileTemplate>
+                <submitAs maxRc="4">TSO-REXX-JCL</submitAs>
+                <maxLrecl>1024</maxLrecl>
+            </template>
+        </step> 
+
+        <step name="configureApplAccess">
+            <title>Ensure everyone has APPL access</title>
+            <description>Grant access to the APPL class for the specific server to all groups</description>
+            <runAsUser substitution="true">$!{instance-UKO_ADMIN_SECURITY}</runAsUser>
+            <approver substitution="true">$!{instance-UKO_APPROVER_SECURITY}</approver>
+            <instructions substitution="true">Submit rexx exec to execute step</instructions>
+            <weight>1</weight>
+            <autoEnable>true</autoEnable>
+            <template>
+                <fileTemplate substitution="true">extensions/defineApplAccess.rexx</fileTemplate>
+                <submitAs maxRc="0">TSO-REXX-JCL</submitAs>
+                <maxLrecl>1024</maxLrecl>
+            </template>
+        </step>
     </step>
 
 </workflow>

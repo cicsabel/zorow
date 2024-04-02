@@ -4,15 +4,21 @@
 /* PDX-License-Identifier: Apache-2.0                             */
 /*----------------------------------------------------------------*/
 
+address tso
+
 SERVER_STC_USER="${instance-UKO_SERVER_STC_USER}"
 SERVER_STC_GROUP="${instance-UKO_SERVER_STC_GROUP}"
 
 SERVER_UNAUTHENTICATED_USER="${instance-UKO_UNAUTHENTICATED_USER}"
 SERVER_UNAUTHENTICATED_GROUP="${instance-UKO_UNAUTHENTICATED_GROUP}"
 
-KEY_ADMIN="${instance-UKO_KEY_ADMIN}"
-KEY_ADMIN_GROUP="${instance-UKO_KEY_ADMIN_GROUP}"
-
+VAULT_ADMIN="${instance-UKO_VAULT_ADMIN_GROUP}"
+KEY_ADMIN="${instance-UKO_KEY_ADMIN_GROUP}"
+KEY_CUSTODIAN1="${instance-UKO_KEY_CUSTODIAN1_GROUP}"
+KEY_CUSTODIAN2="${instance-UKO_KEY_CUSTODIAN2_GROUP}"
+UKO_AUDITOR="${instance-UKO_AUDITOR_GROUP}"
+SERVER_STC_NAME="${instance-UKO_SERVER_STC_NAME}"
+SAFPREFIX="${instance-SAF_PROFILE_PREFIX}"
 
 /***********************************************************************/
 /* Delete the STARTED task for this server                             */
@@ -44,17 +50,26 @@ Say "Refreshing DSNR"
 /***********************************************************************/
 /* Delete access to APPL class profile                                 */
 /***********************************************************************/
-Say "Remove client id "||AGENT_CLIENT_USER||" access to the profile in the APPL class"
-"PERMIT EKMFWEB CLASS(APPL)",
-   " DELETE ID("||AGENT_CLIENT_USER||")"
 
 Say "Remove unauthenticated user "||SERVER_UNAUTHENTICATED_USER||" access to the profile in the APPL class"
-"PERMIT EKMFWEB CLASS(APPL)",
-   " DELETE ID("||SERVER_UNAUTHENTICATED_USER||")"
+"PERMIT "||SAFPREFIX||" CLASS(APPL) DELETE ID("||SERVER_UNAUTHENTICATED_USER||")"
 
-Say "Remove access to UKO from "||KEY_ADMIN_GROUP||" "
-"PERMIT EKMFWEB CLASS(APPL)",
-   " DELETE ID("||KEY_ADMIN_GROUP||")"
+#if(${instance-SAF_PROFILE_PREFIX} && ${instance-SAF_PROFILE_PREFIX} != "EKMFWEB")
+/* if the SAF prefix is dynamic, the groups need to be removed. */
+/* For APPL=EKMFWEB, keep the access for pre v3.1.0.2 compatibility */
+Say "Remove access to UKO from "||VAULT_ADMIN||" "
+"PERMIT "||SAFPREFIX||" CLASS(APPL) DELETE ID("||VAULT_ADMIN||")"
+Say "Remove access to UKO from "||KEY_ADMIN||" "
+"PERMIT "||SAFPREFIX||" CLASS(APPL) DELETE ID("||KEY_ADMIN||")"
+Say "Remove access to UKO from "||KEY_CUSTODIAN1||" "
+"PERMIT "||SAFPREFIX||" CLASS(APPL) DELETE ID("||KEY_CUSTODIAN1||")"
+Say "Remove access to UKO from "||KEY_CUSTODIAN2||" "
+"PERMIT "||SAFPREFIX||" CLASS(APPL) DELETE ID("||KEY_CUSTODIAN2||")"
+Say "Remove access to UKO from "||UKO_AUDITOR||" "
+"PERMIT "||SAFPREFIX||" CLASS(APPL) DELETE ID("||UKO_AUDITOR||")"
+Say "Deleting the server specific APPLID "||SAFPREFIX||" from RACF"
+"RDELETE APPL "||SAFPREFIX||" "
+#end
 
 Say "Refreshing APPL"
 "SETROPTS RACLIST(APPL) REFRESH"
@@ -62,9 +77,14 @@ Say "Refreshing APPL"
 /***********************************************************************/
 /* Delete the security domain for server auth                          */
 /***********************************************************************/
+#if(${instance-SAF_PROFILE_PREFIX} && ${instance-SAF_PROFILE_PREFIX} == "EKMFWEB")
 Say "Remove "||SERVER_STC_USER||" access from security domain for the server"
-"PERMIT BBG.SECPFX.EKMFWEB CLASS(SERVER)",
+"PERMIT BBG.SECPFX.EKMFWEB",
    " DELETE ID("||SERVER_STC_USER||")"  
+#else
+Say "Delete the security domain BBG.SECPFX."||SAFPREFIX||" from RACF"
+"RDELETE SERVER BBG.SECPFX."||SAFPREFIX||"  "
+#end
 
 /***********************************************************************/
 /* Delete the servers access to the angel process                      */
@@ -124,5 +144,3 @@ Say "Refreshing FACILITY"
 /***********************************************************************/
 /***********************************************************************/
 #end
-
-exit

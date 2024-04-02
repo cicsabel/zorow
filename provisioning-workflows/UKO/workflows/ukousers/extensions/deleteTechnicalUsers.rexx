@@ -4,6 +4,8 @@
 /* PDX-License-Identifier: Apache-2.0                             */
 /*----------------------------------------------------------------*/
 
+address tso
+
 AGENT_STC_USER="${instance-UKO_AGENT_STC_USER}"
 AGENT_STC_GROUP="${instance-UKO_AGENT_STC_GROUP}"
 

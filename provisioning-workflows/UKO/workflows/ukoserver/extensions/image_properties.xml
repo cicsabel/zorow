@@ -29,13 +29,15 @@
 <atCreate name="UKO_HTTP_PORT" scope="instance" prompt="true" required="false"/>
 <atCreate name="UKO_HTTPS_PORT" scope="instance" prompt="true" required="false"/>
 
-<atCreate name="UKO_KEY_ADMIN" scope="instance" prompt="true" required="false"/>
+<!-- <atCreate name="UKO_VAULT_ADMIN" scope="instance" prompt="true" required="false"/> -->
+<atCreate name="UKO_VAULT_ADMIN_GROUP" scope="instance" prompt="true" required="false"/>
+<!-- <atCreate name="UKO_KEY_ADMIN" scope="instance" prompt="true" required="false"/> -->
 <atCreate name="UKO_KEY_ADMIN_GROUP" scope="instance" prompt="true" required="false"/>
-<atCreate name="UKO_KEY_CUSTODIAN1" scope="instance" prompt="true" required="false"/>
+<!-- <atCreate name="UKO_KEY_CUSTODIAN1" scope="instance" prompt="true" required="false"/> -->
 <atCreate name="UKO_KEY_CUSTODIAN1_GROUP" scope="instance" prompt="true" required="false"/>
-<atCreate name="UKO_KEY_CUSTODIAN2" scope="instance" prompt="true" required="false"/>
+<!-- <atCreate name="UKO_KEY_CUSTODIAN2" scope="instance" prompt="true" required="false"/> -->
 <atCreate name="UKO_KEY_CUSTODIAN2_GROUP" scope="instance" prompt="true" required="false"/>
-<atCreate name="UKO_AUDITOR" scope="instance" prompt="true" required="false"/>
+<!-- <atCreate name="UKO_AUDITOR" scope="instance" prompt="true" required="false"/> -->
 <atCreate name="UKO_AUDITOR_GROUP" scope="instance" prompt="true" required="false"/>
 
 <atCreate name="UKO_SERVER_STC_USER" scope="instance" prompt="true" required="false"/>
@@ -44,6 +46,7 @@
 <atCreate name="UKO_UNAUTHENTICATED_GROUP" scope="instance" prompt="true" required="false"/>
 
 <atCreate name="UKO_KEY_PREFIX" scope="instance" prompt="true" required="false"/>
+<atCreate name="SAF_PROFILE_PREFIX" scope="instance" prompt="true" required="false"/>
 <atCreate name="UKO_VAULT_ID" scope="instance" prompt="true" required="false"/>
 
 <atCreate name="UKO_TLS_KEY_STORE_KEY_RING" scope="instance" prompt="true" required="false"/>

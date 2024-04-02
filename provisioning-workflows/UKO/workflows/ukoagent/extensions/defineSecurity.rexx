@@ -121,5 +121,3 @@ Say "Granting access to BATCH profile to "||AGENT_STC_USER||" "
 Say "Refreshing DSNR"
 "SETROPTS RACLIST(DSNR) REFRESH"
 #end
-
-exit

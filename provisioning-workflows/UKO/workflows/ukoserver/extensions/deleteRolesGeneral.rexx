@@ -3,51 +3,33 @@
 /* Copyright Contributors to the zOS-Workflow Project.            */
 /* PDX-License-Identifier: Apache-2.0                             */
 /*----------------------------------------------------------------*/
+SAFPREFIX="${instance-SAF_PROFILE_PREFIX}"
 
-KEY_ADMIN="${instance-UKO_KEY_ADMIN_GROUP}"
-KEY_CUSTODIAN1="${instance-UKO_KEY_CUSTODIAN1_GROUP}"
-KEY_CUSTODIAN2="${instance-UKO_KEY_CUSTODIAN2_GROUP}"
-UKO_AUDITOR="${instance-UKO_AUDITOR_GROUP}"
+Say "Deleting general roles"
 
-/***********************************************************************/
-/* deleting access from the different user roles                         */
-/***********************************************************************/
+"RDELETE EJBROLE "||SAFPREFIX||".*.*"
+"RDELETE EJBROLE "||SAFPREFIX||".ekmf-rest-api.authenticated"
+"RDELETE EJBROLE "||SAFPREFIX||".com.ibm.ws.security.oauth20.*"
 
-Say "Delete Permissions from Key Administrator"
-"PERMIT EKMFWEB.ekmf-rest-api.auditlog:read CLASS(EJBROLE) DELETE ID("||KEY_ADMIN||")"
-"PERMIT EKMFWEB.ekmf-rest-api.keystores:list CLASS(EJBROLE) DELETE ID("||KEY_ADMIN||")"
-"PERMIT EKMFWEB.ekmf-rest-api.keys:list CLASS(EJBROLE) DELETE ID("||KEY_ADMIN||")"
-"PERMIT EKMFWEB.ekmf-rest-api.templates:list CLASS(EJBROLE) DELETE ID("||KEY_ADMIN||")"
-"PERMIT EKMFWEB.ekmf-rest-api.vaults:list CLASS(EJBROLE) DELETE ID("||KEY_ADMIN||")"
-"PERMIT EKMFWEB.ekmf-rest-api.vaults:write CLASS(EJBROLE) DELETE ID("||KEY_ADMIN||")"
-"PERMIT EKMFWEB.ekmf-rest-api.meta:cache-rebuild CLASS(EJBROLE) DELETE ID("||KEY_ADMIN||")"
-"PERMIT EKMFWEB.ekmf-rest-api.meta:logs-download CLASS(EJBROLE) DELETE ID("||KEY_ADMIN||")"
-"PERMIT EKMFWEB.ekmf-rest-api.*.vaults:read CLASS(EJBROLE) DELETE ID("||KEY_ADMIN||")"
+"RDELETE EJBROLE "||SAFPREFIX||".ekmf-rest-api.keystores:list"
+"RDELETE EJBROLE "||SAFPREFIX||".ekmf-rest-api.keys:list"
+"RDELETE EJBROLE "||SAFPREFIX||".ekmf-rest-api.templates:list"
 
-Say "Delete Permissions from Key Custodian1"
-"PERMIT EKMFWEB.ekmf-rest-api.datasets:read CLASS(EJBROLE) DELETE ID("||KEY_CUSTODIAN1||")"
-"PERMIT EKMFWEB.ekmf-rest-api.keystores:list CLASS(EJBROLE) DELETE ID("||KEY_CUSTODIAN1||")"
-"PERMIT EKMFWEB.ekmf-rest-api.keys:list CLASS(EJBROLE) DELETE ID("||KEY_CUSTODIAN1||")"
-"PERMIT EKMFWEB.ekmf-rest-api.templates:list CLASS(EJBROLE) DELETE ID("||KEY_CUSTODIAN1||")"
-"PERMIT EKMFWEB.ekmf-rest-api.vaults:list CLASS(EJBROLE) DELETE ID("||KEY_CUSTODIAN1||")"
+"RDELETE EJBROLE "||SAFPREFIX||".ekmf-rest-api.vaults:list"
+"RDELETE EJBROLE "||SAFPREFIX||".ekmf-rest-api.vaults:write"
+"RDELETE EJBROLE "||SAFPREFIX||".ekmf-rest-api.*.vaults:delete"
+"RDELETE EJBROLE "||SAFPREFIX||".ekmf-rest-api.*.vaults:read"
+"RDELETE EJBROLE "||SAFPREFIX||".ekmf-rest-api.*.vaults:write"
 
-Say "Delete Permissions from Key Custodian2"
-"PERMIT EKMFWEB.ekmf-rest-api.datasets:read CLASS(EJBROLE) DELETE ID("||KEY_CUSTODIAN2||")"
-"PERMIT EKMFWEB.ekmf-rest-api.keystores:list CLASS(EJBROLE) DELETE ID("||KEY_CUSTODIAN2||")"
-"PERMIT EKMFWEB.ekmf-rest-api.keys:list CLASS(EJBROLE) DELETE ID("||KEY_CUSTODIAN2||")"
-"PERMIT EKMFWEB.ekmf-rest-api.templates:list CLASS(EJBROLE) DELETE ID("||KEY_CUSTODIAN2||")"
-"PERMIT EKMFWEB.ekmf-rest-api.vaults:list CLASS(EJBROLE) DELETE ID("||KEY_CUSTODIAN2||")"
+"RDELETE EJBROLE "||SAFPREFIX||".ekmf-rest-api.datasets:read"
+"RDELETE EJBROLE "||SAFPREFIX||".ekmf-rest-api.auditlog:read"
+"RDELETE EJBROLE "||SAFPREFIX||".ekmf-rest-api.meta:cache-rebuild"
+"RDELETE EJBROLE "||SAFPREFIX||".ekmf-rest-api.meta:logs-download"
+"RDELETE EJBROLE "||SAFPREFIX||".ekmf-rest-api.settings:write"
+"RDELETE EJBROLE "||SAFPREFIX||".ekmf-rest-api.integrity:write"
 
-Say "Delete Permissions from Auditor"
-"PERMIT EKMFWEB.ekmf-rest-api.auditlog:read CLASS(EJBROLE) DELETE ID("||UKO_AUDITOR||")"
-"PERMIT EKMFWEB.ekmf-rest-api.datasets:read CLASS(EJBROLE) DELETE ID("||UKO_AUDITOR||")"
-"PERMIT EKMFWEB.ekmf-rest-api.keystores:list CLASS(EJBROLE) DELETE ID("||UKO_AUDITOR||")"
-"PERMIT EKMFWEB.ekmf-rest-api.keys:list CLASS(EJBROLE) DELETE ID("||UKO_AUDITOR||")"
-"PERMIT EKMFWEB.ekmf-rest-api.templates:list CLASS(EJBROLE) DELETE ID("||UKO_AUDITOR||")"
-"PERMIT EKMFWEB.ekmf-rest-api.vaults:list CLASS(EJBROLE) DELETE ID("||UKO_AUDITOR||")"
-
+"RDELETE EJBROLE "||SAFPREFIX||".ekmf-rest-api.user:passcode:create"
+"RDELETE EJBROLE "||SAFPREFIX||".ekmf-rest-api.user:passcode:delete" 
 
 /* Refresh */
 "SETROPTS RACLIST(EJBROLE) REFRESH"
-
-exit

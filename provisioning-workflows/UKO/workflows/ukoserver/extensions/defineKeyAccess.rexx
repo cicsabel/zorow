@@ -4,6 +4,8 @@
 /* PDX-License-Identifier: Apache-2.0                             */
 /*----------------------------------------------------------------*/
 
+address tso
+
 SERVER_STC_USER="${instance-UKO_SERVER_STC_USER}"
 KEY_PREFIX="${instance-UKO_KEY_PREFIX}"
 RACF_OWNER="${instance-UKO_ADMIN_SECURITY}"
@@ -22,5 +24,3 @@ Say "Granting access to ${instance-UKO_RECOVERY_KEY} for "||SERVER_STC_USER||" "
 
 Say "Refreshing CSFKEYS"
 "SETROPTS RACLIST(CSFKEYS) REFRESH"
-
-exit

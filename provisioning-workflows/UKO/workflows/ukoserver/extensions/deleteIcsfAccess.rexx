@@ -4,6 +4,8 @@
 /* PDX-License-Identifier: Apache-2.0                             */
 /*----------------------------------------------------------------*/
 
+address tso
+
 SERVER_STC_GROUP="${instance-UKO_SERVER_STC_GROUP}"
 
 "PERMIT  CSFDSG  CLASS(CSFSERV) DELETE ID("||SERVER_STC_GROUP||")"

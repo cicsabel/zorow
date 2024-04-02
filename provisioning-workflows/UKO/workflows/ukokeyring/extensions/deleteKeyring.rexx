@@ -4,6 +4,8 @@
 /* PDX-License-Identifier: Apache-2.0                             */
 /*----------------------------------------------------------------*/
 
+address tso
+
 SERVER_STC_USER="${instance-UKO_SERVER_STC_USER}"
 CA_LABEL="${instance-UKO_CA_LABEL}"
 /* Name of the server certificate */

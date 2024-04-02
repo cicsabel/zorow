@@ -178,6 +178,7 @@
                         s#^[ \#]*HTTP_PORT=.*#HTTP_PORT=${instance-UKO_HTTP_PORT}#g;
                         s#^[ \#]*HTTPS_PORT=.*#HTTPS_PORT=${instance-UKO_HTTPS_PORT}#g;
                         s#^[ \#]*SAF_UNAUTHENTICATED_USER_ID=.*#SAF_UNAUTHENTICATED_USER_ID=${instance-UKO_UNAUTHENTICATED_USER}#g;
+                        s#^[ \#]*SAF_PROFILE_PREFIX=.*#SAF_PROFILE_PREFIX=${instance-SAF_PROFILE_PREFIX}#g;
                         s#^[ \#]*UKO_OAUTH_CLIENT_ID=.*#UKO_OAUTH_CLIENT_ID=${instance-UKO_OAUTH_CLIENT_ID}#g;
                         s#^[ \#]*UKO_OAUTH_CLIENT_ID_OPENAPI=.*#UKO_OAUTH_CLIENT_ID_OPENAPI=${instance-UKO_OAUTH_CLIENT_ID_OPENAPI}#g;
                         s#^[ \#]*OIDC_PROVIDER_TRUST_ALIAS_NAME=.*#OIDC_PROVIDER_TRUST_ALIAS_NAME=${instance-UKO_OIDC_PROVIDER_CERT}#g;
@@ -371,7 +372,7 @@
                         echo "creating ${instance-WLP_USER_DIR}/servers/${instance-UKO_SERVER_STC_NAME}/configDropins/overrides"
                         mkdir configDropins/overrides   
                                               
-                        echo "creating symlinks to the configDropins folder"
+                        echo "creating symlinks to the configDropins subfolders"
 
                         echo "creating symlink to ${instance-UKO_INSTALL_DIR}/configDropins/defaults"
                         ln -s ${instance-UKO_INSTALL_DIR}/configDropins/defaults configDropins/defaults
@@ -422,6 +423,7 @@
             <variableValue name="UKO_SERVER_STC_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
             <variableValue name="UKO_UNAUTHENTICATED_USER" scope="instance" noPromptIfSet="false" required="false"/>
             <variableValue name="UKO_UNAUTHENTICATED_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="UKO_VAULT_ADMIN_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
             <variableValue name="UKO_KEY_ADMIN_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
             <variableValue name="UKO_KEY_CUSTODIAN1_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
             <variableValue name="UKO_KEY_CUSTODIAN2_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
@@ -473,10 +475,10 @@
 
             <step name="defineRolesLegacy">
                 <title>Define legacy roles for EKMF V2</title>
-                <description>Legacy, defines roles for EKMF Web Version 2.x before vaults were introduced. This is only executed if the vault ID is set to ekmfwebv2</description>
+                <description>Legacy, defines roles for EKMF Web Version 2.x before vaults were introduced</description>
                 <runAsUser substitution="true">$!{instance-UKO_ADMIN_SECURITY}</runAsUser>
                 <approver substitution="true">$!{instance-UKO_APPROVER_SECURITY}</approver>
-                <condition>
+                <!-- <condition>
                     <expression><![CDATA["1" == "1"]]></expression>
                     <description>Should the step be executed, based on the UKO_VAULT_ID setting</description>
                     <targetStateSet>
@@ -487,7 +489,7 @@
                             <targetState>Skipped</targetState>
                         </extendStateExpression>
                     </targetStateSet>
-                </condition>
+                </condition> -->
                 <variableValue name="UKO_KEY_ADMIN_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
                 <variableValue name="UKO_KEY_CUSTODIAN1_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
                 <variableValue name="UKO_KEY_CUSTODIAN2_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
@@ -519,6 +521,7 @@
                         </extendStateExpression>
                     </targetStateSet>
                 </condition>
+                <variableValue name="UKO_VAULT_ADMIN_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
                 <variableValue name="UKO_KEY_ADMIN_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
                 <variableValue name="UKO_KEY_CUSTODIAN1_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
                 <variableValue name="UKO_KEY_CUSTODIAN2_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
@@ -551,6 +554,7 @@
                     </targetStateSet>
                 </condition>
                 <variableValue name="UKO_VAULT_ID" scope="instance" noPromptIfSet="false" required="false"/>
+                <variableValue name="UKO_VAULT_ADMIN_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
                 <variableValue name="UKO_KEY_ADMIN_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
                 <variableValue name="UKO_KEY_CUSTODIAN1_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
                 <variableValue name="UKO_KEY_CUSTODIAN2_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
@@ -718,7 +722,7 @@
                     echo "ERROR: Could not query hostname" >&amp;2;
                     exit "11"; 
                 fi
-                echo "UKO_ADDRESS https://$host:${instance-UKO_HTTPS_PORT}" >> ${instance-TEMP_DIR}/zosmf-${_workflow-workflowKey}.properties
+                echo "UKO_ADDRESS https://$host:${instance-UKO_HTTPS_PORT}" >> ${instance-TEMP_DIR}/${instance-UKO_SERVER_STC_NAME}.properties
                 if [ $? -gt 0 ]; then 
                     echo "ERROR: Could not create properties file" >&amp;2;
                     exit "7"; 
@@ -726,14 +730,14 @@
 
                 currentversion=$(iconv -t IBM037 -f utf-8 ${instance-WLP_USER_DIR}/servers/${instance-UKO_SERVER_STC_NAME}/EkmfWeb.properties | grep com.ibm.websphere.productVersion | sed -E 's/.*=([^\$])/\1/')
 
-                echo "UKO_SERVER_VERSION $currentversion" >> ${instance-TEMP_DIR}/zosmf-${_workflow-workflowKey}.properties
+                echo "UKO_SERVER_VERSION $currentversion" >> ${instance-TEMP_DIR}/${instance-UKO_SERVER_STC_NAME}.properties
 
                 serverdirectory=${instance-WLP_USER_DIR}/servers/${instance-UKO_SERVER_STC_NAME}
-                echo "UKO_SERVER_DIRECTORY $serverdirectory" >> ${instance-TEMP_DIR}/zosmf-${_workflow-workflowKey}.properties
+                echo "UKO_SERVER_DIRECTORY $serverdirectory" >> ${instance-TEMP_DIR}/${instance-UKO_SERVER_STC_NAME}.properties
 
             </inlineTemplate>
             <submitAs>shell-JCL</submitAs>
-            <output substitution="true" needResolveConflicts="false">${instance-TEMP_DIR}/zosmf-${_workflow-workflowKey}.properties</output>
+            <output substitution="true" needResolveConflicts="false">${instance-TEMP_DIR}/${instance-UKO_SERVER_STC_NAME}.properties</output>
         </template>
     </step>
 

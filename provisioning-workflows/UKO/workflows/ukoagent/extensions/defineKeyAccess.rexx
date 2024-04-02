@@ -23,5 +23,3 @@ Say "Granting access to "||AGENT_STC_USER||" on "||KEY_PREFIX||" "
 
 Say "Refreshing CSFKEYS"
 "SETROPTS RACLIST(CSFKEYS) REFRESH"
-
-exit

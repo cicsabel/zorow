@@ -4,6 +4,8 @@
 /* PDX-License-Identifier: Apache-2.0                             */
 /*----------------------------------------------------------------*/
 
+address tso
+
 DB_CURRENT_SQLID="${instance-DB_CURRENT_SQLID}"
 
 #if($!{instance-UKO_CREATE_TECHNICAL_USERIDS} == "true" ) 

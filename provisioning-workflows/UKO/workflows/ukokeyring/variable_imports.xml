@@ -270,79 +270,26 @@
   </string>
 </variable>
 
+<variable name="SAF_PROFILE_PREFIX" scope="instance" visibility="public">
+  <label>SAF_PROFILE_PREFIX</label>
+  <abstract>SAF prefix for EJBROLE profiles</abstract>
+  <description>SAF prefix to be used for profiles in the EJBROLE class</description>
+  <category>String Variables</category>
+  <string />
+</variable>
+
 <variable name="UKO_VAULT_ID" visibility="public">
   <label>UKO_VAULT_ID</label>
   <abstract>Vault ID to grant access to, select "ekmfwebv2" for EKMF Web 2.x</abstract>
-  <description>Specify the vault ID to grant access to, where 00000000-0000-0000-0000-000000000000 is the default vault, * will be all vaults. Leave empty if you provision UKO pre V3.1.</description>
+  <description>Specify the vault ID to grant access to, where 00000000-0000-0000-0000-000000000000 is the default vault, * will be all vaults. Chose "ekmfwebv2" if you provision UKO pre V3.1.</description>
   <category>String Variables</category>
-  <string valueMustBeChoice="true">
+  <string valueMustBeChoice="false">
     <choice>*</choice>
     <choice>ekmfwebv2</choice>
     <choice>00000000-0000-0000-0000-000000000000</choice>
-    <choice>10000000-0000-0000-0000-111111111111</choice>
-    <choice>20000000-0000-0000-0000-111111111111</choice>
-    <choice>30000000-0000-0000-0000-111111111111</choice>
-    <choice>40000000-0000-0000-0000-111111111111</choice>
-    <choice>50000000-0000-0000-0000-111111111111</choice>
-    <choice>60000000-0000-0000-0000-111111111111</choice>
-    <choice>70000000-0000-0000-0000-111111111111</choice>
-    <choice>80000000-0000-0000-0000-111111111111</choice>
-    <choice>90000000-0000-0000-0000-111111111111</choice>
-    <choice>a0000000-0000-0000-0000-111111111111</choice>
-    <choice>b0000000-0000-0000-0000-111111111111</choice>
-    <choice>c0000000-0000-0000-0000-111111111111</choice>
-    <choice>d0000000-0000-0000-0000-111111111111</choice>
-    <choice>e0000000-0000-0000-0000-111111111111</choice>
-    <choice>f0000000-0000-0000-0000-111111111111</choice>
-    <choice>00000000-1000-0000-0000-222222222222</choice>
-    <choice>00000000-2000-0000-0000-222222222222</choice>
-    <choice>00000000-3000-0000-0000-222222222222</choice>
-    <choice>00000000-4000-0000-0000-222222222222</choice>
-    <choice>00000000-5000-0000-0000-222222222222</choice>
-    <choice>00000000-6000-0000-0000-222222222222</choice>
-    <choice>00000000-7000-0000-0000-222222222222</choice>
-    <choice>00000000-8000-0000-0000-222222222222</choice>
-    <choice>00000000-9000-0000-0000-222222222222</choice>
-    <choice>00000000-a000-0000-0000-222222222222</choice>
-    <choice>00000000-b000-0000-0000-222222222222</choice>
-    <choice>00000000-c000-0000-0000-222222222222</choice>
-    <choice>00000000-d000-0000-0000-222222222222</choice>
-    <choice>00000000-e000-0000-0000-222222222222</choice>
-    <choice>00000000-f000-0000-0000-222222222222</choice>
-    <choice>00000000-0000-1000-0000-333333333333</choice>
-    <choice>00000000-0000-2000-0000-333333333333</choice>
-    <choice>00000000-0000-3000-0000-333333333333</choice>
-    <choice>00000000-0000-4000-0000-333333333333</choice>
-    <choice>00000000-0000-5000-0000-333333333333</choice>
-    <choice>00000000-0000-6000-0000-333333333333</choice>
-    <choice>00000000-0000-7000-0000-333333333333</choice>
-    <choice>00000000-0000-8000-0000-333333333333</choice>
-    <choice>00000000-0000-9000-0000-333333333333</choice>
-    <choice>00000000-0000-a000-0000-333333333333</choice>
-    <choice>00000000-0000-b000-0000-333333333333</choice>
-    <choice>00000000-0000-c000-0000-333333333333</choice>
-    <choice>00000000-0000-d000-0000-333333333333</choice>
-    <choice>00000000-0000-e000-0000-333333333333</choice>
-    <choice>00000000-0000-f000-0000-333333333333</choice>
-    <choice>00000000-0000-0000-1000-444444444444</choice>
-    <choice>00000000-0000-0000-2000-444444444444</choice>
-    <choice>00000000-0000-0000-3000-444444444444</choice>
-    <choice>00000000-0000-0000-4000-444444444444</choice>
-    <choice>00000000-0000-0000-5000-444444444444</choice>
-    <choice>00000000-0000-0000-6000-444444444444</choice>
-    <choice>00000000-0000-0000-7000-444444444444</choice>
-    <choice>00000000-0000-0000-8000-444444444444</choice>
-    <choice>00000000-0000-0000-9000-444444444444</choice>
-    <choice>00000000-0000-0000-a000-444444444444</choice>
-    <choice>00000000-0000-0000-b000-444444444444</choice>
-    <choice>00000000-0000-0000-c000-444444444444</choice>
-    <choice>00000000-0000-0000-d000-444444444444</choice>
-    <choice>00000000-0000-0000-e000-444444444444</choice>
-    <choice>00000000-0000-0000-f000-444444444444</choice>
     <default>00000000-0000-0000-0000-000000000000</default>
   </string>
 </variable>
-
 
 <!--++++++++++++++++++++++++++++-->
 <!-- Network resource variables -->
@@ -826,6 +773,24 @@
   </string>
 </variable>
 
+<variable name="UKO_VAULT_ADMIN" visibility="public">
+  <label>UKO_VAULT_ADMIN</label>
+  <abstract>The UKO Vault Administrator</abstract>
+  <description>Valut Administrator who sets up and manages the vaults</description>
+  <category>String Variables</category>
+  <string>
+    <validationType>USERID</validationType>
+  </string>
+</variable>
+<variable name="UKO_VAULT_ADMIN_GROUP" visibility="public">
+  <label>UKO_VAULT_ADMIN_GROUP</label>
+  <abstract>The group containing UKO Vault Administrator</abstract>
+  <description>Group containing the Vault Administrator who sets up and manages the vaults</description>
+  <category>String Variables</category>
+  <string>
+    <validationType>USERID</validationType>
+  </string>
+</variable>
 
 <variable name="UKO_KEY_ADMIN" visibility="public">
   <label>UKO_KEY_ADMIN</label>

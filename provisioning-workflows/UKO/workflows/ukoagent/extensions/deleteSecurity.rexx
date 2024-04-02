@@ -4,6 +4,8 @@
 /* PDX-License-Identifier: Apache-2.0                             */
 /*----------------------------------------------------------------*/
 
+address tso
+
 AGENT_STC_USER="${instance-UKO_AGENT_STC_USER}"
 AGENT_STC_GROUP="${instance-UKO_AGENT_STC_GROUP}"
 
@@ -31,12 +33,11 @@ Say "Deleting STARTED task for the agent"
 /***********************************************************************/
 /* Delete access to APPL class profile                                 */
 /***********************************************************************/
-Say "Remove client id "||AGENT_CLIENT_USER||" access to the profile in the APPL class"
-"PERMIT EKMFWEB CLASS(APPL) DELETE ID("||AGENT_CLIENT_USER||")"
 
 Say "Removing access to KMGPRACF class(APPL) from "||AGENT_CLIENT_USER||" "
 "PERMIT KMGPRACF CLASS(APPL) DELETE ID("||AGENT_CLIENT_USER||") "
 
+Say "Refreshing APPL"
 "SETROPTS RACLIST(APPL) REFRESH"
 
 /***********************************************************************/
@@ -90,5 +91,3 @@ Say "Refreshing DSNR"
 /***********************************************************************/
 /***********************************************************************/
 #end
-
-exit

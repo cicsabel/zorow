@@ -242,6 +242,7 @@
 
                     #extract all name=value pairs that are not commented out from old file
                     sed '/^[[:blank:]]*#/d;/^$/d' ${instance-UKO_SERVER_DIRECTORY}/backup_${_workflow-workflowKey}/server.env > ${instance-TEMP_DIR}/zosmf-${_workflow-workflowKey}_server.env; 
+                    chmod 755 ${instance-TEMP_DIR}/zosmf-${_workflow-workflowKey}_server.env;
 
                     echo "********************************************" >> ${instance-UKO_SERVER_DIRECTORY}/backup_${_workflow-workflowKey}/migration.log;
                     echo "Parameters from server.env to be migrated: " >> ${instance-UKO_SERVER_DIRECTORY}/backup_${_workflow-workflowKey}/migration.log;
@@ -350,10 +351,36 @@
                     then
                         ln -s ${instance-UKO_INSTALL_DIR}/includes includes; 
                     fi
+
                     if [ -d "${instance-UKO_INSTALL_DIR}/configDropins" ] 
                     then
-                        ln -s ${instance-UKO_INSTALL_DIR}/configDropins configDropins; 
-                    fi
+                        echo "configDropins folder found in ${instance-UKO_INSTALL_DIR}"
+                        echo "creating ${instance-UKO_SERVER_DIRECTORY}/configDropins"
+                        mkdir configDropins
+
+                        if [ -d "${instance-UKO_SERVER_DIRECTORY}/backup_${_workflow-workflowKey}/configDropins/overrides" ] 
+                        then
+                            echo "overrides found in backup, copying to the new directory"
+                            cp ${instance-UKO_SERVER_DIRECTORY}/backup_${_workflow-workflowKey}/configDropins/overrides configDropins/overrides
+                        else
+                            echo "creating ${instance-UKO_SERVER_DIRECTORY}/configDropins/overrides"
+                            mkdir configDropins/overrides   
+                        fi
+
+                        echo "creating symlinks to the configDropins subfolders"
+
+                        echo "creating symlink to ${instance-UKO_INSTALL_DIR}/configDropins/defaults"
+                        ln -s ${instance-UKO_INSTALL_DIR}/configDropins/defaults configDropins/defaults
+
+                        echo "creating symlink to ${instance-UKO_INSTALL_DIR}/configDropins/options"
+                        ln -s ${instance-UKO_INSTALL_DIR}/configDropins/options configDropins/options
+
+                        chown ${instance-UKO_SERVER_STC_USER} configDropins
+                        chown ${instance-UKO_SERVER_STC_USER} configDropins/overrides
+
+                        echo "Finished setting up configDropins:"
+                        ls -al configDropins/
+                    fi  
                     
                     ln -s ${instance-UKO_INSTALL_DIR}/resources resources
                     ln -s ${instance-UKO_INSTALL_DIR}/server.xml server.xml			    
@@ -564,6 +591,7 @@
                     </extendStateExpression>
                 </targetStateSet>
             </condition>
+            <variableValue name="UKO_VAULT_ADMIN_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
             <variableValue name="UKO_KEY_ADMIN_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
             <variableValue name="UKO_KEY_CUSTODIAN1_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
             <variableValue name="UKO_KEY_CUSTODIAN2_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
@@ -596,6 +624,7 @@
                 </targetStateSet>
             </condition>
             <variableValue name="UKO_VAULT_ID" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="UKO_VAULT_ADMIN_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
             <variableValue name="UKO_KEY_ADMIN_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
             <variableValue name="UKO_KEY_CUSTODIAN1_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
             <variableValue name="UKO_KEY_CUSTODIAN2_GROUP" scope="instance" noPromptIfSet="false" required="false"/>

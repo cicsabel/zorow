@@ -4,6 +4,8 @@
 /* PDX-License-Identifier: Apache-2.0                             */
 /*----------------------------------------------------------------*/
 
+address tso
+
 
 CA_LABEL="${instance-UKO_CA_LABEL}"
 CA_CN="${instance-UKO_TLS_KEY_STORE_SERVER_CERT_CN}"

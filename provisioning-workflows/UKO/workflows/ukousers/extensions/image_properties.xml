@@ -29,6 +29,8 @@
 <atCreate name="UKO_AGENT_CLIENT_GROUP" scope="instance" prompt="true" required="false"/>
 <atCreate name="UKO_UNAUTHENTICATED_USER" scope="instance" prompt="true" required="false"/>
 <atCreate name="UKO_UNAUTHENTICATED_GROUP" scope="instance" prompt="true" required="false"/>
+<atCreate name="UKO_VAULT_ADMIN" scope="instance" prompt="true" required="false"/>
+<atCreate name="UKO_VAULT_ADMIN_GROUP" scope="instance" prompt="true" required="false"/>
 <atCreate name="UKO_KEY_ADMIN" scope="instance" prompt="true" required="false"/>
 <atCreate name="UKO_KEY_ADMIN_GROUP" scope="instance" prompt="true" required="false"/>
 <atCreate name="UKO_KEY_CUSTODIAN1" scope="instance" prompt="true" required="false"/>

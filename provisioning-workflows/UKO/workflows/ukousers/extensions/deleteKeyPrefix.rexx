@@ -4,6 +4,8 @@
 /* PDX-License-Identifier: Apache-2.0                             */
 /*----------------------------------------------------------------*/
 
+address tso
+
 
 
 KEY_PREFIX="${instance-UKO_KEY_PREFIX}"

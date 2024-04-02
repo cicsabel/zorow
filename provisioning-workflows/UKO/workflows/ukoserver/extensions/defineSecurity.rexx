@@ -13,11 +13,13 @@ SERVER_STC_GROUP="${instance-UKO_SERVER_STC_GROUP}"
 SERVER_UNAUTHENTICATED_USER="${instance-UKO_UNAUTHENTICATED_USER}"
 SERVER_UNAUTHENTICATED_GROUP="${instance-UKO_UNAUTHENTICATED_GROUP}"
 
+VAULT_ADMIN="${instance-UKO_VAULT_ADMIN_GROUP}"
 KEY_ADMIN="${instance-UKO_KEY_ADMIN_GROUP}"
 KEY_CUSTODIAN1="${instance-UKO_KEY_CUSTODIAN1_GROUP}"
 KEY_CUSTODIAN2="${instance-UKO_KEY_CUSTODIAN2_GROUP}"
 UKO_AUDITOR="${instance-UKO_AUDITOR_GROUP}"
 SERVER_STC_NAME="${instance-UKO_SERVER_STC_NAME}"
+SAFPREFIX="${instance-SAF_PROFILE_PREFIX}"
 
 /***********************************************************************/
 /* Setup the STARTED task for this server                              */
@@ -33,24 +35,26 @@ Say "Refreshing STARTED"
 /* Setup the APPL class profile                                        */
 /***********************************************************************/
 Say "Define the server specific APPLID to RACF"
-"RDEFINE APPL EKMFWEB UACC(NONE)"
+"RDEFINE APPL "||SAFPREFIX||" UACC(NONE)"
 
 Say "Activating the APPL class"
 /* If not active, the domain is not restricted, which means anyone can authenticate to it */
 "SETROPTS CLASSACT(APPL)"
 
 Say "Grant an unauthenticated "||SERVER_UNAUTHENTICATED_USER||" user ID READ access to the profile in the APPL class"
-"PERMIT EKMFWEB CLASS(APPL) ACCESS(READ) ID("||SERVER_UNAUTHENTICATED_USER||")"
+"PERMIT "||SAFPREFIX||" CLASS(APPL) ACCESS(READ) ID("||SERVER_UNAUTHENTICATED_USER||")"
 
 Say "All users that will access UKO are required to have READ access to this resource."
+Say "Grant access to UKO to "||VAULT_ADMIN||" "
+"PERMIT "||SAFPREFIX||" CLASS(APPL) ACCESS(READ) ID("||VAULT_ADMIN||")"
 Say "Grant access to UKO to "||KEY_ADMIN||" "
-"PERMIT EKMFWEB CLASS(APPL) ACCESS(READ) ID("||KEY_ADMIN||")"
+"PERMIT "||SAFPREFIX||" CLASS(APPL) ACCESS(READ) ID("||KEY_ADMIN||")"
 Say "Grant access to UKO to "||KEY_CUSTODIAN1||" "
-"PERMIT EKMFWEB CLASS(APPL) ACCESS(READ) ID("||KEY_CUSTODIAN1||")"
+"PERMIT "||SAFPREFIX||" CLASS(APPL) ACCESS(READ) ID("||KEY_CUSTODIAN1||")"
 Say "Grant access to UKO to "||KEY_CUSTODIAN2||" "
-"PERMIT EKMFWEB CLASS(APPL) ACCESS(READ) ID("||KEY_CUSTODIAN2||")"
+"PERMIT "||SAFPREFIX||" CLASS(APPL) ACCESS(READ) ID("||KEY_CUSTODIAN2||")"
 Say "Grant access to UKO to "||UKO_AUDITOR||" "
-"PERMIT EKMFWEB CLASS(APPL) ACCESS(READ) ID("||UKO_AUDITOR||")"
+"PERMIT "||SAFPREFIX||" CLASS(APPL) ACCESS(READ) ID("||UKO_AUDITOR||")"
 
 Say "Refreshing APPL"
 "SETROPTS RACLIST(APPL) REFRESH"
@@ -60,10 +64,10 @@ Say "Refreshing APPL"
 /***********************************************************************/
 
 Say "Create the security domain for the server"
-"RDEFINE SERVER BBG.SECPFX.EKMFWEB UACC(NONE)"
+"RDEFINE SERVER BBG.SECPFX."||SAFPREFIX||" UACC(NONE)"
 
 Say "Grant the servers id READ access to the security domain for the server"
-"PERMIT BBG.SECPFX.EKMFWEB CLASS(SERVER)",
+"PERMIT BBG.SECPFX."||SAFPREFIX||" CLASS(SERVER)",
    " ACCESS(READ) ID("||SERVER_STC_USER||")"
 
 /***********************************************************************/
@@ -159,15 +163,15 @@ Say "Refreshing SERVER"
 /***********************************************************************/
 
 Say "Defining the UKOss role class"
-"RDEFINE EJBROLE EKMFWEB.*.* UACC(NONE)"
+"RDEFINE EJBROLE "||SAFPREFIX||".*.* UACC(NONE)"
 
 Say "Defining EJB roles for authentication"
-"RDEFINE EJBROLE EKMFWEB.ekmf-rest-api.authenticated UACC(NONE)"
-"RDEFINE EJBROLE EKMFWEB.com.ibm.ws.security.oauth20.* UACC(NONE)"
+"RDEFINE EJBROLE "||SAFPREFIX||".ekmf-rest-api.authenticated UACC(NONE)"
+"RDEFINE EJBROLE "||SAFPREFIX||".com.ibm.ws.security.oauth20.* UACC(NONE)"
 
 Say "Grant access to the EJB roles for authentication to every user"
-"PERMIT EKMFWEB.ekmf-rest-api.authenticated CLASS(EJBROLE) ACCESS(READ) ID(*)"
-"PERMIT EKMFWEB.com.ibm.ws.security.oauth20.* CLASS(EJBROLE) ACCESS(READ) ID(*)"
+"PERMIT "||SAFPREFIX||".ekmf-rest-api.authenticated CLASS(EJBROLE) ACCESS(READ) ID(*)"
+"PERMIT "||SAFPREFIX||".com.ibm.ws.security.oauth20.* CLASS(EJBROLE) ACCESS(READ) ID(*)"
 
 Say "Refreshing EJBROLE"
 "SETROPTS RACLIST(EJBROLE) REFRESH"
@@ -196,5 +200,3 @@ Say "Granting access to BPX.SMF CLASS(FACILITY) to "||SERVER_STC_GROUP||" "
 
 Say "Refreshing FACILITY"
 "SETROPTS RACLIST(FACILITY) REFRESH"
-
-exit
