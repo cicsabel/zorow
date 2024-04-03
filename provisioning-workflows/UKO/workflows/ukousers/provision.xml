@@ -72,6 +72,8 @@
         <description>Define users and groups</description>
         <runAsUser substitution="true">$!{instance-UKO_ADMIN_SECURITY}</runAsUser>
         <approver substitution="true">$!{instance-UKO_APPROVER_SECURITY}</approver>
+        <variableValue name="UKO_VAULT_ADMIN" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="UKO_VAULT_ADMIN_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
         <variableValue name="UKO_KEY_ADMIN" scope="instance" noPromptIfSet="false" required="false"/>
         <variableValue name="UKO_KEY_ADMIN_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
         <variableValue name="UKO_KEY_CUSTODIAN1" scope="instance" noPromptIfSet="false" required="false"/>
