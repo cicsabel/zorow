@@ -179,8 +179,8 @@
                         s#^[ \#]*HTTPS_PORT=.*#HTTPS_PORT=${instance-UKO_HTTPS_PORT}#g;
                         s#^[ \#]*SAF_UNAUTHENTICATED_USER_ID=.*#SAF_UNAUTHENTICATED_USER_ID=${instance-UKO_UNAUTHENTICATED_USER}#g;
                         s#^[ \#]*SAF_PROFILE_PREFIX=.*#SAF_PROFILE_PREFIX=${instance-SAF_PROFILE_PREFIX}#g;
-                        s#^[ \#]*UKO_OAUTH_CLIENT_ID=.*#UKO_OAUTH_CLIENT_ID=${instance-UKO_OAUTH_CLIENT_ID}#g;
-                        s#^[ \#]*UKO_OAUTH_CLIENT_ID_OPENAPI=.*#UKO_OAUTH_CLIENT_ID_OPENAPI=${instance-UKO_OAUTH_CLIENT_ID_OPENAPI}#g;
+                        s#^[ \#]*EKMF_OAUTH_CLIENT_ID=.*#EKMF_OAUTH_CLIENT_ID=${instance-UKO_OAUTH_CLIENT_ID}#g;
+                        s#^[ \#]*EKMF_OAUTH_CLIENT_ID_OPENAPI=.*#EKMF_OAUTH_CLIENT_ID_OPENAPI=${instance-UKO_OAUTH_CLIENT_ID_OPENAPI}#g;
                         s#^[ \#]*OIDC_PROVIDER_TRUST_ALIAS_NAME=.*#OIDC_PROVIDER_TRUST_ALIAS_NAME=${instance-UKO_OIDC_PROVIDER_CERT}#g;
                         s#^[ \#]*OIDC_PROVIDER_KEY_ALIAS_NAME=.*#OIDC_PROVIDER_KEY_ALIAS_NAME=${instance-UKO_OIDC_PROVIDER_CERT}#g" ${instance-UKO_INSTALL_DIR}/server.env > ${instance-WLP_USER_DIR}/servers/${instance-UKO_SERVER_STC_NAME}/server.env;
 
