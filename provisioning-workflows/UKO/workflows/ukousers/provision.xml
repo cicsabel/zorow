@@ -57,7 +57,8 @@
         <variableValue name="UKO_SERVER_STC_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
         <variableValue name="UKO_UNAUTHENTICATED_USER" scope="instance" noPromptIfSet="false" required="false"/>
         <variableValue name="UKO_UNAUTHENTICATED_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
-        <instructions substitution="true">Submit rexx exec to execute step</instructions>
+        <instructions substitution="true">Submit rexx exec to execute step. The workflow is using the AUTOUID option to automatically generate a unique ID value in the OMVS segment of a user or group. If you cannot use AUTOUID, you need to replace it with a unique UID(user-identifier) for each ADDUSER or ADDGROUP statement. 
+        </instructions>
         <weight>1</weight>
         <autoEnable>true</autoEnable>
         <template>
@@ -82,7 +83,8 @@
         <variableValue name="UKO_KEY_CUSTODIAN2_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
         <variableValue name="UKO_AUDITOR" scope="instance" noPromptIfSet="false" required="false"/>
         <variableValue name="UKO_AUDITOR_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
-        <instructions substitution="true">Submit rexx exec to execute step</instructions>
+        <instructions substitution="true">Submit rexx exec to execute step. The workflow is using the AUTOUID option to automatically generate a unique ID value in the OMVS segment of a user or group. If you cannot use AUTOUID, you need to replace it with a unique UID(user-identifier) for each ADDUSER or ADDGROUP statement. 
+        </instructions>
         <weight>1</weight>
         <autoEnable>true</autoEnable>
         <template>
