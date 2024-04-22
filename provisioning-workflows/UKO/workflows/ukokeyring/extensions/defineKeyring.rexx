@@ -45,11 +45,22 @@ Say "Define "||SERVER_STC_USER||"."||TLS_KEY_STORE_KEY_RING||" "
    " "||SERVER_STC_USER||"."||TLS_KEY_STORE_KEY_RING||".LST",
    " UACC(NONE)"
 
-Say "Grant access to "||SERVER_STC_USER||" "
+#if($!{instance-UKO_CREATE_KEYRING} == "true" && $!{instance-UKO_CREATE_CERTIFICATES} == "false")
+/* if existing certificates are added to the new key ring, then ALTER is required */
+/* to be able to access the private keys */
+Say "Grant ALTER access to "||SERVER_STC_USER||" in RDATALIB"
+"PERMIT",
+   " "||SERVER_STC_USER||"."||TLS_KEY_STORE_KEY_RING||".LST",
+   " CLASS(RDATALIB)",
+   " ACCESS(ALTER) ID("||SERVER_STC_USER||")"
+#else
+Say "Grant READ access to "||SERVER_STC_USER||" in RDATALIB"
 "PERMIT",
    " "||SERVER_STC_USER||"."||TLS_KEY_STORE_KEY_RING||".LST",
    " CLASS(RDATALIB)",
    " ACCESS(READ) ID("||SERVER_STC_USER||")"
+#end
+
 
 #if($!{instance-UKO_TLS_KEY_STORE_KEY_RING} != $!{instance-UKO_TLS_TRUST_STORE_KEY_RING} )
 Say "Define "||SERVER_STC_USER||"."||TLS_TRUST_STORE_KEY_RING||" "

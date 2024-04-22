@@ -21,24 +21,26 @@ KEY_CUSTODIAN2_GROUP="${instance-UKO_KEY_CUSTODIAN2_GROUP}"
 UKO_AUDITOR="${instance-UKO_AUDITOR}"
 UKO_AUDITOR_GROUP="${instance-UKO_AUDITOR_GROUP}"
 
-#if($!{instance-UKO_CREATE_ROLE_GROUPS} == "true" ) 
+SUPERIOR_GROUP="${instance-UKO_ROLE_SUPERIOR_GROUP}"
+
+#if($!{instance-UKO_CREATE_PERSONAL_USER_GROUPS} == "true" ) 
 /***********************************************************************/
 /* Creating the required groups                                        */
 /***********************************************************************/
 Say "Creating the required groups"
 Say "Creating the vault administrator group"
-"ADDGROUP "||VAULT_ADMIN_GROUP||" SUPGROUP(SYS1) OMVS(AUTOGID)"
+"ADDGROUP "||VAULT_ADMIN_GROUP||" SUPGROUP("||SUPERIOR_GROUP||") OMVS(AUTOGID)"
 Say "Creating the key administrator group"
-"ADDGROUP "||KEY_ADMIN_GROUP||" SUPGROUP(SYS1) OMVS(AUTOGID)"
+"ADDGROUP "||KEY_ADMIN_GROUP||" SUPGROUP("||SUPERIOR_GROUP||") OMVS(AUTOGID)"
 Say "Creating the key custodian1 group"
-"ADDGROUP "||KEY_CUSTODIAN1_GROUP||" SUPGROUP(SYS1) OMVS(AUTOGID)"
+"ADDGROUP "||KEY_CUSTODIAN1_GROUP||" SUPGROUP("||SUPERIOR_GROUP||") OMVS(AUTOGID)"
 Say "Creating the key custodian2 group"
-"ADDGROUP "||KEY_CUSTODIAN2_GROUP||" SUPGROUP(SYS1) OMVS(AUTOGID)"
+"ADDGROUP "||KEY_CUSTODIAN2_GROUP||" SUPGROUP("||SUPERIOR_GROUP||") OMVS(AUTOGID)"
 Say "Creating the auditor group"
-"ADDGROUP "||UKO_AUDITOR_GROUP||" SUPGROUP(SYS1) OMVS(AUTOGID)"
+"ADDGROUP "||UKO_AUDITOR_GROUP||" SUPGROUP("||SUPERIOR_GROUP||") OMVS(AUTOGID)"
 #end
 
-#if($!{instance-UKO_CREATE_ROLE_USERIDS} == "true" ) 
+#if($!{instance-UKO_CREATE_PERSONAL_USERIDS} == "true" ) 
 /***********************************************************************/
 /* Creating all required user ids                                      */
 /***********************************************************************/

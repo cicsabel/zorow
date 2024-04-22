@@ -22,7 +22,7 @@ UKO_AUDITOR="${instance-UKO_AUDITOR}"
 UKO_AUDITOR_GROUP="${instance-UKO_AUDITOR_GROUP}"
 
 
-#if($!{instance-UKO_CREATE_ROLE_USERIDS} == "true" ) 
+#if($!{instance-UKO_CREATE_PERSONAL_USERIDS} == "true" ) 
 "DELUSER "||VAULT_ADMIN||" "
 "DELUSER "||KEY_ADMIN||" "
 "DELUSER "||KEY_CUSTODIAN1||" "
@@ -42,7 +42,7 @@ UKO_AUDITOR_GROUP="${instance-UKO_AUDITOR_GROUP}"
 
 #end
 
-#if($!{instance-UKO_CREATE_ROLE_GROUPS} == "true" ) 
+#if($!{instance-UKO_CREATE_PERSONAL_USER_GROUPS} == "true" ) 
 "DELGROUP "||VAULT_ADMIN_GROUP||" "
 "DELGROUP "||KEY_ADMIN_GROUP||" "
 "DELGROUP "||KEY_CUSTODIAN1_GROUP||" "

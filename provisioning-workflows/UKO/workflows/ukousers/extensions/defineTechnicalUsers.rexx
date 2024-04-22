@@ -18,20 +18,21 @@ SERVER_STC_GROUP="${instance-UKO_SERVER_STC_GROUP}"
 SERVER_UNAUTHENTICATED_USER="${instance-UKO_UNAUTHENTICATED_USER}"
 SERVER_UNAUTHENTICATED_GROUP="${instance-UKO_UNAUTHENTICATED_GROUP}"
 
+SUPERIOR_GROUP="${instance-UKO_TECHNICAL_SUPERIOR_GROUP}"
 
-#if($!{instance-UKO_CREATE_TECHNICAL_GROUPS} == "true" ) 
+#if($!{instance-UKO_CREATE_TECHNICAL_USER_GROUPS} == "true" ) 
 /***********************************************************************/
 /* Creating the required groups                                        */
 /***********************************************************************/
 Say "Creating the required groups"
 Say "Creating the Agent started task group"
-"ADDGROUP "||AGENT_STC_GROUP||" SUPGROUP(SYS1) OMVS(AUTOGID)"
+"ADDGROUP "||AGENT_STC_GROUP||" SUPGROUP("||SUPERIOR_GROUP||") OMVS(AUTOGID)"
 Say "Creating the Client group for authentication with the agent"
-"ADDGROUP "||AGENT_CLIENT_GROUP||" SUPGROUP(SYS1) OMVS(AUTOGID)"
+"ADDGROUP "||AGENT_CLIENT_GROUP||" SUPGROUP("||SUPERIOR_GROUP||") OMVS(AUTOGID)"
 Say "Creating the Liberty started task group"
-"ADDGROUP "||SERVER_STC_GROUP||" SUPGROUP(SYS1) OMVS(AUTOGID)"
+"ADDGROUP "||SERVER_STC_GROUP||" SUPGROUP("||SUPERIOR_GROUP||") OMVS(AUTOGID)"
 Say "Creating the unauthenticated user group for the Liberty server"
-"ADDGROUP "||SERVER_UNAUTHENTICATED_GROUP||" SUPGROUP(SYS1) OMVS(AUTOGID)"
+"ADDGROUP "||SERVER_UNAUTHENTICATED_GROUP||" SUPGROUP("||SUPERIOR_GROUP||") OMVS(AUTOGID)"
 #end
 
 #if($!{instance-UKO_CREATE_TECHNICAL_USERIDS} == "true" ) 

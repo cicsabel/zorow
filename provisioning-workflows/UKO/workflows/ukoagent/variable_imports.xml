@@ -639,8 +639,8 @@
 <!--++++++++++++++++++++++++++++++-->
 <!-- Technical user ids           -->
 <!--++++++++++++++++++++++++++++++-->
-<variable name="UKO_CREATE_TECHNICAL_GROUPS" visibility="private">
-  <label>UKO_CREATE_TECHNICAL_GROUPS</label>
+<variable name="UKO_CREATE_TECHNICAL_USER_GROUPS" visibility="private">
+  <label>UKO_CREATE_TECHNICAL_USER_GROUPS</label>
   <abstract>Create the required groups</abstract>
   <description>Flag to indicate if groups are to be created</description>
   <category>String Variables</category>
@@ -648,6 +648,58 @@
     <choice>true</choice>
     <choice>false</choice>
     <default>false</default>
+  </string>
+</variable>
+
+<variable name="UKO_TECHNICAL_SUPERIOR_GROUP" visibility="private">
+  <label>UKO_TECHNICAL_SUPERIOR_GROUP</label>
+  <abstract>The superior group for the technical groups</abstract>
+  <description>Superior group to be used for the SUPGROUP parameter</description>
+  <category>String Variables</category>
+  <string>
+    <validationType>USERID</validationType>
+    <default>SYS1</default>
+  </string>
+</variable>
+
+<variable name="UKO_SERVER_STC_GROUP" visibility="public">
+  <label>UKO_SERVER_STC_GROUP</label>
+  <abstract>The group containing the user id running the UKO Liberty server</abstract>
+  <description>The group containing the id of the user authorized to run UKO Liberty Server as started task</description>
+  <category>String Variables</category>
+  <string>
+    <validationType>USERID</validationType>
+  </string>
+</variable>
+
+<variable name="UKO_UNAUTHENTICATED_GROUP" visibility="public">
+  <label>UKO_UNAUTHENTICATED_GROUP</label>
+  <abstract>The group containing the unauthenticated user id of the UKO Liberty server</abstract>
+  <description>The group containing the Liberty unauthenticated userid</description>
+  <category>String Variables</category>
+  <string>
+    <validationType>USERID</validationType>
+  </string>
+</variable>
+
+<variable name="UKO_AGENT_STC_GROUP" visibility="public">
+  <label>UKO_AGENT_STC_GROUP</label>
+  <abstract>The group containing the user id running the UKO agent</abstract>
+  <description>The group containing the id of the user authorized to run the UKO agent as started task</description>
+  <category>String Variables</category>
+  <string>
+    <validationType>USERID</validationType>
+  </string>
+</variable>
+
+<variable name="UKO_AGENT_CLIENT_GROUP" visibility="public">
+  <label>UKO_AGENT_CLIENT_GROUP</label>
+  <abstract>The group containing the user id representing clients to connect to the UKO agent</abstract>
+  <description>The group containing the id of a client connecting to the UKO agent, which is the
+    user ID defined in the &amp;WEBCLIENT KPMGPARM</description>
+  <category>String Variables</category>
+  <string>
+    <validationType>USERID</validationType>
   </string>
 </variable>
 
@@ -704,53 +756,12 @@
   </string>
 </variable>
 
-<variable name="UKO_SERVER_STC_GROUP" visibility="public">
-  <label>UKO_SERVER_STC_GROUP</label>
-  <abstract>The group containing the user id running the UKO Liberty server</abstract>
-  <description>The group containing the id of the user authorized to run UKO Liberty Server as started task</description>
-  <category>String Variables</category>
-  <string>
-    <validationType>USERID</validationType>
-  </string>
-</variable>
-
-<variable name="UKO_UNAUTHENTICATED_GROUP" visibility="public">
-  <label>UKO_UNAUTHENTICATED_GROUP</label>
-  <abstract>The group containing the unauthenticated user id of the UKO Liberty server</abstract>
-  <description>The group containing the Liberty unauthenticated userid</description>
-  <category>String Variables</category>
-  <string>
-    <validationType>USERID</validationType>
-  </string>
-</variable>
-
-<variable name="UKO_AGENT_STC_GROUP" visibility="public">
-  <label>UKO_AGENT_STC_GROUP</label>
-  <abstract>The group containing the user id running the UKO agent</abstract>
-  <description>The group containing the id of the user authorized to run the UKO agent as started task</description>
-  <category>String Variables</category>
-  <string>
-    <validationType>USERID</validationType>
-  </string>
-</variable>
-
-<variable name="UKO_AGENT_CLIENT_GROUP" visibility="public">
-  <label>UKO_AGENT_CLIENT_GROUP</label>
-  <abstract>The group containing the user id representing clients to connect to the UKO agent</abstract>
-  <description>The group containing the id of a client connecting to the UKO agent, which is the
-    user ID defined in the &amp;WEBCLIENT KPMGPARM</description>
-  <category>String Variables</category>
-  <string>
-    <validationType>USERID</validationType>
-  </string>
-</variable>
-
 <!--++++++++++++++++++++++++++++++-->
 <!-- Role user ids                -->
 <!--++++++++++++++++++++++++++++++-->
 
-<variable name="UKO_CREATE_ROLE_GROUPS" visibility="private">
-  <label>UKO_CREATE_ROLE_GROUPS</label>
+<variable name="UKO_CREATE_PERSONAL_USER_GROUPS" visibility="private">
+  <label>UKO_CREATE_PERSONAL_USER_GROUPS</label>
   <abstract>Create the groups representing access roles</abstract>
   <description>Flag to indicate if groups are to be created holding the different access roles</description>
   <category>String Variables</category>
@@ -761,8 +772,19 @@
   </string>
 </variable>
 
-<variable name="UKO_CREATE_ROLE_USERIDS" visibility="private">
-  <label>UKO_CREATE_ROLE_USERIDS</label>
+<variable name="UKO_ROLE_SUPERIOR_GROUP" visibility="private">
+  <label>UKO_ROLE_SUPERIOR_GROUP</label>
+  <abstract>The superior group for the role groups</abstract>
+  <description>Superior group to be used for the SUPGROUP parameter</description>
+  <category>String Variables</category>
+  <string>
+    <validationType>USERID</validationType>
+    <default>SYS1</default>
+  </string>
+</variable>
+
+<variable name="UKO_CREATE_PERSONAL_USERIDS" visibility="private">
+  <label>UKO_CREATE_PERSONAL_USERIDS</label>
   <abstract>Create the userids representing access roles</abstract>
   <description>Flag to indicate if userids for different access roles like key admin or custodian are to be created</description>
   <category>String Variables</category>
