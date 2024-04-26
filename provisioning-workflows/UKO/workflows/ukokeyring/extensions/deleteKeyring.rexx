@@ -67,6 +67,9 @@ Say "Refresh RDATALIB"
     #end
 #end
 
+/* exiting here because FACILITY is not used */
+exit 0
+
 #if($!{instance-UKO_CREATE_TECHNICAL_USERIDS} == "true" ) 
 Say "Removing access to IRR.DIGTCERT.LISTRING profile from "||SERVER_STC_USER||" "
 "PERMIT IRR.DIGTCERT.LISTRING CLASS(FACILITY)",

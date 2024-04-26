@@ -17,18 +17,42 @@ SAFPREFIX="${instance-SAF_PROFILE_PREFIX}"
 /* Setup the APPL class profile                                        */
 /***********************************************************************/
 Say "Define access to the server specific APPLID "||SAFPREFIX||" to RACF"
-Say "All users that will access UKO are required to have READ access to this resource."
+Say "All users that will access APPL "||SAFPREFIX||" are required to have READ access to this resource."
 
-Say "Grant access to UKO to "||VAULT_ADMIN||" "
+Say "Grant access to APPL "||SAFPREFIX||" to "||VAULT_ADMIN||" "
 "PERMIT "||SAFPREFIX||" CLASS(APPL) ACCESS(READ) ID("||VAULT_ADMIN||")"
-Say "Grant access to UKO to "||KEY_ADMIN||" "
+if RC <> 0 then do
+   Say "Permit failed, exiting"
+   exit RC
+end
+
+Say "Grant access to APPL "||SAFPREFIX||" to "||KEY_ADMIN||" "
 "PERMIT "||SAFPREFIX||" CLASS(APPL) ACCESS(READ) ID("||KEY_ADMIN||")"
-Say "Grant access to UKO to "||KEY_CUSTODIAN1||" "
+if RC <> 0 then do
+   Say "Permit failed, exiting"
+   exit RC
+end
+
+Say "Grant access to APPL "||SAFPREFIX||" to "||KEY_CUSTODIAN1||" "
 "PERMIT "||SAFPREFIX||" CLASS(APPL) ACCESS(READ) ID("||KEY_CUSTODIAN1||")"
-Say "Grant access to UKO to "||KEY_CUSTODIAN2||" "
+if RC <> 0 then do
+   Say "Permit failed, exiting"
+   exit RC
+end
+
+Say "Grant access to APPL "||SAFPREFIX||" to "||KEY_CUSTODIAN2||" "
 "PERMIT "||SAFPREFIX||" CLASS(APPL) ACCESS(READ) ID("||KEY_CUSTODIAN2||")"
-Say "Grant access to UKO to "||UKO_AUDITOR||" "
+if RC <> 0 then do
+   Say "Permit failed, exiting"
+   exit RC
+end
+
+Say "Grant access to APPL "||SAFPREFIX||" to "||UKO_AUDITOR||" "
 "PERMIT "||SAFPREFIX||" CLASS(APPL) ACCESS(READ) ID("||UKO_AUDITOR||")"
+if RC <> 0 then do
+   Say "Permit failed, exiting"
+   exit RC
+end
 
 Say "Refreshing APPL"
 "SETROPTS RACLIST(APPL) REFRESH"

@@ -108,16 +108,4 @@ Say "Granting "||AGENT_STC_GROUP||" access to KMG.WEBCLIENT."||AGENT_CLIENT_USER
 /* defined, the CSF-PKDS-DEFAULT resource in CSFKEYS class must also  */
 /* be defined and the Agent's <task-user> needs access.*/
 
-#if(${instance-WORKSTATION_ACCESS_REQUIRED} && ${instance-WORKSTATION_ACCESS_REQUIRED} == "true")
-/***********************************************************************/
-/* Granting access to Db2 DSNR */
-/***********************************************************************/
-Say "Defining BATCH profile in DSNR class"
-"RDEFINE DSNR ${instance-DB_JCC_SSID}.BATCH UACC(NONE)"
-Say "Granting access to BATCH profile to "||AGENT_STC_USER||" "
-"PERMIT ${instance-DB_JCC_SSID}.BATCH CLASS(DSNR)",
-   " ACCESS(READ) ID("||AGENT_STC_USER||")"                 
 
-Say "Refreshing DSNR"
-"SETROPTS RACLIST(DSNR) REFRESH"
-#end

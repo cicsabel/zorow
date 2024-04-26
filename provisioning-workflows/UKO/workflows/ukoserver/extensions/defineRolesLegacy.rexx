@@ -71,9 +71,6 @@ SAFPREFIX="${instance-SAF_PROFILE_PREFIX}"
 "RDEFINE EJBROLE "||SAFPREFIX||".ekmf-rest-api.templates:delete UACC(NONE)"
 "RDEFINE EJBROLE "||SAFPREFIX||".ekmf-rest-api.user:passcode:create UACC(NONE)"
 "RDEFINE EJBROLE "||SAFPREFIX||".ekmf-rest-api.user:passcode:delete UACC(NONE)" 
-"RDEFINE EJBROLE "||SAFPREFIX||".ekmf-rest-api.vaults:read UACC(NONE)" 
-"RDEFINE EJBROLE "||SAFPREFIX||".ekmf-rest-api.vaults:write UACC(NONE)" 
-"RDEFINE EJBROLE "||SAFPREFIX||".ekmf-rest-api.vaults:delete UACC(NONE)" 
 
 /***********************************************************************/
 /* granting access to the different user roles                         */

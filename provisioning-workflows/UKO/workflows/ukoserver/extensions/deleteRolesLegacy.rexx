@@ -73,9 +73,6 @@ SAFPREFIX="${instance-SAF_PROFILE_PREFIX}"
 "RDELETE EJBROLE "||SAFPREFIX||".ekmf-rest-api.templates:delete"
 "RDELETE EJBROLE "||SAFPREFIX||".ekmf-rest-api.user:passcode:create"
 "RDELETE EJBROLE "||SAFPREFIX||".ekmf-rest-api.user:passcode:delete" 
-"RDELETE EJBROLE "||SAFPREFIX||".ekmf-rest-api.vaults:read" 
-"RDELETE EJBROLE "||SAFPREFIX||".ekmf-rest-api.vaults:write" 
-"RDELETE EJBROLE "||SAFPREFIX||".ekmf-rest-api.vaults:delete" 
 
 /* Refresh */
 "SETROPTS RACLIST(EJBROLE) REFRESH"

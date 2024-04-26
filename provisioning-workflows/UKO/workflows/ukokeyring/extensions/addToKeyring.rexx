@@ -33,7 +33,7 @@ Say "Connect TLS server  certificate to key ring"
    exit RC
  end
 
-#if($!{instance-UKO_TLS_KEY_STORE_SERVER_CERT} != $!{instance-UKO_OIDC_PROVIDER_CERT} )
+  #if($!{instance-UKO_TLS_KEY_STORE_SERVER_CERT} != $!{instance-UKO_OIDC_PROVIDER_CERT} )
 Say "Connect OIDC provider certificate to key ring"
 "RACDCERT ID("||SERVER_STC_USER||")",
    " CONNECT(LABEL("||"'"||OIDC_PROVIDER_CERT||"'"||")",
@@ -43,7 +43,7 @@ Say "Connect OIDC provider certificate to key ring"
    Say "connecting oidc cert to key ring failed, exiting"
    exit RC
  end
-#end
+  #end
 
    #if($!{instance-UKO_TLS_KEY_STORE_KEY_RING} != $!{instance-UKO_TLS_TRUST_STORE_KEY_RING} )
 Say "Connect OIDC provider certificate to trust ring"

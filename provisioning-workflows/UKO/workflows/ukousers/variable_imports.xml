@@ -772,8 +772,8 @@
   </string>
 </variable>
 
-<variable name="UKO_ROLE_SUPERIOR_GROUP" visibility="private">
-  <label>UKO_ROLE_SUPERIOR_GROUP</label>
+<variable name="UKO_PERSONAL_SUPERIOR_GROUP" visibility="private">
+  <label>UKO_PERSONAL_SUPERIOR_GROUP</label>
   <abstract>The superior group for the role groups</abstract>
   <description>Superior group to be used for the SUPGROUP parameter</description>
   <category>String Variables</category>

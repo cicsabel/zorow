@@ -21,23 +21,43 @@ KEY_CUSTODIAN2_GROUP="${instance-UKO_KEY_CUSTODIAN2_GROUP}"
 UKO_AUDITOR="${instance-UKO_AUDITOR}"
 UKO_AUDITOR_GROUP="${instance-UKO_AUDITOR_GROUP}"
 
-SUPERIOR_GROUP="${instance-UKO_ROLE_SUPERIOR_GROUP}"
+SUPERIOR_GROUP="${instance-UKO_PERSONAL_SUPERIOR_GROUP}"
 
 #if($!{instance-UKO_CREATE_PERSONAL_USER_GROUPS} == "true" ) 
 /***********************************************************************/
-/* Creating the required groups                                        */
+/* Creating required groups                                        */
 /***********************************************************************/
-Say "Creating the required groups"
-Say "Creating the vault administrator group"
+Say "Creating required groups"
+Say "Creating vault administrator group "||VAULT_ADMIN_GROUP||" "
 "ADDGROUP "||VAULT_ADMIN_GROUP||" SUPGROUP("||SUPERIOR_GROUP||") OMVS(AUTOGID)"
-Say "Creating the key administrator group"
+if RC <> 0 then do
+   Say "Creation failed, exiting"
+   exit RC
+end
+Say "Creating key administrator group "||KEY_ADMIN_GROUP||" "
 "ADDGROUP "||KEY_ADMIN_GROUP||" SUPGROUP("||SUPERIOR_GROUP||") OMVS(AUTOGID)"
-Say "Creating the key custodian1 group"
+if RC <> 0 then do
+   Say "Creation failed, exiting"
+   exit RC
+end
+Say "Creating key custodian1 group "||KEY_CUSTODIAN1_GROUP||" "
 "ADDGROUP "||KEY_CUSTODIAN1_GROUP||" SUPGROUP("||SUPERIOR_GROUP||") OMVS(AUTOGID)"
-Say "Creating the key custodian2 group"
+if RC <> 0 then do
+   Say "Creation failed, exiting"
+   exit RC
+end
+Say "Creating key custodian2 group"||KEY_CUSTODIAN2_GROUP||" "
 "ADDGROUP "||KEY_CUSTODIAN2_GROUP||" SUPGROUP("||SUPERIOR_GROUP||") OMVS(AUTOGID)"
-Say "Creating the auditor group"
+if RC <> 0 then do
+   Say "Creation failed, exiting"
+   exit RC
+end
+Say "Creating auditor group "||UKO_AUDITOR_GROUP||" "
 "ADDGROUP "||UKO_AUDITOR_GROUP||" SUPGROUP("||SUPERIOR_GROUP||") OMVS(AUTOGID)"
+if RC <> 0 then do
+   Say "Creation failed, exiting"
+   exit RC
+end
 #end
 
 #if($!{instance-UKO_CREATE_PERSONAL_USERIDS} == "true" ) 
@@ -45,7 +65,7 @@ Say "Creating the auditor group"
 /* Creating all required user ids                                      */
 /***********************************************************************/
 
-Say "Adding the vault administrator user"
+Say "Adding vault administrator user "||VAULT_ADMIN||" "
 "ADDUSER "||VAULT_ADMIN||" NOOIDCARD ",
    " DFLTGRP("||VAULT_ADMIN_GROUP||") NAME('VAULT ADMIN')",
    " PHRASE('pass4youpass4you')",
@@ -54,11 +74,15 @@ Say "Adding the vault administrator user"
       "  size(500000) unit(SYSALLDA)) ",
    " OMVS(AUTOUID PROGRAM('/bin/sh')",
    " HOME("||"'"||"/u/"||VAULT_ADMIN||"'"||")) "
+if RC <> 0 then do
+   Say "Creation failed, exiting"
+   exit RC
+end
 "PERMIT DEFAULT CL(ACCTNUM ) ACCESS(READ) ID("||VAULT_ADMIN||")" 
 "PERMIT  * CL(TSOPROC ) ACCESS(READ) ID("||VAULT_ADMIN||")" 
 "SETROPTS RACLIST(TSOPROC) REFRESH "
 
-Say "Adding the key administrator user"
+Say "Adding key administrator user "||KEY_ADMIN||" "
 "ADDUSER "||KEY_ADMIN||" NOOIDCARD ",
    " DFLTGRP("||KEY_ADMIN_GROUP||") NAME('KEY ADMIN')",
    " PHRASE('pass4youpass4you')",
@@ -67,11 +91,15 @@ Say "Adding the key administrator user"
       "  size(500000) unit(SYSALLDA)) ",
    " OMVS(AUTOUID PROGRAM('/bin/sh')",
    " HOME("||"'"||"/u/"||KEY_ADMIN||"'"||")) "
+if RC <> 0 then do
+   Say "Creation failed, exiting"
+   exit RC
+end
 "PERMIT DEFAULT CL(ACCTNUM ) ACCESS(READ) ID("||KEY_ADMIN||")" 
 "PERMIT  * CL(TSOPROC ) ACCESS(READ) ID("||KEY_ADMIN||")" 
 "SETROPTS RACLIST(TSOPROC) REFRESH "
 
-Say "Adding the key custodian 1 user"
+Say "Adding key custodian 1 user "||KEY_CUSTODIAN1||" "
 "ADDUSER "||KEY_CUSTODIAN1||" NOOIDCARD ",
    " DFLTGRP("||KEY_CUSTODIAN1_GROUP||") NAME('KEY CUSTODIAN 1')",
    " PHRASE('pass4youpass4you')",
@@ -80,12 +108,16 @@ Say "Adding the key custodian 1 user"
       "  size(500000) unit(SYSALLDA)) ",
    " OMVS(AUTOUID PROGRAM('/bin/sh')",
    " HOME("||"'"||"/u/"||KEY_CUSTODIAN1||"'"||")) "
+if RC <> 0 then do
+   Say "Creation failed, exiting"
+   exit RC
+end
 "PERMIT DEFAULT CL(ACCTNUM ) ACCESS(READ) ID("||KEY_CUSTODIAN1||")" 
 "PERMIT  * CL(TSOPROC ) ACCESS(READ) ID("||KEY_CUSTODIAN1||")" 
 "SETROPTS RACLIST(TSOPROC) REFRESH "
 
 
-Say "Adding the key custodian 2 user"
+Say "Adding key custodian 2 user "||KEY_CUSTODIAN2||""
 "ADDUSER "||KEY_CUSTODIAN2||" NOOIDCARD ",
    " DFLTGRP("||KEY_CUSTODIAN2_GROUP||") NAME('KEY CUSTODIAN 2')",
    " PHRASE('pass4youpass4you')",
@@ -94,12 +126,16 @@ Say "Adding the key custodian 2 user"
       "  size(500000) unit(SYSALLDA)) ",
    " OMVS(AUTOUID PROGRAM('/bin/sh')",
    " HOME("||"'"||"/u/"||KEY_CUSTODIAN2||"'"||")) "
+if RC <> 0 then do
+   Say "Creation failed, exiting"
+   exit RC
+end
 "PERMIT DEFAULT CL(ACCTNUM ) ACCESS(READ) ID("||KEY_CUSTODIAN2||")" 
 "PERMIT  * CL(TSOPROC ) ACCESS(READ) ID("||KEY_CUSTODIAN2||")" 
 "SETROPTS RACLIST(TSOPROC) REFRESH "
 
 
-Say "Adding the auditor user"
+Say "Adding auditor user "||UKO_AUDITOR||" "
 "ADDUSER "||UKO_AUDITOR||" NOOIDCARD ",
    " DFLTGRP("||UKO_AUDITOR_GROUP||") NAME('KEY AUDITOR')",
    " PHRASE('pass4youpass4you')",
@@ -108,6 +144,10 @@ Say "Adding the auditor user"
       "  size(500000) unit(SYSALLDA)) ",
    " OMVS(AUTOUID PROGRAM('/bin/sh')",
    " HOME("||"'"||"/u/"||UKO_AUDITOR||"'"||")) "
+if RC <> 0 then do
+   Say "Creation failed, exiting"
+   exit RC
+end
 "PERMIT DEFAULT CL(ACCTNUM ) ACCESS(READ) ID("||UKO_AUDITOR||")" 
 "PERMIT  * CL(TSOPROC ) ACCESS(READ) ID("||UKO_AUDITOR||")" 
 "SETROPTS RACLIST(TSOPROC) REFRESH "

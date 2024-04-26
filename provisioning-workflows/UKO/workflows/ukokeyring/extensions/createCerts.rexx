@@ -17,6 +17,15 @@ TLS_CN="${instance-UKO_TLS_KEY_STORE_SERVER_CERT_CN}"
 TLS_OU="${instance-UKO_TLS_KEY_STORE_SERVER_CERT_OU}"
 TLS_O="${instance-UKO_TLS_KEY_STORE_SERVER_CERT_O}"
 
+/***********************************************************************/
+/*                                                                     */
+/* PLEASE READ                                                         */
+/*                                                                     */
+/* adjust the NOTAFTER DATE and TIME parameters and                    */
+/* potentially also the RSA SIZE to match your environment needs.      */
+/*                                                                     */
+/***********************************************************************/
+
 Say "Generate a server certificate"
 Say "Define "||TLS_KEY_STORE_SERVER_CERT||" for "||SERVER_STC_USER||" with CA "||CA_LABEL||" "
 
@@ -26,8 +35,9 @@ Say "Define "||TLS_KEY_STORE_SERVER_CERT||" for "||SERVER_STC_USER||" with CA "|
       " O("||"'"||TLS_O||"'"||"))",
    " WITHLABEL("||"'"||TLS_KEY_STORE_SERVER_CERT||"'"||")", 
    " SIGNWITH(CERTAUTH LABEL("||"'"||CA_LABEL||"'"||"))",
-   " NOTAFTER(DATE(2025-12-31) TIME(23:59:59))",
-   " RSA SIZE(2048)"
+   " NOTAFTER(DATE(2028-12-31) TIME(23:59:59))",
+   " RSA SIZE(2048)",
+   " ALTNAME(DOMAIN("||"'"||TLS_CN||"'"||")"  
  if RC <> 0 then do
    Say "creating server certificate failed, exiting"
    exit RC
@@ -42,8 +52,9 @@ Say "Define "||OIDC_PROVIDER_CERT||" for "||SERVER_STC_USER||" with CA "||CA_LAB
       " O("||"'"||TLS_O||"'"||"))",
    " WITHLABEL("||"'"||OIDC_PROVIDER_CERT||"'"||")", 
    " SIGNWITH(CERTAUTH LABEL("||"'"||CA_LABEL||"'"||"))",
-   " NOTAFTER(DATE(2025-12-31) TIME(23:59:59))",
-   " RSA SIZE(2048)"
+   " NOTAFTER(DATE(2028-12-31) TIME(23:59:59))",
+   " RSA SIZE(2048)",
+   " ALTNAME(DOMAIN("||"'"||TLS_CN||"'"||")"  
  if RC <> 0 then do
    Say "creating oidc certificate failed, exiting"
    exit RC

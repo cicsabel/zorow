@@ -99,7 +99,9 @@
         <variableValue name="UKO_TLS_KEY_STORE_SERVER_CERT_CN" scope="instance" noPromptIfSet="false" required="false"/>
         <variableValue name="UKO_TLS_KEY_STORE_SERVER_CERT_OU" scope="instance" noPromptIfSet="false" required="false"/>
         <variableValue name="UKO_TLS_KEY_STORE_SERVER_CERT_O" scope="instance" noPromptIfSet="false" required="false"/>
-        <instructions>Executes a REXX program to create a certificates</instructions>
+        <instructions>Executes a REXX program to create certificates. 
+            Important: adjust the NOTAFTER DATE and TIME parameters and potentially also the RSA SIZE to match your environment needs. 
+        </instructions>
         <weight>1</weight>
         <autoEnable>true</autoEnable>
         <template>
@@ -133,7 +135,28 @@
         <weight>1</weight>
         <autoEnable>true</autoEnable>
         <template>
-            <fileTemplate substitution="true">extensions/defineKeyring.rexx</fileTemplate>
+            <fileTemplate substitution="true">extensions/createKeyring.rexx</fileTemplate>
+            <submitAs maxRc="0">TSO-REXX-JCL</submitAs>
+            <maxLrecl>1024</maxLrecl>
+        </template>
+    </step>
+
+    <step name="defineKeyringAccess">
+        <title>Define Keyring Access</title>
+        <description>Granting access to the keyring</description>
+        <runAsUser substitution="true">$!{instance-UKO_ADMIN_SECURITY}</runAsUser>
+        <approver substitution="true">$!{instance-UKO_APPROVER_SECURITY}</approver>
+        <variableValue name="UKO_SERVER_STC_USER" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="UKO_TLS_KEY_STORE_KEY_RING" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="UKO_TLS_TRUST_STORE_KEY_RING" scope="instance" noPromptIfSet="false" required="false"/>
+        <instructions>Executes a REXX program to define access to the key ring and potentially trust ring. 
+            This script assumes that you use the RDATALIB class. 
+            It contains an example for using the FACILITY class ass well that by default is not executed. Modify the script to suit your environment. 
+        </instructions>
+        <weight>1</weight>
+        <autoEnable>true</autoEnable>
+        <template>
+            <fileTemplate substitution="true">extensions/defineKeyringAccess.rexx</fileTemplate>
             <submitAs maxRc="0">TSO-REXX-JCL</submitAs>
             <maxLrecl>1024</maxLrecl>
         </template>
@@ -167,7 +190,9 @@
         <approver substitution="true">$!{instance-UKO_APPROVER_SECURITY}</approver>
         <variableValue name="UKO_SERVER_STC_USER" scope="instance" noPromptIfSet="false" required="false"/>
         <variableValue name="UKO_TLS_TRUST_STORE_KEY_RING" scope="instance" noPromptIfSet="false" required="false"/>
-        <instructions>Adjust and execute this REXX program to add additional certificates to the trust keyring, adjust the names to reflect your own local certificate labels</instructions>
+        <instructions>Adjust and execute this REXX program to add additional certificates to the trust keyring. 
+            Adjust the names to reflect your own local certificate labels.
+        </instructions>
         <weight>1</weight>
         <autoEnable>true</autoEnable>
         <template>

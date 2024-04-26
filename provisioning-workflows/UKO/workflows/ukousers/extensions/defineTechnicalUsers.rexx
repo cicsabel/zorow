@@ -22,46 +22,79 @@ SUPERIOR_GROUP="${instance-UKO_TECHNICAL_SUPERIOR_GROUP}"
 
 #if($!{instance-UKO_CREATE_TECHNICAL_USER_GROUPS} == "true" ) 
 /***********************************************************************/
-/* Creating the required groups                                        */
+/* Creating required groups                                        */
 /***********************************************************************/
-Say "Creating the required groups"
-Say "Creating the Agent started task group"
+Say "Creating required groups"
+Say "Creating Agent started task group "||AGENT_STC_GROUP||" "
 "ADDGROUP "||AGENT_STC_GROUP||" SUPGROUP("||SUPERIOR_GROUP||") OMVS(AUTOGID)"
-Say "Creating the Client group for authentication with the agent"
+if RC <> 0 then do
+   Say "Creation failed, exiting"
+   exit RC
+end
+Say "Creating Client group for authentication with agent "||AGENT_CLIENT_GROUP||" "
 "ADDGROUP "||AGENT_CLIENT_GROUP||" SUPGROUP("||SUPERIOR_GROUP||") OMVS(AUTOGID)"
-Say "Creating the Liberty started task group"
+if RC <> 0 then do
+   Say "Creation failed, exiting"
+   exit RC
+end
+Say "Creating Liberty started task group "||SERVER_STC_GROUP||" "
 "ADDGROUP "||SERVER_STC_GROUP||" SUPGROUP("||SUPERIOR_GROUP||") OMVS(AUTOGID)"
-Say "Creating the unauthenticated user group for the Liberty server"
+if RC <> 0 then do
+   Say "Creation failed, exiting"
+   exit RC
+end
+Say "Creating unauthenticated group "||SERVER_UNAUTHENTICATED_GROUP||" "
 "ADDGROUP "||SERVER_UNAUTHENTICATED_GROUP||" SUPGROUP("||SUPERIOR_GROUP||") OMVS(AUTOGID)"
+if RC <> 0 then do
+   Say "Creation failed, exiting"
+   exit RC
+end
 #end
 
 #if($!{instance-UKO_CREATE_TECHNICAL_USERIDS} == "true" ) 
 /***********************************************************************/
 /* Creating all required user ids                                      */
 /***********************************************************************/
-Say "Creating the Agent started task user ID and group"
+Say "Creating Agent started task user ID "||AGENT_STC_USER||" "
 "ADDUSER "||AGENT_STC_USER||" NOPASSWORD",
    " DFLTGRP("||AGENT_STC_GROUP||") NAME('UKO agent')",
    " OMVS(AUTOUID PROGRAM('/bin/sh')",
    " HOME("||"'"||"/u/"||AGENT_STC_USER||"'"||"))"
+if RC <> 0 then do
+   Say "Creation failed, exiting"
+   exit RC
+end
 
-Say "Creating the Client user for authentication with the agent"
+Say "Creating Client user for authentication with agent "||AGENT_CLIENT_USER||" "
 "ADDUSER "||AGENT_CLIENT_USER||" NOPASSWORD",
    " DFLTGRP("||AGENT_CLIENT_GROUP||") NAME('UKO Client')",
    " OMVS(AUTOUID PROGRAM('/bin/sh')",
    " HOME("||"'"||"/u/"||AGENT_CLIENT_USER||"'"||"))"
+if RC <> 0 then do
+   Say "Creation failed, exiting"
+   exit RC
+end
 
-Say "Creating the Liberty started task user ID and group"
+Say "Creating Liberty started task user ID "||SERVER_STC_USER||" "
 "ADDUSER "||SERVER_STC_USER||" NOPASSWORD",
    " DFLTGRP("||SERVER_STC_GROUP||") NAME('UKO Liberty SERVER')",
    " OMVS(AUTOUID PROGRAM('/bin/sh')",
    " HOME("||"'"||"/u/"||SERVER_STC_USER||"'"||"))"
+if RC <> 0 then do
+   Say "Creation failed, exiting"
+   exit RC
+end
 
-Say "Adding the unauthenticated user ID for the Liberty server (WSGUEST by default)"
+/* unauthenticated user for Liberty server (WSGUEST by default)" */
+Say "Creating unauthenticated user ID "||SERVER_UNAUTHENTICATED_USER||" "
 "ADDUSER "||SERVER_UNAUTHENTICATED_USER||" RESTRICTED NOOIDCARD NOPASSWORD",
    " DFLTGRP("||SERVER_UNAUTHENTICATED_GROUP||") NAME('WAS DEFAULT USER')",
    " OMVS(AUTOUID PROGRAM('/bin/sh')",
    " HOME("||"'"||"/u/"||SERVER_UNAUTHENTICATED_USER||"'"||")) "
+if RC <> 0 then do
+   Say "Creation failed, exiting"
+   exit RC
+end
 
 #end 
 

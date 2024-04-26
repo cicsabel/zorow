@@ -39,3 +39,4 @@
 <atCreate name="UKO_KEY_CUSTODIAN2_GROUP" scope="instance" prompt="true" required="false"/>
 <atCreate name="UKO_AUDITOR" scope="instance" prompt="true" required="false"/>
 <atCreate name="UKO_AUDITOR_GROUP" scope="instance" prompt="true" required="false"/>
+<atCreate name="UKO_SERVER_STC_NAME" scope="instance" prompt="true" required="false"/>
