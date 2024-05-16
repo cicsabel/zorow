@@ -249,7 +249,7 @@
                             s#^\&amp;SYS-JDBC-LOCATION.*#\&amp;SYS-JDBC-LOCATION(${instance-DB_LOCATION})#g;
                             s#^\&amp;SYS-JDBC-PORT.*#\&amp;SYS-JDBC-PORT(${instance-DB_JDBC_PORT})#g;
                             s#^\&amp;SYS-JDBC-SECPORT.*#\&amp;SYS-JDBC-SECPORT(${instance-DB_JDBC_SECPORT})#g;
-                            s#^\&amp;WEBCLIENT.*#\&amp;WEBCLIENT(${instance-UKO_AGENT_CLIENT_USER})#g" "//'${instance-UKO_AGENT_HLQ}.SKMGSAMP(KMGOPDB2)'" >> ${instance-TEMP_DIR}/${instance-UKO_AGENT_STC_NAME}-KMGPARM;
+                            s#^\&amp;WEBCLIENT.*#\&amp;WEBCLIENT(${instance-UKO_AGENT_CLIENT_USER})#g" "//'${instance-UKO_AGENT_EXECLIB}(KMGOPDB2)'" >> ${instance-TEMP_DIR}/${instance-UKO_AGENT_STC_NAME}-KMGPARM;
 
                         echo "&amp;DB2-QUALIFIER(${instance-DB_CURRENT_SCHEMA})" >> ${instance-TEMP_DIR}/${instance-UKO_AGENT_STC_NAME}-KMGPARM;    
                             

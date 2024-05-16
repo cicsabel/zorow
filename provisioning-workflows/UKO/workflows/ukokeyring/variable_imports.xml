@@ -14,7 +14,7 @@
   <label>WLP_INSTALL_DIR</label>
   <abstract>WebSphere Liberty installation directory</abstract>
   <description>The path to the WebSphere Liberty install directory.</description>
-  <category>String Variables</category>
+  <category>UKO Server variables</category>
   <string>
     <!-- Path validation, has to start with slash, may contain slashes, must not end with slash or whitespace -->
     <regularExpression>^\/([A-z0-9-_+\.]+\/)*([A-z0-9-_+\.])*[^\/\s]$</regularExpression>
@@ -25,7 +25,7 @@
   <label>WLP_OUTPUT_DIR</label>
   <abstract>WebSphere Liberty output directory</abstract>
   <description>The path to the WebSphere Liberty output directory for logs and messages.</description>
-  <category>String Variables</category>
+  <category>UKO Server variables</category>
   <string>
     <!-- Path validation, has to start with slash, may contain slashes, must not end with slash or whitespace -->
     <regularExpression>^\/([A-z0-9-_+\.]+\/)*([A-z0-9-_+\.])*[^\/\s]$</regularExpression>
@@ -36,7 +36,7 @@
   <label>JAVA_HOME</label>
   <abstract>Java home path</abstract>
   <description>The path to the Java home directory.</description>
-  <category>String Variables</category>
+  <category>UKO Server variables</category>
   <string valueMustBeChoice="false">
     <choice>"/java/java80_64/J8.0_64"</choice>
     <choice>"/java/java11_bit64_sr18_fp0/J11.0_64"</choice>
@@ -49,7 +49,7 @@
   <label>UKO_INSTALL_DIR</label>
   <abstract>UKO installation directory</abstract>
   <description>The path to the UKO install directory.</description>
-  <category>String Variables</category>
+  <category>UKO Server variables</category>
   <string>
     <!-- Path validation, has to start with slash, may contain slashes, must not end with slash or whitespace -->
     <regularExpression>^\/([A-z0-9-_+\.]+\/)*([A-z0-9-_+\.])*[^\/\s]$</regularExpression>
@@ -60,7 +60,7 @@
   <label>TEMP_DIR</label>
   <abstract>Temp directory</abstract>
   <description>The path to a temp directory for files created and removed at runtime</description>
-  <category>String Variables</category>
+  <category>General variables</category>
   <string>
     <!-- Path validation, has to start with slash, may contain slashes, must not end with slash or whitespace -->
     <regularExpression>^\/([A-z0-9-_+\.]+\/)*([A-z0-9-_+\.])*[^\/\s]$</regularExpression>
@@ -79,7 +79,7 @@
   <label>UKO_CREATE_ANGEL</label>
   <abstract>Enable Angel creation</abstract>
   <description>Flag to indicate if an Angel server is to be created</description>
-  <category>String Variables</category>
+  <category>General variables</category>
   <string valueMustBeChoice="true">
     <choice>true</choice>
     <choice>false</choice>
@@ -93,7 +93,7 @@
   <description>If an Angel is to be created, this will be the name. If no name specified, a name
     will be generated. If no Angel is to be created, this is the existing Angel to connect to. If no
     name specified, UKO will connect to the default Angel</description>
-  <category>String Variables</category>
+  <category>UKO Server variables</category>
   <string>
     <validationType>USERID</validationType>
   </string>
@@ -106,7 +106,7 @@
   <label>UKO_CREATE_CA</label>
   <abstract>Enable CA creation</abstract>
   <description>Flag to indicate if a CA is to be created</description>
-  <category>String Variables</category>
+  <category>Certificate variables</category>
   <string valueMustBeChoice="true">
     <choice>true</choice>
     <choice>false</choice>
@@ -117,7 +117,7 @@
   <label>UKO_CA_LABEL</label>
   <abstract>UKO_CA_LABEL</abstract>
   <description>Name of the UKO_CA_LABEL to use for the server.</description>
-  <category>String Variables</category>
+  <category>Certificate variables</category>
   <string />
 </variable>
 
@@ -125,7 +125,7 @@
   <label>UKO_CREATE_KEYRING</label>
   <abstract>Enable keyring creation</abstract>
   <description>Flag to indicate if a keyring is to be created</description>
-  <category>String Variables</category>
+  <category>Certificate variables</category>
   <string valueMustBeChoice="true">
     <choice>true</choice>
     <choice>false</choice>
@@ -138,7 +138,7 @@
   <description>Will create only one keyring for key and trust store, so UKO_TLS_TRUST_STORE_KEY_RING will be UKO_TLS_KEY_STORE_KEY_RING. 
     Any value set for UKO_TLS_TRUST_STORE_KEY_RING will then be ignored. 
   </description>
-  <category>String Variables</category>
+  <category>Certificate variables</category>
   <string valueMustBeChoice="true">
     <choice>true</choice>
     <choice>false</choice>
@@ -149,14 +149,14 @@
   <label>UKO_TLS_KEY_STORE_KEY_RING</label>
   <abstract>UKO_TLS_KEY_STORE_KEY_RING</abstract>
   <description>Name of the UKO_TLS_KEY_STORE_KEY_RING to use for the server.</description>
-  <category>String Variables</category>
+  <category>Certificate variables</category>
   <string />
 </variable>
 <variable name="UKO_TLS_TRUST_STORE_KEY_RING" scope="instance" visibility="public">
   <label>UKO_TLS_TRUST_STORE_KEY_RING</label>
   <abstract>UKO_TLS_TRUST_STORE_KEY_RING</abstract>
   <description>Name of the UKO_TLS_TRUST_STORE_KEY_RING to use for the server.</description>
-  <category>String Variables</category>
+  <category>Certificate variables</category>
   <string />
 </variable>
 
@@ -164,7 +164,7 @@
   <label>UKO_CREATE_CERTIFICATES</label>
   <abstract>Enable certificate creation</abstract>
   <description>Flag to indicate if certificates are to be created</description>
-  <category>String Variables</category>
+  <category>Certificate variables</category>
   <string valueMustBeChoice="true">
     <choice>true</choice>
     <choice>false</choice>
@@ -175,35 +175,35 @@
   <label>UKO_TLS_KEY_STORE_SERVER_CERT_CN</label>
   <abstract> UKO_TLS_KEY_STORE_SERVER_CERT_CN</abstract>
   <description>Name of the UKO_TLS_KEY_STORE_SERVER_CERT_CN to use for the server.</description>
-  <category>String Variables</category>
+  <category>Certificate variables</category>
   <string />
 </variable>
 <variable name="UKO_TLS_KEY_STORE_SERVER_CERT_OU" scope="instance" visibility="private">
   <label>UKO_TLS_KEY_STORE_SERVER_CERT_OU</label>
   <abstract>UKO_TLS_KEY_STORE_SERVER_CERT_OU</abstract>
   <description>Name of the UKO_TLS_KEY_STORE_SERVER_CERT_OU to use for the server.</description>
-  <category>String Variables</category>
+  <category>Certificate variables</category>
   <string />
 </variable>
 <variable name="UKO_TLS_KEY_STORE_SERVER_CERT_O" scope="instance" visibility="private">
   <label>UKO_TLS_KEY_STORE_SERVER_CERT_O</label>
   <abstract>UKO_TLS_KEY_STORE_SERVER_CERT_O</abstract>
   <description>Name of the UKO_TLS_KEY_STORE_SERVER_CERT_O to use for the server.</description>
-  <category>String Variables</category>
+  <category>Certificate variables</category>
   <string />
 </variable>
 <variable name="UKO_TLS_KEY_STORE_SERVER_CERT" scope="instance" visibility="public">
   <label>UKO_TLS_KEY_STORE_SERVER_CERT</label>
   <abstract>UKO_TLS_KEY_STORE_SERVER_CERT</abstract>
   <description>Name of the UKO_TLS_KEY_STORE_SERVER_CERT to use for the server.</description>
-  <category>String Variables</category>
+  <category>Certificate variables</category>
   <string />
 </variable>
 <variable name="UKO_OIDC_PROVIDER_CERT" scope="instance" visibility="public">
   <label>UKO_OIDC_PROVIDER_CERT</label>
   <abstract>UKO_OIDC_PROVIDER_CERT</abstract>
   <description>Name of the UKO_OIDC_PROVIDER_CERT to use for the server.</description>
-  <category>String Variables</category>
+  <category>Certificate variables</category>
   <string />
 </variable>
 
@@ -211,7 +211,7 @@
   <label>UKO_OAUTH_CLIENT_ID</label>
   <abstract>UKO_OAUTH_CLIENT_ID</abstract>
   <description>Client ID is used by the OpenID Connect framework to identify the clients connecting to the server</description>
-  <category>String Variables</category>
+  <category>UKO Server variables</category>
   <string />
 </variable>
 
@@ -219,15 +219,15 @@
   <label>UKO_OAUTH_CLIENT_ID_OPENAPI</label>
   <abstract>UKO_OAUTH_CLIENT_ID_OPENAPI</abstract>
   <description>Client ID used by the OpenAPI user interface</description>
-  <category>String Variables</category>
+  <category>UKO Server variables</category>
   <string />
 </variable>
 
 <variable name="ENABLE_MTLS_VIA_HTTPS_PORT" visibility="public">
   <label>ENABLE_MTLS_VIA_HTTPS_PORT</label>
   <abstract>Enable mTLS authentication via the https port?</abstract>
-  <description>This option allows mTLS authentication using the https port isntead of a separate mTLS port</description>
-  <category>String Variables</category>
+  <description>This option allows mTLS authentication using the https port instead of a separate mTLS port</description>
+  <category>UKO Server variables</category>
   <string valueMustBeChoice="true">
     <choice>true</choice>
     <choice>false</choice>
@@ -239,7 +239,7 @@
   <label>UKO_SERVER_PUBLIC_KEY_HASH</label>
   <abstract>Public key hash of the UKO server</abstract>
   <description>UKO server public key hash consisting of 64 hex characters you find it when you click on the question mark in the top right corner. Specify * if you want this agent to be accessible by any client.</description>
-  <category>String Variables</category>
+  <category>UKO Server variables</category>
   <string>
     <!-- 64 hex caharacters or * -->
     <regularExpression>^[0-9a-fA-F]{64}$|^\*$</regularExpression>
@@ -251,7 +251,7 @@
   <label>UKO_WELCOME_MESSAGE</label>
   <abstract>Description message</abstract>
   <description>Update description in the UKO server.env (EKMF_DESCRIPTION), leave empty for default </description>
-  <category>String Variables</category>
+  <category>UKO Server variables</category>
   <string />
 </variable>
 
@@ -259,7 +259,7 @@
   <label>UKO_TRACE_OPTIONS</label>
   <abstract>Trace options</abstract>
   <description>Trace options for the UKO server, leave empty for default </description>
-  <category>String Variables</category>
+  <category>UKO Server variables</category>
   <string valueMustBeChoice="false">
     <choice>"*=info:com.ibm.ccc.ekmf.*=info"</choice>
     <choice>"com.ibm.ccc.ekmf.*=all:com.ibm.crypto.*=all:org.eclipse.persistence.*=info:com.ibm.db2.*=info:eclipselink.sql=info"</choice>
@@ -274,7 +274,7 @@
   <label>SAF_PROFILE_PREFIX</label>
   <abstract>SAF prefix for EJBROLE profiles</abstract>
   <description>SAF prefix to be used for profiles in the EJBROLE class</description>
-  <category>String Variables</category>
+  <category>UKO Server variables</category>
   <string />
 </variable>
 
@@ -282,7 +282,7 @@
   <label>UKO_VAULT_ID</label>
   <abstract>Vault ID to grant access to, select "ekmfwebv2" for EKMF Web 2.x</abstract>
   <description>Specify the vault ID to grant access to, where 00000000-0000-0000-0000-000000000000 is the default vault, * will be all vaults. Chose "ekmfwebv2" if you provision UKO pre V3.1.</description>
-  <category>String Variables</category>
+  <category>UKO Server variables</category>
   <string valueMustBeChoice="false">
     <choice>*</choice>
     <choice>ekmfwebv2</choice>
@@ -299,7 +299,7 @@
   <label>Agent Port</label>
   <abstract>Port for the UKO Agent</abstract>
   <description>Port for the UKO Agent</description>
-  <category>REST</category>
+  <category>UKO Agent variables</category>
   <string />
 </variable>
 
@@ -315,7 +315,7 @@
   <label>HTTP port</label>
   <abstract>HTTP_PORT for the UKO server</abstract>
   <description>HTTP port for the UKO server</description>
-  <category>REST</category>
+  <category>UKO Server variables</category>
   <string />
 </variable>
 
@@ -331,7 +331,7 @@
   <label>HTTPS port</label>
   <abstract>HTTPS_PORT for the UKO server</abstract>
   <description>HTTPS port for the UKO server</description>
-  <category>REST</category>
+  <category>UKO Server variables</category>
   <string />
 </variable>
 
@@ -347,7 +347,7 @@
   <label>UKO_ADDRESS</label>
   <abstract>Hostname that the UKO server is running on</abstract>
   <description>Hostname that the UKO server is running on.</description>
-  <category>String Variables</category>
+  <category>UKO Server variables</category>
   <string />
 </variable>
 
@@ -359,7 +359,7 @@
   <label>UKO_ZOS_PROCLIB</label>
   <abstract>The PROCLIB dataset</abstract>
   <description>The PROCLIB dataset</description>
-  <category>String Variables</category>
+  <category>General variables</category>
   <string>
     <validationType>DSNAME</validationType>
   </string>
@@ -369,7 +369,7 @@
   <label>UKO_ZOS_PARMLIB</label>
   <abstract>The PARMLIB dataset</abstract>
   <description>The PARMLIB dataset</description>
-  <category>String Variables</category>
+  <category>General variables</category>
   <string>
     <validationType>DSNAME</validationType>
   </string>
@@ -406,7 +406,7 @@
   <label>START_SERVER</label>
   <abstract>Indicates whether during the provision flow, the subsystem should be started</abstract>
   <description>This option allows a provision to be done, without starting the subsystem. By default the subsystem is started.</description>
-  <category>String Variables</category>
+  <category>UKO Server variables</category>
   <string valueMustBeChoice="true">
     <choice>true</choice>
     <choice>false</choice>
@@ -418,7 +418,7 @@
   <label>START_AGENT</label>
   <abstract>Indicates whether during the provision flow, the subsystem should be started</abstract>
   <description>This option allows a provision to be done, without starting the subsystem. By default the subsystem is started.</description>
-  <category>String Variables</category>
+  <category>UKO Agent variables</category>
   <string valueMustBeChoice="true">
     <choice>true</choice>
     <choice>false</choice>
@@ -426,11 +426,11 @@
   </string>
 </variable>
 
-<variable name="UKO_STOP_TIMEOUT" scope="instance" visibility="private">
-  <label>UKO_STOP_TIMEOUT</label>
+<variable name="STC_STOP_TIMEOUT" scope="instance" visibility="private">
+  <label>STC_STOP_TIMEOUT</label>
   <abstract>Stop timeout</abstract>
-  <description>Number of seconds to wait for UKO to stop before taking further action</description>
-  <category>Integer Variables</category>
+  <description>Number of seconds to wait for started tasks to stop before taking further action</description>
+  <category>General variables</category>
   <integer>
     <minValue>10</minValue>
     <maxValue>600</maxValue>
@@ -446,7 +446,7 @@
   <label>WLP_USER_DIR</label>
   <abstract> zfsMountPoint</abstract>
   <description>zfsMountPoint</description>
-  <category>String Variables</category>
+  <category>UKO Server variables</category>
   <string>
     <!-- Path validation, has to start with slash, may contain slashes, must not end with slash or whitespace -->
     <regularExpression>^\/([A-z0-9-_+\.]+\/)*([A-z0-9-_+\.])*[^\/\s]$</regularExpression>
@@ -457,7 +457,7 @@
   <label>UKO_FILE_SYSTEM_HLQ</label>
   <abstract>zfsHLQ</abstract>
   <description>zfsHLQ</description>
-  <category>String Variables</category>
+  <category>UKO Server variables</category>
   <string>
     <validationType>DSNAME</validationType>
   </string>
@@ -468,7 +468,7 @@
   <abstract>zFS DataClass for zFS dataset, ignored if UKO_ZOS_VSAM_VOLUME=SMS</abstract>
   <description>zFS DataClass used to define the zFS dataset, If the value for UKO_ZOS_VSAM_VOLUME 
     is specified as SMS (Storage Management Subsystem), this value is ignored</description>
-  <category>String Variables</category>
+  <category>General variables</category>
   <string />
 </variable>
 
@@ -477,7 +477,7 @@
   <abstract>Volume for Datasets or SMS</abstract>
   <description>VOLUME value to be used when creating Datasets (eg SYSDA), set to SMS if SMS is used. 
     If SMS is not used, you also must specify the DATACLASS.</description>
-  <category>String Variables</category>
+  <category>General variables</category>
   <string>
     <minLength>1</minLength>
     <maxLength>25</maxLength>
@@ -490,7 +490,7 @@
   <abstract>Job card to be used by STC Jobs</abstract>
   <description>Specifies the job card to use for the started task of the provisioned instance. When
     specified, UKO_ZOS_STCJOBS must also be used to indicate the data set prefix for STCJOBS.</description>
-  <category>String Variables</category>
+  <category>General variables</category>
   <string />
 </variable>
 
@@ -500,7 +500,7 @@
   <description>Names the data set into which the workflow can create the source JCL that defines the
     job level characteristics of the started task for the provisioned instance. Used only when
     UKO_STC_JOB_CARD is also specified. </description>
-  <category>String Variables</category>
+  <category>General variables</category>
   <string>
     <validationType>DSNAME</validationType>
   </string>
@@ -510,7 +510,7 @@
   <label>UKO_SERVER_STC_NAME</label>
   <abstract>UKO Server STC name</abstract>
   <description>The started task name of the UKO Liberty server</description>
-  <category>String Variables</category>
+  <category>UKO Server variables</category>
   <string />
 </variable>
 
@@ -522,7 +522,7 @@
   <label>UKO_ADMIN_SERVER</label>
   <abstract>Userid the provisioned server will run under</abstract>
   <description>The userid that the UKO servers started task will run under</description>
-  <category>String Variables</category>
+  <category>Template variables</category>
   <string>
     <validationType>USERID</validationType>
   </string>
@@ -531,7 +531,7 @@
   <label>UKO_APPROVER_SERVER</label>
   <abstract>The userid to approve the servers run as userid</abstract>
   <description>The userid to approve the servers run as userid</description>
-  <category>String Variables</category>
+  <category>Template variables</category>
   <string>
     <!-- Validate for a list of one or more space separated SAF userids -->
     <regularExpression>^[0-9a-zA-Z$#@ ]*$</regularExpression>
@@ -542,7 +542,7 @@
   <label>UKO_ADMIN_DB</label>
   <abstract>Userid the database creation will run under</abstract>
   <description>The userid that the UKO database creation task will run under</description>
-  <category>String Variables</category>
+  <category>Template variables</category>
   <string>
     <validationType>USERID</validationType>
   </string>
@@ -551,7 +551,7 @@
   <label>UKO_APPROVER_DB</label>
   <abstract>The userid to approve the database run as userid</abstract>
   <description>The userid to approve the database run as userid</description>
-  <category>String Variables</category>
+  <category>Template variables</category>
   <string>
     <!-- Validate for a list of one or more space separated SAF userids -->
     <regularExpression>^[0-9a-zA-Z$#@ ]*$</regularExpression>
@@ -562,7 +562,7 @@
   <label>UKO_ADMIN_SECURITY</label>
   <abstract>APF authorized user id for security related provisioning tasks</abstract>
   <description>The APF authorized userid to run SAF certificate creation/deletion and SAF profile creation/deletion</description>
-  <category>String Variables</category>
+  <category>Template variables</category>
   <string>
     <validationType>USERID</validationType>
   </string>
@@ -571,7 +571,7 @@
   <label>UKO_APPROVER_SECURITY</label>
   <abstract>The user id to approve security related provisioning tasks</abstract>
   <description>The user id to approve security related provisioning tasks</description>
-  <category>String Variables</category>
+  <category>Template variables</category>
   <string>
     <!-- Validate for a list of one or more space separated SAF userids -->
     <regularExpression>^[0-9a-zA-Z$#@]*$</regularExpression>
@@ -582,7 +582,7 @@
   <label>UKO_ADMIN_ZFS</label>
   <abstract>The user id for file system creation and mounting</abstract>
   <description>The id of the user authorized to create and mount file systems</description>
-  <category>String Variables</category>
+  <category>Template variables</category>
   <string>
     <validationType>USERID</validationType>
   </string>
@@ -591,7 +591,7 @@
   <label>UKO_APPROVER_ZFS</label>
   <abstract>The user id to approve file system creation</abstract>
   <description>The user id to approve file system creation</description>
-  <category>String Variables</category>
+  <category>Template variables</category>
   <string>
     <!-- Validate for a list of one or more space separated SAF userids -->
     <regularExpression>^[0-9a-zA-Z$#@ ]*$</regularExpression>
@@ -602,7 +602,7 @@
   <label>UKO_ADMIN_CONSOLE</label>
   <abstract>The user id for executing mvs console start and stop commands</abstract>
   <description>The user id for executing mvs console start and stop commands</description>
-  <category>String Variables</category>
+  <category>Template variables</category>
   <string>
     <validationType>USERID</validationType>
   </string>
@@ -611,7 +611,7 @@
   <label>UKO_APPROVER_CONSOLE</label>
   <abstract>The user id to approve the execution of console commands</abstract>
   <description>The user id to approve the execution of console commands</description>
-  <category>String Variables</category>
+  <category>Template variables</category>
   <string>
     <!-- Validate for a list of one or more space separated SAF userids -->
     <regularExpression>^[0-9a-zA-Z$#@ ]*$</regularExpression>
@@ -622,14 +622,14 @@
   <label>UKO_ADMIN_TSO</label>
   <abstract>The user id for adding and removing procedures from the proclib</abstract>
   <description>The user id for adding and removing procedures from the proclib</description>
-  <category>String Variables</category>
+  <category>Template variables</category>
   <string />
 </variable>
 <variable name="UKO_APPROVER_TSO" visibility="private">
   <label>UKO_APPROVER_TSO</label>
   <abstract>The user id to approval proclib additions</abstract>
   <description>The user id to approval proclib additions</description>
-  <category>String Variables</category>
+  <category>Template variables</category>
   <string>
     <!-- Validate for a list of one or more space separated SAF userids -->
     <regularExpression>^[0-9a-zA-Z$#@ ]*$</regularExpression>
@@ -643,7 +643,7 @@
   <label>UKO_CREATE_TECHNICAL_USER_GROUPS</label>
   <abstract>Create the required groups</abstract>
   <description>Flag to indicate if groups are to be created</description>
-  <category>String Variables</category>
+  <category>User ID creation</category>
   <string valueMustBeChoice="true">
     <choice>true</choice>
     <choice>false</choice>
@@ -651,22 +651,11 @@
   </string>
 </variable>
 
-<variable name="UKO_TECHNICAL_SUPERIOR_GROUP" visibility="private">
-  <label>UKO_TECHNICAL_SUPERIOR_GROUP</label>
-  <abstract>The superior group for the technical groups</abstract>
-  <description>Superior group to be used for the SUPGROUP parameter</description>
-  <category>String Variables</category>
-  <string>
-    <validationType>USERID</validationType>
-    <default>SYS1</default>
-  </string>
-</variable>
-
 <variable name="UKO_SERVER_STC_GROUP" visibility="public">
   <label>UKO_SERVER_STC_GROUP</label>
   <abstract>The group containing the user id running the UKO Liberty server</abstract>
   <description>The group containing the id of the user authorized to run UKO Liberty Server as started task</description>
-  <category>String Variables</category>
+  <category>UKO Server variables</category>
   <string>
     <validationType>USERID</validationType>
   </string>
@@ -676,7 +665,7 @@
   <label>UKO_UNAUTHENTICATED_GROUP</label>
   <abstract>The group containing the unauthenticated user id of the UKO Liberty server</abstract>
   <description>The group containing the Liberty unauthenticated userid</description>
-  <category>String Variables</category>
+  <category>UKO Server variables</category>
   <string>
     <validationType>USERID</validationType>
   </string>
@@ -686,7 +675,7 @@
   <label>UKO_AGENT_STC_GROUP</label>
   <abstract>The group containing the user id running the UKO agent</abstract>
   <description>The group containing the id of the user authorized to run the UKO agent as started task</description>
-  <category>String Variables</category>
+  <category>UKO Agent variables</category>
   <string>
     <validationType>USERID</validationType>
   </string>
@@ -697,7 +686,7 @@
   <abstract>The group containing the user id representing clients to connect to the UKO agent</abstract>
   <description>The group containing the id of a client connecting to the UKO agent, which is the
     user ID defined in the &amp;WEBCLIENT KPMGPARM</description>
-  <category>String Variables</category>
+  <category>UKO Agent variables</category>
   <string>
     <validationType>USERID</validationType>
   </string>
@@ -707,7 +696,7 @@
   <label>UKO_CREATE_TECHNICAL_USERIDS</label>
   <abstract>Create the required userids</abstract>
   <description>Flag to indicate if userids are to be created</description>
-  <category>String Variables</category>
+  <category>User ID creation</category>
   <string valueMustBeChoice="true">
     <choice>true</choice>
     <choice>false</choice>
@@ -719,7 +708,7 @@
   <label>UKO_SERVER_STC_USER</label>
   <abstract>The user id running the UKO Liberty server</abstract>
   <description>The id of the user authorized to run UKO Liberty Server as started task</description>
-  <category>String Variables</category>
+  <category>UKO Server variables</category>
   <string>
     <validationType>USERID</validationType>
   </string>
@@ -729,7 +718,7 @@
   <label>UKO_UNAUTHENTICATED_USER</label>
   <abstract>The unauthenticated user id of the UKO Liberty server</abstract>
   <description>The Liberty unauthenticated userid</description>
-  <category>String Variables</category>
+  <category>UKO Server variables</category>
   <string>
     <validationType>USERID</validationType>
   </string>
@@ -739,7 +728,7 @@
   <label>UKO_AGENT_STC_USER</label>
   <abstract>The user id running the UKO agent</abstract>
   <description>The id of the user authorized to run the UKO agent as started task</description>
-  <category>String Variables</category>
+  <category>UKO Agent variables</category>
   <string>
     <validationType>USERID</validationType>
   </string>
@@ -750,7 +739,7 @@
   <abstract>The user id representing clients to connect to the UKO agent</abstract>
   <description>The id of a client connecting to the UKO agent, which is the user ID defined in the
     &amp;WEBCLIENT KPMGPARM</description>
-  <category>String Variables</category>
+  <category>UKO Agent variables</category>
   <string>
     <validationType>USERID</validationType>
   </string>
@@ -764,7 +753,7 @@
   <label>UKO_CREATE_PERSONAL_USER_GROUPS</label>
   <abstract>Create the groups representing access roles</abstract>
   <description>Flag to indicate if groups are to be created holding the different access roles</description>
-  <category>String Variables</category>
+  <category>User ID creation</category>
   <string valueMustBeChoice="true">
     <choice>true</choice>
     <choice>false</choice>
@@ -772,22 +761,11 @@
   </string>
 </variable>
 
-<variable name="UKO_PERSONAL_SUPERIOR_GROUP" visibility="private">
-  <label>UKO_PERSONAL_SUPERIOR_GROUP</label>
-  <abstract>The superior group for the role groups</abstract>
-  <description>Superior group to be used for the SUPGROUP parameter</description>
-  <category>String Variables</category>
-  <string>
-    <validationType>USERID</validationType>
-    <default>SYS1</default>
-  </string>
-</variable>
-
 <variable name="UKO_CREATE_PERSONAL_USERIDS" visibility="private">
   <label>UKO_CREATE_PERSONAL_USERIDS</label>
   <abstract>Create the userids representing access roles</abstract>
   <description>Flag to indicate if userids for different access roles like key admin or custodian are to be created</description>
-  <category>String Variables</category>
+  <category>User ID creation</category>
   <string valueMustBeChoice="true">
     <choice>true</choice>
     <choice>false</choice>
@@ -799,7 +777,7 @@
   <label>UKO_VAULT_ADMIN</label>
   <abstract>The UKO Vault Administrator</abstract>
   <description>Valut Administrator who sets up and manages the vaults</description>
-  <category>String Variables</category>
+  <category>UKO Server variables</category>
   <string>
     <validationType>USERID</validationType>
   </string>
@@ -808,7 +786,7 @@
   <label>UKO_VAULT_ADMIN_GROUP</label>
   <abstract>The group containing UKO Vault Administrator</abstract>
   <description>Group containing the Vault Administrator who sets up and manages the vaults</description>
-  <category>String Variables</category>
+  <category>UKO Server variables</category>
   <string>
     <validationType>USERID</validationType>
   </string>
@@ -819,7 +797,7 @@
   <abstract>The UKO Key Administrator</abstract>
   <description>Key Administrator who sets up the key hierarchy, and controls keystores and
     templates, as well as performs special key state actions.</description>
-  <category>String Variables</category>
+  <category>UKO Server variables</category>
   <string>
     <validationType>USERID</validationType>
   </string>
@@ -829,7 +807,7 @@
   <abstract>The group containing UKO Key Administrator</abstract>
   <description>Group containing the Key Administrator who sets up the key hierarchy, and controls
     keystores and templates, as well as performs special key state actions.</description>
-  <category>String Variables</category>
+  <category>UKO Server variables</category>
   <string>
     <validationType>USERID</validationType>
   </string>
@@ -840,7 +818,7 @@
   <abstract>The first UKO Key Custodian</abstract>
   <description>Key Custodian who can generate keys in PRE-ACTIVATION state, but cannot Activate and
     Distribute them. Destroy and Compromise actions are also possible.</description>
-  <category>String Variables</category>
+  <category>UKO Server variables</category>
   <string>
     <validationType>USERID</validationType>
   </string>
@@ -850,7 +828,7 @@
   <abstract>The group holding the first UKO Key Custodians</abstract>
   <description>Group for Key Custodians who can generate keys in PRE-ACTIVATION state, but cannot Activate and
     Distribute them. Destroy and Compromise actions are also possible.</description>
-  <category>String Variables</category>
+  <category>UKO Server variables</category>
   <string>
     <validationType>USERID</validationType>
   </string>
@@ -862,7 +840,7 @@
   <description>Key Custodian who cannot Generate, but can Activate keys bringing them from
     PRE-ACTIVATION to ACTIVE state (then distributes them). Destroy and Compromise actions are also possible.
 </description>
-  <category>String Variables</category>
+  <category>UKO Server variables</category>
   <string>
     <validationType>USERID</validationType>
   </string>
@@ -873,7 +851,7 @@
   <description>The group holding the Key Custodians who cannot Generate, but can Activate keys bringing them from
     PRE-ACTIVATION to ACTIVE state (then distributes them). Destroy and Compromise actions are also possible.
 </description>
-  <category>String Variables</category>
+  <category>UKO Server variables</category>
   <string>
     <validationType>USERID</validationType>
   </string>
@@ -884,7 +862,7 @@
   <abstract>The UKO Auditor</abstract>
   <description>Auditor who can view the audit log as well as keystores, templates, keys, and status of dataset encryption.
 </description>
-  <category>String Variables</category>
+  <category>UKO Server variables</category>
   <string>
     <validationType>USERID</validationType>
   </string>
@@ -895,7 +873,7 @@
   <abstract>The group holding the UKO Auditors</abstract>
   <description>The group holding the auditors who can view the audit log as well as keystores, templates, keys, and status of dataset encryption.
 </description>
-  <category>String Variables</category>
+  <category>UKO Server variables</category>
   <string>
     <validationType>USERID</validationType>
   </string>
@@ -912,7 +890,7 @@
   <abstract>HLQ for temporary datasets</abstract>
   <description>HLQ for temporary datasets that are created to store temporary DDLs and other files created 
     during database creation, update and load. All files will be created under UKO_FILE_SYSTEM_HLQ.DB_CURRENT_SCHEMA.*</description>
-  <category>String Variables</category>
+  <category>DB variables</category>
   <string>
     <validationType>DSNAME</validationType>
   </string>
@@ -922,7 +900,7 @@
   <label>DB_HLQ</label>
   <abstract>The DB_HLQ dataset</abstract>
   <description>The HLQ of where Db2 is installed</description>
-  <category>String Variables</category>
+  <category>DB variables</category>
   <string>
     <validationType>DSNAME</validationType>
   </string>
@@ -932,7 +910,7 @@
   <label>DB_RUNLIB</label>
   <abstract>The DB_RUNLIB dataset</abstract>
   <description>The HLQ of the Db2 runlib</description>
-  <category>String Variables</category>
+  <category>DB variables</category>
   <string>
     <validationType>DSNAME</validationType>
   </string>
@@ -942,7 +920,7 @@
   <label>DB_JCC_SSID</label>
   <abstract>The DB_JCC_SSID </abstract>
   <description>The SSID of Db2</description>
-  <category>String Variables</category>
+  <category>DB variables</category>
   <string>
     <minLength>4</minLength>
     <maxLength>4</maxLength>
@@ -953,7 +931,7 @@
   <label>DB_INSTALL_FROM_FILE_OR_DATASET</label>
   <abstract>Install from file or data set</abstract>
   <description>Specify whether the database DDL files are in a folder or data set. If you are updating: specify where the last update came from.</description>
-  <category>String Variables</category>
+  <category>DB Legacy</category>
   <string valueMustBeChoice="true" multiLine="false">
       <choice>FILE</choice>
       <choice>DATASET</choice>
@@ -965,7 +943,7 @@
   <label>DB_CURRENT_SCHEMA</label>
   <abstract>The DB_CURRENT_SCHEMA</abstract>
   <description>The current schema of the Db2 database</description>
-  <category>String Variables</category>
+  <category>DB variables</category>
   <string />
 </variable>
 
@@ -973,7 +951,7 @@
   <label>DB_CURRENT_SQLID</label>
   <abstract>The DB_CURRENT_SQLID</abstract>
   <description>The current SQL ID of the Db2 database</description>
-  <category>String Variables</category>
+  <category>DB variables</category>
   <string />
 </variable>
 
@@ -981,7 +959,7 @@
   <label>DB_NAME_UKO</label>
   <abstract>The DB_NAME_UKO</abstract>
   <description>The name of the database for the UKO key repository</description>
-  <category>String Variables</category>
+  <category>DB variables</category>
   <string />
 </variable>
 
@@ -989,7 +967,7 @@
   <label>DB_NAME_DATASET_ENCRYPTION_STATUS</label>
   <abstract>The Db2 DB_NAME_DATASET_ENCRYPTION_STATUS</abstract>
   <description>The name of the database for the PE data set status</description>
-  <category>String Variables</category>
+  <category>DB variables</category>
   <string />
 </variable>
 
@@ -997,7 +975,7 @@
   <label>DB_FILE_INSTALL_PATH</label>
   <abstract>Legacy: only with DB_INSTALL_FROM_FILE_OR_DATASET=FILE with DDLs shipped by EKMF Web pre v3.1</abstract>
   <description>Legacy option, before v3.1 the DDLs were shipped in a folder location as part of EKMF Web. From UKO 3.1 use the database provided in a data set as separate FMID</description>
-  <category>String Variables</category>
+  <category>DB Legacy</category>
   <string>
     <!-- Path validation, has to start with slash, may contain slashes, must not end with slash or whitespace, or might be empty -->
     <regularExpression>(^\/([A-z0-9-_+\.]+\/)*([A-z0-9-_+\.])*[^\/\s]$|^$)</regularExpression>
@@ -1009,7 +987,7 @@
   <abstract>UKO database HLQ from which DB is installed if DB_INSTALL_FROM_FILE_OR_DATASET=DATASET</abstract>
   <description>HLQ where the UKO database has been installed, containing the SKMGSQL dataset
   </description>
-  <category>String Variables</category>
+  <category>DB variables</category>
   <string>
     <!-- must be valid dataset, or might be empty depending on installation type-->
     <regularExpression>(^(?=.{1,44}$)[A-Z#$@][A-Z0-9\}#$@-]{0,7}([.][A-Z#$@][A-Z0-9\}#$@-]{0,7}){0,21}$|^$)</regularExpression>
@@ -1021,7 +999,7 @@
   <label>DB_CODEPAGE</label>
   <abstract>The Db2 DB_CODEPAGE</abstract>
   <description>The DB_CODEPAGE of the Db2 database</description>
-  <category>String Variables</category>
+  <category>DB variables</category>
   <string />
 </variable>
 
@@ -1029,7 +1007,7 @@
   <label>DB_BUFFERPOOL_TABLESPACE</label>
   <abstract>The Db2 bufferpool for table spaces</abstract>
   <description>The buffer pool for table spaces created in the Db2 database</description>
-  <category>String Variables</category>
+  <category>DB variables</category>
   <string />
 </variable>
 
@@ -1037,7 +1015,7 @@
   <label>DB_BUFFERPOOL_DEFAULT</label>
   <abstract>The Db2 default bufferpool for table spaces</abstract>
   <description>Specifies the default buffer pool name to be used for table spaces created within the database.</description>
-  <category>String Variables</category>
+  <category>DB variables</category>
   <string />
 </variable>
 
@@ -1045,7 +1023,7 @@
   <label>DB_BUFFERPOOL_INDEX</label>
   <abstract>The Db2 default bufferpool for indexes</abstract>
   <description>Specifies the default buffer pool name to be used for the indexes created within the database.</description>
-  <category>String Variables</category>
+  <category>DB variables</category>
   <string />
 </variable>
 
@@ -1053,7 +1031,7 @@
   <label>DB_STOGROUP</label>
   <abstract>The Db2 DB_STOGROUP</abstract>
   <description>The DB_STOGROUP of the Db2 database</description>
-  <category>String Variables</category>
+  <category>DB variables</category>
   <string />
 </variable>
 
@@ -1061,7 +1039,7 @@
   <label>DB_PLAN</label>
   <abstract>The Db2 DB_PLAN</abstract>
   <description>The DB_PLAN of the Db2 database</description>
-  <category>String Variables</category>
+  <category>DB variables</category>
   <string />
 </variable>
 
@@ -1069,7 +1047,7 @@
   <label>DB_PROGRAM</label>
   <abstract>The Db2 DB_PROGRAM</abstract>
   <description>The DB_PROGRAM of the Db2 database</description>
-  <category>String Variables</category>
+  <category>DB variables</category>
   <string />
 </variable>
 
@@ -1077,7 +1055,7 @@
   <label>DB_LOCATION</label>
   <abstract>The Db2 DB_LOCATION</abstract>
   <description>The location of the Db2 database</description>
-  <category>String Variables</category>
+  <category>DB variables</category>
   <string />
 </variable>
 
@@ -1085,7 +1063,7 @@
   <label>DB_PRODUCT_PATH</label>
   <abstract>The Db2 product path</abstract>
   <description>The HFS path of Db2</description>
-  <category>String Variables</category>
+  <category>DB variables</category>
   <string>
     <!-- Path validation, has to start with slash, may contain slashes, must not end with slash or whitespace -->
     <regularExpression>^\/([A-z0-9-_+\.]+\/)*([A-z0-9-_+\.])*[^\/\s]$</regularExpression>
@@ -1096,7 +1074,7 @@
   <label>DB_LIBPATH</label>
   <abstract>The Db2 library path</abstract>
   <description>The location of the Db2 libraries</description>
-  <category>String Variables</category>
+  <category>DB variables</category>
   <string>
     <!-- Path validation, has to start with slash, may contain slashes, must not end with slash or whitespace -->
     <regularExpression>^\/([A-z0-9-_+\.]+\/)*([A-z0-9-_+\.])*[^\/\s]$</regularExpression>
@@ -1107,7 +1085,7 @@
   <label>DB_CLASSPATH</label>
   <abstract>The Db2 class path</abstract>
   <description>The location of the Db2 classes</description>
-  <category>String Variables</category>
+  <category>DB variables</category>
   <string>
     <!-- Path validation, has to start with slash, may contain slashes, must not end with slash or whitespace -->
     <regularExpression>^\/([A-z0-9-_+\.]+\/)*([A-z0-9-_+\.])*[^\/\s]$</regularExpression>
@@ -1119,7 +1097,7 @@
   <label>WORKSTATION_ACCESS_REQUIRED</label>
   <abstract>Will database and agent be used by EKMF Workstation as well?</abstract>
   <description>Flag to indicate if the installed database and agent are used by an EKMF Workstation in addition to the UKO server</description>
-  <category>String Variables</category>
+  <category>UKO Agent variables</category>
   <string valueMustBeChoice="true">
     <choice>true</choice>
     <choice>false</choice>
@@ -1131,7 +1109,7 @@
   <label>DB_AGENT_PLAN</label>
   <abstract>The Db2 DB_AGENT_PLAN</abstract>
   <description>The Db2 plan for configuring EKMF Workstation access</description>
-  <category>String Variables</category>
+  <category>UKO Agent variables</category>
   <string />
 </variable>
 
@@ -1139,7 +1117,7 @@
   <label>DB_AGENT_PACKAGE</label>
   <abstract>The Db2 DB_AGENT_PACKAGE</abstract>
   <description>The Db2 package for configuring EKMF Workstation access</description>
-  <category>String Variables</category>
+  <category>UKO Agent variables</category>
   <string />
 </variable>
 
@@ -1147,7 +1125,7 @@
   <label>DB_JDBC</label>
   <abstract>The Db2 DB_JDBC</abstract>
   <description>JDBC port for configuring EKMF Workstation access</description>
-  <category>String Variables</category>
+  <category>DB variables</category>
   <string />
 </variable>
 
@@ -1155,7 +1133,7 @@
   <label>DB_JDBC_SECPORT</label>
   <abstract>The Db2 DB_LOCATION</abstract>
   <description>Secure JDBC port for configuring EKMF Workstation access</description>
-  <category>String Variables</category>
+  <category>DB variables</category>
   <string />
 </variable>
 
@@ -1163,31 +1141,52 @@
 <!-- Agent variables -->
 <!--++++++++++++++++++++++++++++++-->
 
-<variable name="UKO_AGENT_RUN_HLQ" visibility="public">
-  <label>UKO_AGENT_RUN_HLQ</label>
-  <abstract>The UKO_AGENT_RUN_HLQ dataset</abstract>
-  <description>The HLQ of where the UKO agent is installed</description>
-  <category>String Variables</category>
-  <string>
-    <validationType>DSNAME</validationType>
-  </string>
-</variable>
-
 <variable name="UKO_AGENT_STC_NAME" visibility="public">
   <label>UKO_AGENT_STC_NAME</label>
   <abstract>Agent STC name</abstract>
   <description>The started task name of the Agent</description>
-  <category>String Variables</category>
+  <category>UKO Agent variables</category>
   <string />
 </variable>
 
-<variable name="UKO_AGENT_HLQ" visibility="public">
-  <label>UKO_AGENT_HLQ</label>
-  <abstract>The UKO_AGENT_HLQ dataset</abstract>
-  <description>Where the UKO agent SAMPLIB is installed</description>
-  <category>String Variables</category>
+<variable name="UKO_AGENT_EXECLIB" visibility="public">
+  <label>UKO_AGENT_EXECLIB</label>
+  <abstract>Agent Rexx execution library</abstract>
+  <description>Library with compiled Rexx, only required to populate dataset dashboard with KMGPEUTL</description>
+  <category>UKO Agent variables</category>
   <string>
     <validationType>DSNAME</validationType>
+    <default>KMG.SKMGEXEC</default>
+  </string>
+</variable>
+<variable name="UKO_AGENT_SAMPLIB" visibility="public">
+  <label>UKO_AGENT_SAMPLIB</label>
+  <abstract>Agent sample library</abstract>
+  <description>Sample library containing samples for the Agent's PARMLIB member and more</description>
+  <category>UKO Agent variables</category>
+  <string>
+    <validationType>DSNAME</validationType>
+    <default>KMG.SKMGSAMP</default>
+  </string>
+</variable>
+<variable name="UKO_AGENT_DBRMLIB" visibility="public">
+  <label>UKO_AGENT_DBRMLIB</label>
+  <abstract>Agent DBRM library</abstract>
+  <description>Agent DBRM lib, only required if the Agent is to be used by the EKMF Workstation as well</description>
+  <category>UKO Agent variables</category>
+  <string>
+    <validationType>DSNAME</validationType>
+    <default>KMG.SKMGDBRM</default>
+  </string>
+</variable>
+<variable name="UKO_AGENT_RUNLIB" visibility="public">
+  <label>UKO_AGENT_RUNLIB</label>
+  <abstract>Agent load library</abstract>
+  <description>Libary containing the Agent's load modules</description>
+  <category>UKO Agent variables</category>
+  <string>
+    <validationType>DSNAME</validationType>
+    <default>KMG.SKMGMOD0</default>
   </string>
 </variable>
 
@@ -1195,7 +1194,7 @@
   <label>TCPIP_HLQ</label>
   <abstract>The TCPIP_HLQ dataset</abstract>
   <description>The HLQ of where TCPIP is installed, required for the Agent STC</description>
-  <category>String Variables</category>
+  <category>UKO Agent variables</category>
   <string>
     <validationType>DSNAME</validationType>
   </string>
@@ -1210,7 +1209,7 @@
   <label>UKO_SERVER_VERSION</label>
   <abstract>Server version</abstract>
   <description>Which version of UKO is this?</description>
-  <category>String Variables</category>
+  <category>UKO Server variables</category>
   <string />
 </variable>
 
@@ -1218,7 +1217,7 @@
   <label>UKO_DB_VERSION</label>
   <abstract>Database version</abstract>
   <description>Which version of UKO database is this?</description>
-  <category>String Variables</category>
+  <category>DB variables</category>
   <string />
 </variable>
 
@@ -1226,7 +1225,7 @@
   <label>UKO Server directory</label>
   <abstract>The provisioned UKO servers directory</abstract>
   <description>The provisioned UKO servers directory containing server.env, jvm.options and product links</description>
-  <category>String Variables</category>
+  <category>UKO Server variables</category>
   <string>
     <default>NONE</default>
   </string>
@@ -1236,7 +1235,7 @@
   <label>UKO_KEY_PREFIX</label>
   <abstract>The UKO_KEY_PREFIX for the CSFKEYS class</abstract>
   <description>The UKO_KEY_PREFIX to be used to generate a profile in the CSFKEYS class</description>
-  <category>String Variables</category>
+  <category>General variables</category>
   <string />
 </variable>
 
@@ -1244,7 +1243,7 @@
   <label>UKO_RECOVERY_KEY</label>
   <abstract>The UKO_RECOVERY_KEY for the CSFKEYS class</abstract>
   <description>The UKO_RECOVERY_KEY to be used to generate a profile in the CSFKEYS class</description>
-  <category>String Variables</category>
+  <category>UKO Server variables</category>
   <string />
 </variable>
 
@@ -1253,7 +1252,7 @@
   <abstract>The REXX_HLQ dataset</abstract>
   <description>The HLQ of where REXX is installed, namely the SEAGALT dataset, required for loading
     the pervasive encryption data with KMGUTIL</description>
-  <category>String Variables</category>
+  <category>General variables</category>
   <string>
     <validationType>DSNAME</validationType>
   </string>

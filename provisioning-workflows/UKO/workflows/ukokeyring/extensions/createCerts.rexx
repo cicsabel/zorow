@@ -37,7 +37,7 @@ Say "Define "||TLS_KEY_STORE_SERVER_CERT||" for "||SERVER_STC_USER||" with CA "|
    " SIGNWITH(CERTAUTH LABEL("||"'"||CA_LABEL||"'"||"))",
    " NOTAFTER(DATE(2028-12-31) TIME(23:59:59))",
    " RSA SIZE(2048)",
-   " ALTNAME(DOMAIN("||"'"||TLS_CN||"'"||")"  
+   " ALTNAME(DOMAIN("||"'"||TLS_CN||"'"||"))"  
  if RC <> 0 then do
    Say "creating server certificate failed, exiting"
    exit RC
@@ -54,7 +54,7 @@ Say "Define "||OIDC_PROVIDER_CERT||" for "||SERVER_STC_USER||" with CA "||CA_LAB
    " SIGNWITH(CERTAUTH LABEL("||"'"||CA_LABEL||"'"||"))",
    " NOTAFTER(DATE(2028-12-31) TIME(23:59:59))",
    " RSA SIZE(2048)",
-   " ALTNAME(DOMAIN("||"'"||TLS_CN||"'"||")"  
+   " ALTNAME(DOMAIN("||"'"||TLS_CN||"'"||"))"  
  if RC <> 0 then do
    Say "creating oidc certificate failed, exiting"
    exit RC

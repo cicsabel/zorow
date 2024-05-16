@@ -14,7 +14,7 @@
 //*
 //*--------------------------------------------------------------------
 //${instance-UKO_AGENT_STC_NAME} EXEC  PGM=IKJEFT01,REGION=6M,TIME=1440
-//STEPLIB  DD DSN=${instance-UKO_AGENT_RUN_HLQ},DISP=SHR 
+//STEPLIB  DD DSN=${instance-UKO_AGENT_RUNLIB},DISP=SHR 
 //         DD DSN=${instance-TCPIP_HLQ}.SEZATCP,DISP=SHR
 #if(${instance-WORKSTATION_ACCESS_REQUIRED} && $!{instance-WORKSTATION_ACCESS_REQUIRED} == "true")
 //         DD DSN=${instance-DB_HLQ}.SDSNLOAD,DISP=SHR

@@ -22,8 +22,8 @@
       The file can be modified to suit the needs of your business. -->
 
 <atCreate name="START_AGENT" scope="instance" prompt="true" required="false"/>
-<!-- <atCreate name="UKO_AGENT_RUN_HLQ" scope="instance" prompt="true" required="false"/> -->
-<!-- <atCreate name="UKO_AGENT_HLQ" scope="instance" prompt="true" required="false"/> -->
+<!-- <atCreate name="UKO_AGENT_RUNLIB" scope="instance" prompt="true" required="false"/> -->
+<!-- <atCreate name="UKO_AGENT_DBRMLIB" scope="instance" prompt="true" required="false"/> -->
 
 <atCreate name="UKO_AGENT_STC_NAME" scope="instance" prompt="true" required="false"/>
 <atCreate name="UKO_AGENT_PORT" scope="instance" prompt="true" required="false"/>

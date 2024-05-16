@@ -25,8 +25,8 @@
                     "cmd" : "STOP ${instance-UKO_AGENT_STC_NAME}",
                     "unsol-key" : "DUMMY",
                     "unsol-detect-sync" : "Y",
-                    "unsol-detect-timeout" : "${instance-UKO_STOP_TIMEOUT}",
-                    "detect-time" : "${instance-UKO_STOP_TIMEOUT}",
+                    "unsol-detect-timeout" : "${instance-STC_STOP_TIMEOUT}",
+                    "detect-time" : "${instance-STC_STOP_TIMEOUT}",
                     "system" : "${_workflow-systemName}"
                   }
                 </requestBody>
@@ -88,8 +88,8 @@
                     "cmd" : "CANCEL ${instance-UKO_AGENT_STC_NAME}",
                     "unsol-key" : "DUMMY",
                     "unsol-detect-sync" : "Y",
-                    "unsol-detect-timeout" : "${instance-UKO_STOP_TIMEOUT}",
-                    "detect-time" : "${instance-UKO_STOP_TIMEOUT}",
+                    "unsol-detect-timeout" : "${instance-STC_STOP_TIMEOUT}",
+                    "detect-time" : "${instance-STC_STOP_TIMEOUT}",
                     "system" : "${_workflow-systemName}"
                   }
                 </requestBody>

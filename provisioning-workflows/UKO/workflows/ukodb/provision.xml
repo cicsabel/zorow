@@ -56,7 +56,6 @@
         <variableValue name="DB_RUNLIB" scope="instance" noPromptIfSet="false" required="false"/>
         <variableValue name="DB_HLQ" scope="instance" noPromptIfSet="false" required="false"/>
         <variableValue name="DB_JCC_SSID" scope="instance" noPromptIfSet="false" required="false"/>
-        <variableValue name="UKO_FILE_SYSTEM_HLQ" scope="instance" noPromptIfSet="false" required="false"/>
         <variableValue name="DB_BUFFERPOOL_DEFAULT" scope="instance" noPromptIfSet="false" required="false"/>
         <variableValue name="DB_BUFFERPOOL_INDEX" scope="instance" noPromptIfSet="false" required="false"/>
         <instructions substitution="true">Submit jcl to execute step</instructions>

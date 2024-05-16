@@ -15,7 +15,7 @@
             <runAsUser substitution="true">$!{instance-UKO_ADMIN_CONSOLE}</runAsUser>
             <approver substitution="true">$!{instance-UKO_APPROVER_CONSOLE}</approver>
             <variableValue name="UKO_SERVER_STC_NAME" scope="instance" noPromptIfSet="false" required="false"/>
-            <variableValue name="UKO_STOP_TIMEOUT" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="STC_STOP_TIMEOUT" scope="instance" noPromptIfSet="false" required="false"/>
             <instructions substitution="false">Submitting script to stop the server.</instructions>
             <weight>1</weight>
             <autoEnable>true</autoEnable>
@@ -27,8 +27,8 @@
                     "cmd" : "STOP ${instance-UKO_SERVER_STC_NAME}",
                     "unsol-key" : "DUMMY",
                     "unsol-detect-sync" : "Y",
-                    "unsol-detect-timeout" : "${instance-UKO_STOP_TIMEOUT}",
-                    "detect-time" : "${instance-UKO_STOP_TIMEOUT}",
+                    "unsol-detect-timeout" : "${instance-STC_STOP_TIMEOUT}",
+                    "detect-time" : "${instance-STC_STOP_TIMEOUT}",
                     "system" : "${_workflow-systemName}"
                   }
                 </requestBody>
@@ -91,8 +91,8 @@
                     "cmd" : "CANCEL ${instance-UKO_SERVER_STC_NAME}",
                     "unsol-key" : "DUMMY",
                     "unsol-detect-sync" : "Y",
-                    "unsol-detect-timeout" : "${instance-UKO_STOP_TIMEOUT}",
-                    "detect-time" : "${instance-UKO_STOP_TIMEOUT}",
+                    "unsol-detect-timeout" : "${instance-STC_STOP_TIMEOUT}",
+                    "detect-time" : "${instance-STC_STOP_TIMEOUT}",
                     "system" : "${_workflow-systemName}"
                   }
                 </requestBody>

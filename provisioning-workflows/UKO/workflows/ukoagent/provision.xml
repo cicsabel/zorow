@@ -83,7 +83,7 @@
                             s#^\&amp;SYS-RSAKEK-PREFIX.*#\&amp;SYS-RSAKEK-PREFIX(${instance-UKO_KEY_PREFIX}.RSAKEK)#g;
                             s#^\&amp;SYS-ECCSIGN-PREFIX.*#\&amp;SYS-ECCSIGN-PREFIX(${instance-UKO_KEY_PREFIX}.ECCSIGN)#g;
                             s#^\&amp;SYS-CCSID.*#\&amp;SYS-CCSID(${ccsid})#g;
-                            s#^\&amp;WEBCLIENT.*#\&amp;WEBCLIENT(${instance-UKO_AGENT_CLIENT_USER})#g" "//'${instance-UKO_AGENT_HLQ}.SKMGSAMP(KMGOPCRY)'" >> ${instance-TEMP_DIR}/${instance-UKO_AGENT_STC_NAME}-KMGPARM;
+                            s#^\&amp;WEBCLIENT.*#\&amp;WEBCLIENT(${instance-UKO_AGENT_CLIENT_USER})#g" "//'${instance-UKO_AGENT_SAMPLIB}(KMGOPCRY)'" >> ${instance-TEMP_DIR}/${instance-UKO_AGENT_STC_NAME}-KMGPARM;
                             
                     </inlineTemplate>
                 <submitAs>shell-JCL</submitAs>
@@ -135,7 +135,7 @@
                             s#^\&amp;SYS-JDBC-LOCATION.*#\&amp;SYS-JDBC-LOCATION(${instance-DB_LOCATION})#g;
                             s#^\&amp;SYS-JDBC-PORT.*#\&amp;SYS-JDBC-PORT(${instance-DB_JDBC_PORT})#g;
                             s#^\&amp;SYS-JDBC-SECPORT.*#\&amp;SYS-JDBC-SECPORT(${instance-DB_JDBC_SECPORT})#g;
-                            s#^\&amp;WEBCLIENT.*#\&amp;WEBCLIENT(${instance-UKO_AGENT_CLIENT_USER})#g" "//'${instance-UKO_AGENT_HLQ}.SKMGSAMP(KMGOPDB2)'" >> ${instance-TEMP_DIR}/${instance-UKO_AGENT_STC_NAME}-KMGPARM;
+                            s#^\&amp;WEBCLIENT.*#\&amp;WEBCLIENT(${instance-UKO_AGENT_CLIENT_USER})#g" "//'${instance-UKO_AGENT_SAMPLIB}(KMGOPDB2)'" >> ${instance-TEMP_DIR}/${instance-UKO_AGENT_STC_NAME}-KMGPARM;
 
                         echo "&amp;DB2-QUALIFIER(${instance-DB_CURRENT_SCHEMA})" >> ${instance-TEMP_DIR}/${instance-UKO_AGENT_STC_NAME}-KMGPARM;    
                             
@@ -165,7 +165,7 @@
        		<runAsUser substitution="true">$!{instance-UKO_ADMIN_TSO}</runAsUser>
        		<approver substitution="true">$!{instance-UKO_APPROVER_TSO}</approver>
             <variableValue name="UKO_ZOS_PROCLIB" scope="instance" noPromptIfSet="false" required="false"/>
-            <variableValue name="UKO_AGENT_RUN_HLQ" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="UKO_AGENT_RUNLIB" scope="instance" noPromptIfSet="false" required="false"/>
             <variableValue name="TCPIP_HLQ" scope="instance" noPromptIfSet="false" required="false"/>
         	<instructions substitution="true">Submit JCL to execute step</instructions>
             <weight>5</weight>

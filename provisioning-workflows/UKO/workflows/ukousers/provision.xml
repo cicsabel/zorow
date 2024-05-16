@@ -3,6 +3,7 @@
 <!-- Declare external file containing WAS variables referenced in the following steps -->
 <!DOCTYPE workflow [<!ENTITY image_properties SYSTEM "extensions/image_properties.xml">
                     <!ENTITY variables SYSTEM "variable_imports.xml">
+                    <!ENTITY variables_users SYSTEM "variable_imports_users.xml">
                     ]> 
                     
 <!--
@@ -37,6 +38,7 @@
 	<!--     Include variables used by the following steps     -->
 	<!--+++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
 	&variables;
+	&variables_users;
 	&image_properties;
 
     <!--++++++++++++++++++++++-->
@@ -57,7 +59,14 @@
         <variableValue name="UKO_SERVER_STC_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
         <variableValue name="UKO_UNAUTHENTICATED_USER" scope="instance" noPromptIfSet="false" required="false"/>
         <variableValue name="UKO_UNAUTHENTICATED_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
-        <instructions substitution="true">Submit rexx exec to execute step. The workflow is using the AUTOUID option to automatically generate a unique ID value in the OMVS segment of a user or group. If you cannot use AUTOUID, you need to replace it with a unique UID(user-identifier) for each ADDUSER or ADDGROUP statement. 
+        <variableValue name="UKO_TECHNICAL_SUPERIOR_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="USER_PASSPHRASE" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="USER_HOME_PARENT_DIR" scope="instance" noPromptIfSet="false" required="false"/>
+        <instructions substitution="true">Submit rexx exec to execute step. The workflow is using the
+            AUTOUID option to automatically generate a unique ID value in the OMVS segment of a user or
+            group. If you cannot use AUTOUID, you need to replace it with a unique UID(user-identifier) for
+            each ADDUSER and GID(group-identifier) for each ADDGROUP statement. For additional parameters, 
+            refer to the RACF documentation: https://www.ibm.com/docs/en/zos/3.1.0?topic=syntax-adduser-add-user-profile
         </instructions>
         <weight>1</weight>
         <autoEnable>true</autoEnable>
@@ -83,7 +92,21 @@
         <variableValue name="UKO_KEY_CUSTODIAN2_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
         <variableValue name="UKO_AUDITOR" scope="instance" noPromptIfSet="false" required="false"/>
         <variableValue name="UKO_AUDITOR_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
-        <instructions substitution="true">Submit rexx exec to execute step. The workflow is using the AUTOUID option to automatically generate a unique ID value in the OMVS segment of a user or group. If you cannot use AUTOUID, you need to replace it with a unique UID(user-identifier) for each ADDUSER or ADDGROUP statement. 
+        <variableValue name="UKO_PERSONAL_SUPERIOR_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="USER_TSO_LOGON_PROCEDURE" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="USER_TSO_ACCOUNT_NUMBER" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="USER_TSO_HOLDCLASS" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="USER_TSO_MSGCLASS" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="USER_TSO_SYSOUTCLASS" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="USER_TSO_SIZE" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="USER_TSO_UNIT" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="USER_PASSPHRASE" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="USER_HOME_PARENT_DIR" scope="instance" noPromptIfSet="false" required="false"/>
+        <instructions substitution="true">Submit rexx exec to execute step. The workflow is using the
+            AUTOUID option to automatically generate a unique ID value in the OMVS segment of a user or
+            group. If you cannot use AUTOUID, you need to replace it with a unique UID(user-identifier) for
+            each ADDUSER and GID(group-identifier) for each ADDGROUP statement. For additional parameters, 
+            refer to the RACF documentation: https://www.ibm.com/docs/en/zos/3.1.0?topic=syntax-adduser-add-user-profile
         </instructions>
         <weight>1</weight>
         <autoEnable>true</autoEnable>
@@ -93,5 +116,7 @@
             <maxLrecl>1024</maxLrecl>
         </template>
     </step>
+
+
 
 </workflow>

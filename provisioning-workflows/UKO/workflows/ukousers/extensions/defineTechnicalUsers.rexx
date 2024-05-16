@@ -58,8 +58,8 @@ end
 Say "Creating Agent started task user ID "||AGENT_STC_USER||" "
 "ADDUSER "||AGENT_STC_USER||" NOPASSWORD",
    " DFLTGRP("||AGENT_STC_GROUP||") NAME('UKO agent')",
-   " OMVS(AUTOUID PROGRAM('/bin/sh')",
-   " HOME("||"'"||"/u/"||AGENT_STC_USER||"'"||"))"
+   " OMVS(AUTOUID ",
+   " HOME('${instance-USER_HOME_PARENT_DIR}/"||AGENT_STC_USER||"'"||"))"
 if RC <> 0 then do
    Say "Creation failed, exiting"
    exit RC
@@ -67,9 +67,7 @@ end
 
 Say "Creating Client user for authentication with agent "||AGENT_CLIENT_USER||" "
 "ADDUSER "||AGENT_CLIENT_USER||" NOPASSWORD",
-   " DFLTGRP("||AGENT_CLIENT_GROUP||") NAME('UKO Client')",
-   " OMVS(AUTOUID PROGRAM('/bin/sh')",
-   " HOME("||"'"||"/u/"||AGENT_CLIENT_USER||"'"||"))"
+   " DFLTGRP("||AGENT_CLIENT_GROUP||") NAME('UKO Client')"
 if RC <> 0 then do
    Say "Creation failed, exiting"
    exit RC
@@ -78,8 +76,8 @@ end
 Say "Creating Liberty started task user ID "||SERVER_STC_USER||" "
 "ADDUSER "||SERVER_STC_USER||" NOPASSWORD",
    " DFLTGRP("||SERVER_STC_GROUP||") NAME('UKO Liberty SERVER')",
-   " OMVS(AUTOUID PROGRAM('/bin/sh')",
-   " HOME("||"'"||"/u/"||SERVER_STC_USER||"'"||"))"
+   " OMVS(AUTOUID ",
+   " HOME('${instance-USER_HOME_PARENT_DIR}/"||SERVER_STC_USER||"'"||"))"
 if RC <> 0 then do
    Say "Creation failed, exiting"
    exit RC
@@ -89,8 +87,8 @@ end
 Say "Creating unauthenticated user ID "||SERVER_UNAUTHENTICATED_USER||" "
 "ADDUSER "||SERVER_UNAUTHENTICATED_USER||" RESTRICTED NOOIDCARD NOPASSWORD",
    " DFLTGRP("||SERVER_UNAUTHENTICATED_GROUP||") NAME('WAS DEFAULT USER')",
-   " OMVS(AUTOUID PROGRAM('/bin/sh')",
-   " HOME("||"'"||"/u/"||SERVER_UNAUTHENTICATED_USER||"'"||")) "
+   " OMVS(AUTOUID ",
+   " HOME('${instance-USER_HOME_PARENT_DIR}/"||SERVER_UNAUTHENTICATED_USER||"'"||")) "
 if RC <> 0 then do
    Say "Creation failed, exiting"
    exit RC
