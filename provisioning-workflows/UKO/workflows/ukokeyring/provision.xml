@@ -167,6 +167,18 @@
         <description>Add certificate(s) and CA to keyring(s) if anything was newly created</description>
         <runAsUser substitution="true">$!{instance-UKO_ADMIN_SECURITY}</runAsUser>
         <approver substitution="true">$!{instance-UKO_APPROVER_SECURITY}</approver>
+        <condition>
+            <expression><![CDATA["1" == "1"]]></expression>
+            <description>Always perform</description>
+            <targetStateSet>
+                <description>Skip for existing keyring and certificate</description>
+                <extendStateExpression>
+                    <description>If certificates and key ring are already existing, assume that the certificates have been added to the key ring</description>
+                    <expression><![CDATA[ ${instance-UKO_CREATE_KEYRING} == "false" && ${instance-UKO_CREATE_CERTIFICATES} == "false"]]></expression>
+                    <targetState>Skipped</targetState>
+                </extendStateExpression>
+            </targetStateSet>
+        </condition> 
         <variableValue name="UKO_SERVER_STC_USER" scope="instance" noPromptIfSet="false" required="false"/>
         <variableValue name="UKO_CA_LABEL" scope="instance" noPromptIfSet="false" required="false"/>
         <variableValue name="UKO_TLS_KEY_STORE_SERVER_CERT" scope="instance" noPromptIfSet="false" required="false"/>
