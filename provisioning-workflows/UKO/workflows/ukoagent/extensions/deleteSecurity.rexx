@@ -34,8 +34,8 @@ Say "Deleting STARTED task for the agent"
 /* Delete access to APPL class profile                                 */
 /***********************************************************************/
 
-Say "Removing access to KMGPRACF class(APPL) from "||AGENT_CLIENT_USER||" "
-"PERMIT KMGPRACF CLASS(APPL) DELETE ID("||AGENT_CLIENT_USER||") "
+Say "Removing access to KMGPRACF class(APPL) from" AGENT_CLIENT_USER
+"PERMIT KMGPRACF CLASS(APPL) DELETE ID("AGENT_CLIENT_USER") "
 
 Say "Refreshing APPL"
 "SETROPTS RACLIST(APPL) REFRESH"
@@ -43,26 +43,26 @@ Say "Refreshing APPL"
 /***********************************************************************/
 /* Delete FACILITY class access */
 /***********************************************************************/
-Say "Removing access to KMG.EKMF.KMGPRACF class(FACILITY) from "||AGENT_STC_GROUP||" "
-"PERMIT KMG.EKMF.KMGPRACF CLASS(FACILITY) DELETE ID("||AGENT_STC_GROUP||") "        
+Say "Removing access to KMG.EKMF.KMGPRACF class(FACILITY) from" AGENT_STC_GROUP
+"PERMIT KMG.EKMF.KMGPRACF CLASS(FACILITY) DELETE ID("AGENT_STC_GROUP") "        
 
-Say "Deleting KMG.EKMF.KMGPRACF."||AGENT_STC_USER||" in the FACILITY class"
-"RDELETE FACILITY KMG.EKMF.KMGPRACF."||AGENT_STC_USER||" "
+Say "Deleting KMG.EKMF.KMGPRACF."AGENT_STC_USER "in the FACILITY class"
+"RDELETE FACILITY KMG.EKMF.KMGPRACF."AGENT_STC_USER
 
 "SETROPTS RACLIST(FACILITY) REFRESH"
 
 /***********************************************************************/
 /* Remove access for SMF logging */
 /***********************************************************************/
-Say "Removing access to KMG.EKMF.SMF from "||AGENT_STC_GROUP||" "
-"PERMIT KMG.EKMF.SMF CLASS(FACILITY) DELETE ID("||AGENT_STC_GROUP||") "
+Say "Removing access to KMG.EKMF.SMF from" AGENT_STC_GROUP
+"PERMIT KMG.EKMF.SMF CLASS(FACILITY) DELETE ID("AGENT_STC_GROUP") "
 
 #if(${instance-WORKSTATION_ACCESS_REQUIRED} && ${instance-WORKSTATION_ACCESS_REQUIRED} == "true")
 /* Only for Workstation use: */
-Say "Removing access to KMG.EKMF.AUDITOFF from "||AGENT_STC_GROUP||" "
-"PERMIT KMG.EKMF.AUDITOFF CLASS(FACILITY) DELETE ID("||AGENT_STC_GROUP||")"
-Say "Removing access to KMG.EKMF.AUDITOFF from "||AGENT_CLIENT_GROUP||" "
-"PERMIT KMG.EKMF.AUDITOFF CLASS(FACILITY) DELETE ID("||AGENT_CLIENT_GROUP||")"
+Say "Removing access to KMG.EKMF.AUDITOFF from" AGENT_STC_GROUP
+"PERMIT KMG.EKMF.AUDITOFF CLASS(FACILITY) DELETE ID("AGENT_STC_GROUP")"
+Say "Removing access to KMG.EKMF.AUDITOFF from" AGENT_CLIENT_GROUP
+"PERMIT KMG.EKMF.AUDITOFF CLASS(FACILITY) DELETE ID("AGENT_CLIENT_GROUP")"
 #end 
 
 "SETROPTS RACLIST(FACILITY) REFRESH"
@@ -71,8 +71,8 @@ Say "Removing access to KMG.EKMF.AUDITOFF from "||AGENT_CLIENT_GROUP||" "
 /* Remove access from XFACILIT class  */
 /***********************************************************************/
 
-Say "Deleting KMG.WEBCLIENT."||AGENT_CLIENT_USER||" in the XFACILIT class"
-"RDELETE XFACILIT KMG.WEBCLIENT."||AGENT_CLIENT_USER||" "
+Say "Deleting KMG.WEBCLIENT."AGENT_CLIENT_USER "in the XFACILIT class"
+"RDELETE XFACILIT KMG.WEBCLIENT."AGENT_CLIENT_USER
 
 "SETROPTS RACLIST(XFACILIT) REFRESH"
 
@@ -80,9 +80,9 @@ Say "Deleting KMG.WEBCLIENT."||AGENT_CLIENT_USER||" in the XFACILIT class"
 /***********************************************************************/
 /* Removing access from Db2 DSNR */
 /***********************************************************************/
-Say "Removing access to BATCH profile from "||AGENT_STC_USER||" "
+Say "Removing access to BATCH profile from" AGENT_STC_USER
 "PERMIT ${instance-DB_JCC_SSID}.BATCH CLASS(DSNR)",
-   " DELETE ID("||AGENT_STC_USER||")"                 
+   " DELETE ID("AGENT_STC_USER")"                 
 
 Say "Refreshing DSNR"
 "SETROPTS RACLIST(DSNR) REFRESH"

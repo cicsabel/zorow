@@ -16,10 +16,10 @@ CA_O="${instance-UKO_TLS_KEY_STORE_SERVER_CERT_O}"
 
 Say "Generate a new CA"
 "RACDCERT CERTAUTH GENCERT", 
-   " SUBJECTSDN(CN("||"'"||CA_CN||"'"||")",
-      " OU("||"'"||CA_OU||"'"||")",
-      " O("||"'"||CA_O||"'"||"))",
-   " WITHLABEL("||"'"||CA_LABEL||"'"||")", 
+   " SUBJECTSDN(CN('"CA_CN"')",
+      " OU('"CA_OU"')",
+      " O('"CA_O"'))",
+   " WITHLABEL('"CA_LABEL"')", 
    " NOTAFTER(DATE(2028-12-31) TIME(23:59:59))", 
    " RSA SIZE(2048)"
 

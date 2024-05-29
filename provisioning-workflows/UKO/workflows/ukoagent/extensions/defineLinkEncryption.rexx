@@ -25,14 +25,14 @@ Say "Defining generic profiles for link encryption"
 #if(${instance-UKO_SERVER_PUBLIC_KEY_HASH} == "*" ) 
 /* The following example will allow all clients to connect to this agent. */
 
-Say "Granting access to KMG.WS.* class(XFACILIT) to "||AGENT_STC_GROUP||" "
-"PERMIT KMG.WS.* CLASS(XFACILIT) ACC(READ) ID("||AGENT_STC_GROUP||")"
+Say "Granting access to KMG.WS.* class(XFACILIT) to" AGENT_STC_GROUP
+"PERMIT KMG.WS.* CLASS(XFACILIT) ACC(READ) ID("AGENT_STC_GROUP")"
 if RC <> 0 then do
    Say "Permit failed, exiting"
    exit RC
 end
-Say "Granting access to KMG.LG.* class(XFACILIT) to "||AGENT_STC_GROUP||" "
-"PERMIT KMG.LG.* CLASS(XFACILIT) ACC(READ) ID("||AGENT_STC_GROUP||")"
+Say "Granting access to KMG.LG.* class(XFACILIT) to" AGENT_STC_GROUP
+"PERMIT KMG.LG.* CLASS(XFACILIT) ACC(READ) ID("AGENT_STC_GROUP")"
 if RC <> 0 then do
    Say "Permit failed, exiting"
    exit RC
@@ -49,15 +49,15 @@ end
 
 #if(${instance-UKO_SERVER_PUBLIC_KEY_HASH} && ${instance-UKO_SERVER_PUBLIC_KEY_HASH} != "*") 
 
-"RDEFINE XFACILIT KMG.WS."||PUBLIC_KEY_HASH||" "
-"PERMIT KMG.WS."||PUBLIC_KEY_HASH||" CLASS(XFACILIT) ACC(READ) ID("||AGENT_STC_GROUP||")"
+"RDEFINE XFACILIT KMG.WS."PUBLIC_KEY_HASH
+"PERMIT KMG.WS."PUBLIC_KEY_HASH "CLASS(XFACILIT) ACC(READ) ID("AGENT_STC_GROUP")"
 if RC <> 0 then do
    Say "Permit failed, exiting"
    exit RC
 end
 
-"RDEFINE XFACILIT KMG.LG."||PUBLIC_KEY_HASH||" " 
-"PERMIT KMG.LG."||PUBLIC_KEY_HASH||" CLASS(XFACILIT) ACC(READ) ID("||AGENT_STC_GROUP||")"
+"RDEFINE XFACILIT KMG.LG."PUBLIC_KEY_HASH 
+"PERMIT KMG.LG."PUBLIC_KEY_HASH "CLASS(XFACILIT) ACC(READ) ID("AGENT_STC_GROUP")"
 if RC <> 0 then do
    Say "Permit failed, exiting"
    exit RC

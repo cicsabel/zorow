@@ -15,9 +15,9 @@ AGENT_STC_USER="${instance-UKO_AGENT_STC_USER}"
 /***********************************************************************/
 Say "Defining RRSAF profile in DSNR class"
 "RDEFINE DSNR ${instance-DB_JCC_SSID}.RRSAF UACC(NONE)"
-Say "Granting access to RRSAF profile to "||SERVER_STC_USER||" "
+Say "Granting access to RRSAF profile to" SERVER_STC_USER
 "PERMIT ${instance-DB_JCC_SSID}.RRSAF CLASS(DSNR)",
-   " ACCESS(READ) ID("||SERVER_STC_USER||")"                 
+   " ACCESS(READ) ID("SERVER_STC_USER")"                 
 
 #if(${instance-WORKSTATION_ACCESS_REQUIRED} && ${instance-WORKSTATION_ACCESS_REQUIRED} == "true")
 /***********************************************************************/
@@ -26,9 +26,9 @@ Say "Granting access to RRSAF profile to "||SERVER_STC_USER||" "
 /***********************************************************************/
 Say "Defining BATCH profile in DSNR class"
 "RDEFINE DSNR ${instance-DB_JCC_SSID}.BATCH UACC(NONE)"
-Say "Granting access to BATCH profile to "||AGENT_STC_USER||" "
+Say "Granting access to BATCH profile to" AGENT_STC_USER
 "PERMIT ${instance-DB_JCC_SSID}.BATCH CLASS(DSNR)",
-   " ACCESS(READ) ID("||AGENT_STC_USER||")"                 
+   " ACCESS(READ) ID("AGENT_STC_USER")"                 
 #end
 
 /***********************************************************************/
@@ -36,9 +36,9 @@ Say "Granting access to BATCH profile to "||AGENT_STC_USER||" "
 /***********************************************************************/
 Say "Defining DIST profile in DSNR class"
 "RDEFINE DSNR ${instance-DB_JCC_SSID}.DIST UACC(NONE)"
-Say "Granting access to DIST profile to "||AGENT_STC_USER||" "
+Say "Granting access to DIST profile to" AGENT_STC_USER
 "PERMIT ${instance-DB_JCC_SSID}.DIST CLASS(DSNR)",
-   " ACCESS(READ) ID("||SERVER_STC_USER||")"                 
+   " ACCESS(READ) ID("SERVER_STC_USER")"                 
 
 
 Say "Refreshing DSNR"

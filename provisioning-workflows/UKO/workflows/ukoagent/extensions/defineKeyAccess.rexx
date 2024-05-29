@@ -16,10 +16,10 @@ RACF_OWNER="${instance-UKO_ADMIN_SECURITY}"
 /* installed into the CKDS*/
 KEY_PREFIX="${instance-UKO_KEY_PREFIX}"
 
-Say "Defining key prefix profile "||KEY_PREFIX||".** in case this has not been done"
-"RDEF CSFKEYS "||KEY_PREFIX||".** OWNER("||RACF_OWNER||") UACC(NONE) ICSF(SYMCPACFWRAP(YES),SYMCPACFRET(YES))"
-Say "Granting access to "||AGENT_STC_USER||" on "||KEY_PREFIX||" "
-"PERMIT "||KEY_PREFIX||".**  CLASS(CSFKEYS) ACCESS(CONTROL) ID("||AGENT_STC_USER||")"
+Say "Defining key prefix profile" KEY_PREFIX".** in case this has not been done"
+"RDEF CSFKEYS" KEY_PREFIX".** OWNER("RACF_OWNER") UACC(NONE) ICSF(SYMCPACFWRAP(YES),SYMCPACFRET(YES))"
+Say "Granting access to" AGENT_STC_USER "on" KEY_PREFIX
+"PERMIT" KEY_PREFIX".**  CLASS(CSFKEYS) ACCESS(CONTROL) ID("AGENT_STC_USER")"
 
 Say "Refreshing CSFKEYS"
 "SETROPTS RACLIST(CSFKEYS) REFRESH"
