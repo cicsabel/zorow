@@ -38,18 +38,6 @@
 	<!--     Include variables used by the following steps     -->
 	<!--+++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
 	&variables;
-
-    <variable name="UKO_GKLM_CLIENT_USER" visibility="private">
-        <label>UKO_GKLM_CLIENT_USER</label>
-        <abstract>The GKLM client user ID</abstract>
-        <description>GKLM client access group, for all functions required by GKLM. This group is connected to the used ID that the GKLM mTLS certificate maps to.</description>
-        <category>String Variables</category>
-        <string>
-        <!-- A validation type of USERID allows for 1-8 alphanumeric (uppercase only)
-        characters, including special characters. -->
-        <regularExpression>^[0-9a-zA-Z$#@]{0,8}$</regularExpression>
-        </string>
-    </variable>
     
     <variable name="UKO_GKLM_CLIENT_GROUP" visibility="private">
         <label>UKO_GKLM_CLIENT_GROUP</label>
@@ -63,16 +51,16 @@
         </string>
     </variable>
   
-	<atCreate name="UKO_GKLM_CLIENT_USER" scope="instance" prompt="true" required="false"/>
 	<atCreate name="UKO_GKLM_CLIENT_GROUP" scope="instance" prompt="true" required="false"/>
 
-    <step name="defineRoles">
-        <title>Define security roles</title>
-        <description>Define EJB roles required to operate UKO and grant access</description>
+    <step name="defineGklmAccess">
+        <title>Define security access for GKLM</title>
+        <description>Grant access to EJB roles and APPL profile</description>
         <runAsUser substitution="true">$!{instance-UKO_ADMIN_SECURITY}</runAsUser>
         <approver substitution="true">$!{instance-UKO_APPROVER_SECURITY}</approver>
-        <variableValue name="UKO_GKLM_CLIENT_USER" scope="instance" noPromptIfSet="false" required="false"/>
         <variableValue name="UKO_GKLM_CLIENT_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="UKO_VAULT_ID" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="SAF_PROFILE_PREFIX" scope="instance" noPromptIfSet="false" required="false"/>
         <instructions>Executes a REXX program to access EJB roles</instructions>
         <weight>1</weight>
         <autoEnable>true</autoEnable>

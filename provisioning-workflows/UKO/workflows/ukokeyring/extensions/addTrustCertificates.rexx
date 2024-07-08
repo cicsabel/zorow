@@ -24,7 +24,13 @@ TLS_TRUST_STORE_KEY_RING="${instance-UKO_TLS_TRUST_STORE_KEY_RING}"
 Say "Connect certificates to trust ring"
 Say "Connect GoogleTrustCert"
 "RACDCERT ID("SERVER_STC_USER")",
-   " CONNECT(CERTAUTH LABEL('GoogleTrustCert')",
+   " CONNECT(CERTAUTH LABEL('GTS Root R1 GlobalSigned')",
+      " RING("TLS_TRUST_STORE_KEY_RING")",
+      " USAGE(CERTAUTH))"
+
+Say "Connect GoogleTrustCert"
+"RACDCERT ID("SERVER_STC_USER")",
+   " CONNECT(CERTAUTH LABEL('GlobalSign Root CA for GTS')",
       " RING("TLS_TRUST_STORE_KEY_RING")",
       " USAGE(CERTAUTH))"
 

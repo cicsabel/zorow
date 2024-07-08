@@ -18,7 +18,7 @@
 #if(${instance-UKO_ADMIN_DB} && ${instance-UKO_ADMIN_DB} != "")
 SET CURRENT SQLID = '${instance-UKO_ADMIN_DB}';   
 #else
-SET CURRENT SQLID = '${_step-stepOwner}';   
+SET CURRENT SQLID = '${instance-DB_CURRENT_SQLID}';   
 #end
 
 SET CURRENT SCHEMA = '${instance-DB_CURRENT_SCHEMA}' ;

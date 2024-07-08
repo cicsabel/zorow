@@ -74,5 +74,9 @@ SAFPREFIX="${instance-SAF_PROFILE_PREFIX}"
 "RDELETE EJBROLE" SAFPREFIX".ekmf-rest-api.user:passcode:create"
 "RDELETE EJBROLE" SAFPREFIX".ekmf-rest-api.user:passcode:delete" 
 
+"RDELETE EJBROLE" SAFPREFIX".crypto-connect.operations:data:encrypt"
+"RDELETE EJBROLE" SAFPREFIX".crypto-connect.operations:data:decrypt"
+
+
 /* Refresh */
 "SETROPTS RACLIST(EJBROLE) REFRESH"
