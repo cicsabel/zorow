@@ -63,6 +63,6 @@ exit 0
 "PERMIT" SAFPREFIX".ekmf-rest-api."VAULT_ID".keys:read CLASS(EJBROLE) ACCESS(READ) ID("GKLM_GROUP")"
 "PERMIT" SAFPREFIX".ekmf-rest-api."VAULT_ID".keys:write CLASS(EJBROLE) ACCESS(READ) ID("GKLM_GROUP")"
 "PERMIT" SAFPREFIX".ekmf-rest-api."VAULT_ID".keys:delete CLASS(EJBROLE) ACCESS(READ) ID("GKLM_GROUP")"
-
-
+/* to be able to reactivate after rotation */
+"PERMIT" SAFPREFIX".ekmf-rest-api."VAULT_ID".keys:deactivated:reactivate CLASS(EJBROLE) ACCESS(READ) ID("GKLM_GROUP")"
 
