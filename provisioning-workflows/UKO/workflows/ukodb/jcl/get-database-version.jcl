@@ -4,7 +4,6 @@
 //**********************************************************************/
 //UKODB   EXEC PGM=IKJEFT01,REGION=0M               
 // EXPORT SYMLIST=*
-// SET DBSQLID=${instance-DB_CURRENT_SQLID}
 // SET ZFSFILE='zosmf-${_workflow-workflowKey}.version'
 //STEPLIB  DD DISP=SHR,DSN=${instance-DB_HLQ}.SDSNLOAD               
 //SYSTSPRT DD SYSOUT=*,DCB=BLKSIZE=131                         
@@ -17,7 +16,15 @@
  RUN PROGRAM(${instance-DB_PROGRAM}) PLAN(${instance-DB_PLAN}) LIB('${instance-DB_RUNLIB}') 
  END                                                           
 //SYSIN     DD    *,SYMBOLS=(JCLONLY)
-SET CURRENT SQLID = '&DBSQLID';  
+#if(${instance-UKO_ADMIN_DB} && ${instance-UKO_ADMIN_DB} != "")
+SET CURRENT SQLID = '${instance-UKO_ADMIN_DB}';   
+#else
+  #if(${instance-DB_CURRENT_SQLID} && ${instance-DB_CURRENT_SQLID} != "")
+SET CURRENT SQLID = '${instance-DB_CURRENT_SQLID}';   
+  #else
+SET CURRENT SQLID = '${_step-stepOwnerUpper}';   
+  #end
+#end
 SET CURRENT SCHEMA = '${instance-DB_CURRENT_SCHEMA}' ;
 SELECT VERSION
 FROM EKMF_META

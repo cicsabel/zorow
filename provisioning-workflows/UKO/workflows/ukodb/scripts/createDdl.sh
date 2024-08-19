@@ -7,7 +7,15 @@ sedstring="";
 #  /* FOR SQLID, SCHEMA                  */
 #  "CHANGE 'KMGSQLID' 'KMGSQLID' ALL"
 #  "CHANGE 'KRYTEST1' 'KRYTEST1' ALL"
+#if(${instance-UKO_ADMIN_DB} && ${instance-UKO_ADMIN_DB} != "")
+sedstring="${sedstring} s/KMGSQLID/${instance-UKO_ADMIN_DB}/g;"
+#else
+  #if(${instance-DB_CURRENT_SQLID} && ${instance-DB_CURRENT_SQLID} != "")
 sedstring="${sedstring} s/KMGSQLID/${instance-DB_CURRENT_SQLID}/g;"
+  #else
+sedstring="${sedstring} s/KMGSQLID/${_step-stepOwnerUpper}/g;"
+  #end
+#end
 sedstring="${sedstring} s/KRYTEST1/${instance-DB_CURRENT_SCHEMA}/g;"
 
 #  /* FOR DATABASE, STORAGE GROUP */
@@ -43,24 +51,29 @@ sedstring="${sedstring} s/BP2/${instance-DB_BUFFERPOOL_INDEX}/g;"
 # creating the list of DDLs
 #########################################
 
+echo "removing existing ddl file in case it existed from previous run"
+rm -f ${instance-TEMP_DIR}/zosmf-${_workflow-workflowKey}.ddl
+
 for i in `cat ${instance-TEMP_DIR}/zosmf-${_workflow-workflowKey}.files`; do
   # copy the current DDL
   cp "//'${instance-DB_DATASET_INSTALL_HLQ}($i)'" ${instance-TEMP_DIR}/zosmf-${_workflow-workflowKey}.tmp.ddl
-  # convert the current DDL
-  iconv -f IBM-037 -t ${instance-DB_CODEPAGE} ${instance-TEMP_DIR}/zosmf-${_workflow-workflowKey}.tmp.ddl > ${instance-TEMP_DIR}/zosmf-${_workflow-workflowKey}.conv.ddl
   #check whether the current ddl contains database creation
-  if (grep -Fq "CREATE DATABASE" ${instance-TEMP_DIR}/zosmf-${_workflow-workflowKey}.conv.ddl)
+  if (grep -Fq "CREATE DATABASE" ${instance-TEMP_DIR}/zosmf-${_workflow-workflowKey}.tmp.ddl)
   then
       echo "$i contains database creation and will not be added";
   else
     echo "DDL added to list of updates: $i"
-    sed -e "$sedstring" ${instance-TEMP_DIR}/zosmf-${_workflow-workflowKey}.conv.ddl >> ${instance-TEMP_DIR}/zosmf-${_workflow-workflowKey}.ddl
-    echo "\nCOMMIT;\n" >> ${instance-TEMP_DIR}/zosmf-${_workflow-workflowKey}.ddl;   
+    sed -e "$sedstring" ${instance-TEMP_DIR}/zosmf-${_workflow-workflowKey}.tmp.ddl >> ${instance-TEMP_DIR}/zosmf-${_workflow-workflowKey}.unconverted.ddl
+    echo "\nCOMMIT;\n" >> ${instance-TEMP_DIR}/zosmf-${_workflow-workflowKey}.unconverted.ddl;   
   fi
-  
   rm ${instance-TEMP_DIR}/zosmf-${_workflow-workflowKey}.tmp.ddl
-  rm ${instance-TEMP_DIR}/zosmf-${_workflow-workflowKey}.conv.ddl
+  
 done;
+
+echo "convert the current DDL from IBM-037 to ${instance-DB_CODEPAGE}"
+iconv -f IBM-037 -t ${instance-DB_CODEPAGE} ${instance-TEMP_DIR}/zosmf-${_workflow-workflowKey}.unconverted.ddl > ${instance-TEMP_DIR}/zosmf-${_workflow-workflowKey}.ddl
+
+rm ${instance-TEMP_DIR}/zosmf-${_workflow-workflowKey}.unconverted.ddl
 
 echo "Changing permissions of zosmf-${_workflow-workflowKey}.ddl to ensure other user IDs can read it"
 chmod 644 ${instance-TEMP_DIR}/zosmf-${_workflow-workflowKey}.ddl

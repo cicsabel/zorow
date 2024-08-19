@@ -15,12 +15,14 @@ VAULT_ID="${instance-UKO_VAULT_ID}"
 /***********************************************************************/
 
 "PERMIT" SAFPREFIX".ekmf-rest-api.templates:read CLASS(EJBROLE) ACCESS(READ) ID("GKLM_GROUP")"
+"PERMIT" SAFPREFIX".ekmf-rest-api."VAULT_ID".templates:read CLASS(EJBROLE) ACCESS(READ) ID("GKLM_GROUP")"
 
 "PERMIT" SAFPREFIX".ekmf-rest-api.keys:read CLASS(EJBROLE) ACCESS(READ) ID("GKLM_GROUP")" 
 "PERMIT" SAFPREFIX".ekmf-rest-api.keys:write CLASS(EJBROLE) ACCESS(READ) ID("GKLM_GROUP")"
 "PERMIT" SAFPREFIX".ekmf-rest-api.keys:delete CLASS(EJBROLE) ACCESS(READ) ID("GKLM_GROUP")" 
 
 /* create keys */
+"PERMIT" SAFPREFIX".ekmf-rest-api."VAULT_ID".keys:read CLASS(EJBROLE) ACCESS(READ) ID("GKLM_GROUP")"
 "PERMIT" SAFPREFIX".ekmf-rest-api."VAULT_ID".keys:non_existing:generate CLASS(EJBROLE) ACCESS(READ) ID("GKLM_GROUP")"
 "PERMIT" SAFPREFIX".ekmf-rest-api."VAULT_ID".keys:pre_activation:activate CLASS(EJBROLE) ACCESS(READ) ID("GKLM_GROUP")"
 "PERMIT" SAFPREFIX".ekmf-rest-api."VAULT_ID".keys:active:install CLASS(EJBROLE)  ACCESS(READ) ID("GKLM_GROUP")"
@@ -56,13 +58,5 @@ end
 Say "Refreshing APPL"
 "SETROPTS RACLIST(APPL) REFRESH"
 
-exit 0
 
-/* SAF permissions for future use, once GKLM migrated to use V4 APIs */
-"PERMIT" SAFPREFIX".ekmf-rest-api."VAULT_ID".templates:read CLASS(EJBROLE) ACCESS(READ) ID("GKLM_GROUP")"
-"PERMIT" SAFPREFIX".ekmf-rest-api."VAULT_ID".keys:read CLASS(EJBROLE) ACCESS(READ) ID("GKLM_GROUP")"
-"PERMIT" SAFPREFIX".ekmf-rest-api."VAULT_ID".keys:write CLASS(EJBROLE) ACCESS(READ) ID("GKLM_GROUP")"
-"PERMIT" SAFPREFIX".ekmf-rest-api."VAULT_ID".keys:delete CLASS(EJBROLE) ACCESS(READ) ID("GKLM_GROUP")"
-/* to be able to reactivate after rotation */
-"PERMIT" SAFPREFIX".ekmf-rest-api."VAULT_ID".keys:deactivated:reactivate CLASS(EJBROLE) ACCESS(READ) ID("GKLM_GROUP")"
 

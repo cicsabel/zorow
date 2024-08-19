@@ -18,6 +18,16 @@
  END                                                           
 //SYSIN     DD    *,SYMBOLS=(JCLONLY)
 
+#if(${instance-UKO_ADMIN_DB} && ${instance-UKO_ADMIN_DB} != "")
+SET CURRENT SQLID = '${instance-UKO_ADMIN_DB}';   
+#else
+  #if(${instance-DB_CURRENT_SQLID} && ${instance-DB_CURRENT_SQLID} != "")
+SET CURRENT SQLID = '${instance-DB_CURRENT_SQLID}';   
+  #else
+SET CURRENT SQLID = '${_step-stepOwnerUpper}';   
+  #end
+#end
+
 GRANT SELECT ON SYSIBM.SYSTABLES TO &WEBUSER;
 
 /*

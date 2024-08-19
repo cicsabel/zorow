@@ -985,7 +985,7 @@
 <variable name="DB_DATASET_INSTALL_HLQ" visibility="public">
   <label>DB_DATASET_INSTALL_HLQ</label>
   <abstract>UKO database HLQ from which DB is installed if DB_INSTALL_FROM_FILE_OR_DATASET=DATASET</abstract>
-  <description>HLQ where the UKO database has been installed, containing the SKMGSQL dataset
+  <description>Dataset where the UKO database has been installed, containing the SKMGSQL dataset
   </description>
   <category>DB variables</category>
   <string>

@@ -61,7 +61,7 @@
                 <inlineTemplate substitution="true">
                                                 
                     if [ ! -d "${instance-WLP_USER_DIR}/servers/" ]; then
-                        mkdir ${instance-WLP_USER_DIR}/servers/
+                        mkdir -p ${instance-WLP_USER_DIR}/servers/
                         if [ $? -gt 0 ]; then 
                             echo "ERROR: Could not create directory" >&amp;2;
                             exit "2"; 
@@ -179,8 +179,12 @@
                         s#^[ \#]*HTTPS_PORT=.*#HTTPS_PORT=${instance-UKO_HTTPS_PORT}#g;
                         s#^[ \#]*SAF_UNAUTHENTICATED_USER_ID=.*#SAF_UNAUTHENTICATED_USER_ID=${instance-UKO_UNAUTHENTICATED_USER}#g;
                         s#^[ \#]*SAF_PROFILE_PREFIX=.*#SAF_PROFILE_PREFIX=${instance-SAF_PROFILE_PREFIX}#g;
-                        s#^[ \#]*EKMF_OAUTH_CLIENT_ID=.*#EKMF_OAUTH_CLIENT_ID=${instance-UKO_OAUTH_CLIENT_ID}#g;
-                        s#^[ \#]*EKMF_OAUTH_CLIENT_ID_OPENAPI=.*#EKMF_OAUTH_CLIENT_ID_OPENAPI=${instance-UKO_OAUTH_CLIENT_ID_OPENAPI}#g;
+                        #if(${instance-UKO_OAUTH_CLIENT_ID} &amp;&amp; ${instance-UKO_OAUTH_CLIENT_ID} != "")
+                            s#^[ \#]*EKMF_OAUTH_CLIENT_ID=.*#EKMF_OAUTH_CLIENT_ID=${instance-UKO_OAUTH_CLIENT_ID}#g;
+                        #end
+                        #if(${instance-UKO_OAUTH_CLIENT_ID_OPENAPI} &amp;&amp; ${instance-UKO_OAUTH_CLIENT_ID_OPENAPI} != "")
+                            s#^[ \#]*EKMF_OAUTH_CLIENT_ID_OPENAPI=.*#EKMF_OAUTH_CLIENT_ID_OPENAPI=${instance-UKO_OAUTH_CLIENT_ID_OPENAPI}#g;
+                        #end
                         s#^[ \#]*OIDC_PROVIDER_TRUST_ALIAS_NAME=.*#OIDC_PROVIDER_TRUST_ALIAS_NAME=${instance-UKO_OIDC_PROVIDER_CERT}#g;
                         s#^[ \#]*OIDC_PROVIDER_KEY_ALIAS_NAME=.*#OIDC_PROVIDER_KEY_ALIAS_NAME=${instance-UKO_OIDC_PROVIDER_CERT}#g" ${instance-UKO_INSTALL_DIR}/server.env > ${instance-WLP_USER_DIR}/servers/${instance-UKO_SERVER_STC_NAME}/server.env;
 
@@ -398,8 +402,12 @@
         <description>Create the server proc</description>
            <runAsUser substitution="true">$!{instance-UKO_ADMIN_TSO}</runAsUser>
            <approver substitution="true">$!{instance-UKO_APPROVER_TSO}</approver>
+        <variableValue name="UKO_SERVER_STC_NAME" scope="instance" noPromptIfSet="false" required="false"/>
         <variableValue name="UKO_ZOS_PROCLIB" scope="instance" noPromptIfSet="false" required="false"/>
         <variableValue name="DB_HLQ" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="WLP_INSTALL_DIR" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="WLP_USER_DIR" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="JAVA_HOME" scope="instance" noPromptIfSet="false" required="false"/>
         <instructions substitution="true">Submit JCL to execute step</instructions>
         <weight>5</weight>
         <autoEnable>true</autoEnable>
@@ -443,6 +451,7 @@
             <description>Define the profiles in the CSFSERV class and grant access</description>
             <runAsUser substitution="true">$!{instance-UKO_ADMIN_SECURITY}</runAsUser>
             <approver substitution="true">$!{instance-UKO_APPROVER_SECURITY}</approver>
+            <variableValue name="UKO_SERVER_STC_USER" scope="instance" noPromptIfSet="false" required="false"/>
             <instructions>Executes a REXX program to create profiles and grant access</instructions>
             <weight>1</weight>
             <autoEnable>true</autoEnable>
@@ -459,12 +468,31 @@
             <runAsUser substitution="true">$!{instance-UKO_ADMIN_SECURITY}</runAsUser>
             <approver substitution="true">$!{instance-UKO_APPROVER_SECURITY}</approver>
             <variableValue name="UKO_KEY_PREFIX" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="UKO_RECOVERY_KEY" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="UKO_SERVER_STC_USER" scope="instance" noPromptIfSet="false" required="false"/>
             <instructions>Executes a REXX program to create the key prefix</instructions>
             <weight>1</weight>
             <autoEnable>true</autoEnable>
             <template>
                 <fileTemplate substitution="true">extensions/defineKeyAccess.rexx</fileTemplate>
                 <submitAs maxRc="4">TSO-REXX-JCL</submitAs>
+                <maxLrecl>1024</maxLrecl>
+            </template>
+        </step>
+
+        <step name="configureDsnrAccess">
+            <title>Define DSNR access</title>
+            <description>Define access to the DSNR RRSAF and DIST profiles</description>        
+            <runAsUser substitution="true">$!{instance-UKO_ADMIN_SECURITY}</runAsUser>
+            <approver substitution="true">$!{instance-UKO_APPROVER_SECURITY}</approver>
+            <variableValue name="DB_JCC_SSID" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="UKO_SERVER_STC_USER" scope="instance" noPromptIfSet="false" required="false"/>
+            <instructions substitution="true">Review rexx and execute it to create the required DSNR profiles and grant access</instructions>
+            <weight>1</weight>
+            <autoEnable>true</autoEnable>
+            <template>
+                <fileTemplate substitution="true">extensions/defineDsnrAccess.rexx</fileTemplate>
+                <submitAs maxRc="0">TSO-REXX-JCL</submitAs>
                 <maxLrecl>1024</maxLrecl>
             </template>
         </step>

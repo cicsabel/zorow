@@ -27,9 +27,12 @@
 #if(${instance-UKO_ADMIN_DB} && ${instance-UKO_ADMIN_DB} != "")
 SET CURRENT SQLID = '${instance-UKO_ADMIN_DB}';   
 #else
-SET CURRENT SQLID = '${_step-stepOwner}';   
+  #if(${instance-DB_CURRENT_SQLID} && ${instance-DB_CURRENT_SQLID} != "")
+SET CURRENT SQLID = '${instance-DB_CURRENT_SQLID}';   
+  #else
+SET CURRENT SQLID = '${_step-stepOwnerUpper}';   
+  #end
 #end
-
 SET CURRENT SCHEMA = '${instance-DB_CURRENT_SCHEMA}' ;
 
 DROP DATABASE ${instance-DB_NAME_UKO} ;

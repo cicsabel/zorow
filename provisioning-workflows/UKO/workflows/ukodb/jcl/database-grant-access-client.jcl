@@ -17,7 +17,15 @@
  RUN PROGRAM(${instance-DB_PROGRAM}) PLAN(${instance-DB_PLAN}) LIB('${instance-DB_RUNLIB}') 
  END                                                           
 //SYSIN     DD    *,SYMBOLS=(JCLONLY)
-SET CURRENT SQLID = '${instance-DB_CURRENT_SQLID}' ;
+#if(${instance-UKO_ADMIN_DB} && ${instance-UKO_ADMIN_DB} != "")
+SET CURRENT SQLID = '${instance-UKO_ADMIN_DB}';   
+#else
+  #if(${instance-DB_CURRENT_SQLID} && ${instance-DB_CURRENT_SQLID} != "")
+SET CURRENT SQLID = '${instance-DB_CURRENT_SQLID}';   
+  #else
+SET CURRENT SQLID = '${_step-stepOwnerUpper}';   
+  #end
+#end
 SET CURRENT SCHEMA = '${instance-DB_CURRENT_SCHEMA}' ;
 
 GRANT SELECT ON V1KMGELT TO &CLUSER;

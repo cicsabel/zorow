@@ -165,6 +165,8 @@
        		<runAsUser substitution="true">$!{instance-UKO_ADMIN_TSO}</runAsUser>
        		<approver substitution="true">$!{instance-UKO_APPROVER_TSO}</approver>
             <variableValue name="UKO_ZOS_PROCLIB" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="UKO_ZOS_PARMLIB" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="UKO_AGENT_STC_NAME" scope="instance" noPromptIfSet="false" required="false"/>
             <variableValue name="UKO_AGENT_RUNLIB" scope="instance" noPromptIfSet="false" required="false"/>
             <variableValue name="TCPIP_HLQ" scope="instance" noPromptIfSet="false" required="false"/>
         	<instructions substitution="true">Submit JCL to execute step</instructions>
@@ -207,6 +209,7 @@
             <description>Define the profiles in the CSFSERV class and grant access</description>
             <runAsUser substitution="true">$!{instance-UKO_ADMIN_SECURITY}</runAsUser>
             <approver substitution="true">$!{instance-UKO_APPROVER_SECURITY}</approver>
+            <variableValue name="UKO_AGENT_STC_USER" scope="instance" noPromptIfSet="false" required="false"/>
             <instructions>Executes a REXX program to create profiles and grant access</instructions>
             <weight>1</weight>
             <autoEnable>true</autoEnable>
@@ -223,12 +226,42 @@
             <runAsUser substitution="true">$!{instance-UKO_ADMIN_SECURITY}</runAsUser>
             <approver substitution="true">$!{instance-UKO_APPROVER_SECURITY}</approver>
             <variableValue name="UKO_KEY_PREFIX" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="UKO_AGENT_STC_USER" scope="instance" noPromptIfSet="false" required="false"/>
             <instructions>Executes a REXX program to create the key prefix</instructions>
             <weight>1</weight>
             <autoEnable>true</autoEnable>
             <template>
                 <fileTemplate substitution="true">extensions/defineKeyAccess.rexx</fileTemplate>
                 <submitAs maxRc="4">TSO-REXX-JCL</submitAs>
+                <maxLrecl>1024</maxLrecl>
+            </template>
+        </step>
+
+        <step name="configureDsnrAccess">
+            <title>Define DSNR BATCH access (Workstation only)</title>
+            <description>If the agent is used with EKMF Workstation, it requires access to the BATCH profile in the DSNR class for the TSO attachment facility, the call attachment facility (aka CAF) and Db2 utilities</description>        
+            <runAsUser substitution="true">$!{instance-UKO_ADMIN_SECURITY}</runAsUser>
+            <approver substitution="true">$!{instance-UKO_APPROVER_SECURITY}</approver>
+            <condition>
+                <expression>"1"=="1"</expression>
+                <description>always true</description>
+                <targetStateSet>
+                    <description>Only execute for workstation access</description>
+                    <extendStateExpression>
+                        <description>Skip if no workstation access is required</description>
+                        <expression>${instance-WORKSTATION_ACCESS_REQUIRED} == "false"</expression>
+                        <targetState>Skipped</targetState>
+                    </extendStateExpression>
+                </targetStateSet>
+            </condition>            
+            <variableValue name="DB_JCC_SSID" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="UKO_AGENT_STC_USER" scope="instance" noPromptIfSet="false" required="false"/>
+            <instructions substitution="true">If this agent is used by the EKMF Workstation as well, review the rexx and execute it to create the required DSNR profile and grant access</instructions>
+            <weight>1</weight>
+            <autoEnable>true</autoEnable>
+            <template>
+                <fileTemplate substitution="true">extensions/defineDsnrAccess.rexx</fileTemplate>
+                <submitAs maxRc="0">TSO-REXX-JCL</submitAs>
                 <maxLrecl>1024</maxLrecl>
             </template>
         </step>

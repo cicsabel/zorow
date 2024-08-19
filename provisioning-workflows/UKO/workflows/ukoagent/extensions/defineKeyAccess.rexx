@@ -8,7 +8,11 @@
 /***********************************************************************/
 
 AGENT_STC_USER="${instance-UKO_AGENT_STC_USER}"
+#if(${instance-UKO_ADMIN_SECURITY} && ${instance-UKO_ADMIN_SECURITY} != "")
 RACF_OWNER="${instance-UKO_ADMIN_SECURITY}"
+#else
+RACF_OWNER="${_step-stepOwnerUpper}"
+#end   
 
 /* If &SYS-ECCSIGN-PREFIX and &SYS-RSAKEK-PREFIX are defined in KMGPARM, */
 /* the agent needs access to the keys. */

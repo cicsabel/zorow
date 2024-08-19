@@ -9,7 +9,6 @@
 //*********************************************************************
 //BINDPLAN EXEC PGM=IKJEFT01,REGION=4096K
 // EXPORT SYMLIST=*
-// SET DBSQLID=${instance-DB_CURRENT_SQLID}
 // SET DBPACK=${instance-DB_AGENT_PACKAGE}
 // SET DBPLAN=${instance-DB_AGENT_PLAN}
 //STEPLIB   DD DISP=SHR,DSN=${instance-DB_HLQ}.SDSNLOAD
@@ -17,8 +16,16 @@
 //SYSPRINT  DD SYSOUT=*
 //SYSUDUMP  DD SYSOUT=*
 //SYSIN     DD *,SYMBOLS=(JCLONLY)
- SET CURRENT SQLID = '&DBSQLID' ;
- SET CURRENT SCHEMA = '${instance-DB_CURRENT_SCHEMA}' ;
+ #if(${instance-UKO_ADMIN_DB} && ${instance-UKO_ADMIN_DB} != "")
+  SET CURRENT SQLID = '${instance-UKO_ADMIN_DB}';   
+#else
+  #if(${instance-DB_CURRENT_SQLID} && ${instance-DB_CURRENT_SQLID} != "")
+  SET CURRENT SQLID = '${instance-DB_CURRENT_SQLID}';   
+  #else
+  SET CURRENT SQLID = '${_step-stepOwnerUpper}';   
+  #end
+#end
+SET CURRENT SCHEMA = '${instance-DB_CURRENT_SCHEMA}' ;
 *- ENSURE STARTED TASK USER HAVE ACCESS TO THE DB2 PLAN/PACKAGE
 *- CHANGE BELOW TO REFLECT YOUR STARTED TASK USER (ID OR GROUP)
 *- REVOKE EXECUTE ON PLAN &DBPLAN FROM

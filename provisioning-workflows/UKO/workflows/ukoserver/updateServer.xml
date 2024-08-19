@@ -130,19 +130,25 @@
                     currentversion=${instance-UKO_SERVER_VERSION}
 
                     # create backup directory
+                    echo "Creating backup directory called ${instance-UKO_SERVER_DIRECTORY}/backup_${_workflow-workflowKey}"
                     mkdir ${instance-UKO_SERVER_DIRECTORY}/backup_${_workflow-workflowKey};
+                    echo "everything else will now be logged in ${instance-UKO_SERVER_DIRECTORY}/backup_${_workflow-workflowKey}/migration.log"
 
                     # move everything into backup directory
+                    echo "backing up EkmfWeb.properties" >> ${instance-UKO_SERVER_DIRECTORY}/backup_${_workflow-workflowKey}/migration.log;
                     mv ${instance-UKO_SERVER_DIRECTORY}/EkmfWeb.properties ${instance-UKO_SERVER_DIRECTORY}/backup_${_workflow-workflowKey}/EkmfWeb.properties;
+                    echo "backing up apps directory" >> ${instance-UKO_SERVER_DIRECTORY}/backup_${_workflow-workflowKey}/migration.log;
                     mv ${instance-UKO_SERVER_DIRECTORY}/apps ${instance-UKO_SERVER_DIRECTORY}/backup_${_workflow-workflowKey}/apps;
 
                     if [ -d "${instance-UKO_SERVER_DIRECTORY}/includes" ] 
                     then
+                        echo "includes folder found, backing up" >> ${instance-UKO_SERVER_DIRECTORY}/backup_${_workflow-workflowKey}/migration.log;
                         mv ${instance-UKO_SERVER_DIRECTORY}/includes ${instance-UKO_SERVER_DIRECTORY}/backup_${_workflow-workflowKey}/includes; 
                     fi
                     
                     if [ -d "${instance-UKO_SERVER_DIRECTORY}/configDropins" ] 
                     then
+                        echo "configDropins found, backing up" >> ${instance-UKO_SERVER_DIRECTORY}/backup_${_workflow-workflowKey}/migration.log;
                         mv ${instance-UKO_SERVER_DIRECTORY}/configDropins ${instance-UKO_SERVER_DIRECTORY}/backup_${_workflow-workflowKey}/configDropins; 
                     fi
 
@@ -361,7 +367,7 @@
                         if [ -d "${instance-UKO_SERVER_DIRECTORY}/backup_${_workflow-workflowKey}/configDropins/overrides" ] 
                         then
                             echo "overrides found in backup, copying to the new directory"
-                            cp ${instance-UKO_SERVER_DIRECTORY}/backup_${_workflow-workflowKey}/configDropins/overrides configDropins/overrides
+                            cp -r ${instance-UKO_SERVER_DIRECTORY}/backup_${_workflow-workflowKey}/configDropins/overrides configDropins
                         else
                             echo "creating ${instance-UKO_SERVER_DIRECTORY}/configDropins/overrides"
                             mkdir configDropins/overrides   

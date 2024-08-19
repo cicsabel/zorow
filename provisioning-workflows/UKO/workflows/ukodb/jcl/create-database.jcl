@@ -18,7 +18,11 @@
 #if(${instance-UKO_ADMIN_DB} && ${instance-UKO_ADMIN_DB} != "")
 SET CURRENT SQLID = '${instance-UKO_ADMIN_DB}';   
 #else
+  #if(${instance-DB_CURRENT_SQLID} && ${instance-DB_CURRENT_SQLID} != "")
 SET CURRENT SQLID = '${instance-DB_CURRENT_SQLID}';   
+  #else
+SET CURRENT SQLID = '${_step-stepOwnerUpper}';   
+  #end
 #end
 
 SET CURRENT SCHEMA = '${instance-DB_CURRENT_SCHEMA}' ;
@@ -27,8 +31,6 @@ CREATE DATABASE ${instance-DB_NAME_UKO}
  BUFFERPOOL ${instance-DB_BUFFERPOOL_DEFAULT} 
  INDEXBP    ${instance-DB_BUFFERPOOL_INDEX} 
 STOGROUP ${instance-DB_STOGROUP};               
-TRANSFER OWNERSHIP OF DATABASE ${instance-DB_NAME_UKO} 
- TO USER &DBSQLID REVOKE PRIVILEGES;                                    
 
 COMMIT;                                                
 
@@ -36,12 +38,17 @@ CREATE DATABASE ${instance-DB_NAME_DATASET_ENCRYPTION_STATUS}
  BUFFERPOOL ${instance-DB_BUFFERPOOL_DEFAULT} 
  INDEXBP    ${instance-DB_BUFFERPOOL_INDEX} 
 STOGROUP ${instance-DB_STOGROUP};                       
-TRANSFER OWNERSHIP OF DATABASE ${instance-DB_NAME_DATASET_ENCRYPTION_STATUS}  
+
+COMMIT;    
+
+#if(${instance-UKO_ADMIN_DB} && ${instance-UKO_ADMIN_DB} != "")
+TRANSFER OWNERSHIP OF DATABASE ${instance-DB_NAME_UKO} 
  TO USER &DBSQLID REVOKE PRIVILEGES;                                    
 
-COMMIT;                                                
-
-SET CURRENT SQLID = '&DBSQLID';  
+TRANSFER OWNERSHIP OF DATABASE ${instance-DB_NAME_DATASET_ENCRYPTION_STATUS}  
+ TO USER &DBSQLID REVOKE PRIVILEGES;                                    
+COMMIT;    
+#end
 
 
 /*
