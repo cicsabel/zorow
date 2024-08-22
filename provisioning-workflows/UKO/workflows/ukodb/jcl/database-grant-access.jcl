@@ -17,14 +17,10 @@
  RUN PROGRAM(${instance-DB_PROGRAM}) PLAN(${instance-DB_PLAN}) LIB('${instance-DB_RUNLIB}') 
  END                                                           
 //SYSIN     DD    *,SYMBOLS=(JCLONLY)
-#if(${instance-UKO_ADMIN_DB} && ${instance-UKO_ADMIN_DB} != "")
-SET CURRENT SQLID = '${instance-UKO_ADMIN_DB}';   
-#else
-  #if(${instance-DB_CURRENT_SQLID} && ${instance-DB_CURRENT_SQLID} != "")
+#if(${instance-DB_CURRENT_SQLID} && ${instance-DB_CURRENT_SQLID} != "")
 SET CURRENT SQLID = '${instance-DB_CURRENT_SQLID}';   
-  #else
+#else
 SET CURRENT SQLID = '${_step-stepOwnerUpper}';   
-  #end
 #end
 SET CURRENT SCHEMA = '${instance-DB_CURRENT_SCHEMA}' ;
 
@@ -205,6 +201,5 @@ GRANT SELECT ON KEYSTORES_API_V4 TO &WEBUSER;
 GRANT INSERT ON KEYSTORES_API_V4 TO &WEBUSER;
 GRANT UPDATE ON KEYSTORES_API_V4 TO &WEBUSER;
 GRANT DELETE ON KEYSTORES_API_V4 TO &WEBUSER;
-
 
 /*

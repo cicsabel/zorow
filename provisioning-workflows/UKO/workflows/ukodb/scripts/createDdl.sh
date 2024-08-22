@@ -7,15 +7,15 @@ sedstring="";
 #  /* FOR SQLID, SCHEMA                  */
 #  "CHANGE 'KMGSQLID' 'KMGSQLID' ALL"
 #  "CHANGE 'KRYTEST1' 'KRYTEST1' ALL"
-#if(${instance-UKO_ADMIN_DB} && ${instance-UKO_ADMIN_DB} != "")
-sedstring="${sedstring} s/KMGSQLID/${instance-UKO_ADMIN_DB}/g;"
-#else
-  #if(${instance-DB_CURRENT_SQLID} && ${instance-DB_CURRENT_SQLID} != "")
+
+#if(${instance-DB_CURRENT_SQLID} && ${instance-DB_CURRENT_SQLID} != "")
+echo "the current SQLID will be set to ${instance-DB_CURRENT_SQLID}"
 sedstring="${sedstring} s/KMGSQLID/${instance-DB_CURRENT_SQLID}/g;"
-  #else
+#else
+echo "the current SQLID will be set to ${_step-stepOwnerUpper}"
 sedstring="${sedstring} s/KMGSQLID/${_step-stepOwnerUpper}/g;"
-  #end
 #end
+
 sedstring="${sedstring} s/KRYTEST1/${instance-DB_CURRENT_SCHEMA}/g;"
 
 #  /* FOR DATABASE, STORAGE GROUP */

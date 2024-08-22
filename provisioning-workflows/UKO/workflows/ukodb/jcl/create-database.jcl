@@ -24,13 +24,17 @@ SET CURRENT SQLID = '${instance-DB_CURRENT_SQLID}';
 SET CURRENT SQLID = '${_step-stepOwnerUpper}';   
   #end
 #end
-
 SET CURRENT SCHEMA = '${instance-DB_CURRENT_SCHEMA}' ;
 
 CREATE DATABASE ${instance-DB_NAME_UKO} 
  BUFFERPOOL ${instance-DB_BUFFERPOOL_DEFAULT} 
  INDEXBP    ${instance-DB_BUFFERPOOL_INDEX} 
 STOGROUP ${instance-DB_STOGROUP};               
+
+#if(${instance-UKO_ADMIN_DB} && ${instance-UKO_ADMIN_DB} != "")
+TRANSFER OWNERSHIP OF DATABASE ${instance-DB_NAME_UKO} 
+ TO USER &DBSQLID REVOKE PRIVILEGES;                                    
+#end
 
 COMMIT;                                                
 
@@ -39,16 +43,13 @@ CREATE DATABASE ${instance-DB_NAME_DATASET_ENCRYPTION_STATUS}
  INDEXBP    ${instance-DB_BUFFERPOOL_INDEX} 
 STOGROUP ${instance-DB_STOGROUP};                       
 
-COMMIT;    
-
 #if(${instance-UKO_ADMIN_DB} && ${instance-UKO_ADMIN_DB} != "")
-TRANSFER OWNERSHIP OF DATABASE ${instance-DB_NAME_UKO} 
- TO USER &DBSQLID REVOKE PRIVILEGES;                                    
-
 TRANSFER OWNERSHIP OF DATABASE ${instance-DB_NAME_DATASET_ENCRYPTION_STATUS}  
  TO USER &DBSQLID REVOKE PRIVILEGES;                                    
-COMMIT;    
 #end
+
+COMMIT;    
+
 
 
 /*
