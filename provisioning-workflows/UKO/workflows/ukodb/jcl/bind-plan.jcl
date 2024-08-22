@@ -11,20 +11,17 @@
 // EXPORT SYMLIST=*
 // SET DBPACK=${instance-DB_AGENT_PACKAGE}
 // SET DBPLAN=${instance-DB_AGENT_PLAN}
+#if(${instance-DB_CURRENT_SQLID} && ${instance-DB_CURRENT_SQLID} != "")
+// SET DBSQLID=${instance-DB_CURRENT_SQLID}
+#else
+// SET DBSQLID=${_step-stepOwnerUpper}
+#end
 //STEPLIB   DD DISP=SHR,DSN=${instance-DB_HLQ}.SDSNLOAD
 //SYSTSPRT  DD SYSOUT=*,DCB=BLKSIZE=121
 //SYSPRINT  DD SYSOUT=*
 //SYSUDUMP  DD SYSOUT=*
 //SYSIN     DD *,SYMBOLS=(JCLONLY)
- #if(${instance-UKO_ADMIN_DB} && ${instance-UKO_ADMIN_DB} != "")
-  SET CURRENT SQLID = '${instance-UKO_ADMIN_DB}';   
-#else
-  #if(${instance-DB_CURRENT_SQLID} && ${instance-DB_CURRENT_SQLID} != "")
-  SET CURRENT SQLID = '${instance-DB_CURRENT_SQLID}';   
-  #else
-  SET CURRENT SQLID = '${_step-stepOwnerUpper}';   
-  #end
-#end
+SET CURRENT SQLID = '&DBSQLID';   
 SET CURRENT SCHEMA = '${instance-DB_CURRENT_SCHEMA}' ;
 *- ENSURE STARTED TASK USER HAVE ACCESS TO THE DB2 PLAN/PACKAGE
 *- CHANGE BELOW TO REFLECT YOUR STARTED TASK USER (ID OR GROUP)
