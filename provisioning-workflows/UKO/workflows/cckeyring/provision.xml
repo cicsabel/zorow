@@ -1,0 +1,253 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- Declare external file containing WAS variables referenced in the following steps -->
+<!DOCTYPE workflow [<!ENTITY variables SYSTEM "variable_imports.xml">
+                    <!ENTITY image_properties SYSTEM "extensions/image_properties.xml">
+                    ]> 
+                    
+<!--
+/******************************************************************************/
+/* Copyright Contributors to the zOS-Workflow Project.                        */
+/* SPDX-License-Identifier: Apache-2.0                                        */
+/******************************************************************************/
+-->
+<workflow xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../workflow/schemas/workflow_v1.xsd">
+    <!--  Note: The schema workflow_v1.xsd is shipped with z/OSMF. To use the schema
+          to validate this XML, modify the above schema location to point to the 
+          schema in z/OSMF, or copy the schema to an appropriate location.  -->
+
+    <!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+    <!-- Provisioning : Provision keyring(s) and certificate(s)      -->
+    <!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+
+  <workflowInfo>
+      <workflowID>cckeyring_Provision</workflowID>
+      <workflowDescription>Provision keyrings and certificates required for the server</workflowDescription>
+    <workflowVersion>1.0.0.0</workflowVersion>
+      <vendor>IBM</vendor>
+      <Provisioning>
+          <productID>5655-EKM</productID>
+          <productName>UKO</productName>
+          <productVersion>V2R1+</productVersion>
+          <softwareType>cckeyring</softwareType>
+      </Provisioning>
+  </workflowInfo>
+  
+  	<!--+++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+	<!--     Include variables used by the following steps     -->
+	<!--+++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+	&variables;
+	&image_properties;
+	
+    <!--++++++++++++++++++++++-->
+    <!--   Provision Steps    -->
+    <!--++++++++++++++++++++++-->  
+
+    
+    <step name="createCA">
+        <title>Create CA</title>
+        <description>If requested, create a certificate authority</description>
+        <runAsUser substitution="true">$!{instance-CC_ADMIN_SECURITY}</runAsUser>
+        <approver substitution="true">$!{instance-CC_APPROVER_SECURITY}</approver>
+        <condition>
+            <expression><![CDATA["1" == "1"]]></expression>
+            <description>Always perform</description>
+            <targetStateSet>
+                <description>Only create the certificate authority if requested</description>
+                <extendStateExpression>
+                    <description>Skip if CC_CREATE_CA is false</description>
+                    <expression><![CDATA[ ${instance-CC_CREATE_CA} == undefined || ${instance-CC_CREATE_CA} != "true"]]></expression>
+                    <targetState>Skipped</targetState>
+                </extendStateExpression>
+            </targetStateSet>
+        </condition> 
+        <variableValue name="CC_CA_LABEL" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="CC_TLS_KEY_STORE_SERVER_CERT_CN" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="CC_TLS_KEY_STORE_SERVER_CERT_OU" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="CC_TLS_KEY_STORE_SERVER_CERT_O" scope="instance" noPromptIfSet="false" required="false"/>
+        <instructions>Executes a REXX program to create a certificate authority</instructions>
+        <weight>1</weight>
+        <autoEnable>true</autoEnable>
+        <template>
+            <fileTemplate substitution="true">extensions/createCA.rexx</fileTemplate>
+            <submitAs maxRc="0">TSO-REXX-JCL</submitAs>
+            <maxLrecl>1024</maxLrecl>
+        </template>
+    </step>
+
+    <step name="createCertificates">
+        <title>Create certificates</title>
+        <description>If requested, create a certificates </description>
+        <runAsUser substitution="true">$!{instance-CC_ADMIN_SECURITY}</runAsUser>
+        <approver substitution="true">$!{instance-CC_APPROVER_SECURITY}</approver>
+        <condition>
+            <expression><![CDATA["1" == "1"]]></expression>
+            <description>Always perform</description>
+            <targetStateSet>
+                <description>Only create the certificates if requested</description>
+                <extendStateExpression>
+                    <description>Skip if CC_CREATE_CERTIFICATES is false</description>
+                    <expression><![CDATA[ ${instance-CC_CREATE_CERTIFICATES} == undefined || ${instance-CC_CREATE_CERTIFICATES} != "true"]]></expression>
+                    <targetState>Skipped</targetState>
+                </extendStateExpression>
+            </targetStateSet>
+        </condition> 
+        <variableValue name="CC_SERVER_STC_USER" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="CC_CA_LABEL" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="CC_TLS_KEY_STORE_SERVER_CERT" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="CC_OIDC_PROVIDER_CERT" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="CC_TLS_KEY_STORE_SERVER_CERT_CN" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="CC_TLS_KEY_STORE_SERVER_CERT_OU" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="CC_TLS_KEY_STORE_SERVER_CERT_O" scope="instance" noPromptIfSet="false" required="false"/>
+        <instructions>Executes a REXX program to create certificates. 
+            Important: adjust the NOTAFTER DATE and TIME parameters and potentially also the RSA SIZE to match your environment needs. 
+        </instructions>
+        <weight>1</weight>
+        <autoEnable>true</autoEnable>
+        <template>
+            <fileTemplate substitution="true">extensions/createCerts.rexx</fileTemplate>
+            <submitAs maxRc="0">TSO-REXX-JCL</submitAs>
+            <maxLrecl>1024</maxLrecl>
+        </template>
+    </step>
+
+    <step name="createKeyring">
+        <title>Create Keyring</title>
+        <description>If requested, create a key ring and trust ring</description>
+        <runAsUser substitution="true">$!{instance-CC_ADMIN_SECURITY}</runAsUser>
+        <approver substitution="true">$!{instance-CC_APPROVER_SECURITY}</approver>
+        <condition>
+            <expression><![CDATA["1" == "1"]]></expression>
+            <description>Always perform</description>
+            <targetStateSet>
+                <description>Only create the key and trust ring if requested</description>
+                <extendStateExpression>
+                    <description>Skip if CC_CREATE_KEYRING is NO</description>
+                    <expression><![CDATA[ ${instance-CC_CREATE_KEYRING} == undefined || ${instance-CC_CREATE_KEYRING} != "true"]]></expression>
+                    <targetState>Skipped</targetState>
+                </extendStateExpression>
+            </targetStateSet>
+        </condition> 
+        <variableValue name="CC_SERVER_STC_USER" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="CC_TLS_KEY_STORE_KEY_RING" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="CC_TLS_TRUST_STORE_KEY_RING" scope="instance" noPromptIfSet="false" required="false"/>
+        <instructions>Executes a REXX program to create the key ring and potentially trust ring</instructions>
+        <weight>1</weight>
+        <autoEnable>true</autoEnable>
+        <template>
+            <fileTemplate substitution="true">extensions/createKeyring.rexx</fileTemplate>
+            <submitAs maxRc="0">TSO-REXX-JCL</submitAs>
+            <maxLrecl>1024</maxLrecl>
+        </template>
+    </step>
+
+    <step name="defineKeyringAccess">
+        <title>Define Keyring Access</title>
+        <description>Granting access to the keyring</description>
+        <runAsUser substitution="true">$!{instance-CC_ADMIN_SECURITY}</runAsUser>
+        <approver substitution="true">$!{instance-CC_APPROVER_SECURITY}</approver>
+        <variableValue name="CC_SERVER_STC_USER" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="CC_TLS_KEY_STORE_KEY_RING" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="CC_TLS_TRUST_STORE_KEY_RING" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="SAF_OWNER" scope="instance" noPromptIfSet="false" required="false"/>
+        <instructions>Executes a REXX program to define access to the key ring and potentially trust ring. 
+            This script assumes that you use the RDATALIB class. 
+            It contains an example for using the FACILITY class ass well that by default is not executed. Modify the script to suit your environment. 
+        </instructions>
+        <weight>1</weight>
+        <autoEnable>true</autoEnable>
+        <template>
+            <fileTemplate substitution="true">extensions/defineKeyringAccess.rexx</fileTemplate>
+            <submitAs maxRc="0">TSO-REXX-JCL</submitAs>
+            <maxLrecl>1024</maxLrecl>
+        </template>
+    </step>
+
+    <step name="addToKeyRing">
+        <title>Add certificates and CA to keyring</title>
+        <description>Add certificate(s) and CA to keyring(s) if anything was newly created</description>
+        <runAsUser substitution="true">$!{instance-CC_ADMIN_SECURITY}</runAsUser>
+        <approver substitution="true">$!{instance-CC_APPROVER_SECURITY}</approver>
+        <condition>
+            <expression><![CDATA["1" == "1"]]></expression>
+            <description>Always perform</description>
+            <targetStateSet>
+                <description>Skip for existing keyring and certificate</description>
+                <extendStateExpression>
+                    <description>If certificates and key ring are already existing, assume that the certificates have been added to the key ring</description>
+                    <expression><![CDATA[ ${instance-CC_CREATE_KEYRING} == "false" && ${instance-CC_CREATE_CERTIFICATES} == "false"]]></expression>
+                    <targetState>Skipped</targetState>
+                </extendStateExpression>
+            </targetStateSet>
+        </condition> 
+        <variableValue name="CC_SERVER_STC_USER" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="CC_CA_LABEL" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="CC_TLS_KEY_STORE_SERVER_CERT" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="CC_OIDC_PROVIDER_CERT" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="CC_TLS_KEY_STORE_KEY_RING" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="CC_TLS_TRUST_STORE_KEY_RING" scope="instance" noPromptIfSet="false" required="false"/>
+        <instructions>Executes a REXX program to add certificates and the CA to the key ring and potentially trust ring</instructions>
+        <weight>1</weight>
+        <autoEnable>true</autoEnable>
+        <template>
+            <fileTemplate substitution="true">extensions/addToKeyring.rexx</fileTemplate>
+            <submitAs maxRc="0">TSO-REXX-JCL</submitAs>
+            <maxLrecl>1024</maxLrecl>
+        </template>
+    </step>
+
+    <!-- <step name="addMoreCertificatesToTrustRing">
+        <title>Add additional certificates to trust ring </title>
+        <description>Add trusted certificates to the server's trust keyring, for example to connect to cloud keystores</description>
+        <runAsUser substitution="true">$!{instance-CC_ADMIN_SECURITY}</runAsUser>
+        <approver substitution="true">$!{instance-CC_APPROVER_SECURITY}</approver>
+        <variableValue name="CC_SERVER_STC_USER" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="CC_TLS_TRUST_STORE_KEY_RING" scope="instance" noPromptIfSet="false" required="false"/>
+        <instructions>Adjust and execute this REXX program to add additional certificates to the trust keyring. 
+            Adjust the names to reflect your own local certificate labels.
+        </instructions>
+        <weight>1</weight>
+        <autoEnable>true</autoEnable>
+        <template>
+            <fileTemplate substitution="true">extensions/addTrustCertificates.rexx</fileTemplate>
+            <submitAs maxRc="0">TSO-REXX-JCL</submitAs>
+            <maxLrecl>1024</maxLrecl>
+        </template>
+    </step> -->
+
+    <step name="configureForMsdke">
+        <title>(Optional) Configure for MSDKE</title>
+        <description>Add additional certificates and CAs for MSDKE support</description>
+        <runAsUser substitution="true">$!{instance-CC_ADMIN_SERVER}</runAsUser>
+        <approver substitution="true">$!{instance-CC_APPROVER_SERVER}</approver>
+        <condition>
+            <expression>"1"=="1"</expression>
+            <description>always true</description>
+            <targetStateSet>
+                <description>Only execute for MSDKE configuration</description>
+                <extendStateExpression>
+                    <description>Skip if no MSDKE configuration is required</description>
+                    <expression>${instance-MSDKE_SUPPORT_REQUIRED}  == "false"</expression>
+                    <targetState>Skipped</targetState>
+                </extendStateExpression>
+            </targetStateSet>
+        </condition>
+        <variableValue name="MSDKE_SUPPORT_REQUIRED" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="CC_SERVER_STC_USER" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="MSDKE_RABBIT_CA" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="MSDKE_RABBIT_CERT" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="CC_TLS_KEY_STORE_KEY_RING" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="CC_TLS_TRUST_STORE_KEY_RING" scope="instance" noPromptIfSet="false" required="false"/>
+        <instructions substitution="true">Execute the rexx script to add your rabbitMQ certificate and
+            CA to the key- and trustring. Note that in this example, the certificate is already existing
+            and has been defined as site certificate</instructions>
+        <weight>1</weight>
+        <autoEnable>true</autoEnable>
+        <template>
+            <fileTemplate substitution="true">extensions/configureMsdke.rexx</fileTemplate>
+            <submitAs maxRc="0">TSO-REXX-JCL</submitAs>
+            <maxLrecl>1024</maxLrecl>
+        </template>
+    </step>
+
+</workflow>

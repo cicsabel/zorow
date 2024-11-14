@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/******************************************************************************/
+/* Copyright Contributors to the zOS-Workflow Project.                        */
+/* SPDX-License-Identifier: Apache-2.0                                        */
+/******************************************************************************/
+
+-->
+<variable name="CC_TECHNICAL_SUPERIOR_GROUP" visibility="private">
+  <label>CC_TECHNICAL_SUPERIOR_GROUP</label>
+  <abstract>The superior group for the technical groups</abstract>
+  <description>Superior group to be used for the SUPGROUP parameter</description>
+  <category>User ID creation</category>
+  <string>
+    <validationType>USERID</validationType>
+    <default>SYS1</default>
+  </string>
+</variable>
+<variable name="USER_TSO_LOGON_PROCEDURE" scope="instance" visibility="public">
+  <label>USER_TSO_LOGON_PROCEDURE</label>
+  <abstract>Name of the user's default logon procedure for using TSO/E logon panel</abstract>
+  <description>Refer to https://www.ibm.com/docs/en/zos/3.1.0?topic=syntax-adduser-add-user-profile for more details</description>
+  <category>User ID creation</category>
+  <string>
+    <default>ISPF</default>
+  </string>
+</variable>
+<variable name="USER_TSO_ACCOUNT_NUMBER" scope="instance" visibility="public">
+  <label>USER_TSO_ACCOUNT_NUMBER</label>
+  <abstract>User's default TSO account number when logging on through TSO/E logon panel</abstract>
+  <description>Refer to https://www.ibm.com/docs/en/zos/3.1.0?topic=syntax-adduser-add-user-profile for more details</description>
+  <category>User ID creation</category>
+  <string>
+    <default>DEFAULT</default>
+  </string>
+</variable>
+<variable name="USER_TSO_HOLDCLASS" scope="instance" visibility="public">
+  <label>USER_TSO_HOLDCLASS</label>
+  <abstract>Specifies the user's default hold class</abstract>
+  <description>Refer to https://www.ibm.com/docs/en/zos/3.1.0?topic=syntax-adduser-add-user-profile for more details</description>
+  <category>User ID creation</category>
+  <string>
+    <default>H</default>
+  </string>
+</variable>
+<variable name="USER_TSO_MSGCLASS" scope="instance" visibility="public">
+  <label>USER_TSO_MSGCLASS</label>
+  <abstract>Specifies the user's default message class</abstract>
+  <description>Refer to https://www.ibm.com/docs/en/zos/3.1.0?topic=syntax-adduser-add-user-profile for more details</description>
+  <category>User ID creation</category>
+  <string>
+    <default>H</default>
+  </string>
+</variable>
+<variable name="USER_TSO_SYSOUTCLASS" scope="instance" visibility="public">
+  <label>USER_TSO_SYSOUTCLASS</label>
+  <abstract>Specifies the user's default SYSOUT class</abstract>
+  <description>Refer to https://www.ibm.com/docs/en/zos/3.1.0?topic=syntax-adduser-add-user-profile for more details</description>
+  <category>User ID creation</category>
+  <string>
+    <default>H</default>
+  </string>
+</variable>
+<variable name="USER_TSO_SIZE" scope="instance" visibility="public">
+  <label>USER_TSO_SIZE</label>
+  <abstract>Specifies the maximum region size the user can request at logon</abstract>
+  <description>Refer to https://www.ibm.com/docs/en/zos/3.1.0?topic=syntax-adduser-add-user-profile for more details</description>
+  <category>User ID creation</category>
+  <string>
+    <default>500000</default>
+  </string>
+</variable>
+<variable name="USER_TSO_UNIT" scope="instance" visibility="public">
+  <label>USER_TSO_UNIT</label>
+  <abstract>Default name of a device or group of devices that a procedure uses for allocations</abstract>
+  <description>Refer to https://www.ibm.com/docs/en/zos/3.1.0?topic=syntax-adduser-add-user-profile for more details</description>
+  <category>User ID creation</category>
+  <string>
+    <default>SYSALLDA</default>
+  </string>
+</variable>
+<variable name="USER_HOME_PARENT_DIR" visibility="public">
+  <label>USER_HOME_PARENT_DIR</label>
+  <abstract>Parent directory of the user homes</abstract>
+  <description>Parent directory where the user home of the user is to be created in</description>
+  <category>User ID creation</category>
+  <string>
+    <!-- Path validation, has to start with slash, may contain slashes, must not end with slash or whitespace -->
+    <regularExpression>^\/([A-z0-9-_+\.]+\/)*([A-z0-9-_+\.])*[^\/\s]$</regularExpression>
+    <default>/u</default>
+  </string>
+</variable>
+<variable name="USER_PASSPHRASE" scope="instance" visibility="public">
+  <label>USER_PASSPHRASE</label>
+  <abstract>Initial passphrase for the new users</abstract>
+  <description>Refer to https://www.ibm.com/docs/en/zos/3.1.0?topic=syntax-adduser-add-user-profile for more details</description>
+  <category>User ID creation</category>
+  <string>
+    <default>pass4youpass4you</default>
+  </string>
+</variable>

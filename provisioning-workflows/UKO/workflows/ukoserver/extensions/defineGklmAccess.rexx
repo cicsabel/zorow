@@ -9,6 +9,7 @@ address tso
 GKLM_GROUP="${instance-UKO_GKLM_CLIENT_GROUP}"
 SAFPREFIX="${instance-SAF_PROFILE_PREFIX}"
 VAULT_ID="${instance-UKO_VAULT_ID}"
+SAF_OWNER="${instance-SAF_OWNER}"
 
 /***********************************************************************/
 /* Creating EJB Roles for GKLM access */
@@ -38,8 +39,8 @@ VAULT_ID="${instance-UKO_VAULT_ID}"
 
 /* crypto connect */
 Say "Defining crypto connect roles, as they might not have been defined yet"
-"RDEFINE EJBROLE" SAFPREFIX".crypto-connect.operations:data:encrypt UACC(NONE)"
-"RDEFINE EJBROLE" SAFPREFIX".crypto-connect.operations:data:decrypt UACC(NONE)"
+"RDEFINE EJBROLE" SAFPREFIX".crypto-connect.operations:data:encrypt OWNER("SAF_OWNER") UACC(NONE)"
+"RDEFINE EJBROLE" SAFPREFIX".crypto-connect.operations:data:decrypt OWNER("SAF_OWNER") UACC(NONE)"
 
 Say "Granting access to crypto connect roles"
 "PERMIT" SAFPREFIX".crypto-connect.operations:data:encrypt CLASS(EJBROLE) ACCESS(READ) ID("GKLM_GROUP")"
@@ -58,5 +59,13 @@ end
 Say "Refreshing APPL"
 "SETROPTS RACLIST(APPL) REFRESH"
 
+exit 0
 
+/* SAF permissions for future use, once GKLM migrated to use V4 APIs */
+"PERMIT" SAFPREFIX".ekmf-rest-api."VAULT_ID".templates:read CLASS(EJBROLE) ACCESS(READ) ID("GKLM_GROUP")"
+"PERMIT" SAFPREFIX".ekmf-rest-api."VAULT_ID".keys:read CLASS(EJBROLE) ACCESS(READ) ID("GKLM_GROUP")"
+"PERMIT" SAFPREFIX".ekmf-rest-api."VAULT_ID".keys:write CLASS(EJBROLE) ACCESS(READ) ID("GKLM_GROUP")"
+"PERMIT" SAFPREFIX".ekmf-rest-api."VAULT_ID".keys:delete CLASS(EJBROLE) ACCESS(READ) ID("GKLM_GROUP")"
+/* to be able to reactivate after rotation */
+"PERMIT" SAFPREFIX".ekmf-rest-api."VAULT_ID".keys:deactivated:reactivate CLASS(EJBROLE) ACCESS(READ) ID("GKLM_GROUP")"
 

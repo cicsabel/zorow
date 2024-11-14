@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- Declare external file containing WAS variables referenced in the following steps -->
+<!DOCTYPE workflow [<!ENTITY variables SYSTEM "variable_imports.xml">
+                    <!ENTITY image_properties SYSTEM "extensions/image_properties.xml">
+                    ]> 
+                    
+<!--
+/******************************************************************************/
+/* Copyright Contributors to the zOS-Workflow Project.                        */
+/* SPDX-License-Identifier: Apache-2.0                                        */
+/******************************************************************************/
+-->
+<workflow xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../workflow/schemas/workflow_v1.xsd">
+    <!--  Note: The schema workflow_v1.xsd is shipped with z/OSMF. To use the schema
+          to validate this XML, modify the above schema location to point to the 
+          schema in z/OSMF, or copy the schema to an appropriate location.  -->
+
+    <!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+    <!-- UKO Provisioning : Provision a new UKO angel process                 -->
+    <!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+
+  <workflowInfo>
+      <workflowID>ukoangel_Provision</workflowID>
+      <workflowDescription>Provision an angel process for UKO.</workflowDescription>
+    <workflowVersion>1.0.0.0</workflowVersion>
+        <!-- Build timestamp 2021.05.09.21.03.24 -->
+      <vendor>IBM</vendor>
+      <Provisioning>
+          <productID>5655-EKM</productID>
+          <productName>UKO</productName>
+          <productVersion>V2R1+</productVersion>
+          <softwareType>ukoangel</softwareType>
+      </Provisioning>
+  </workflowInfo>
+  
+  	<!--+++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+	<!--     Include variables used by the following steps     -->
+	<!--+++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+	&variables;
+	&image_properties;
+	
+    <!--++++++++++++++++++++++-->
+    <!--   Provision Steps    -->
+    <!--++++++++++++++++++++++-->  
+
+
+    <step name="createAngelProc">
+        <title>Create Angel Process</title>
+        <description>Create the angel process</description>
+           <runAsUser substitution="true">$!{instance-UKO_ADMIN_TSO}</runAsUser>
+           <approver substitution="true">$!{instance-UKO_APPROVER_TSO}</approver>
+        <variableValue name="WLP_ANGEL_NAME" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="UKO_ZOS_PROCLIB" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="WLP_INSTALL_DIR" scope="instance" noPromptIfSet="false" required="false"/>
+        <instructions substitution="true">Submit JCL to execute step</instructions>
+        <weight>5</weight>
+        <autoEnable>true</autoEnable>
+        <template>
+           <fileTemplate substitution="true">jcl/create-angel-proc.jcl</fileTemplate>
+           <submitAs>JCL</submitAs>
+           <maxLrecl>80</maxLrecl>
+      </template>
+    </step>
+
+    <step name="configureAngelSecurity">
+    	<title>Configure Security for Angel Process</title>
+    	<description>Configure security for the angel process</description>
+        <runAsUser substitution="true">$!{instance-UKO_ADMIN_SECURITY}</runAsUser>
+        <approver substitution="true">$!{instance-UKO_APPROVER_SECURITY}</approver>
+        <variableValue name="WLP_ANGEL_NAME" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="ANGEL_STC_USER" scope="instance" noPromptIfSet="false" required="false"/>
+        <instructions substitution="true">Submit rexx exec to execute step</instructions>
+        <weight>1</weight>
+        <autoEnable>true</autoEnable>
+        <template>
+            <fileTemplate substitution="true">extensions/defineSecurity.rexx</fileTemplate>
+            <submitAs maxRc="0">TSO-REXX-JCL</submitAs>
+            <maxLrecl>1024</maxLrecl>
+        </template>
+    </step>
+
+    <step name="startAngel">
+        <title>Start Angel Process</title>
+        <description>Start the angel process</description>
+
+        <step name="validateConsoleAPI" optional="false">
+            <title>Validating console commands can be issued</title>
+            <description>Issue a command via the console API to ensure basic commands can be executed.</description>
+            <runAsUser substitution="true">$!{instance-UKO_ADMIN_CONSOLE}</runAsUser>
+            <approver substitution="true">$!{instance-UKO_APPROVER_CONSOLE}</approver>
+            <condition>
+                <expression><![CDATA["1" == "1"]]></expression>
+                <description>Should the step be executed, based on the START_SERVER setting</description>
+                <targetStateSet>
+                  <description/>
+                    <extendStateExpression>
+                        <description>Skip if START_SERVER == false</description>
+                        <expression><![CDATA[ ${instance-START_SERVER} == "false"]]></expression>
+                        <targetState>Skipped</targetState>
+                    </extendStateExpression>
+                    <extendStateExpression>
+                        <description>Skip if workstation access is required</description>
+                        <expression><![CDATA[ ${instance-WORKSTATION_ACCESS_REQUIRED} == "true"]]></expression>
+                        <targetState>Skipped</targetState>
+                    </extendStateExpression>
+                </targetStateSet>
+            </condition>
+            <variableValue name="WLP_ANGEL_NAME" scope="instance" noPromptIfSet="false" required="false"/>
+            <instructions>Execute console API to check if its set up correctly</instructions>
+            <weight>1</weight>
+            <skills>z/OS administration</skills>
+            <autoEnable>true</autoEnable>
+            <rest>
+                <httpMethod>PUT</httpMethod>
+                <uriPath substitution="true">/zosmf/restconsoles/consoles/defcn</uriPath>
+                <requestBody substitution="true">
+                    { 
+                      "cmd" : "d a,${instance-WLP_ANGEL_NAME}",
+                      "sol-key" : "NOT FOUND",
+                      "system" : "${_workflow-systemName}"
+                      
+                    }
+                </requestBody>
+                <expectedStatusCode>200</expectedStatusCode>
+                <propertyMapping mapTo="UKO_REST_STATUS">["sol-key-detected"]</propertyMapping>
+            </rest>
+        </step>
+    
+        <step name="startAngel_console">
+        	<title>Start Angel Process From Console</title>
+        	<description>Start the angel process from the console</description>
+        	<runAsUser substitution="true">$!{instance-UKO_ADMIN_CONSOLE}</runAsUser>
+	        <approver substitution="true">$!{instance-UKO_APPROVER_CONSOLE}</approver>
+	        <condition>
+      			<expression><![CDATA["1" == "1"]]></expression>
+				<description>Should the step be executed, based on the START_SERVER setting</description>
+				<targetStateSet>
+					<description/>
+	      			<extendStateExpression>
+	      				<description>Skip if START_SERVER == false</description>
+	            		<expression><![CDATA[ ${instance-START_SERVER} == "false"]]></expression>
+	      				<targetState>Skipped</targetState>
+	      			</extendStateExpression>
+                      <extendStateExpression>
+                        <description>Skip if workstation access is required, because the workstation should connect to the database first</description>
+                        <expression><![CDATA[ ${instance-WORKSTATION_ACCESS_REQUIRED} == "true"]]></expression>
+                        <targetState>Skipped</targetState>
+                    </extendStateExpression>
+				</targetStateSet>
+			</condition>
+     		<instructions substitution="false">Submitting script to start the angel process.</instructions>
+        	<weight>1</weight>
+        	<autoEnable>true</autoEnable>
+        	<rest>
+				<httpMethod>PUT</httpMethod>
+				<uriPath substitution="true">/zosmf/restconsoles/consoles/defcn</uriPath>
+				<requestBody substitution="true">
+				  {
+				    "cmd" : "START ${instance-WLP_ANGEL_NAME},NAME='${instance-WLP_ANGEL_NAME}'",
+				    "unsol-key" : "CWWKF0011I: The ${instance-WLP_ANGEL_NAME} server is ready",
+                    "unsol-detect-sync" : "Y",
+				    "unsol-detect-timeout" : "30",
+				    "detect-time" : "30",
+				    "system" : "${_workflow-systemName}"
+				    
+				  }	
+				</requestBody>
+				<expectedStatusCode>200</expectedStatusCode>
+				<propertyMapping mapTo="UKO_REST_STATUS">["status"]</propertyMapping>
+			</rest>
+    	</step>
+    	
+    	<step name="CheckStartup" optional="false">
+            <title>Checking the rest status from the start command</title>
+            <description>Check the REST Status from the start command</description>
+            <prereqStep name="startAngel_console"/>
+            <runAsUser substitution="true">$!{instance-UKO_ADMIN_TSO}</runAsUser>
+            <approver substitution="true">$!{instance-UKO_APPROVER_TSO}</approver>
+            <condition>
+                <expression><![CDATA[${startAngel_console.stepState} == "Complete" || ${startAngel_console.stepState} == "Skipped"]]></expression>
+                <description>Should the step be executed based on the UKO_REST_STATUS setting</description>
+                <targetStateSet>
+                    <description>Check to see whether this step should be skipped</description>
+                    <extendStateExpression>
+                        <description>Only execute it UKO_REST_STATUS is not detected</description>
+                        <expression><![CDATA[ ${instance-UKO_REST_STATUS} == "detected"]]></expression>
+                        <targetState>Skipped</targetState>
+                    </extendStateExpression>
+	      			<extendStateExpression>
+	      				<description>Skip if START_SERVER == false</description>
+	            		<expression><![CDATA[ ${instance-START_SERVER} == "false"]]></expression>
+	      				<targetState>Skipped</targetState>
+	      			</extendStateExpression>
+                </targetStateSet>
+            </condition>
+            <instructions>Execute simple Rexx command to always return a bad returncode</instructions>
+            <weight>1</weight>
+            <skills>z/OS Administration</skills>
+            <autoEnable>true</autoEnable>
+            <template>
+                <inlineTemplate substitution="true">
+                    exit 8
+                </inlineTemplate>
+                <submitAs maxRc="0">TSO-REXX-JCL</submitAs>
+            </template>
+        </step> 
+    </step>
+
+
+</workflow>

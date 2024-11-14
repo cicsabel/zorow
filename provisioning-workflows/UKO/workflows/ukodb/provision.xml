@@ -58,6 +58,9 @@
         <variableValue name="DB_JCC_SSID" scope="instance" noPromptIfSet="false" required="false"/>
         <variableValue name="DB_BUFFERPOOL_DEFAULT" scope="instance" noPromptIfSet="false" required="false"/>
         <variableValue name="DB_BUFFERPOOL_INDEX" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="DB_CURRENT_SQLID" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="DB_CURRENT_SCHEMA" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="DB_STOGROUP" scope="instance" noPromptIfSet="false" required="false"/>
         <instructions substitution="true">Submit jcl to execute step</instructions>
         <weight>1</weight>
         <autoEnable>true</autoEnable>
@@ -95,7 +98,8 @@
             <variableValue name="DB_NAME_UKO" scope="instance" noPromptIfSet="false" required="false"/>
             <variableValue name="DB_NAME_DATASET_ENCRYPTION_STATUS" scope="instance" noPromptIfSet="false" required="false"/>
             <variableValue name="DB_CODEPAGE" scope="instance" noPromptIfSet="false" required="false"/>
-            <variableValue name="DB_BUFFERPOOL_TABLESPACE" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="DB_BUFFERPOOL_TABLESPACE_8K" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="DB_BUFFERPOOL_TABLESPACE_32K" scope="instance" noPromptIfSet="false" required="false"/>
             <variableValue name="DB_STOGROUP" scope="instance" noPromptIfSet="false" required="false"/>
             <instructions substitution="true">Legacy - Only execute this step if you are installing EKMF Web V2 and not UKO V3</instructions>
             <weight>1</weight>
@@ -121,7 +125,8 @@
                     # replacing the default values in the ddls
                     sedstring="s/DKMGWEB/${instance-DB_NAME_UKO}/g;"
                     sedstring="${sedstring} s/DKMGPE1/${instance-DB_NAME_DATASET_ENCRYPTION_STATUS}/g;"
-                    sedstring="${sedstring} s/BP8K0/${instance-DB_BUFFERPOOL_TABLESPACE}/g;"
+                    sedstring="${sedstring} s/BP8K0/${instance-DB_BUFFERPOOL_TABLESPACE_8K}/g;"
+                    sedstring="${sedstring} s/BP32K/${instance-DB_BUFFERPOOL_TABLESPACE_32K}/g;"
                     sedstring="${sedstring} s/GKMG0001/${instance-DB_STOGROUP}/g"
 
                     tempversion="";
@@ -176,6 +181,7 @@
                 </targetStateSet>
             </condition>
             <variableValue name="DB_DATASET_INSTALL_HLQ" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="TEMP_DIR" scope="instance" noPromptIfSet="false" required="false"/>
             <instructions substitution="true">Submit shell script to execute step</instructions>
             <weight>1</weight>
             <autoEnable>true</autoEnable>
@@ -224,8 +230,10 @@
             <variableValue name="DB_NAME_UKO" scope="instance" noPromptIfSet="false" required="false"/>
             <variableValue name="DB_NAME_DATASET_ENCRYPTION_STATUS" scope="instance" noPromptIfSet="false" required="false"/>
             <variableValue name="DB_CODEPAGE" scope="instance" noPromptIfSet="false" required="false"/>
-            <variableValue name="DB_BUFFERPOOL_TABLESPACE" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="DB_BUFFERPOOL_TABLESPACE_8K" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="DB_BUFFERPOOL_TABLESPACE_32K" scope="instance" noPromptIfSet="false" required="false"/>
             <variableValue name="DB_STOGROUP" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="TEMP_DIR" scope="instance" noPromptIfSet="false" required="false"/>
             <instructions substitution="true">Submit shell script to execute step</instructions>
             <weight>1</weight>
             <autoEnable>true</autoEnable>
@@ -240,12 +248,13 @@
             <description>Execute the Db2 DDLs to create tables</description>
             <runAsUser substitution="true">$!{instance-UKO_ADMIN_DB}</runAsUser>
             <approver substitution="true">$!{instance-UKO_APPROVER_DB}</approver>
-            <!-- <variableValue name="DB_PROGRAM" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="DB_PROGRAM" scope="instance" noPromptIfSet="false" required="false"/>
             <variableValue name="DB_PLAN" scope="instance" noPromptIfSet="false" required="false"/>
             <variableValue name="DB_RUNLIB" scope="instance" noPromptIfSet="false" required="false"/>
             <variableValue name="DB_HLQ" scope="instance" noPromptIfSet="false" required="false"/>
-            <variableValue name="DB_JCC_SSID" scope="instance" noPromptIfSet="false" required="false"/> -->
+            <variableValue name="DB_JCC_SSID" scope="instance" noPromptIfSet="false" required="false"/>
             <variableValue name="DB_TEMP_HLQ" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="DB_CURRENT_SCHEMA" scope="instance" noPromptIfSet="false" required="false"/>
             <instructions substitution="true">Submit jcl to execute step</instructions>
             <weight>1</weight>
             <autoEnable>true</autoEnable>
@@ -259,12 +268,12 @@
     </step>
     
     <step name="bindPackagePlan">
-        <title>Bind packages and plan</title>
+        <title>Bind packages and plan (EKMF Workstation only)</title>
         <description>Bind packages and plan for EKMF Workstation access</description>
 
         <step name="bindPackages">
-            <title>Bind packages</title>
-            <description>Bind packages</description>        
+            <title>Bind packages (EKMF Workstation only)</title>
+            <description>Bind packages, only required, if this database is going to be used by EKMF Workstation as well</description>        
             <runAsUser substitution="true">$!{instance-UKO_ADMIN_DB}</runAsUser>
             <approver substitution="true">$!{instance-UKO_APPROVER_DB}</approver>
             <condition>
@@ -297,8 +306,8 @@
         </step>
 
         <step name="bindPlan">
-            <title>Bind plan</title>
-            <description>Bind plan</description>        
+            <title>Bind plan (EKMF Workstation only)</title>
+            <description>Bind plan, only required, if this database is going to be used by EKMF Workstation as well</description>        
             <runAsUser substitution="true">$!{instance-UKO_ADMIN_DB}</runAsUser>
             <approver substitution="true">$!{instance-UKO_APPROVER_DB}</approver>
             <condition>
@@ -342,6 +351,13 @@
             <runAsUser substitution="true">$!{instance-UKO_ADMIN_DB}</runAsUser>
             <approver substitution="true">$!{instance-UKO_APPROVER_DB}</approver>
             <variableValue name="UKO_SERVER_STC_USER" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="DB_HLQ" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="DB_JCC_SSID" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="DB_PROGRAM" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="DB_PLAN" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="DB_RUNLIB" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="DB_CURRENT_SQLID" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="DB_CURRENT_SCHEMA" scope="instance" noPromptIfSet="false" required="false"/>
             <instructions substitution="true">Submit jcl to execute step</instructions>
             <weight>1</weight>
             <autoEnable>true</autoEnable>
@@ -358,6 +374,13 @@
             <runAsUser substitution="true">$!{instance-UKO_ADMIN_DB}</runAsUser>
             <approver substitution="true">$!{instance-UKO_APPROVER_DB}</approver>
             <variableValue name="UKO_SERVER_STC_USER" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="DB_HLQ" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="DB_JCC_SSID" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="DB_PROGRAM" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="DB_PLAN" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="DB_RUNLIB" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="DB_CURRENT_SQLID" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="DB_CURRENT_SCHEMA" scope="instance" noPromptIfSet="false" required="false"/>
             <instructions substitution="true">Submit jcl to execute step</instructions>
             <weight>1</weight>
             <autoEnable>true</autoEnable>
@@ -390,8 +413,14 @@
                     </extendStateExpression>
                 </targetStateSet>
             </condition>
-            <variableValue name="DB_CURRENT_SQLID" scope="instance" noPromptIfSet="false" required="false"/>
             <variableValue name="UKO_AGENT_CLIENT_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="DB_HLQ" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="DB_JCC_SSID" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="DB_PROGRAM" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="DB_PLAN" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="DB_RUNLIB" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="DB_CURRENT_SQLID" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="DB_CURRENT_SCHEMA" scope="instance" noPromptIfSet="false" required="false"/>
             <instructions substitution="true">Submit jcl to execute step</instructions>
             <weight>1</weight>
             <autoEnable>true</autoEnable>

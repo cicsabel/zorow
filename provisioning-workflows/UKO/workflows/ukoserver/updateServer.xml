@@ -348,7 +348,7 @@
             <template>
                 <inlineTemplate substitution="true">
 
-                    # Create symlinks to the updated installation folder of UKO
+                    # Create symlinks to the updated installation folder
                     cd ${instance-UKO_SERVER_DIRECTORY}
                     ln -s ${instance-UKO_INSTALL_DIR}/EkmfWeb.properties EkmfWeb.properties
                     ln -s ${instance-UKO_INSTALL_DIR}/apps apps
@@ -357,21 +357,11 @@
                     then
                         ln -s ${instance-UKO_INSTALL_DIR}/includes includes; 
                     fi
-
                     if [ -d "${instance-UKO_INSTALL_DIR}/configDropins" ] 
                     then
                         echo "configDropins folder found in ${instance-UKO_INSTALL_DIR}"
                         echo "creating ${instance-UKO_SERVER_DIRECTORY}/configDropins"
                         mkdir configDropins
-
-                        if [ -d "${instance-UKO_SERVER_DIRECTORY}/backup_${_workflow-workflowKey}/configDropins/overrides" ] 
-                        then
-                            echo "overrides found in backup, copying to the new directory"
-                            cp -r ${instance-UKO_SERVER_DIRECTORY}/backup_${_workflow-workflowKey}/configDropins/overrides configDropins
-                        else
-                            echo "creating ${instance-UKO_SERVER_DIRECTORY}/configDropins/overrides"
-                            mkdir configDropins/overrides   
-                        fi
 
                         echo "creating symlinks to the configDropins subfolders"
 
@@ -381,12 +371,44 @@
                         echo "creating symlink to ${instance-UKO_INSTALL_DIR}/configDropins/options"
                         ln -s ${instance-UKO_INSTALL_DIR}/configDropins/options configDropins/options
 
+                        echo "creating ${instance-UKO_SERVER_DIRECTORY}/configDropins/overrides"
+                        mkdir configDropins/overrides  
+                        echo "configDropins is set up: "
+                        ls -al configDropins/
+
+                        if [ -d "${instance-UKO_SERVER_DIRECTORY}/backup_${_workflow-workflowKey}/configDropins/overrides" ] 
+                        then
+                            echo "migrating overrides, details in ${instance-UKO_SERVER_DIRECTORY}/backup_${_workflow-workflowKey}/migration.log"
+                            echo "********************************************" >> ${instance-UKO_SERVER_DIRECTORY}/backup_${_workflow-workflowKey}/migration.log;
+                            echo "configDropins/overrides found, starting migration" >> ${instance-UKO_SERVER_DIRECTORY}/backup_${_workflow-workflowKey}/migration.log;
+                            for i in `ls ${instance-UKO_SERVER_DIRECTORY}/backup_${_workflow-workflowKey}/configDropins/overrides | xargs echo`; do 
+                                if [[ -L ${instance-UKO_SERVER_DIRECTORY}/backup_${_workflow-workflowKey}/configDropins/overrides/$i ]]; then 
+                                    echo "$i is a symbolic link, trying to relink to the new target folder" >> ${instance-UKO_SERVER_DIRECTORY}/backup_${_workflow-workflowKey}/migration.log;
+                                    if [ -f "${instance-UKO_INSTALL_DIR}/configDropins/options/${i}" ]; then
+                                        echo "$i found in the new options folder and relinked" >> ${instance-UKO_SERVER_DIRECTORY}/backup_${_workflow-workflowKey}/migration.log;
+                                        ln -s ${instance-UKO_INSTALL_DIR}/configDropins/options/${i} configDropins/overrides/${i}
+                                    elif [ -f "${instance-UKO_INSTALL_DIR}/configDropins/defaults/${i}" ]; then
+                                        echo "$i was found in the defaults folder and does not need to get overridden. The file is not copied." >> ${instance-UKO_SERVER_DIRECTORY}/backup_${_workflow-workflowKey}/migration.log;
+                                    else
+                                        echo "$i was not found in the options folder. The link is preserved but needs to be verified" >> ${instance-UKO_SERVER_DIRECTORY}/backup_${_workflow-workflowKey}/migration.log;
+                                        cp -av ${instance-UKO_SERVER_DIRECTORY}/backup_${_workflow-workflowKey}/configDropins/overrides/${i} configDropins/overrides/${i} 
+                                    fi
+                                else 
+                                    echo "$i will be copied to new overrides" >> ${instance-UKO_SERVER_DIRECTORY}/backup_${_workflow-workflowKey}/migration.log;
+                                    cp ${instance-UKO_SERVER_DIRECTORY}/backup_${_workflow-workflowKey}/configDropins/overrides/${i} configDropins/overrides/${i} 
+                                fi    
+                            done;            
+                            echo "overrides is set up: "
+                            ls -al configDropins/overrides                
+                        fi
+
                         chown ${instance-UKO_SERVER_STC_USER} configDropins
                         chown ${instance-UKO_SERVER_STC_USER} configDropins/overrides
 
-                        echo "Finished setting up configDropins:"
-                        ls -al configDropins/
-                    fi  
+                        echo "Finished setting up configDropins"
+
+
+                    fi
                     
                     ln -s ${instance-UKO_INSTALL_DIR}/resources resources
                     ln -s ${instance-UKO_INSTALL_DIR}/server.xml server.xml			    
@@ -502,10 +524,10 @@
                 <expression><![CDATA[${createVersionVariables.stepState} == "Complete"]]></expression>
                 <description>Version variables must have been set</description>
                 <targetStateSet>
-                    <description>Skip this step if we are on V3 or higher</description>
+                    <description>Skip this step if no java version update is required</description>
                     <extendStateExpression>
-                        <description>Skip if the current version is already V3 or higher</description>
-                        <expression>${instance-UKO_SERVER_VERSION} >= "3.1.0.0"</expression>
+                        <description>Skip this step if no java version update is required</description>
+                        <expression>${instance-UKO_SERVER_VERSION} >= "3.1.0.4"</expression>
                         <targetState>skipped</targetState>
                     </extendStateExpression>
                 </targetStateSet>

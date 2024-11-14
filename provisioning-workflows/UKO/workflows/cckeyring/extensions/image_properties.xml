@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/******************************************************************************/
+/* Copyright Contributors to the zOS-Workflow Project.                        */
+/* SPDX-License-Identifier: Apache-2.0                                        */
+/******************************************************************************/
+
+-->
+
+
+
+<atCreate name="CC_SERVER_STC_USER" scope="instance" prompt="true" required="false"/>
+<!-- <atCreate name="CC_CREATE_CA" scope="instance" prompt="true" required="false"/> -->
+<!-- <atCreate name="CC_CREATE_CERTIFICATES" scope="instance" prompt="true" required="false"/> -->
+<!-- <atCreate name="CC_CREATE_KEYRING" scope="instance" prompt="true" required="false"/> -->
+
+<atCreate name="CC_CA_LABEL" scope="instance" prompt="true" required="false"/>
+<atCreate name="CC_TLS_KEY_STORE_KEY_RING" scope="instance" prompt="true" required="false"/>
+<atCreate name="CC_TLS_TRUST_STORE_KEY_RING" scope="instance" prompt="true" required="false"/>
+<atCreate name="CC_TLS_KEY_STORE_SERVER_CERT" scope="instance" prompt="true" required="false"/>
+<atCreate name="CC_OIDC_PROVIDER_CERT" scope="instance" prompt="true" required="false"/>
+
+<atCreate name="MSDKE_SUPPORT_REQUIRED" scope="instance" prompt="true" required="false"/>

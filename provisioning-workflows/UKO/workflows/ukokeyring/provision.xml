@@ -149,6 +149,7 @@
         <variableValue name="UKO_SERVER_STC_USER" scope="instance" noPromptIfSet="false" required="false"/>
         <variableValue name="UKO_TLS_KEY_STORE_KEY_RING" scope="instance" noPromptIfSet="false" required="false"/>
         <variableValue name="UKO_TLS_TRUST_STORE_KEY_RING" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="SAF_OWNER" scope="instance" noPromptIfSet="false" required="false"/>
         <instructions>Executes a REXX program to define access to the key ring and potentially trust ring. 
             This script assumes that you use the RDATALIB class. 
             It contains an example for using the FACILITY class ass well that by default is not executed. Modify the script to suit your environment. 
@@ -209,6 +210,41 @@
         <autoEnable>true</autoEnable>
         <template>
             <fileTemplate substitution="true">extensions/addTrustCertificates.rexx</fileTemplate>
+            <submitAs maxRc="0">TSO-REXX-JCL</submitAs>
+            <maxLrecl>1024</maxLrecl>
+        </template>
+    </step>
+
+    <step name="configureForMsdke">
+        <title>(Optional) Configure for MSDKE</title>
+        <description>Add additional certificates and CAs for MSDKE support</description>
+        <runAsUser substitution="true">$!{instance-UKO_ADMIN_SERVER}</runAsUser>
+        <approver substitution="true">$!{instance-UKO_APPROVER_SERVER}</approver>
+        <condition>
+            <expression>"1"=="1"</expression>
+            <description>always true</description>
+            <targetStateSet>
+                <description>Only execute for MSDKE configuration</description>
+                <extendStateExpression>
+                    <description>Skip if no MSDKE configuration is required</description>
+                    <expression>${instance-MSDKE_SUPPORT_REQUIRED}  == "false"</expression>
+                    <targetState>Skipped</targetState>
+                </extendStateExpression>
+            </targetStateSet>
+        </condition>
+        <variableValue name="MSDKE_SUPPORT_REQUIRED" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="UKO_SERVER_STC_USER" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="MSDKE_RABBIT_CA" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="MSDKE_RABBIT_CERT" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="UKO_TLS_KEY_STORE_KEY_RING" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="UKO_TLS_TRUST_STORE_KEY_RING" scope="instance" noPromptIfSet="false" required="false"/>
+        <instructions substitution="true">Execute the rexx script to add your rabbitMQ certificate and
+            CA to the key- and trustring. Note that in this example, the certificate is already existing
+            and has been defined as site certificate</instructions>
+        <weight>1</weight>
+        <autoEnable>true</autoEnable>
+        <template>
+            <fileTemplate substitution="true">extensions/configureMsdke.rexx</fileTemplate>
             <submitAs maxRc="0">TSO-REXX-JCL</submitAs>
             <maxLrecl>1024</maxLrecl>
         </template>

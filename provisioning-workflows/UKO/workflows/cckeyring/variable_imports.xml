@@ -1,0 +1,912 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/******************************************************************************/
+/* Copyright Contributors to the zOS-Workflow Project.                        */
+/* SPDX-License-Identifier: Apache-2.0                                        */
+/******************************************************************************/
+
+-->
+<!--+++++++++++++++++++-->
+<!-- Basic Variables   -->
+<!--+++++++++++++++++++-->
+
+<variable name="WLP_INSTALL_DIR" visibility="private">
+  <label>WLP_INSTALL_DIR</label>
+  <abstract>WebSphere Liberty installation directory</abstract>
+  <description>The path to the WebSphere Liberty install directory.</description>
+  <category>Server variables</category>
+  <string>
+    <!-- Path validation, has to start with slash, may contain slashes, must not end with slash or whitespace -->
+    <regularExpression>^\/([A-z0-9-_+\.]+\/)*([A-z0-9-_+\.])*[^\/\s]$</regularExpression>
+  </string>
+</variable>
+
+<variable name="WLP_OUTPUT_DIR" visibility="public">
+  <label>WLP_OUTPUT_DIR</label>
+  <abstract>WebSphere Liberty output directory</abstract>
+  <description>The path to the WebSphere Liberty output directory for logs and messages.</description>
+  <category>Server variables</category>
+  <string>
+    <!-- Path validation, has to start with slash, may contain slashes, must not end with slash or whitespace -->
+    <regularExpression>^\/([A-z0-9-_+\.]+\/)*([A-z0-9-_+\.])*[^\/\s]$</regularExpression>
+  </string>
+</variable>
+
+<variable name="JAVA_HOME" visibility="public">
+  <label>JAVA_HOME</label>
+  <abstract>Java home path</abstract>
+  <description>The path to the Java home directory.</description>
+  <category>Server variables</category>
+  <string valueMustBeChoice="false">
+    <choice>"/java/java80_64/J8.0_64"</choice>
+    <choice>"/java/java11_bit64_sr18_fp0/J11.0_64"</choice>
+    <choice>"/java/java17_bit64_sr7_fp0/J17.0_64"</choice>
+    <!-- Path validation, has to start with slash, may contain slashes, must not end with slash or whitespace -->
+  </string>
+</variable>
+
+<variable name="CC_INSTALL_DIR" visibility="public">
+  <label>CC_INSTALL_DIR</label>
+  <abstract>CC installation directory</abstract>
+  <description>The path to the CC install directory.</description>
+  <category>Server variables</category>
+  <string>
+    <!-- Path validation, has to start with slash, may contain slashes, must not end with slash or whitespace -->
+    <regularExpression>^\/([A-z0-9-_+\.]+\/)*([A-z0-9-_+\.])*[^\/\s]$</regularExpression>
+  </string>
+</variable>
+
+<variable name="TEMP_DIR" visibility="private">
+  <label>TEMP_DIR</label>
+  <abstract>Temp directory</abstract>
+  <description>The path to a temp directory for files created and removed at runtime</description>
+  <category>General variables</category>
+  <string>
+    <!-- Path validation, has to start with slash, may contain slashes, must not end with slash or whitespace -->
+    <regularExpression>^\/([A-z0-9-_+\.]+\/)*([A-z0-9-_+\.])*[^\/\s]$</regularExpression>
+    <default>/tmp</default>
+  </string>
+</variable>
+
+
+
+
+<!--++++++++++++++++++++-->
+<!-- Angel              -->
+<!--++++++++++++++++++++-->
+
+<variable name="CC_CREATE_ANGEL" visibility="private">
+  <label>CC_CREATE_ANGEL</label>
+  <abstract>Enable Angel creation</abstract>
+  <description>Flag to indicate if an Angel server is to be created</description>
+  <category>General variables</category>
+  <string valueMustBeChoice="true">
+    <choice>true</choice>
+    <choice>false</choice>
+    <default>false</default>
+  </string>
+</variable>
+
+<variable name="WLP_ANGEL_NAME" visibility="private">
+  <label>WLP_ANGEL_NAME</label>
+  <abstract>Name of the Angel server</abstract>
+  <description>If an Angel is to be created, this will be the name. If no name specified, a name
+    will be generated. If no Angel is to be created, this is the existing Angel to connect to. If no
+    name specified, CC will connect to the default Angel</description>
+  <category>Server variables</category>
+  <string>
+    <validationType>USERID</validationType>
+  </string>
+</variable>
+
+<variable name="ANGEL_STC_USER" visibility="public">
+  <label>ANGEL_STC_USER</label>
+  <abstract>The user id running the Angel</abstract>
+  <description>The id of the user authorized to run the Angel as started task</description>
+  <category>Server variables</category>
+  <string>
+    <validationType>USERID</validationType>
+  </string>
+</variable>
+
+<!--++++++++++++++++++++-->
+<!-- SSL Authentication -->
+<!--++++++++++++++++++++-->
+<variable name="CC_CREATE_CA" visibility="private">
+  <label>CC_CREATE_CA</label>
+  <abstract>Enable CA creation</abstract>
+  <description>Flag to indicate if a CA is to be created</description>
+  <category>Certificate variables</category>
+  <string valueMustBeChoice="true">
+    <choice>true</choice>
+    <choice>false</choice>
+    <default>false</default>
+  </string>
+</variable>
+<variable name="CC_CA_LABEL" scope="instance" visibility="public">
+  <label>CC_CA_LABEL</label>
+  <abstract>CC_CA_LABEL</abstract>
+  <description>Name of the CC_CA_LABEL to use for the server.</description>
+  <category>Certificate variables</category>
+  <string />
+</variable>
+
+<variable name="CC_CREATE_KEYRING" visibility="private">
+  <label>CC_CREATE_KEYRING</label>
+  <abstract>Enable keyring creation</abstract>
+  <description>Flag to indicate if a keyring is to be created</description>
+  <category>Certificate variables</category>
+  <string valueMustBeChoice="true">
+    <choice>true</choice>
+    <choice>false</choice>
+    <default>false</default>
+  </string>
+</variable>
+<variable name="CC_USE_KEYRING_AS_TRUST_STORE" visibility="private">
+  <label>CC_USE_KEYRING_AS_TRUST_STORE</label>
+  <abstract>Uses the same ring as key ring and trust store</abstract>
+  <description>Will create only one keyring for key and trust store, so CC_TLS_TRUST_STORE_KEY_RING will be CC_TLS_KEY_STORE_KEY_RING. 
+    Any value set for CC_TLS_TRUST_STORE_KEY_RING will then be ignored. 
+  </description>
+  <category>Certificate variables</category>
+  <string valueMustBeChoice="true">
+    <choice>true</choice>
+    <choice>false</choice>
+    <default>false</default>
+  </string>
+</variable>
+<variable name="CC_TLS_KEY_STORE_KEY_RING" scope="instance" visibility="public">
+  <label>CC_TLS_KEY_STORE_KEY_RING</label>
+  <abstract>CC_TLS_KEY_STORE_KEY_RING</abstract>
+  <description>Name of the CC_TLS_KEY_STORE_KEY_RING to use for the server.</description>
+  <category>Certificate variables</category>
+  <string />
+</variable>
+<variable name="CC_TLS_TRUST_STORE_KEY_RING" scope="instance" visibility="public">
+  <label>CC_TLS_TRUST_STORE_KEY_RING</label>
+  <abstract>CC_TLS_TRUST_STORE_KEY_RING</abstract>
+  <description>Name of the CC_TLS_TRUST_STORE_KEY_RING to use for the server.</description>
+  <category>Certificate variables</category>
+  <string />
+</variable>
+
+<variable name="CC_CREATE_CERTIFICATES" visibility="private">
+  <label>CC_CREATE_CERTIFICATES</label>
+  <abstract>Enable certificate creation</abstract>
+  <description>Flag to indicate if certificates are to be created</description>
+  <category>Certificate variables</category>
+  <string valueMustBeChoice="true">
+    <choice>true</choice>
+    <choice>false</choice>
+    <default>false</default>
+  </string>
+</variable>
+<variable name="CC_TLS_KEY_STORE_SERVER_CERT_CN" scope="instance" visibility="private">
+  <label>CC_TLS_KEY_STORE_SERVER_CERT_CN</label>
+  <abstract> CC_TLS_KEY_STORE_SERVER_CERT_CN</abstract>
+  <description>Name of the CC_TLS_KEY_STORE_SERVER_CERT_CN to use for the server.</description>
+  <category>Certificate variables</category>
+  <string />
+</variable>
+<variable name="CC_TLS_KEY_STORE_SERVER_CERT_OU" scope="instance" visibility="private">
+  <label>CC_TLS_KEY_STORE_SERVER_CERT_OU</label>
+  <abstract>CC_TLS_KEY_STORE_SERVER_CERT_OU</abstract>
+  <description>Name of the CC_TLS_KEY_STORE_SERVER_CERT_OU to use for the server.</description>
+  <category>Certificate variables</category>
+  <string />
+</variable>
+<variable name="CC_TLS_KEY_STORE_SERVER_CERT_O" scope="instance" visibility="private">
+  <label>CC_TLS_KEY_STORE_SERVER_CERT_O</label>
+  <abstract>CC_TLS_KEY_STORE_SERVER_CERT_O</abstract>
+  <description>Name of the CC_TLS_KEY_STORE_SERVER_CERT_O to use for the server.</description>
+  <category>Certificate variables</category>
+  <string />
+</variable>
+<variable name="CC_TLS_KEY_STORE_SERVER_CERT" scope="instance" visibility="public">
+  <label>CC_TLS_KEY_STORE_SERVER_CERT</label>
+  <abstract>CC_TLS_KEY_STORE_SERVER_CERT</abstract>
+  <description>Name of the CC_TLS_KEY_STORE_SERVER_CERT to use for the server.</description>
+  <category>Certificate variables</category>
+  <string />
+</variable>
+<variable name="CC_OIDC_PROVIDER_CERT" scope="instance" visibility="public">
+  <label>CC_OIDC_PROVIDER_CERT</label>
+  <abstract>CC_OIDC_PROVIDER_CERT</abstract>
+  <description>Name of the CC_OIDC_PROVIDER_CERT to use for the server.</description>
+  <category>Certificate variables</category>
+  <string />
+</variable>
+
+<variable name="CC_OAUTH_CLIENT_ID" scope="instance" visibility="public">
+  <label>CC_OAUTH_CLIENT_ID</label>
+  <abstract>CC_OAUTH_CLIENT_ID</abstract>
+  <description>Client ID is used by the OpenID Connect framework to identify the clients connecting to the server</description>
+  <category>Server variables</category>
+  <string />
+</variable>
+
+<variable name="CC_OAUTH_CLIENT_ID_OPENAPI" scope="instance" visibility="public">
+  <label>CC_OAUTH_CLIENT_ID_OPENAPI</label>
+  <abstract>CC_OAUTH_CLIENT_ID_OPENAPI</abstract>
+  <description>Client ID used by the OpenAPI user interface</description>
+  <category>Server variables</category>
+  <string />
+</variable>
+
+<variable name="ENABLE_MTLS_VIA_HTTPS_PORT" visibility="public">
+  <label>ENABLE_MTLS_VIA_HTTPS_PORT</label>
+  <abstract>Enable mTLS authentication via the https port?</abstract>
+  <description>This option allows mTLS authentication using the https port instead of a separate mTLS port</description>
+  <category>Server variables</category>
+  <string valueMustBeChoice="true">
+    <choice>true</choice>
+    <choice>false</choice>
+    <default>false</default>
+  </string>
+</variable>
+
+<variable name="CC_TRACE_OPTIONS" scope="instance" visibility="public">
+  <label>CC_TRACE_OPTIONS</label>
+  <abstract>Trace options</abstract>
+  <description>Trace options for the CC server, leave empty for default </description>
+  <category>Server variables</category>
+  <string valueMustBeChoice="false">
+    <choice>"*=info:com.ibm.ccc.ekmf.*=info:com.ibm.ccc.cryptoconnect.*=info:com.ibm.ccc.crypto.*=info"</choice>
+    <default>"*=info:com.ibm.ccc.ekmf.*=info:com.ibm.ccc.cryptoconnect.*=info:com.ibm.ccc.crypto.*=info"</default>
+  </string>
+</variable>
+
+<variable name="SAF_PROFILE_PREFIX" scope="instance" visibility="public">
+  <label>SAF_PROFILE_PREFIX</label>
+  <abstract>SAF prefix for EJBROLE profiles</abstract>
+  <description>SAF prefix to be used for profiles in the EJBROLE class</description>
+  <category>Server variables</category>
+  <string />
+</variable>
+
+<!--++++++++++++++++++++++++++++-->
+<!-- MSDKE related variables    -->
+<!--++++++++++++++++++++++++++++-->
+<variable name="MSDKE_SUPPORT_REQUIRED" visibility="public">
+  <label>MSDKE_SUPPORT_REQUIRED</label>
+  <abstract>Is MSDKE support required</abstract>
+  <description>Will connection to Microsoft Double Key Encryption be required</description>
+  <category>MSDKE variables</category>
+  <string valueMustBeChoice="true">
+    <choice>true</choice>
+    <choice>false</choice>
+    <default>false</default>
+  </string>
+</variable>
+
+<variable name="MSDKE_RABBIT_URI" visibility="public">
+  <label>MSDKE_RABBIT_URI</label>
+  <abstract>URI of rabbitMQ instance</abstract>
+  <description>The URI of the rabbitMQ instance that will be used for MSDKE services</description>
+  <category>MSDKE variables</category>
+  <string />
+</variable>
+
+<variable name="MSDKE_WRAPPING_KEK_LABEL" visibility="public">
+  <label>MSDKE_WRAPPING_KEK_LABEL</label>
+  <abstract>KEK for wrapping MSDKE keys</abstract>
+  <description>Key label of the key encryption key, that will be used for wrapping keys related to MSDKE services</description>
+  <category>MSDKE variables</category>
+  <string />
+</variable>
+
+<variable name="MSDKE_RABBIT_VIRTUAL_HOST" visibility="public">
+  <label>MSDKE_RABBIT_VIRTUAL_HOST</label>
+  <abstract>Virtual host in RabbitMQ to connect to</abstract>
+  <description>If multiple servers are connecting to the same rabbitMQ instance, they must use seprarate virtual hosts to avoid conflicts</description>
+  <category>MSDKE variables</category>
+  <string valueMustBeChoice="false">
+    <choice>/</choice>
+    <default>/</default>
+  </string>
+</variable>
+
+<variable name="MSDKE_RABBIT_CERT" visibility="public">
+  <label>MSDKE_RABBIT_CERT</label>
+  <abstract>Certificate for mTLS connection with rabbitMQ</abstract>
+  <description>Label of the certificate used for mTLS authentication with rabbitMQ</description>
+  <category>MSDKE variables</category>
+  <string />
+</variable>
+
+<variable name="MSDKE_RABBIT_CA" visibility="public">
+  <label>MSDKE_RABBIT_CA</label>
+  <abstract>CA that signed rabbitMQ certificate</abstract>
+  <description>CA that signed the certificate used for mTLS authentication with rabbitMQ</description>
+  <category>MSDKE variables</category>
+  <string />
+</variable>
+
+<variable name="MSDKE_ENABLE_HTTP_SERVICE" visibility="public">
+  <label>MSDKE_ENABLE_HTTP_SERVICE</label>
+  <abstract>Enable MSDKE test HTTP Service?</abstract>
+  <description>Should the integrated test HTTP service for MSDKE be enabled? Note that this is not
+    recommended for production</description>
+  <category>MSDKE variables</category>
+  <string valueMustBeChoice="true">
+    <choice>true</choice>
+    <choice>false</choice>
+    <default>false</default>
+  </string>
+</variable>
+
+<variable name="MSDKE_EC_TRUSTED_KEYS_X509_ENCODED" visibility="private">
+    <label>MSDKE_EC_TRUSTED_KEYS_X509_ENCODED</label>
+    <abstract>Trusted keys for MSDKE</abstract>
+    <description>A comma-separated list of trusted keys; they are printed out by UKO and/or other instances of MSDKE Crypto service when the server starts</description>
+    <category>MSDKE variables</category>
+    <string/>
+</variable>
+
+<variable name="MSDKE_EC_IDENTITY_KEY_LABEL" visibility="private">
+    <label>MSDKE_EC_IDENTITY_KEY_LABEL</label>
+    <abstract>EC identity key label for MSDKE</abstract>
+    <description>The EC identity key label to use by this MSDKE Crypto Service</description>
+    <category>MSDKE variables</category>
+    <string/>
+</variable>
+
+<!--++++++++++++++++++++++++++++-->
+<!-- Crypto Connect variables   -->
+<!--++++++++++++++++++++++++++++-->
+
+<variable name="CRYPTO_CONNECT_SUPPORT_REQUIRED" visibility="public">
+  <label>CRYPTO_CONNECT_SUPPORT_REQUIRED</label>
+  <abstract>Enable Crypto Connect service?</abstract>
+  <description>Should the Crypto Connect encrypt and decrypt service be enabled?</description>
+  <category>CC variables</category>
+  <string valueMustBeChoice="true">
+    <choice>true</choice>
+    <choice>false</choice>
+    <default>false</default>
+  </string>
+</variable>
+
+<variable name="CRYPTO_CONNECT_USER_GROUP" visibility="public">
+  <label>CRYPTO_CONNECT_USER_GROUP</label>
+  <abstract>Group to grant access to crypto connect</abstract>
+  <description>Group that will get access to the required EJBROLE profiles to use crypto connect</description>
+  <category>CC variables</category>
+  <string/>
+</variable>
+
+<!--++++++++++++++++++++++++++++-->
+<!-- Network resource variables -->
+<!--++++++++++++++++++++++++++++-->
+
+<variable name="CC_HTTP_PORT" visibility="public">
+  <label>HTTP port</label>
+  <abstract>HTTP_PORT for the CC server</abstract>
+  <description>HTTP port for the CC server</description>
+  <category>Server variables</category>
+  <string />
+</variable>
+
+<variable name="CC_HTTP_PORT_ID" visibility="private">
+  <label>CC_HTTP_PORT_ID</label>
+  <abstract>HTTP port ID for the CC server</abstract>
+  <description>The ID of the reserved HTTP Port address to use during deprovisioning</description>
+  <category>REST</category>
+  <string />
+</variable>
+
+<variable name="CC_HTTPS_PORT" visibility="public">
+  <label>HTTPS port</label>
+  <abstract>HTTPS_PORT for the CC server</abstract>
+  <description>HTTPS port for the CC server</description>
+  <category>Server variables</category>
+  <string />
+</variable>
+
+<variable name="CC_HTTPS_PORT_ID" visibility="private">
+  <label>CC_HTTPS_PORT_ID</label>
+  <abstract>HTTPS port ID for the CC server</abstract>
+  <description>The ID of the reserved HTTPS Port address to use during deprovisioning</description>
+  <category>REST</category>
+  <string />
+</variable>
+
+<variable name="CC_ADDRESS" scope="instance" visibility="public">
+  <label>CC_ADDRESS</label>
+  <abstract>Hostname that the CC server is running on</abstract>
+  <description>Hostname that the CC server is running on.</description>
+  <category>Server variables</category>
+  <string />
+</variable>
+
+<!--++++++++++++++++++++++++-->
+<!-- Start option variables -->
+<!--++++++++++++++++++++++++-->
+
+<variable name="ZOS_PROCLIB" visibility="private">
+  <label>ZOS_PROCLIB</label>
+  <abstract>The PROCLIB dataset</abstract>
+  <description>The PROCLIB dataset</description>
+  <category>General variables</category>
+  <string>
+    <validationType>DSNAME</validationType>
+  </string>
+</variable>
+
+<variable name="ZOS_PARMLIB" visibility="private">
+  <label>ZOS_PARMLIB</label>
+  <abstract>The PARMLIB dataset</abstract>
+  <description>The PARMLIB dataset</description>
+  <category>General variables</category>
+  <string>
+    <validationType>DSNAME</validationType>
+  </string>
+</variable>
+
+<variable name="CC_REST_STATUS" scope="instance" visibility="private">
+  <label>CC_REST_STATUS</label>
+  <abstract>Holds the status of the server REST request</abstract>
+  <description>Holds the status of the server REST request issued to the console API</description>
+  <category>REST</category>
+  <string />
+</variable>
+
+<variable name="INSTANCE_STATUS" visibility="public">
+    <label>INSTANCE_STATUS</label>
+    <abstract>Variable indicating the last known status of the instance.</abstract>
+    <description>Variable indicating the last known status of the instance. The value is updated by calling the checkStatus action on the provisioned instance.</description>
+    <category>REST</category>
+    <string valueMustBeChoice="true">
+        <choice>active</choice>
+        <choice>inactive</choice>
+    </string>
+</variable>
+
+<variable name="START_SERVER" visibility="public">
+  <label>START_SERVER</label>
+  <abstract>Indicates whether during the provision flow, the subsystem should be started</abstract>
+  <description>This option allows a provision to be done, without starting the subsystem. By default the subsystem is started.</description>
+  <category>Server variables</category>
+  <string valueMustBeChoice="true">
+    <choice>true</choice>
+    <choice>false</choice>
+    <default>true</default>
+  </string>
+</variable>
+
+<variable name="ZOS_STC_STOP_TIMEOUT" scope="instance" visibility="private">
+  <label>ZOS_STC_STOP_TIMEOUT</label>
+  <abstract>Stop timeout</abstract>
+  <description>Number of seconds to wait for started tasks to stop before taking further action</description>
+  <category>General variables</category>
+  <integer>
+    <minValue>10</minValue>
+    <maxValue>600</maxValue>
+    <default>30</default>
+  </integer>
+</variable>
+
+<!--++++++++++++++++++++++-->
+<!-- File System creation -->
+<!--++++++++++++++++++++++-->
+
+<variable name="WLP_USER_DIR" visibility="private">
+  <label>WLP_USER_DIR</label>
+  <abstract> zfsMountPoint</abstract>
+  <description>zfsMountPoint</description>
+  <category>Server variables</category>
+  <string>
+    <!-- Path validation, has to start with slash, may contain slashes, must not end with slash or whitespace -->
+    <regularExpression>^\/([A-z0-9-_+\.]+\/)*([A-z0-9-_+\.])*[^\/\s]$</regularExpression>
+  </string>
+</variable>
+
+<variable name="CC_FILE_SYSTEM_HLQ" visibility="private">
+  <label>CC_FILE_SYSTEM_HLQ</label>
+  <abstract>zfsHLQ</abstract>
+  <description>zfsHLQ</description>
+  <category>Server variables</category>
+  <string>
+    <validationType>DSNAME</validationType>
+  </string>
+</variable>
+
+<variable name="ZOS_ZFS_DATACLASS" scope="instance" visibility="private">
+  <label>ZOS_ZFS_DATACLASS</label>
+  <abstract>zFS DataClass for zFS dataset, ignored if ZOS_VSAM_VOLUME=SMS</abstract>
+  <description>zFS DataClass used to define the zFS dataset, If the value for ZOS_VSAM_VOLUME 
+    is specified as SMS (Storage Management Subsystem), this value is ignored</description>
+  <category>General variables</category>
+  <string />
+</variable>
+
+<variable name="ZOS_VSAM_VOLUME" scope="instance" visibility="private">
+  <label>ZOS_VSAM_VOLUME</label>
+  <abstract>Volume for Datasets or SMS</abstract>
+  <description>VOLUME value to be used when creating Datasets (eg SYSDA), set to SMS if SMS is used. 
+    If SMS is not used, you also must specify the DATACLASS.</description>
+  <category>General variables</category>
+  <string>
+    <minLength>1</minLength>
+    <maxLength>25</maxLength>
+  </string>
+</variable>
+
+<!-- STC JOBS -->
+<variable name="CC_STC_JOB_CARD" visibility="private">
+  <label>STC_JOB_CARD</label>
+  <abstract>Job card to be used by STC Jobs</abstract>
+  <description>Specifies the job card to use for the started task of the provisioned instance. When
+    specified, CC_ZOS_STCJOBS must also be used to indicate the data set prefix for STCJOBS.</description>
+  <category>General variables</category>
+  <string />
+</variable>
+
+<variable name="CC_ZOS_STCJOBS" scope="instance" visibility="private">
+  <label>ZOS_STCJOBS</label>
+  <abstract>User STCJOBS location</abstract>
+  <description>Names the data set into which the workflow can create the source JCL that defines the
+    job level characteristics of the started task for the provisioned instance. Used only when
+    CC_STC_JOB_CARD is also specified. </description>
+  <category>General variables</category>
+  <string>
+    <validationType>DSNAME</validationType>
+  </string>
+</variable>
+
+<variable name="CC_SERVER_STC_NAME" visibility="public">
+  <label>CC_SERVER_STC_NAME</label>
+  <abstract>CC Server STC name</abstract>
+  <description>The started task name of the CC Liberty server</description>
+  <category>Server variables</category>
+  <string />
+</variable>
+
+<!--++++++++++++++++++++++++++++++-->
+<!-- Approval and run as user ids -->
+<!--++++++++++++++++++++++++++++++-->
+
+<variable name="CC_ADMIN_SERVER" visibility="private">
+  <label>CC_ADMIN_SERVER</label>
+  <abstract>Userid the provisioned server will run under</abstract>
+  <description>The userid that the CC servers started task will run under</description>
+  <category>Template variables</category>
+  <string>
+    <validationType>USERID</validationType>
+  </string>
+</variable>
+<variable name="CC_APPROVER_SERVER" visibility="private">
+  <label>CC_APPROVER_SERVER</label>
+  <abstract>The userid to approve the servers run as userid</abstract>
+  <description>The userid to approve the servers run as userid</description>
+  <category>Template variables</category>
+  <string>
+    <!-- Validate for a list of one or more space separated SAF userids -->
+    <regularExpression>^[0-9a-zA-Z$#@ ]*$</regularExpression>
+  </string>
+</variable>
+
+<variable name="CC_ADMIN_DB" visibility="private">
+  <label>CC_ADMIN_DB</label>
+  <abstract>Userid for running database related tasks</abstract>
+  <description>The userid that database related tasks will run under</description>
+  <category>Template variables</category>
+  <string>
+    <validationType>USERID</validationType>
+  </string>
+</variable>
+<variable name="CC_APPROVER_DB" visibility="private">
+  <label>CC_APPROVER_DB</label>
+  <abstract>The userid to approve the database run as userid</abstract>
+  <description>The userid to approve the database run as userid</description>
+  <category>Template variables</category>
+  <string>
+    <!-- Validate for a list of one or more space separated SAF userids -->
+    <regularExpression>^[0-9a-zA-Z$#@ ]*$</regularExpression>
+  </string>
+</variable>
+
+<variable name="CC_ADMIN_SECURITY" visibility="private">
+  <label>CC_ADMIN_SECURITY</label>
+  <abstract>APF authorized user id for security related provisioning tasks</abstract>
+  <description>The APF authorized userid to run SAF certificate creation/deletion and SAF profile creation/deletion</description>
+  <category>Template variables</category>
+  <string>
+    <validationType>USERID</validationType>
+  </string>
+</variable>
+<variable name="CC_APPROVER_SECURITY" visibility="private">
+  <label>CC_APPROVER_SECURITY</label>
+  <abstract>The user id to approve security related provisioning tasks</abstract>
+  <description>The user id to approve security related provisioning tasks</description>
+  <category>Template variables</category>
+  <string>
+    <!-- Validate for a list of one or more space separated SAF userids -->
+    <regularExpression>^[0-9a-zA-Z$#@]*$</regularExpression>
+  </string>
+</variable>
+
+<variable name="CC_ADMIN_ZFS" visibility="private">
+  <label>CC_ADMIN_ZFS</label>
+  <abstract>The user id for file system creation and mounting</abstract>
+  <description>The id of the user authorized to create and mount file systems</description>
+  <category>Template variables</category>
+  <string>
+    <validationType>USERID</validationType>
+  </string>
+</variable>
+<variable name="CC_APPROVER_ZFS" visibility="private">
+  <label>CC_APPROVER_ZFS</label>
+  <abstract>The user id to approve file system creation</abstract>
+  <description>The user id to approve file system creation</description>
+  <category>Template variables</category>
+  <string>
+    <!-- Validate for a list of one or more space separated SAF userids -->
+    <regularExpression>^[0-9a-zA-Z$#@ ]*$</regularExpression>
+  </string>
+</variable>
+
+<variable name="CC_ADMIN_CONSOLE" visibility="private">
+  <label>CC_ADMIN_CONSOLE</label>
+  <abstract>The user id for executing mvs console start and stop commands</abstract>
+  <description>The user id for executing mvs console start and stop commands</description>
+  <category>Template variables</category>
+  <string>
+    <validationType>USERID</validationType>
+  </string>
+</variable>
+<variable name="CC_APPROVER_CONSOLE" visibility="private">
+  <label>CC_APPROVER_CONSOLE</label>
+  <abstract>The user id to approve the execution of console commands</abstract>
+  <description>The user id to approve the execution of console commands</description>
+  <category>Template variables</category>
+  <string>
+    <!-- Validate for a list of one or more space separated SAF userids -->
+    <regularExpression>^[0-9a-zA-Z$#@ ]*$</regularExpression>
+  </string>
+</variable>
+
+<variable name="CC_ADMIN_TSO" visibility="private">
+  <label>CC_ADMIN_TSO</label>
+  <abstract>The user id for adding and removing procedures from the proclib</abstract>
+  <description>The user id for adding and removing procedures from the proclib</description>
+  <category>Template variables</category>
+  <string />
+</variable>
+<variable name="CC_APPROVER_TSO" visibility="private">
+  <label>CC_APPROVER_TSO</label>
+  <abstract>The user id to approval proclib additions</abstract>
+  <description>The user id to approval proclib additions</description>
+  <category>Template variables</category>
+  <string>
+    <!-- Validate for a list of one or more space separated SAF userids -->
+    <regularExpression>^[0-9a-zA-Z$#@ ]*$</regularExpression>
+  </string>
+</variable>
+
+<!--++++++++++++++++++++++++++++++-->
+<!-- Technical user ids           -->
+<!--++++++++++++++++++++++++++++++-->
+<variable name="CC_CREATE_TECHNICAL_USER_GROUPS" visibility="private">
+  <label>CC_CREATE_TECHNICAL_USER_GROUPS</label>
+  <abstract>Create the required groups</abstract>
+  <description>Flag to indicate if groups are to be created</description>
+  <category>User ID creation</category>
+  <string valueMustBeChoice="true">
+    <choice>true</choice>
+    <choice>false</choice>
+    <default>false</default>
+  </string>
+</variable>
+
+<variable name="CC_SERVER_STC_GROUP" visibility="public">
+  <label>CC_SERVER_STC_GROUP</label>
+  <abstract>The group containing the user id running the CC Liberty server</abstract>
+  <description>The group containing the id of the user authorized to run CC Liberty Server as started task</description>
+  <category>Server variables</category>
+  <string>
+    <validationType>USERID</validationType>
+  </string>
+</variable>
+
+<variable name="CC_UNAUTHENTICATED_GROUP" visibility="public">
+  <label>CC_UNAUTHENTICATED_GROUP</label>
+  <abstract>The group containing the unauthenticated user id of the CC Liberty server</abstract>
+  <description>The group containing the Liberty unauthenticated userid</description>
+  <category>Server variables</category>
+  <string>
+    <validationType>USERID</validationType>
+  </string>
+</variable>
+
+<variable name="CC_CREATE_TECHNICAL_USERIDS" visibility="private">
+  <label>CC_CREATE_TECHNICAL_USERIDS</label>
+  <abstract>Create the required userids</abstract>
+  <description>Flag to indicate if userids are to be created</description>
+  <category>User ID creation</category>
+  <string valueMustBeChoice="true">
+    <choice>true</choice>
+    <choice>false</choice>
+    <default>false</default>
+  </string>
+</variable>
+
+<variable name="CC_SERVER_STC_USER" visibility="public">
+  <label>CC_SERVER_STC_USER</label>
+  <abstract>The user id running the CC Liberty server</abstract>
+  <description>The id of the user authorized to run CC Liberty Server as started task</description>
+  <category>Server variables</category>
+  <string>
+    <validationType>USERID</validationType>
+  </string>
+</variable>
+
+<variable name="CC_UNAUTHENTICATED_USER" visibility="public">
+  <label>CC_UNAUTHENTICATED_USER</label>
+  <abstract>The unauthenticated user id of the CC Liberty server</abstract>
+  <description>The Liberty unauthenticated userid</description>
+  <category>Server variables</category>
+  <string>
+    <validationType>USERID</validationType>
+  </string>
+</variable>
+
+<!--++++++++++++++++++++++++++++++-->
+<!-- other user ids and groups    -->
+<!--++++++++++++++++++++++++++++++-->
+
+<variable name="SAF_OWNER" visibility="private">
+  <label>SAF_OWNER</label>
+  <abstract>Owner for created SAF profiles</abstract>
+  <description>Default owner to be used when creating </description>
+  <category>UKO Server variables</category>
+  <string>
+    <validationType>USERID</validationType>
+  </string>
+</variable>
+
+<!--++++++++++++++++++++++++++++++-->
+<!-- Db2 variables                -->
+<!--++++++++++++++++++++++++++++++-->
+
+<variable name="DB_HLQ" visibility="private">
+  <label>DB_HLQ</label>
+  <abstract>The DB_HLQ dataset</abstract>
+  <description>The HLQ of where Db2 is installed</description>
+  <category>DB variables</category>
+  <string>
+    <validationType>DSNAME</validationType>
+  </string>
+</variable>
+
+<variable name="DB_RUNLIB" visibility="private">
+  <label>DB_RUNLIB</label>
+  <abstract>The DB_RUNLIB dataset</abstract>
+  <description>The HLQ of the Db2 runlib</description>
+  <category>DB variables</category>
+  <string>
+    <validationType>DSNAME</validationType>
+  </string>
+</variable>
+
+<variable name="DB_JCC_SSID" visibility="private">
+  <label>DB_JCC_SSID</label>
+  <abstract>The DB_JCC_SSID </abstract>
+  <description>The SSID of Db2</description>
+  <category>DB variables</category>
+  <string>
+    <minLength>4</minLength>
+    <maxLength>4</maxLength>
+  </string>
+</variable>
+
+<variable name="DB_CURRENT_SCHEMA" visibility="public">
+  <label>DB_CURRENT_SCHEMA</label>
+  <abstract>The DB_CURRENT_SCHEMA</abstract>
+  <description>The current schema of the Db2 database</description>
+  <category>DB variables</category>
+  <string />
+</variable>
+
+<variable name="DB_CURRENT_SQLID" visibility="public">
+  <label>DB_CURRENT_SQLID</label>
+  <abstract>The DB_CURRENT_SQLID</abstract>
+  <description>The current SQL ID of the Db2 database</description>
+  <category>DB variables</category>
+  <string />
+</variable>
+
+<variable name="DB_PLAN" visibility="private">
+  <label>DB_PLAN</label>
+  <abstract>The Db2 DB_PLAN</abstract>
+  <description>The DB_PLAN of the Db2 database</description>
+  <category>DB variables</category>
+  <string />
+</variable>
+
+<variable name="DB_PROGRAM" visibility="private">
+  <label>DB_PROGRAM</label>
+  <abstract>The Db2 DB_PROGRAM</abstract>
+  <description>The DB_PROGRAM of the Db2 database</description>
+  <category>DB variables</category>
+  <string />
+</variable>
+
+<variable name="DB_LOCATION" visibility="public">
+  <label>DB_LOCATION</label>
+  <abstract>The Db2 DB_LOCATION</abstract>
+  <description>The location of the Db2 database</description>
+  <category>DB variables</category>
+  <string />
+</variable>
+
+<variable name="DB_LIBPATH" visibility="private">
+  <label>DB_LIBPATH</label>
+  <abstract>The Db2 library path</abstract>
+  <description>The location of the Db2 libraries</description>
+  <category>DB variables</category>
+  <string>
+    <!-- Path validation, has to start with slash, may contain slashes, must not end with slash or whitespace -->
+    <regularExpression>^\/([A-z0-9-_+\.]+\/)*([A-z0-9-_+\.])*[^\/\s]$</regularExpression>
+  </string>
+</variable>
+
+<variable name="DB_CLASSPATH" visibility="private">
+  <label>DB_CLASSPATH</label>
+  <abstract>The Db2 class path</abstract>
+  <description>The location of the Db2 classes</description>
+  <category>DB variables</category>
+  <string>
+    <!-- Path validation, has to start with slash, may contain slashes, must not end with slash or whitespace -->
+    <regularExpression>^\/([A-z0-9-_+\.]+\/)*([A-z0-9-_+\.])*[^\/\s]$</regularExpression>
+  </string>
+</variable>
+
+<!--++++++ only for type 4 database access ++++++-->
+
+<variable name="DB_JDBC_PORT" visibility="private">
+  <label>DB_JDBC</label>
+  <abstract>The Db2 DB_JDBC</abstract>
+  <description>JDBC port for configuring EKMF Workstation access</description>
+  <category>DB variables</category>
+  <string />
+</variable>
+
+<variable name="DB_JDBC_SECPORT" visibility="private">
+  <label>DB_JDBC_SECPORT</label>
+  <abstract>The Db2 DB_LOCATION</abstract>
+  <description>Secure JDBC port for configuring EKMF Workstation access</description>
+  <category>DB variables</category>
+  <string />
+</variable>
+
+<!--++++++++++++++++++++++++++++++-->
+<!-- Other -->
+<!--++++++++++++++++++++++++++++++-->
+
+
+<variable name="CC_SERVER_VERSION" scope="instance" visibility="public">
+  <label>CC_SERVER_VERSION</label>
+  <abstract>Server version</abstract>
+  <description>Which version of CC is this?</description>
+  <category>Server variables</category>
+  <string />
+</variable>
+
+<variable name="CC_SERVER_DIRECTORY" scope="instance" visibility="public">
+  <label>CC Server directory</label>
+  <abstract>The provisioned CC servers directory</abstract>
+  <description>The provisioned CC servers directory containing server.env, jvm.options and product links</description>
+  <category>Server variables</category>
+  <string>
+    <default>NONE</default>
+  </string>
+</variable>
+
+<variable name="CC_KEY_PREFIX" visibility="public">
+  <label>CC_KEY_PREFIX</label>
+  <abstract>The CC_KEY_PREFIX for the CSFKEYS class</abstract>
+  <description>The CC_KEY_PREFIX to be used to generate a profile in the CSFKEYS class</description>
+  <category>General variables</category>
+  <string />
+</variable>

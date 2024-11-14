@@ -8,19 +8,20 @@ address tso
 
 ZKEY_GROUP="${instance-UKO_ZKEY_CLIENT_GROUP}"
 SAFPREFIX="${instance-SAF_PROFILE_PREFIX}"
+SAF_OWNER="${instance-SAF_OWNER}"
 
 /***********************************************************************/
 /* Creating EJB Roles for ZKEY access */
 /***********************************************************************/
 
-"RDEFINE EJBROLE" SAFPREFIX".ekmf-rest-api.keys:export UACC(NONE)"
-"RDEFINE EJBROLE" SAFPREFIX".ekmf-rest-api.keys:write:exportControl UACC(NONE)" 
-"RDEFINE EJBROLE" SAFPREFIX".ekmf-rest-api.keys:write:exportControl:allowedKeys:add UACC(NONE)" 
-"RDEFINE EJBROLE" SAFPREFIX".ekmf-rest-api.keys:write:exportControl:allowedKeys:remove UACC(NONE)" 
-"RDEFINE EJBROLE" SAFPREFIX".ekmf-rest-api.user:passcode:create UACC(NONE)"
-"RDEFINE EJBROLE" SAFPREFIX".ekmf-rest-api.user:passcode:delete UACC(NONE)"
-"RDEFINE EJBROLE" SAFPREFIX".ekmf-rest-api.certificates:import UACC(NONE)"
-"RDEFINE EJBROLE" SAFPREFIX".ekmf-rest-api.certificates:import:untrusted UACC(NONE)"
+"RDEFINE EJBROLE" SAFPREFIX".ekmf-rest-api.keys:export OWNER("SAF_OWNER") UACC(NONE)"
+"RDEFINE EJBROLE" SAFPREFIX".ekmf-rest-api.keys:write:exportControl OWNER("SAF_OWNER") UACC(NONE)" 
+"RDEFINE EJBROLE" SAFPREFIX".ekmf-rest-api.keys:write:exportControl:allowedKeys:add OWNER("SAF_OWNER") UACC(NONE)" 
+"RDEFINE EJBROLE" SAFPREFIX".ekmf-rest-api.keys:write:exportControl:allowedKeys:remove OWNER("SAF_OWNER") UACC(NONE)" 
+"RDEFINE EJBROLE" SAFPREFIX".ekmf-rest-api.user:passcode:create OWNER("SAF_OWNER") UACC(NONE)"
+"RDEFINE EJBROLE" SAFPREFIX".ekmf-rest-api.user:passcode:delete OWNER("SAF_OWNER") UACC(NONE)"
+"RDEFINE EJBROLE" SAFPREFIX".ekmf-rest-api.certificates:import OWNER("SAF_OWNER") UACC(NONE)"
+"RDEFINE EJBROLE" SAFPREFIX".ekmf-rest-api.certificates:import:untrusted OWNER("SAF_OWNER") UACC(NONE)"
 
 
 "PERMIT EJBROLE" SAFPREFIX".ekmf-rest-api.keys:exportCLASS(EJBROLE) ACCESS(READ) ID("ZKEY_GROUP")"

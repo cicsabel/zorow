@@ -241,7 +241,8 @@
                 <variableValue name="DB_NAME_UKO" scope="instance" noPromptIfSet="false" required="false"/>
                 <variableValue name="DB_NAME_DATASET_ENCRYPTION_STATUS" scope="instance" noPromptIfSet="false" required="false"/>
                 <variableValue name="DB_STOGROUP" scope="instance" noPromptIfSet="false" required="false"/>
-                <variableValue name="DB_BUFFERPOOL_TABLESPACE" scope="instance" noPromptIfSet="false" required="false"/>
+                <variableValue name="DB_BUFFERPOOL_TABLESPACE_8K" scope="instance" noPromptIfSet="false" required="false"/>
+                <variableValue name="DB_BUFFERPOOL_TABLESPACE_32K" scope="instance" noPromptIfSet="false" required="false"/>
                 <instructions substitution="true">Submit shell script to execute step</instructions>
                 <weight>1</weight>
                 <autoEnable>true</autoEnable>
@@ -489,7 +490,8 @@
                 <variableValue name="DB_NAME_UKO" scope="instance" noPromptIfSet="false" required="false"/>
                 <variableValue name="DB_NAME_DATASET_ENCRYPTION_STATUS" scope="instance" noPromptIfSet="false" required="false"/>
                 <variableValue name="DB_STOGROUP" scope="instance" noPromptIfSet="false" required="false"/>
-                <variableValue name="DB_BUFFERPOOL_TABLESPACE" scope="instance" noPromptIfSet="false" required="false"/>
+                <variableValue name="DB_BUFFERPOOL_TABLESPACE_8K" scope="instance" noPromptIfSet="false" required="false"/>
+                <variableValue name="DB_BUFFERPOOL_TABLESPACE_32K" scope="instance" noPromptIfSet="false" required="false"/>
                 <instructions substitution="true">Submit shell script to execute step</instructions>
                 <weight>1</weight>
                 <autoEnable>true</autoEnable>
@@ -749,7 +751,8 @@
             <variableValue name="DB_NAME_UKO" scope="instance" noPromptIfSet="false" required="false"/>
             <variableValue name="DB_NAME_DATASET_ENCRYPTION_STATUS" scope="instance" noPromptIfSet="false" required="false"/>
             <variableValue name="DB_STOGROUP" scope="instance" noPromptIfSet="false" required="false"/>
-            <variableValue name="DB_BUFFERPOOL_TABLESPACE" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="DB_BUFFERPOOL_TABLESPACE_8K" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="DB_BUFFERPOOL_TABLESPACE_32K" scope="instance" noPromptIfSet="false" required="false"/>
             <instructions substitution="true">Submit shell script to execute step</instructions>
             <weight>1</weight>
             <autoEnable>true</autoEnable>
@@ -864,7 +867,8 @@
             <variableValue name="DB_NAME_UKO" scope="instance" noPromptIfSet="false" required="false"/>
             <variableValue name="DB_NAME_DATASET_ENCRYPTION_STATUS" scope="instance" noPromptIfSet="false" required="false"/>
             <variableValue name="DB_STOGROUP" scope="instance" noPromptIfSet="false" required="false"/>
-            <variableValue name="DB_BUFFERPOOL_TABLESPACE" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="DB_BUFFERPOOL_TABLESPACE_8K" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="DB_BUFFERPOOL_TABLESPACE_32K" scope="instance" noPromptIfSet="false" required="false"/>
             <instructions substitution="true">Submit shell script to execute step</instructions>
             <weight>1</weight>
             <autoEnable>true</autoEnable>

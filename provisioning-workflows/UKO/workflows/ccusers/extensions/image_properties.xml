@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/******************************************************************************/
+/* Copyright Contributors to the zOS-Workflow Project.                        */
+/* SPDX-License-Identifier: Apache-2.0                                        */
+/******************************************************************************/
+
+-->
+
+
+
+<atCreate name="CC_SERVER_STC_USER" scope="instance" prompt="true" required="false"/>
+<atCreate name="CC_SERVER_STC_GROUP" scope="instance" prompt="true" required="false"/>
+<atCreate name="CC_UNAUTHENTICATED_USER" scope="instance" prompt="true" required="false"/>
+<atCreate name="CC_UNAUTHENTICATED_GROUP" scope="instance" prompt="true" required="false"/>

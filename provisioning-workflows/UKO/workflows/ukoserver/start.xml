@@ -262,8 +262,8 @@
 				    "cmd" : "START ${instance-UKO_SERVER_STC_NAME},PARMS='${instance-UKO_SERVER_STC_NAME}'",
 				    "unsol-key" : "CWWKF0011I: The ${instance-UKO_SERVER_STC_NAME} server is ready",
 				    "unsol-detect-sync" : "Y",
-				    "unsol-detect-timeout" : "120",
-				    "detect-time" : "120",
+				    "unsol-detect-timeout" : "200",
+				    "detect-time" : "200",
 				    "system" : "${_workflow-systemName}"
 				    
 				  }	

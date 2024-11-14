@@ -12,30 +12,31 @@ KEY_CUSTODIAN1="${instance-UKO_KEY_CUSTODIAN1_GROUP}"
 KEY_CUSTODIAN2="${instance-UKO_KEY_CUSTODIAN2_GROUP}"
 UKO_AUDITOR="${instance-UKO_AUDITOR_GROUP}"
 SAFPREFIX="${instance-SAF_PROFILE_PREFIX}"
+SAF_OWNER="${instance-SAF_OWNER}"
 
 /***********************************************************************/
 /* Creating genera EJB Roles */
 /***********************************************************************/
 
-"RDEFINE EJBROLE" SAFPREFIX".ekmf-rest-api.keystores:list UACC(NONE)"
-"RDEFINE EJBROLE" SAFPREFIX".ekmf-rest-api.keys:list UACC(NONE)"
-"RDEFINE EJBROLE" SAFPREFIX".ekmf-rest-api.templates:list UACC(NONE)"
+"RDEFINE EJBROLE" SAFPREFIX".ekmf-rest-api.keystores:list OWNER("SAF_OWNER") UACC(NONE)"
+"RDEFINE EJBROLE" SAFPREFIX".ekmf-rest-api.keys:list OWNER("SAF_OWNER") UACC(NONE)"
+"RDEFINE EJBROLE" SAFPREFIX".ekmf-rest-api.templates:list OWNER("SAF_OWNER") UACC(NONE)"
 
-"RDEFINE EJBROLE" SAFPREFIX".ekmf-rest-api.vaults:list UACC(NONE)"
-"RDEFINE EJBROLE" SAFPREFIX".ekmf-rest-api.vaults:write UACC(NONE)"
-"RDEFINE EJBROLE" SAFPREFIX".ekmf-rest-api.*.vaults:delete UACC(NONE)"
-"RDEFINE EJBROLE" SAFPREFIX".ekmf-rest-api.*.vaults:read UACC(NONE)"
-"RDEFINE EJBROLE" SAFPREFIX".ekmf-rest-api.*.vaults:write UACC(NONE)"
+"RDEFINE EJBROLE" SAFPREFIX".ekmf-rest-api.vaults:list OWNER("SAF_OWNER") UACC(NONE)"
+"RDEFINE EJBROLE" SAFPREFIX".ekmf-rest-api.vaults:write OWNER("SAF_OWNER") UACC(NONE)"
+"RDEFINE EJBROLE" SAFPREFIX".ekmf-rest-api.*.vaults:delete OWNER("SAF_OWNER") UACC(NONE)"
+"RDEFINE EJBROLE" SAFPREFIX".ekmf-rest-api.*.vaults:read OWNER("SAF_OWNER") UACC(NONE)"
+"RDEFINE EJBROLE" SAFPREFIX".ekmf-rest-api.*.vaults:write OWNER("SAF_OWNER") UACC(NONE)"
 
-"RDEFINE EJBROLE" SAFPREFIX".ekmf-rest-api.datasets:read UACC(NONE)"
-"RDEFINE EJBROLE" SAFPREFIX".ekmf-rest-api.auditlog:read UACC(NONE)"
-"RDEFINE EJBROLE" SAFPREFIX".ekmf-rest-api.meta:cache-rebuild UACC(NONE)"
-"RDEFINE EJBROLE" SAFPREFIX".ekmf-rest-api.meta:logs-download UACC(NONE)"
-"RDEFINE EJBROLE" SAFPREFIX".ekmf-rest-api.settings:write UACC(NONE)"
-"RDEFINE EJBROLE" SAFPREFIX".ekmf-rest-api.integrity:write UACC(NONE)"
+"RDEFINE EJBROLE" SAFPREFIX".ekmf-rest-api.datasets:read OWNER("SAF_OWNER") UACC(NONE)"
+"RDEFINE EJBROLE" SAFPREFIX".ekmf-rest-api.auditlog:read OWNER("SAF_OWNER") UACC(NONE)"
+"RDEFINE EJBROLE" SAFPREFIX".ekmf-rest-api.meta:cache-rebuild OWNER("SAF_OWNER") UACC(NONE)"
+"RDEFINE EJBROLE" SAFPREFIX".ekmf-rest-api.meta:logs-download OWNER("SAF_OWNER") UACC(NONE)"
+"RDEFINE EJBROLE" SAFPREFIX".ekmf-rest-api.settings:write OWNER("SAF_OWNER") UACC(NONE)"
+"RDEFINE EJBROLE" SAFPREFIX".ekmf-rest-api.integrity:write OWNER("SAF_OWNER") UACC(NONE)"
 
-"RDEFINE EJBROLE" SAFPREFIX".ekmf-rest-api.user:passcode:create UACC(NONE)"
-"RDEFINE EJBROLE" SAFPREFIX".ekmf-rest-api.user:passcode:delete UACC(NONE)" 
+"RDEFINE EJBROLE" SAFPREFIX".ekmf-rest-api.user:passcode:create OWNER("SAF_OWNER") UACC(NONE)"
+"RDEFINE EJBROLE" SAFPREFIX".ekmf-rest-api.user:passcode:delete OWNER("SAF_OWNER") UACC(NONE)" 
 
 /***********************************************************************/
 /* Key admin, who sets up the key hierarchy, and controls keystores    */

@@ -68,6 +68,7 @@
         <variableValue name="UKO_SERVER_STC_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
         <variableValue name="UKO_UNAUTHENTICATED_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
         <variableValue name="UKO_TECHNICAL_SUPERIOR_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="SAF_OWNER" scope="instance" noPromptIfSet="false" required="false"/>
         <instructions substitution="true">Submit rexx exec to execute step. The workflow is using the AUTOGID option to 
             automatically generate a unique ID value in the OMVS segment of a group. If you cannot use AUTOGID, you 
             need to replace it with a unique GID(group-identifier) for each ADDGROUP statement. For additional parameters, 
@@ -108,6 +109,7 @@
         <variableValue name="UKO_UNAUTHENTICATED_USER" scope="instance" noPromptIfSet="false" required="false"/>
         <variableValue name="UKO_UNAUTHENTICATED_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
         <variableValue name="USER_HOME_PARENT_DIR" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="SAF_OWNER" scope="instance" noPromptIfSet="false" required="false"/>
         <instructions substitution="true">Submit rexx exec to execute step. The workflow is using the
             AUTOUID option to automatically generate a unique ID value in the OMVS segment of a user.
             If you cannot use AUTOUID, you need to replace it with a unique UID(user-identifier) for
@@ -146,6 +148,7 @@
         <variableValue name="UKO_KEY_CUSTODIAN2_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
         <variableValue name="UKO_AUDITOR_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
         <variableValue name="UKO_PERSONAL_SUPERIOR_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="SAF_OWNER" scope="instance" noPromptIfSet="false" required="false"/>
         <instructions substitution="true">Submit rexx exec to execute step. The workflow is using the AUTOGID option to 
             automatically generate a unique ID value in the OMVS segment of a group. If you cannot use AUTOGID, you 
             need to replace it with a unique GID(group-identifier) for each ADDGROUP statement. For additional parameters, 
@@ -196,6 +199,7 @@
         <variableValue name="USER_TSO_UNIT" scope="instance" noPromptIfSet="false" required="false"/>
         <variableValue name="USER_PASSPHRASE" scope="instance" noPromptIfSet="false" required="false"/>
         <variableValue name="USER_HOME_PARENT_DIR" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="SAF_OWNER" scope="instance" noPromptIfSet="false" required="false"/>
         <instructions substitution="true">Submit rexx exec to execute step. The workflow is using the
             AUTOUID option to automatically generate a unique ID value in the OMVS segment of a user.
             If you cannot use AUTOUID, you need to replace it with a unique UID(user-identifier) for

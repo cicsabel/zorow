@@ -9,22 +9,23 @@ address tso
 SERVER_STC_USER="${instance-UKO_SERVER_STC_USER}"
 TLS_KEY_STORE_KEY_RING="${instance-UKO_TLS_KEY_STORE_KEY_RING}"
 TLS_TRUST_STORE_KEY_RING="${instance-UKO_TLS_TRUST_STORE_KEY_RING}"
+SAF_OWNER="${instance-SAF_OWNER}"
 
 Say "RDATALIB definitions: "
 /* Enable the Liberty user to use the key ring */
 Say "Define" SERVER_STC_USER"."TLS_KEY_STORE_KEY_RING
 "RDEFINE RDATALIB",
    SERVER_STC_USER"."TLS_KEY_STORE_KEY_RING".LST",
-   " UACC(NONE)"
+   " OWNER("SAF_OWNER") UACC(NONE)"
 
 #if($!{instance-UKO_CREATE_KEYRING} == "true" && $!{instance-UKO_CREATE_CERTIFICATES} == "false")
-/* if existing certificates are added to the new key ring, then UPDATE is required */
+/* if existing certificates are added to the new key ring, then CONTROL is required */
 /* to be able to access the private keys */
-Say "Grant UPDATE access to" SERVER_STC_USER "in RDATALIB"
+Say "Grant CONTROL access to" SERVER_STC_USER "in RDATALIB"
 "PERMIT",
    SERVER_STC_USER"."TLS_KEY_STORE_KEY_RING".LST",
    " CLASS(RDATALIB)",
-   " ACCESS(UPDATE) ID("SERVER_STC_USER")"
+   " ACCESS(CONTROL) ID("SERVER_STC_USER")"
 #else
 Say "Grant READ access to" SERVER_STC_USER "in RDATALIB"
 "PERMIT",
@@ -41,7 +42,7 @@ end
 Say "Define" SERVER_STC_USER"."TLS_TRUST_STORE_KEY_RING
 "RDEFINE RDATALIB",
    SERVER_STC_USER"."TLS_TRUST_STORE_KEY_RING".LST",
-   " UACC(NONE)"
+   " OWNER("SAF_OWNER") UACC(NONE)"
 Say "Grant access to" SERVER_STC_USER
 "PERMIT",
    SERVER_STC_USER"."TLS_TRUST_STORE_KEY_RING".LST",
@@ -74,7 +75,7 @@ exit 0
 
 
 Say "Define IRR.DIGTCERT.LISTRING in FACILITY"
-"RDEFINE FACILITY IRR.DIGTCERT.LISTRING UACC(NONE)"
+"RDEFINE FACILITY IRR.DIGTCERT.LISTRING OWNER("SAF_OWNER") UACC(NONE)"
 
 Say "Grant access to" SERVER_STC_USER
 "PERMIT IRR.DIGTCERT.LISTRING CLASS(FACILITY) ACCESS(READ)",

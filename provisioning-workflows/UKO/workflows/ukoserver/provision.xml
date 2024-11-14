@@ -99,6 +99,11 @@
             <prereqStep name="createZFS"/>
             <runAsUser substitution="true">$!{instance-UKO_ADMIN_ZFS}</runAsUser>
             <approver substitution="true">$!{instance-UKO_APPROVER_ZFS}</approver>
+            <variableValue name="WLP_USER_DIR" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="WLP_OUTPUT_DIR" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="UKO_SERVER_STC_NAME" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="UKO_SERVER_STC_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="UKO_FILE_SYSTEM_HLQ" scope="instance" noPromptIfSet="false" required="false"/>
             <instructions>Execute the mount zFS script to mount the zFS dataset (MountZFS.script)</instructions>
             <weight>1</weight>
             <autoEnable>true</autoEnable>
@@ -117,9 +122,12 @@
 
         <step name="substituteServerEnv">
 		    <title>Substitute server.env</title>
-	        <description>replace values in server.env with template variable values</description>
+	        <description>Replace values in server.env with the values from the proterties file</description>
 	        <runAsUser substitution="true">$!{instance-UKO_ADMIN_SERVER}</runAsUser>
 	        <approver substitution="true">$!{instance-UKO_APPROVER_SERVER}</approver>
+            <variableValue name="UKO_INSTALL_DIR" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="WLP_OUTPUT_DIR" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="WLP_USER_DIR" scope="instance" noPromptIfSet="false" required="false"/>
             <variableValue name="JAVA_HOME" scope="instance" noPromptIfSet="false" required="false"/>
             <variableValue name="UKO_TLS_KEY_STORE_KEY_RING" scope="instance" noPromptIfSet="false" required="false"/>
             <variableValue name="UKO_TLS_TRUST_STORE_KEY_RING" scope="instance" noPromptIfSet="false" required="false"/>
@@ -131,10 +139,12 @@
             <variableValue name="DB_CLASSPATH" scope="instance" noPromptIfSet="false" required="false"/>
             <variableValue name="UKO_HTTP_PORT" scope="instance" noPromptIfSet="false" required="false"/>
             <variableValue name="UKO_HTTPS_PORT" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="ENABLE_MTLS_VIA_HTTPS_PORT" scope="instance" noPromptIfSet="false" required="false"/>
             <variableValue name="UKO_UNAUTHENTICATED_USER" scope="instance" noPromptIfSet="false" required="false"/>
             <variableValue name="UKO_OAUTH_CLIENT_ID" scope="instance" noPromptIfSet="false" required="false"/>
             <variableValue name="UKO_OAUTH_CLIENT_ID_OPENAPI" scope="instance" noPromptIfSet="false" required="false"/>
             <variableValue name="UKO_OIDC_PROVIDER_CERT" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="SAF_PROFILE_PREFIX" scope="instance" noPromptIfSet="false" required="false"/>
             <instructions substitution="true">Submit shell script to execute step</instructions>
             <weight>1</weight>
             <autoEnable>true</autoEnable>
@@ -153,6 +163,8 @@
                     sed "s#JAVA_HOME=.*#JAVA_HOME=${instance-JAVA_HOME}#g;
                         #if(${instance-WLP_OUTPUT_DIR} &amp;&amp; ${instance-WLP_OUTPUT_DIR} != "")
                             s#^[ \#]*WLP_OUTPUT_DIR=.*#WLP_OUTPUT_DIR=${instance-WLP_OUTPUT_DIR}#g;
+                        #else
+                            s#^[ \#]*WLP_OUTPUT_DIR=.*#WLP_OUTPUT_DIR=${instance-WLP_USER_DIR}/servers#g;
                         #end
                         #if(${instance-ENABLE_MTLS_VIA_HTTPS_PORT} &amp;&amp; ${instance-ENABLE_MTLS_VIA_HTTPS_PORT} != "")
                             s#^[ \#]*TLS_CLIENT_AUTHENTICATION_SUPPORTED=.*#TLS_CLIENT_AUTHENTICATION_SUPPORTED=${instance-ENABLE_MTLS_VIA_HTTPS_PORT}#g;
@@ -171,8 +183,6 @@
                         s#^[ \#]*DB_CURRENT_SCHEMA=.*#DB_CURRENT_SCHEMA=${instance-DB_CURRENT_SCHEMA}#g;
                         s#^[ \#]*DB2_PRODUCT_PATH=.*#DB2_PRODUCT_PATH=${instance-DB_PRODUCT_PATH}#g;
                         s#^[ \#]*LIBPATH=.*#LIBPATH=${instance-DB_LIBPATH}#g;
-                        s#^[ \#]*DB2_LIBPATH=.*#DB2_LIBPATH=${instance-DB_LIBPATH}#g;
-                        s#^[ \#]*DB2_CLASSPATH=.*#DB2_CLASSPATH=${instance-DB_CLASSPATH}#g;
                         s#^[ \#]*DB_LIBPATH=.*#DB_LIBPATH=${instance-DB_LIBPATH}#g;
                         s#^[ \#]*DB_CLASSPATH=.*#DB_CLASSPATH=${instance-DB_CLASSPATH}#g;
                         s#^[ \#]*HTTP_PORT=.*#HTTP_PORT=${instance-UKO_HTTP_PORT}#g;
@@ -192,6 +202,49 @@
             	<submitAs>shell-JCL</submitAs>
         	</template>
         </step>
+
+        <step name="substituteServerEnvMsdke">
+		    <title>(Optional) Configure server.env for MSDKE</title>
+	        <description>Replace values in server.env with the values from the proterties file</description>
+	        <runAsUser substitution="true">$!{instance-UKO_ADMIN_SERVER}</runAsUser>
+	        <approver substitution="true">$!{instance-UKO_APPROVER_SERVER}</approver>
+            <condition>
+                <expression>"1"=="1"</expression>
+                <description>always true</description>
+                <targetStateSet>
+                    <description>Only execute for MSDKE configuration</description>
+                    <extendStateExpression>
+                        <description>Skip if no MSDKE configuration is required</description>
+                        <expression>${instance-MSDKE_SUPPORT_REQUIRED}  == "false"</expression>
+                        <targetState>Skipped</targetState>
+                    </extendStateExpression>
+                </targetStateSet>
+            </condition>
+            <variableValue name="WLP_USER_DIR" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="UKO_SERVER_STC_NAME" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="MSDKE_SUPPORT_REQUIRED" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="MSDKE_RABBIT_URI" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="MSDKE_WRAPPING_KEK_LABEL" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="MSDKE_RABBIT_VIRTUAL_HOST" scope="instance" noPromptIfSet="false" required="false"/>
+            <instructions substitution="true">Submit shell script to execute step</instructions>
+            <weight>1</weight>
+            <autoEnable>true</autoEnable>
+            <template>
+   		         <inlineTemplate substitution="true">
+                    cd ${instance-WLP_USER_DIR}/servers/${instance-UKO_SERVER_STC_NAME}
+
+                    mv ./server.env ./server.env.old
+
+                    sed "s#MSDKE_RABBIT_URI=.*#MSDKE_RABBIT_URI=${instance-MSDKE_RABBIT_URI}#g;
+                        s#^[ \#]*MSDKE_WRAPPING_KEK_LABEL=.*#MSDKE_WRAPPING_KEK_LABEL=${instance-MSDKE_WRAPPING_KEK_LABEL}#g;
+                        s#^[ \#]*MSDKE_RABBIT_VIRTUAL_HOST=.*#MSDKE_RABBIT_VIRTUAL_HOST=${instance-MSDKE_RABBIT_VIRTUAL_HOST}#g;
+                        s#^[ \#]*MSDKE_RABBIT_ENABLE_CERT_AUTHENTICATION=.*#MSDKE_RABBIT_ENABLE_CERT_AUTHENTICATION=true#g" ./server.env.old > ./server.env
+
+                    </inlineTemplate>
+            	<submitAs>shell-JCL</submitAs>
+        	</template>
+        </step>
+
 
         <!-- <step name="configureJdbcType4">
             <title>Configure type 4 instead of type 2 connection to database</title>
@@ -267,6 +320,9 @@
 	        <description>replace values in jvm.options with template variable values</description>
 	        <runAsUser substitution="true">$!{instance-UKO_ADMIN_SERVER}</runAsUser>
 	        <approver substitution="true">$!{instance-UKO_APPROVER_SERVER}</approver>
+            <variableValue name="WLP_USER_DIR" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="UKO_SERVER_STC_NAME" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="UKO_INSTALL_DIR" scope="instance" noPromptIfSet="false" required="false"/>
             <variableValue name="WLP_ANGEL_NAME" scope="instance" noPromptIfSet="false" required="false"/>
             <variableValue name="DB_JCC_SSID" scope="instance" noPromptIfSet="false" required="false"/>
             <instructions substitution="true">Submit shell script to execute step</instructions>
@@ -289,6 +345,9 @@
             <description>Remove read and execute access for all users to the zFS file system and set group access if required</description>
             <runAsUser substitution="true">$!{instance-UKO_ADMIN_SERVER}</runAsUser>
             <approver substitution="true">$!{instance-UKO_APPROVER_SERVER}</approver>
+            <variableValue name="WLP_USER_DIR" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="WLP_OUTPUT_DIR" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="UKO_SERVER_STC_NAME" scope="instance" noPromptIfSet="false" required="false"/>
             <variableValue name="UKO_SERVER_STC_USER" scope="instance" noPromptIfSet="false" required="false"/>
             <variableValue name="UKO_SERVER_STC_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
             <instructions substitution="true">Remove access to all users from ${instance-WLP_USER_DIR}/servers/${instance-UKO_SERVER_STC_NAME}</instructions>
@@ -339,6 +398,10 @@
             <description>Submit script to create symbolig links to the UKO installation diretory. </description>
             <runAsUser substitution="true">$!{instance-UKO_ADMIN_SERVER}</runAsUser>
             <approver substitution="true">$!{instance-UKO_APPROVER_SERVER}</approver>
+            <variableValue name="WLP_USER_DIR" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="WLP_OUTPUT_DIR" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="UKO_SERVER_STC_NAME" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="UKO_INSTALL_DIR" scope="instance" noPromptIfSet="false" required="false"/>
             <instructions substitution="true">Submit shell script to execute step</instructions>
             <weight>1</weight>
             <autoEnable>true</autoEnable>
@@ -436,6 +499,10 @@
             <variableValue name="UKO_KEY_CUSTODIAN1_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
             <variableValue name="UKO_KEY_CUSTODIAN2_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
             <variableValue name="UKO_AUDITOR_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="SAF_OWNER" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="WLP_ANGEL_NAME" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="SAF_PROFILE_PREFIX" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="SAF_OWNER" scope="instance" noPromptIfSet="false" required="false"/>
             <instructions substitution="true">Submit rexx exec to execute step</instructions>
             <weight>1</weight>
             <autoEnable>true</autoEnable>
@@ -452,6 +519,7 @@
             <runAsUser substitution="true">$!{instance-UKO_ADMIN_SECURITY}</runAsUser>
             <approver substitution="true">$!{instance-UKO_APPROVER_SECURITY}</approver>
             <variableValue name="UKO_SERVER_STC_USER" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="SAF_OWNER" scope="instance" noPromptIfSet="false" required="false"/>
             <instructions>Executes a REXX program to create profiles and grant access</instructions>
             <weight>1</weight>
             <autoEnable>true</autoEnable>
@@ -470,6 +538,7 @@
             <variableValue name="UKO_KEY_PREFIX" scope="instance" noPromptIfSet="false" required="false"/>
             <variableValue name="UKO_RECOVERY_KEY" scope="instance" noPromptIfSet="false" required="false"/>
             <variableValue name="UKO_SERVER_STC_USER" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="SAF_OWNER" scope="instance" noPromptIfSet="false" required="false"/>
             <instructions>Executes a REXX program to create the key prefix</instructions>
             <weight>1</weight>
             <autoEnable>true</autoEnable>
@@ -487,6 +556,7 @@
             <approver substitution="true">$!{instance-UKO_APPROVER_SECURITY}</approver>
             <variableValue name="DB_JCC_SSID" scope="instance" noPromptIfSet="false" required="false"/>
             <variableValue name="UKO_SERVER_STC_USER" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="SAF_OWNER" scope="instance" noPromptIfSet="false" required="false"/>
             <instructions substitution="true">Review rexx and execute it to create the required DSNR profiles and grant access</instructions>
             <weight>1</weight>
             <autoEnable>true</autoEnable>
@@ -522,6 +592,8 @@
                 <variableValue name="UKO_KEY_CUSTODIAN1_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
                 <variableValue name="UKO_KEY_CUSTODIAN2_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
                 <variableValue name="UKO_AUDITOR_GROUP" scope="instance" noPromptIfSet="false" required="false"/>        
+                <variableValue name="SAF_OWNER" scope="instance" noPromptIfSet="false" required="false"/>
+                <variableValue name="SAF_PROFILE_PREFIX" scope="instance" noPromptIfSet="false" required="false"/>
                 <instructions>Executes a REXX program to create EJB roles and grant access</instructions>
                 <weight>1</weight>
                 <autoEnable>true</autoEnable>
@@ -554,6 +626,8 @@
                 <variableValue name="UKO_KEY_CUSTODIAN1_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
                 <variableValue name="UKO_KEY_CUSTODIAN2_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
                 <variableValue name="UKO_AUDITOR_GROUP" scope="instance" noPromptIfSet="false" required="false"/>        
+                <variableValue name="SAF_OWNER" scope="instance" noPromptIfSet="false" required="false"/>
+                <variableValue name="SAF_PROFILE_PREFIX" scope="instance" noPromptIfSet="false" required="false"/>
                 <instructions>Executes a REXX program to create EJB roles and grant access</instructions>
                 <weight>1</weight>
                 <autoEnable>true</autoEnable>
@@ -587,6 +661,8 @@
                 <variableValue name="UKO_KEY_CUSTODIAN1_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
                 <variableValue name="UKO_KEY_CUSTODIAN2_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
                 <variableValue name="UKO_AUDITOR_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
+                <variableValue name="SAF_OWNER" scope="instance" noPromptIfSet="false" required="false"/>
+                <variableValue name="SAF_PROFILE_PREFIX" scope="instance" noPromptIfSet="false" required="false"/>
                 <instructions>Executes a REXX program to create EJB roles and grant access</instructions>
                 <weight>1</weight>
                 <autoEnable>true</autoEnable>

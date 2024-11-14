@@ -99,6 +99,16 @@
   </string>
 </variable>
 
+<variable name="ANGEL_STC_USER" visibility="public">
+  <label>ANGEL_STC_USER</label>
+  <abstract>The user id running the Angel</abstract>
+  <description>The id of the user authorized to run the Angel as started task</description>
+  <category>UKO Server variables</category>
+  <string>
+    <validationType>USERID</validationType>
+  </string>
+</variable>
+
 <!--++++++++++++++++++++-->
 <!-- SSL Authentication -->
 <!--++++++++++++++++++++-->
@@ -289,6 +299,64 @@
     <choice>00000000-0000-0000-0000-000000000000</choice>
     <default>00000000-0000-0000-0000-000000000000</default>
   </string>
+</variable>
+
+<!--++++++++++++++++++++++++++++-->
+<!-- MSDKE related variables    -->
+<!--++++++++++++++++++++++++++++-->
+<variable name="MSDKE_SUPPORT_REQUIRED" visibility="public">
+  <label>MSDKE_SUPPORT_REQUIRED</label>
+  <abstract>Is MSDKE support required</abstract>
+  <description>Will connection to Microsoft Double Key Encryption be required</description>
+  <category>MSDKE variables</category>
+  <string valueMustBeChoice="true">
+    <choice>true</choice>
+    <choice>false</choice>
+    <default>false</default>
+  </string>
+</variable>
+
+<variable name="MSDKE_RABBIT_URI" visibility="public">
+  <label>MSDKE_RABBIT_URI</label>
+  <abstract>URI of rabbitMQ instance</abstract>
+  <description>The URI of the rabbitMQ instance that will be used for MSDKE services</description>
+  <category>MSDKE variables</category>
+  <string />
+</variable>
+
+<variable name="MSDKE_WRAPPING_KEK_LABEL" visibility="public">
+  <label>MSDKE_WRAPPING_KEK_LABEL</label>
+  <abstract>KEK for wrapping MSDKE keys</abstract>
+  <description>Key label of the key encryption key, that will be used for wrapping keys related to MSDKE services</description>
+  <category>MSDKE variables</category>
+  <string />
+</variable>
+
+<variable name="MSDKE_RABBIT_VIRTUAL_HOST" visibility="public">
+  <label>MSDKE_RABBIT_VIRTUAL_HOST</label>
+  <abstract>Virtual host in RabbitMQ to connect to</abstract>
+  <description>If multiple servers are connecting to the same rabbitMQ instance, they must use seprarate virtual hosts to avoid conflicts</description>
+  <category>MSDKE variables</category>
+  <string valueMustBeChoice="false">
+    <choice>/</choice>
+    <default>/</default>
+  </string>
+</variable>
+
+<variable name="MSDKE_RABBIT_CERT" visibility="public">
+  <label>MSDKE_RABBIT_CERT</label>
+  <abstract>Certificate for mTLS connection with rabbitMQ</abstract>
+  <description>Label of the certificate used for mTLS authentication with rabbitMQ</description>
+  <category>MSDKE variables</category>
+  <string />
+</variable>
+
+<variable name="MSDKE_RABBIT_CA" visibility="public">
+  <label>MSDKE_RABBIT_CA</label>
+  <abstract>CA that signed rabbitMQ certificate</abstract>
+  <description>CA that signed the certificate used for mTLS authentication with rabbitMQ</description>
+  <category>MSDKE variables</category>
+  <string />
 </variable>
 
 <!--++++++++++++++++++++++++++++-->
@@ -879,8 +947,19 @@
   </string>
 </variable>
 
+<!--++++++++++++++++++++++++++++++-->
+<!-- other user ids and groups    -->
+<!--++++++++++++++++++++++++++++++-->
 
-
+<variable name="SAF_OWNER" visibility="private">
+  <label>SAF_OWNER</label>
+  <abstract>Owner for created SAF profiles</abstract>
+  <description>Default owner to be used when creating </description>
+  <category>UKO Server variables</category>
+  <string>
+    <validationType>USERID</validationType>
+  </string>
+</variable>
 
 <!--++++++++++++++++++++++++++++++-->
 <!-- Db2 variables                -->
@@ -1003,10 +1082,18 @@
   <string />
 </variable>
 
-<variable name="DB_BUFFERPOOL_TABLESPACE" visibility="private">
-  <label>DB_BUFFERPOOL_TABLESPACE</label>
-  <abstract>The Db2 bufferpool for table spaces</abstract>
-  <description>The buffer pool for table spaces created in the Db2 database</description>
+<variable name="DB_BUFFERPOOL_TABLESPACE_8K" visibility="private">
+  <label>DB_BUFFERPOOL_TABLESPACE_8K</label>
+  <abstract>The Db2 bufferpool for 8K table spaces</abstract>
+  <description>The buffer pool for 8K table spaces created in the Db2 database</description>
+  <category>DB variables</category>
+  <string />
+</variable>
+
+<variable name="DB_BUFFERPOOL_TABLESPACE_32K" visibility="private">
+  <label>DB_BUFFERPOOL_TABLESPACE_32K</label>
+  <abstract>The Db2 bufferpool for 32K table spaces</abstract>
+  <description>The buffer pool for 32K table spaces created in the Db2 database</description>
   <category>DB variables</category>
   <string />
 </variable>
@@ -1193,7 +1280,7 @@
 <variable name="TCPIP_HLQ" visibility="private">
   <label>TCPIP_HLQ</label>
   <abstract>The TCPIP_HLQ dataset</abstract>
-  <description>The HLQ of where TCPIP is installed, required for the Agent STC</description>
+  <description>The HLQ of where TCPIP_HLQ.SEZATCP is installed, required for the Agent STC</description>
   <category>UKO Agent variables</category>
   <string>
     <validationType>DSNAME</validationType>

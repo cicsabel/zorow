@@ -8,11 +8,7 @@
 /***********************************************************************/
 
 AGENT_STC_USER="${instance-UKO_AGENT_STC_USER}"
-#if(${instance-UKO_ADMIN_SECURITY} && ${instance-UKO_ADMIN_SECURITY} != "")
-RACF_OWNER="${instance-UKO_ADMIN_SECURITY}"
-#else
-RACF_OWNER="${_step-stepOwnerUpper}"
-#end   
+SAF_OWNER="${instance-SAF_OWNER}"
 
 /* If &SYS-ECCSIGN-PREFIX and &SYS-RSAKEK-PREFIX are defined in KMGPARM, */
 /* the agent needs access to the keys. */
@@ -21,7 +17,8 @@ RACF_OWNER="${_step-stepOwnerUpper}"
 KEY_PREFIX="${instance-UKO_KEY_PREFIX}"
 
 Say "Defining key prefix profile" KEY_PREFIX".** in case this has not been done"
-"RDEF CSFKEYS" KEY_PREFIX".** OWNER("RACF_OWNER") UACC(NONE) ICSF(SYMCPACFWRAP(YES),SYMCPACFRET(YES))"
+"RDEF CSFKEYS" KEY_PREFIX".** OWNER("SAF_OWNER") UACC(NONE) ",
+    " ICSF(SYMCPACFWRAP(YES),SYMCPACFRET(YES))"
 Say "Granting access to" AGENT_STC_USER "on" KEY_PREFIX
 "PERMIT" KEY_PREFIX".**  CLASS(CSFKEYS) ACCESS(CONTROL) ID("AGENT_STC_USER")"
 

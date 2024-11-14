@@ -69,6 +69,10 @@
             <variableValue name="UKO_AGENT_CLIENT_USER" scope="instance" noPromptIfSet="false" required="false"/>
             <variableValue name="UKO_AGENT_PORT" scope="instance" noPromptIfSet="false" required="false"/>
             <variableValue name="UKO_KEY_PREFIX" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="DB_CODEPAGE" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="TEMP_DIR" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="UKO_AGENT_STC_NAME" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="UKO_AGENT_SAMPLIB" scope="instance" noPromptIfSet="false" required="false"/>
             <instructions substitution="true">Submit shell script to execute step</instructions>
             <weight>1</weight>
             <autoEnable>true</autoEnable>
@@ -116,6 +120,10 @@
             <variableValue name="DB_JDBC_SECPORT" scope="instance" noPromptIfSet="false" required="false"/>
             <variableValue name="UKO_KEY_PREFIX" scope="instance" noPromptIfSet="false" required="false"/>
             <variableValue name="DB_CURRENT_SCHEMA" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="DB_CODEPAGE" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="TEMP_DIR" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="UKO_AGENT_STC_NAME" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="UKO_AGENT_SAMPLIB" scope="instance" noPromptIfSet="false" required="false"/>
             <instructions substitution="true">Submit shell script to execute step</instructions>
             <weight>1</weight>
             <autoEnable>true</autoEnable>
@@ -149,6 +157,9 @@
 	        <description>Copy KMGPARM template into the PROCLIB</description>
 	        <runAsUser substitution="true">$!{instance-UKO_ADMIN_SERVER}</runAsUser>
 	        <approver substitution="true">$!{instance-UKO_APPROVER_SERVER}</approver>
+            <variableValue name="TEMP_DIR" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="UKO_AGENT_STC_NAME" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="UKO_ZOS_PARMLIB" scope="instance" noPromptIfSet="false" required="false"/>
         	<instructions substitution="true">Submit JCL to execute step</instructions>
             <weight>5</weight>
             <autoEnable>true</autoEnable>
@@ -194,6 +205,7 @@
             <variableValue name="UKO_AGENT_STC_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
             <variableValue name="UKO_AGENT_CLIENT_USER" scope="instance" noPromptIfSet="false" required="false"/>
             <variableValue name="UKO_AGENT_CLIENT_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="SAF_OWNER" scope="instance" noPromptIfSet="false" required="false"/>
             <instructions substitution="true">Submit rexx exec to execute step</instructions>
             <weight>1</weight>
             <autoEnable>true</autoEnable>
@@ -210,6 +222,7 @@
             <runAsUser substitution="true">$!{instance-UKO_ADMIN_SECURITY}</runAsUser>
             <approver substitution="true">$!{instance-UKO_APPROVER_SECURITY}</approver>
             <variableValue name="UKO_AGENT_STC_USER" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="SAF_OWNER" scope="instance" noPromptIfSet="false" required="false"/>
             <instructions>Executes a REXX program to create profiles and grant access</instructions>
             <weight>1</weight>
             <autoEnable>true</autoEnable>
@@ -227,6 +240,7 @@
             <approver substitution="true">$!{instance-UKO_APPROVER_SECURITY}</approver>
             <variableValue name="UKO_KEY_PREFIX" scope="instance" noPromptIfSet="false" required="false"/>
             <variableValue name="UKO_AGENT_STC_USER" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="SAF_OWNER" scope="instance" noPromptIfSet="false" required="false"/>
             <instructions>Executes a REXX program to create the key prefix</instructions>
             <weight>1</weight>
             <autoEnable>true</autoEnable>
@@ -256,6 +270,7 @@
             </condition>            
             <variableValue name="DB_JCC_SSID" scope="instance" noPromptIfSet="false" required="false"/>
             <variableValue name="UKO_AGENT_STC_USER" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="SAF_OWNER" scope="instance" noPromptIfSet="false" required="false"/>
             <instructions substitution="true">If this agent is used by the EKMF Workstation as well, review the rexx and execute it to create the required DSNR profile and grant access</instructions>
             <weight>1</weight>
             <autoEnable>true</autoEnable>
@@ -273,6 +288,7 @@
             <approver substitution="true">$!{instance-UKO_APPROVER_SECURITY}</approver>
             <variableValue name="UKO_SERVER_PUBLIC_KEY_HASH" scope="instance" noPromptIfSet="false" required="false"/>
             <variableValue name="UKO_AGENT_STC_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="SAF_OWNER" scope="instance" noPromptIfSet="false" required="false"/>
             <instructions substitution="true">Submit rexx exec to execute step</instructions>
             <weight>1</weight>
             <autoEnable>true</autoEnable>
@@ -344,6 +360,7 @@
 	      			</extendStateExpression>
 				</targetStateSet>
 			</condition>
+            <variableValue name="UKO_AGENT_STC_NAME" scope="instance" noPromptIfSet="false" required="false"/>
      		<instructions substitution="false">Submitting script to stop the server.</instructions>
         	<weight>1</weight>
         	<autoEnable>true</autoEnable>

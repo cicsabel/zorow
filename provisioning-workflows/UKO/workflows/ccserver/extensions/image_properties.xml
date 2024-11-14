@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/******************************************************************************/
+/* Copyright Contributors to the zOS-Workflow Project.                        */
+/* SPDX-License-Identifier: Apache-2.0                                        */
+/******************************************************************************/
+
+-->
+
+<atCreate name="MSDKE_SUPPORT_REQUIRED" scope="instance" prompt="true" required="false"/>
+<atCreate name="MSDKE_ENABLE_HTTP_SERVICE" scope="instance" prompt="true" required="false"/>
+<atCreate name="CRYPTO_CONNECT_SUPPORT_REQUIRED" scope="instance" prompt="true" required="false"/>
+
+<atCreate name="MSDKE_RABBIT_VIRTUAL_HOST" scope="instance" prompt="true" required="false"/>
+<atCreate name="DB_CURRENT_SCHEMA" scope="instance" prompt="true" required="false"/> 
+
+<!-- moved to properties -->
+<!-- <atCreate name="MSDKE_RABBIT_URI" scope="instance" prompt="true" required="false"/> -->
+<!-- <atCreate name="MSDKE_WRAPPING_KEK_LABEL" scope="instance" prompt="true" required="false"/> -->
+<!-- <atCreate name="MSDKE_EC_TRUSTED_KEYS_X509_ENCODED" scope="instance" prompt="true" required="false"/> -->
+<!-- <atCreate name="MSDKE_EC_IDENTITY_KEY_LABEL" scope="instance" prompt="true" required="false"/> -->
+
+<atCreate name="START_SERVER" scope="instance" prompt="true" required="false"/>
+<atCreate name="CC_INSTALL_DIR" scope="instance" prompt="true" required="false"/>
+<atCreate name="JAVA_HOME" scope="instance" prompt="true" required="false"/>
+
+<atCreate name="CC_SERVER_STC_NAME" scope="instance" prompt="true" required="false"/>
+<atCreate name="CC_HTTP_PORT" scope="instance" prompt="true" required="false"/>
+<atCreate name="CC_HTTPS_PORT" scope="instance" prompt="true" required="false"/>
+
+<atCreate name="CC_SERVER_STC_USER" scope="instance" prompt="true" required="false"/>
+<atCreate name="CC_SERVER_STC_GROUP" scope="instance" prompt="true" required="false"/>
+<atCreate name="CC_UNAUTHENTICATED_USER" scope="instance" prompt="true" required="false"/>
+<atCreate name="CC_UNAUTHENTICATED_GROUP" scope="instance" prompt="true" required="false"/>
+
+<atCreate name="SAF_PROFILE_PREFIX" scope="instance" prompt="true" required="false"/>
+
+<atCreate name="CC_TLS_KEY_STORE_KEY_RING" scope="instance" prompt="true" required="false"/>
+<atCreate name="CC_TLS_KEY_STORE_SERVER_CERT" scope="instance" prompt="true" required="false"/>
+<atCreate name="CC_TLS_TRUST_STORE_KEY_RING" scope="instance" prompt="true" required="false"/>
+<atCreate name="CC_OIDC_PROVIDER_CERT" scope="instance" prompt="true" required="false"/>
+<atCreate name="CC_OAUTH_CLIENT_ID" scope="instance" prompt="true" required="false"/>
+<atCreate name="CC_OAUTH_CLIENT_ID_OPENAPI" scope="instance" prompt="true" required="false"/>
+<!-- <atCreate name="CC_TRACE_OPTIONS" scope="instance" prompt="true" required="false"/> -->

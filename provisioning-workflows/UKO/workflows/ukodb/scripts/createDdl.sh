@@ -28,7 +28,8 @@ sedstring="${sedstring} s/GKMG0001/${instance-DB_STOGROUP}/g;"
 
 #  /* FOR tablespace bufferpools */
 #  "CHANGE 'BUFFERPOOL BP8K0' 'BUFFERPOOL BP8K0' ALL"
-sedstring="${sedstring} s/BP8K0/${instance-DB_BUFFERPOOL_TABLESPACE}/g;"
+sedstring="${sedstring} s/BP8K0/${instance-DB_BUFFERPOOL_TABLESPACE_8K}/g;"
+sedstring="${sedstring} s/BP32K/${instance-DB_BUFFERPOOL_TABLESPACE_32K}/g;"
 
 #  /* FOR DATABASE bufferpools */
 #  "CHANGE 'BUFFERPOOL BP1' 'BUFFERPOOL BP1' ALL"
@@ -44,7 +45,7 @@ sedstring="${sedstring} s/BP2/${instance-DB_BUFFERPOOL_INDEX}/g;"
 #  "CHANGE 'PCTFREE 10'        'PCTFREE 10'            ALL"
 
 # echo "sedstring: $sedstring"
-# echo "instance variables: ${instance-DB_NAME_UKO}, ${instance-DB_NAME_DATASET_ENCRYPTION_STATUS}, ${instance-DB_BUFFERPOOL_TABLESPACE}, ${instance-DB_STOGROUP}"
+# echo "instance variables: ${instance-DB_NAME_UKO}, ${instance-DB_NAME_DATASET_ENCRYPTION_STATUS}, ${instance-DB_BUFFERPOOL_TABLESPACE_8K}, ${instance-DB_STOGROUP}"
 
 
 #########################################

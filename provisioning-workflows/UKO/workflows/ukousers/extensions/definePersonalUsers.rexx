@@ -19,6 +19,8 @@ KEY_CUSTODIAN2_GROUP="${instance-UKO_KEY_CUSTODIAN2_GROUP}"
 UKO_AUDITOR="${instance-UKO_AUDITOR}"
 UKO_AUDITOR_GROUP="${instance-UKO_AUDITOR_GROUP}"
 
+SAF_OWNER="${instance-SAF_OWNER}"
+
 /***********************************************************************/
 /* Creating all required user ids                                      */
 /***********************************************************************/
@@ -34,7 +36,7 @@ Say "Adding vault administrator user" VAULT_ADMIN
       " proc(${instance-USER_TSO_LOGON_PROCEDURE}) ",
       " size(${instance-USER_TSO_SIZE}) ",
       " unit(${instance-USER_TSO_UNIT})) ",
-   " OMVS(AUTOUID ",
+   " OWNER("SAF_OWNER") OMVS(AUTOUID ",
    " HOME('${instance-USER_HOME_PARENT_DIR}/"VAULT_ADMIN"')) "
 if RC <> 0 then do
    Say "Creation failed, exiting"
@@ -55,7 +57,7 @@ Say "Adding key administrator user" KEY_ADMIN
       " proc(${instance-USER_TSO_LOGON_PROCEDURE}) ",
       " size(${instance-USER_TSO_SIZE}) ",
       " unit(${instance-USER_TSO_UNIT})) ",
-   " OMVS(AUTOUID ",
+   " OWNER("SAF_OWNER") OMVS(AUTOUID ",
    " HOME('${instance-USER_HOME_PARENT_DIR}/"KEY_ADMIN"')) "
 if RC <> 0 then do
    Say "Creation failed, exiting"
@@ -76,7 +78,7 @@ Say "Adding key custodian 1 user" KEY_CUSTODIAN1
       " proc(${instance-USER_TSO_LOGON_PROCEDURE}) ",
       " size(${instance-USER_TSO_SIZE}) ",
       " unit(${instance-USER_TSO_UNIT})) ",
-   " OMVS(AUTOUID ",
+   " OWNER("SAF_OWNER") OMVS(AUTOUID ",
    " HOME('${instance-USER_HOME_PARENT_DIR}/"KEY_CUSTODIAN1"')) "
 if RC <> 0 then do
    Say "Creation failed, exiting"
@@ -98,7 +100,7 @@ Say "Adding key custodian 2 user" KEY_CUSTODIAN2
       " proc(${instance-USER_TSO_LOGON_PROCEDURE}) ",
       " size(${instance-USER_TSO_SIZE}) ",
       " unit(${instance-USER_TSO_UNIT})) ",
-   " OMVS(AUTOUID ",
+   " OWNER("SAF_OWNER") OMVS(AUTOUID ",
    " HOME('${instance-USER_HOME_PARENT_DIR}/"KEY_CUSTODIAN2"')) "
 if RC <> 0 then do
    Say "Creation failed, exiting"
@@ -120,7 +122,7 @@ Say "Adding auditor user" UKO_AUDITOR
       " proc(${instance-USER_TSO_LOGON_PROCEDURE}) ",
       " size(${instance-USER_TSO_SIZE}) ",
       " unit(${instance-USER_TSO_UNIT})) ",
-   " OMVS(AUTOUID ",
+   " OWNER("SAF_OWNER") OMVS(AUTOUID ",
    " HOME('${instance-USER_HOME_PARENT_DIR}/"UKO_AUDITOR"')) "
 if RC <> 0 then do
    Say "Creation failed, exiting"
