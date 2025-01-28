@@ -7,12 +7,23 @@
 #
 #   STATUS = @STATUS@
 #
-# FILE : mount-zfs.script
+# FILE : mount-zfs.sh
 #
 #
 ## Set the $ sign for use in the script
 #set ( $d = "$")
 #set ($zfs = "${instance-CC_FILE_SYSTEM_HLQ}.${instance-CC_SERVER_STC_NAME}")
+
+if [ ! -d "${instance-WLP_USER_DIR}/servers/${instance-CC_SERVER_STC_NAME}" ]; then
+    echo "Creating server directory ${instance-WLP_USER_DIR}/servers/${instance-CC_SERVER_STC_NAME}"
+    mkdir -p ${instance-WLP_USER_DIR}/servers/${instance-CC_SERVER_STC_NAME}
+    if [ $? -gt 0 ]; then 
+        echo "ERROR: Could not create directory" >&amp;2;
+        exit "2"; 
+    fi
+    echo "changing access to 775"
+    chmod 775 ${instance-WLP_USER_DIR}/servers/${instance-CC_SERVER_STC_NAME}
+fi
 
 # Query information about the main mountpoint
 df_out=${d}(df ${instance-WLP_USER_DIR})
@@ -52,9 +63,14 @@ esac
 
 echo "mountvalue ${d}mountvalue"
 
-echo "Running command: mount -t ZFS -a ${d}mountvalue -f ${zfs} ${instance-WLP_USER_DIR}/servers/${instance-CC_SERVER_STC_NAME}"
+if [ -z "${mountvalue}" ]; then
+    echo "Running command: mount -t ZFS -f ${zfs} ${instance-WLP_USER_DIR}/servers/${instance-CC_SERVER_STC_NAME}"
+    mount -t ZFS -f ${zfs} ${instance-WLP_USER_DIR}/servers/${instance-CC_SERVER_STC_NAME}
+else
+    echo "Running command: mount -t ZFS -a ${d}mountvalue -f ${zfs} ${instance-WLP_USER_DIR}/servers/${instance-CC_SERVER_STC_NAME}"
+    mount -t ZFS -a ${d}mountvalue -f ${zfs} ${instance-WLP_USER_DIR}/servers/${instance-CC_SERVER_STC_NAME}
+fi
 
-mount -t ZFS -a ${d}mountvalue -f ${zfs} ${instance-WLP_USER_DIR}/servers/${instance-CC_SERVER_STC_NAME}
 rc=${d}?
 if [ ${d}rc -gt 0 ]; then
   echo "Failed to mount the directory see STDERR with RC ${d}rc"
@@ -79,6 +95,18 @@ chown ${instance-CC_SERVER_STC_USER} ${instance-WLP_USER_DIR}/servers/${instance
 #if(${instance-WLP_OUTPUT_DIR} && $!{instance-WLP_OUTPUT_DIR} != "")
 # mount WLP_OUTPUT_DIR if specified
 #set ($zfs = "${instance-CC_FILE_SYSTEM_HLQ}.${instance-CC_SERVER_STC_NAME}.OUTPUT")
+
+if [ ! -d "${instance-WLP_OUTPUT_DIR}/${instance-CC_SERVER_STC_NAME}" ]; then
+    echo "Creating output directory ${instance-WLP_OUTPUT_DIR}/${instance-CC_SERVER_STC_NAME}"
+    mkdir -p ${instance-WLP_OUTPUT_DIR}/${instance-CC_SERVER_STC_NAME}
+    if [ $? -gt 0 ]; then 
+        echo "ERROR: Could not create directory" >&amp;2;
+        exit "2"; 
+    fi
+    echo "changing access to 775"
+    chmod 775 ${instance-WLP_OUTPUT_DIR}/${instance-CC_SERVER_STC_NAME}
+fi
+
 # Query information about the main mountpoint
 df_out=${d}(df ${instance-WLP_OUTPUT_DIR})
 
@@ -117,9 +145,14 @@ esac
 
 echo "mountvalue ${d}mountvalue"
 
-echo "Running command: mount -t ZFS -a ${d}mountvalue -f ${zfs} ${instance-WLP_OUTPUT_DIR}/${instance-CC_SERVER_STC_NAME}"
+if [ -z "${mountvalue}" ]; then
+    echo "Running command: mount -t ZFS -f ${zfs} ${instance-WLP_OUTPUT_DIR}/${instance-CC_SERVER_STC_NAME}"
+    mount -t ZFS -f ${zfs} ${instance-WLP_OUTPUT_DIR}/${instance-CC_SERVER_STC_NAME}
+else
+    echo "Running command: mount -t ZFS -a ${d}mountvalue -f ${zfs} ${instance-WLP_OUTPUT_DIR}/${instance-CC_SERVER_STC_NAME}"
+    mount -t ZFS -a ${d}mountvalue -f ${zfs} ${instance-WLP_OUTPUT_DIR}/${instance-CC_SERVER_STC_NAME}
+fi
 
-mount -t ZFS -a ${d}mountvalue -f ${zfs} ${instance-WLP_OUTPUT_DIR}/${instance-CC_SERVER_STC_NAME}
 rc=${d}?
 if [ ${d}rc -gt 0 ]; then
   echo "Failed to mount the output directory see STDERR with RC ${d}rc"

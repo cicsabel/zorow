@@ -40,7 +40,7 @@
   <string valueMustBeChoice="false">
     <choice>"/java/java80_64/J8.0_64"</choice>
     <choice>"/java/java11_bit64_sr18_fp0/J11.0_64"</choice>
-    <choice>"/java/java17_bit64_sr7_fp0/J17.0_64"</choice>
+    <choice>"/java/java17_64"</choice>
     <!-- Path validation, has to start with slash, may contain slashes, must not end with slash or whitespace -->
   </string>
 </variable>
@@ -181,7 +181,7 @@
     <default>false</default>
   </string>
 </variable>
-<variable name="CC_TLS_KEY_STORE_SERVER_CERT_CN" scope="instance" visibility="private">
+<variable name="CC_TLS_KEY_STORE_SERVER_CERT_CN" scope="instance" visibility="public">
   <label>CC_TLS_KEY_STORE_SERVER_CERT_CN</label>
   <abstract> CC_TLS_KEY_STORE_SERVER_CERT_CN</abstract>
   <description>Name of the CC_TLS_KEY_STORE_SERVER_CERT_CN to use for the server.</description>
@@ -566,8 +566,8 @@
 <!-- Approval and run as user ids -->
 <!--++++++++++++++++++++++++++++++-->
 
-<variable name="CC_ADMIN_SERVER" visibility="private">
-  <label>CC_ADMIN_SERVER</label>
+<variable name="UKO_ADMIN_SERVER" visibility="private">
+  <label>UKO_ADMIN_SERVER</label>
   <abstract>Userid the provisioned server will run under</abstract>
   <description>The userid that the CC servers started task will run under</description>
   <category>Template variables</category>
@@ -575,8 +575,8 @@
     <validationType>USERID</validationType>
   </string>
 </variable>
-<variable name="CC_APPROVER_SERVER" visibility="private">
-  <label>CC_APPROVER_SERVER</label>
+<variable name="UKO_APPROVER_SERVER" visibility="private">
+  <label>UKO_APPROVER_SERVER</label>
   <abstract>The userid to approve the servers run as userid</abstract>
   <description>The userid to approve the servers run as userid</description>
   <category>Template variables</category>
@@ -586,8 +586,8 @@
   </string>
 </variable>
 
-<variable name="CC_ADMIN_DB" visibility="private">
-  <label>CC_ADMIN_DB</label>
+<variable name="UKO_ADMIN_DB" visibility="private">
+  <label>UKO_ADMIN_DB</label>
   <abstract>Userid for running database related tasks</abstract>
   <description>The userid that database related tasks will run under</description>
   <category>Template variables</category>
@@ -595,8 +595,8 @@
     <validationType>USERID</validationType>
   </string>
 </variable>
-<variable name="CC_APPROVER_DB" visibility="private">
-  <label>CC_APPROVER_DB</label>
+<variable name="UKO_APPROVER_DB" visibility="private">
+  <label>UKO_APPROVER_DB</label>
   <abstract>The userid to approve the database run as userid</abstract>
   <description>The userid to approve the database run as userid</description>
   <category>Template variables</category>
@@ -606,8 +606,8 @@
   </string>
 </variable>
 
-<variable name="CC_ADMIN_SECURITY" visibility="private">
-  <label>CC_ADMIN_SECURITY</label>
+<variable name="UKO_ADMIN_SECURITY" visibility="private">
+  <label>UKO_ADMIN_SECURITY</label>
   <abstract>APF authorized user id for security related provisioning tasks</abstract>
   <description>The APF authorized userid to run SAF certificate creation/deletion and SAF profile creation/deletion</description>
   <category>Template variables</category>
@@ -615,8 +615,8 @@
     <validationType>USERID</validationType>
   </string>
 </variable>
-<variable name="CC_APPROVER_SECURITY" visibility="private">
-  <label>CC_APPROVER_SECURITY</label>
+<variable name="UKO_APPROVER_SECURITY" visibility="private">
+  <label>UKO_APPROVER_SECURITY</label>
   <abstract>The user id to approve security related provisioning tasks</abstract>
   <description>The user id to approve security related provisioning tasks</description>
   <category>Template variables</category>
@@ -626,8 +626,8 @@
   </string>
 </variable>
 
-<variable name="CC_ADMIN_ZFS" visibility="private">
-  <label>CC_ADMIN_ZFS</label>
+<variable name="UKO_ADMIN_ZFS" visibility="private">
+  <label>UKO_ADMIN_ZFS</label>
   <abstract>The user id for file system creation and mounting</abstract>
   <description>The id of the user authorized to create and mount file systems</description>
   <category>Template variables</category>
@@ -635,8 +635,8 @@
     <validationType>USERID</validationType>
   </string>
 </variable>
-<variable name="CC_APPROVER_ZFS" visibility="private">
-  <label>CC_APPROVER_ZFS</label>
+<variable name="UKO_APPROVER_ZFS" visibility="private">
+  <label>UKO_APPROVER_ZFS</label>
   <abstract>The user id to approve file system creation</abstract>
   <description>The user id to approve file system creation</description>
   <category>Template variables</category>
@@ -646,8 +646,8 @@
   </string>
 </variable>
 
-<variable name="CC_ADMIN_CONSOLE" visibility="private">
-  <label>CC_ADMIN_CONSOLE</label>
+<variable name="UKO_ADMIN_CONSOLE" visibility="private">
+  <label>UKO_ADMIN_CONSOLE</label>
   <abstract>The user id for executing mvs console start and stop commands</abstract>
   <description>The user id for executing mvs console start and stop commands</description>
   <category>Template variables</category>
@@ -655,8 +655,8 @@
     <validationType>USERID</validationType>
   </string>
 </variable>
-<variable name="CC_APPROVER_CONSOLE" visibility="private">
-  <label>CC_APPROVER_CONSOLE</label>
+<variable name="UKO_APPROVER_CONSOLE" visibility="private">
+  <label>UKO_APPROVER_CONSOLE</label>
   <abstract>The user id to approve the execution of console commands</abstract>
   <description>The user id to approve the execution of console commands</description>
   <category>Template variables</category>
@@ -666,15 +666,15 @@
   </string>
 </variable>
 
-<variable name="CC_ADMIN_TSO" visibility="private">
-  <label>CC_ADMIN_TSO</label>
+<variable name="UKO_ADMIN_TSO" visibility="private">
+  <label>UKO_ADMIN_TSO</label>
   <abstract>The user id for adding and removing procedures from the proclib</abstract>
   <description>The user id for adding and removing procedures from the proclib</description>
   <category>Template variables</category>
   <string />
 </variable>
-<variable name="CC_APPROVER_TSO" visibility="private">
-  <label>CC_APPROVER_TSO</label>
+<variable name="UKO_APPROVER_TSO" visibility="private">
+  <label>UKO_APPROVER_TSO</label>
   <abstract>The user id to approval proclib additions</abstract>
   <description>The user id to approval proclib additions</description>
   <category>Template variables</category>
@@ -779,7 +779,7 @@
   </string>
 </variable>
 
-<variable name="DB_RUNLIB" visibility="private">
+<variable name="DB_RUNLIB" visibility="public">
   <label>DB_RUNLIB</label>
   <abstract>The DB_RUNLIB dataset</abstract>
   <description>The HLQ of the Db2 runlib</description>
@@ -789,7 +789,7 @@
   </string>
 </variable>
 
-<variable name="DB_JCC_SSID" visibility="private">
+<variable name="DB_JCC_SSID" visibility="public">
   <label>DB_JCC_SSID</label>
   <abstract>The DB_JCC_SSID </abstract>
   <description>The SSID of Db2</description>

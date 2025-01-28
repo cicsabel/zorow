@@ -40,7 +40,7 @@
   <string valueMustBeChoice="false">
     <choice>"/java/java80_64/J8.0_64"</choice>
     <choice>"/java/java11_bit64_sr18_fp0/J11.0_64"</choice>
-    <choice>"/java/java17_bit64_sr7_fp0/J17.0_64"</choice>
+    <choice>"/java/java17_64"</choice>
     <!-- Path validation, has to start with slash, may contain slashes, must not end with slash or whitespace -->
   </string>
 </variable>
@@ -181,7 +181,7 @@
     <default>false</default>
   </string>
 </variable>
-<variable name="UKO_TLS_KEY_STORE_SERVER_CERT_CN" scope="instance" visibility="private">
+<variable name="UKO_TLS_KEY_STORE_SERVER_CERT_CN" scope="instance" visibility="public">
   <label>UKO_TLS_KEY_STORE_SERVER_CERT_CN</label>
   <abstract> UKO_TLS_KEY_STORE_SERVER_CERT_CN</abstract>
   <description>Name of the UKO_TLS_KEY_STORE_SERVER_CERT_CN to use for the server.</description>
@@ -985,7 +985,7 @@
   </string>
 </variable>
 
-<variable name="DB_RUNLIB" visibility="private">
+<variable name="DB_RUNLIB" visibility="public">
   <label>DB_RUNLIB</label>
   <abstract>The DB_RUNLIB dataset</abstract>
   <description>The HLQ of the Db2 runlib</description>
@@ -995,7 +995,7 @@
   </string>
 </variable>
 
-<variable name="DB_JCC_SSID" visibility="private">
+<variable name="DB_JCC_SSID" visibility="public">
   <label>DB_JCC_SSID</label>
   <abstract>The DB_JCC_SSID </abstract>
   <description>The SSID of Db2</description>

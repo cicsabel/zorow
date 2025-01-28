@@ -63,6 +63,7 @@
 <atCreate name="DB_LOCATION" scope="instance" prompt="true" required="false"/> 
 <atCreate name="UKO_AGENT_STC_NAME" scope="instance" prompt="true" required="false"/>
 <atCreate name="WORKSTATION_ACCESS_REQUIRED" scope="instance" prompt="true" required="false"/>
+<atCreate name="DB_JCC_SSID" scope="instance" prompt="true" required="false"/>
 
 <atCreate name="MSDKE_SUPPORT_REQUIRED" scope="instance" prompt="true" required="false"/>
 <atCreate name="MSDKE_RABBIT_VIRTUAL_HOST" scope="instance" prompt="true" required="false"/>

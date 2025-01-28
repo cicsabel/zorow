@@ -35,17 +35,6 @@
 //*SYSUDUMP DD     SYSOUT=*
 //*CEEDUMP  DD     SYSOUT=*
 //*
-//*******************************************************
-//* MKDIR into which to mount the config directory
-//*******************************************************
-//CREATDIR EXEC PGM=IKJEFT01,REGION=64M,DYNAMNBR=99,COND=(0,LT)
-//SYSTSPRT  DD SYSOUT=*
-//SYSTSIN   DD *
-  PROFILE MSGID WTPMSG
-  MKDIR +
-'${instance-WLP_USER_DIR}/servers/${instance-CC_SERVER_STC_NAME}' +
-        MODE(7,5,5)
-/*
 #if(${instance-WLP_OUTPUT_DIR} && $!{instance-WLP_OUTPUT_DIR} != "")
 //*******************************************************
 //* Define new zfs for the output directory (logs, ect...)
@@ -80,15 +69,4 @@
 //*SYSUDUMP DD     SYSOUT=*
 //*CEEDUMP  DD     SYSOUT=*
 //*
-//*******************************************************
-//* MKDIR into which to mount the output directory
-//*******************************************************
-//CREATDIO EXEC PGM=IKJEFT01,REGION=64M,DYNAMNBR=99,COND=(0,LT)
-//SYSTSPRT  DD SYSOUT=*
-//SYSTSIN   DD *
-  PROFILE MSGID WTPMSG
-  MKDIR +
-'${instance-WLP_OUTPUT_DIR}/${instance-CC_SERVER_STC_NAME}' +
-        MODE(7,7,5)
-/*
 #end

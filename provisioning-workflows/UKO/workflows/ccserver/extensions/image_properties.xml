@@ -42,3 +42,7 @@
 <atCreate name="CC_OAUTH_CLIENT_ID" scope="instance" prompt="true" required="false"/>
 <atCreate name="CC_OAUTH_CLIENT_ID_OPENAPI" scope="instance" prompt="true" required="false"/>
 <!-- <atCreate name="CC_TRACE_OPTIONS" scope="instance" prompt="true" required="false"/> -->
+
+<atCreate name="DB_RUNLIB" scope="instance" prompt="true" required="false"/>
+<atCreate name="DB_JCC_SSID" scope="instance" prompt="true" required="false"/>
+<atCreate name="DB_LOCATION" scope="instance" prompt="true" required="false"/>

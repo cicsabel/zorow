@@ -49,8 +49,8 @@
         <step name="checkIfServerAlreadyRunning" optional="false">
             <title>Check if server running</title>
             <description>Check whether the server is running already</description>
-            <runAsUser substitution="true">$!{instance-CC_ADMIN_CONSOLE}</runAsUser>
-            <approver substitution="true">$!{instance-CC_APPROVER_CONSOLE}</approver>
+            <runAsUser substitution="true">$!{instance-UKO_ADMIN_CONSOLE}</runAsUser>
+            <approver substitution="true">$!{instance-UKO_APPROVER_CONSOLE}</approver>
             <instructions>Execute console API to check the server is running already</instructions>
             <weight>1</weight>
             <skills>z/OS administration</skills>
@@ -74,8 +74,8 @@
         <step name="RemountIfRequired" optional="false">
             <title>Checking zFS is mounted</title>
             <description>Check the zFS mount point and remount if not mounted</description>
-            <runAsUser substitution="true">$!{instance-CC_ADMIN_ZFS}</runAsUser>
-            <approver substitution="true">$!{instance-CC_APPROVER_ZFS}</approver>
+            <runAsUser substitution="true">$!{instance-UKO_ADMIN_ZFS}</runAsUser>
+            <approver substitution="true">$!{instance-UKO_APPROVER_ZFS}</approver>
             <condition>
                 <expression><![CDATA["1" == "1"]]></expression>
                 <description>Should the step be executed based on the CC_REST_STATUS setting</description>
@@ -155,8 +155,8 @@
         <step name="RemountOutputIfRequired" optional="false">
             <title>Checking zFS output is mounted</title>
             <description>Check the zFS mount point and remount if not mounted</description>
-            <runAsUser substitution="true">$!{instance-CC_ADMIN_ZFS}</runAsUser>
-            <approver substitution="true">$!{instance-CC_APPROVER_ZFS}</approver>
+            <runAsUser substitution="true">$!{instance-UKO_ADMIN_ZFS}</runAsUser>
+            <approver substitution="true">$!{instance-UKO_APPROVER_ZFS}</approver>
             <condition>
                 <expression><![CDATA["1" == "1"]]></expression>
                 <description>Should the step be executed based on the CC_REST_STATUS setting</description>
@@ -237,8 +237,8 @@
         <step name="startServer_console">
         	<title>Start the server from console</title>
         	<description>Start the server from the console</description>
-        	<runAsUser substitution="true">$!{instance-CC_ADMIN_CONSOLE}</runAsUser>
-	        <approver substitution="true">$!{instance-CC_APPROVER_CONSOLE}</approver>
+        	<runAsUser substitution="true">$!{instance-UKO_ADMIN_CONSOLE}</runAsUser>
+	        <approver substitution="true">$!{instance-UKO_APPROVER_CONSOLE}</approver>
             <condition>
                 <expression><![CDATA["1" == "1"]]></expression>
                 <description>Should the step be executed based on the CC_REST_STATUS setting</description>
@@ -277,8 +277,8 @@
             <title>Checking the rest status from the start command</title>
             <description>Check the REST Status from the start command</description>
             <prereqStep name="startServer_console"/>
-            <runAsUser substitution="true">$!{instance-CC_ADMIN_TSO}</runAsUser>
-            <approver substitution="true">$!{instance-CC_APPROVER_TSO}</approver>
+            <runAsUser substitution="true">$!{instance-UKO_ADMIN_TSO}</runAsUser>
+            <approver substitution="true">$!{instance-UKO_APPROVER_TSO}</approver>
             <condition>
                 <expression><![CDATA[${startServer_console.stepState} == "Complete" || ${startServer_console.stepState} == "Skipped"]]></expression>
                 <description>Should the step be executed based on the CC_REST_STATUS setting</description>

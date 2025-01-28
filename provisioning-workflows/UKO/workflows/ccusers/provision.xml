@@ -49,8 +49,8 @@
     <step name="defineTechnicalUsers">
         <title>Define technical users and groups</title>
         <description>Define technical user IDs and groups</description>
-        <runAsUser substitution="true">$!{instance-CC_ADMIN_SECURITY}</runAsUser>
-        <approver substitution="true">$!{instance-CC_APPROVER_SECURITY}</approver>
+        <runAsUser substitution="true">$!{instance-UKO_ADMIN_SECURITY}</runAsUser>
+        <approver substitution="true">$!{instance-UKO_APPROVER_SECURITY}</approver>
         <variableValue name="CC_SERVER_STC_USER" scope="instance" noPromptIfSet="false" required="false"/>
         <variableValue name="CC_SERVER_STC_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
         <variableValue name="CC_UNAUTHENTICATED_USER" scope="instance" noPromptIfSet="false" required="false"/>

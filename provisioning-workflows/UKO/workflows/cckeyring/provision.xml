@@ -47,8 +47,8 @@
     <step name="createCA">
         <title>Create CA</title>
         <description>If requested, create a certificate authority</description>
-        <runAsUser substitution="true">$!{instance-CC_ADMIN_SECURITY}</runAsUser>
-        <approver substitution="true">$!{instance-CC_APPROVER_SECURITY}</approver>
+        <runAsUser substitution="true">$!{instance-UKO_ADMIN_SECURITY}</runAsUser>
+        <approver substitution="true">$!{instance-UKO_APPROVER_SECURITY}</approver>
         <condition>
             <expression><![CDATA["1" == "1"]]></expression>
             <description>Always perform</description>
@@ -78,8 +78,8 @@
     <step name="createCertificates">
         <title>Create certificates</title>
         <description>If requested, create a certificates </description>
-        <runAsUser substitution="true">$!{instance-CC_ADMIN_SECURITY}</runAsUser>
-        <approver substitution="true">$!{instance-CC_APPROVER_SECURITY}</approver>
+        <runAsUser substitution="true">$!{instance-UKO_ADMIN_SECURITY}</runAsUser>
+        <approver substitution="true">$!{instance-UKO_APPROVER_SECURITY}</approver>
         <condition>
             <expression><![CDATA["1" == "1"]]></expression>
             <description>Always perform</description>
@@ -114,8 +114,8 @@
     <step name="createKeyring">
         <title>Create Keyring</title>
         <description>If requested, create a key ring and trust ring</description>
-        <runAsUser substitution="true">$!{instance-CC_ADMIN_SECURITY}</runAsUser>
-        <approver substitution="true">$!{instance-CC_APPROVER_SECURITY}</approver>
+        <runAsUser substitution="true">$!{instance-UKO_ADMIN_SECURITY}</runAsUser>
+        <approver substitution="true">$!{instance-UKO_APPROVER_SECURITY}</approver>
         <condition>
             <expression><![CDATA["1" == "1"]]></expression>
             <description>Always perform</description>
@@ -144,8 +144,8 @@
     <step name="defineKeyringAccess">
         <title>Define Keyring Access</title>
         <description>Granting access to the keyring</description>
-        <runAsUser substitution="true">$!{instance-CC_ADMIN_SECURITY}</runAsUser>
-        <approver substitution="true">$!{instance-CC_APPROVER_SECURITY}</approver>
+        <runAsUser substitution="true">$!{instance-UKO_ADMIN_SECURITY}</runAsUser>
+        <approver substitution="true">$!{instance-UKO_APPROVER_SECURITY}</approver>
         <variableValue name="CC_SERVER_STC_USER" scope="instance" noPromptIfSet="false" required="false"/>
         <variableValue name="CC_TLS_KEY_STORE_KEY_RING" scope="instance" noPromptIfSet="false" required="false"/>
         <variableValue name="CC_TLS_TRUST_STORE_KEY_RING" scope="instance" noPromptIfSet="false" required="false"/>
@@ -166,8 +166,8 @@
     <step name="addToKeyRing">
         <title>Add certificates and CA to keyring</title>
         <description>Add certificate(s) and CA to keyring(s) if anything was newly created</description>
-        <runAsUser substitution="true">$!{instance-CC_ADMIN_SECURITY}</runAsUser>
-        <approver substitution="true">$!{instance-CC_APPROVER_SECURITY}</approver>
+        <runAsUser substitution="true">$!{instance-UKO_ADMIN_SECURITY}</runAsUser>
+        <approver substitution="true">$!{instance-UKO_APPROVER_SECURITY}</approver>
         <condition>
             <expression><![CDATA["1" == "1"]]></expression>
             <description>Always perform</description>
@@ -199,8 +199,8 @@
     <!-- <step name="addMoreCertificatesToTrustRing">
         <title>Add additional certificates to trust ring </title>
         <description>Add trusted certificates to the server's trust keyring, for example to connect to cloud keystores</description>
-        <runAsUser substitution="true">$!{instance-CC_ADMIN_SECURITY}</runAsUser>
-        <approver substitution="true">$!{instance-CC_APPROVER_SECURITY}</approver>
+        <runAsUser substitution="true">$!{instance-UKO_ADMIN_SECURITY}</runAsUser>
+        <approver substitution="true">$!{instance-UKO_APPROVER_SECURITY}</approver>
         <variableValue name="CC_SERVER_STC_USER" scope="instance" noPromptIfSet="false" required="false"/>
         <variableValue name="CC_TLS_TRUST_STORE_KEY_RING" scope="instance" noPromptIfSet="false" required="false"/>
         <instructions>Adjust and execute this REXX program to add additional certificates to the trust keyring. 
@@ -218,8 +218,8 @@
     <step name="configureForMsdke">
         <title>(Optional) Configure for MSDKE</title>
         <description>Add additional certificates and CAs for MSDKE support</description>
-        <runAsUser substitution="true">$!{instance-CC_ADMIN_SERVER}</runAsUser>
-        <approver substitution="true">$!{instance-CC_APPROVER_SERVER}</approver>
+        <runAsUser substitution="true">$!{instance-UKO_ADMIN_SERVER}</runAsUser>
+        <approver substitution="true">$!{instance-UKO_APPROVER_SERVER}</approver>
         <condition>
             <expression>"1"=="1"</expression>
             <description>always true</description>

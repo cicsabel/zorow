@@ -48,31 +48,6 @@
         <title>Create and mount directories</title>
         <description>Create the directories required by the new UKO server</description>
 
-        <step name="createServerDir">
-            <title>Create server directory</title>
-            <description>Submit script to create the UKO server directory</description>
-            <runAsUser substitution="true">$!{instance-UKO_ADMIN_SERVER}</runAsUser>
-            <approver substitution="true">$!{instance-UKO_APPROVER_SERVER}</approver>
-            <variableValue name="WLP_USER_DIR" scope="instance" noPromptIfSet="false" required="false"/>
-            <instructions substitution="true">Submit shell script to execute step</instructions>
-            <weight>1</weight>
-            <autoEnable>true</autoEnable>
-            <template>
-                <inlineTemplate substitution="true">
-                                                
-                    if [ ! -d "${instance-WLP_USER_DIR}/servers/" ]; then
-                        mkdir -p ${instance-WLP_USER_DIR}/servers/
-                        if [ $? -gt 0 ]; then 
-                            echo "ERROR: Could not create directory" >&amp;2;
-                            exit "2"; 
-                        fi
-                    fi
-
-                </inlineTemplate>
-                <submitAs>shell-JCL</submitAs>
-            </template>
-        </step>
-
         <step name="createZFS">
             <title>Create zFS datasets</title>
             <description>If requested, create and mount a new ZFS</description>
@@ -102,13 +77,14 @@
             <variableValue name="WLP_USER_DIR" scope="instance" noPromptIfSet="false" required="false"/>
             <variableValue name="WLP_OUTPUT_DIR" scope="instance" noPromptIfSet="false" required="false"/>
             <variableValue name="UKO_SERVER_STC_NAME" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="UKO_SERVER_STC_USER" scope="instance" noPromptIfSet="false" required="false"/>
             <variableValue name="UKO_SERVER_STC_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
             <variableValue name="UKO_FILE_SYSTEM_HLQ" scope="instance" noPromptIfSet="false" required="false"/>
-            <instructions>Execute the mount zFS script to mount the zFS dataset (MountZFS.script)</instructions>
+            <instructions>Execute the mount zFS script to mount the zFS dataset (MountZFS.sh)</instructions>
             <weight>1</weight>
             <autoEnable>true</autoEnable>
             <template>
-                <fileTemplate substitution="true">scripts/mount-zfs.script</fileTemplate>
+                <fileTemplate substitution="true">scripts/mount-zfs.sh</fileTemplate>
                 <submitAs>shell-JCL</submitAs>
             </template>
         </step>
@@ -277,7 +253,7 @@
                         must be created: 
                         ${instance-DB_DRIVER_TYPE}
                         DB_SSL=${instance-DB_SSL}true
-                        DB_SERVER_NAME=${DB_SERVER_NAME}winmvs3n.hursley.ibm.com
+                        DB_SERVER_NAME=${DB_SERVER_NAME}
                         
                         exist: 
                         DB_SERVER_PORT=${instance-DB_JDBC_PORT}43100

@@ -12,8 +12,8 @@
         <step name="issue_stop">
             <title>Issue stop command to the server</title>
             <description>Issue a stop command for the server.</description>
-            <runAsUser substitution="true">$!{instance-CC_ADMIN_CONSOLE}</runAsUser>
-            <approver substitution="true">$!{instance-CC_APPROVER_CONSOLE}</approver>
+            <runAsUser substitution="true">$!{instance-UKO_ADMIN_CONSOLE}</runAsUser>
+            <approver substitution="true">$!{instance-UKO_APPROVER_CONSOLE}</approver>
             <variableValue name="CC_SERVER_STC_NAME" scope="instance" noPromptIfSet="false" required="false"/>
             <variableValue name="ZOS_STC_STOP_TIMEOUT" scope="instance" noPromptIfSet="false" required="false"/>
             <instructions substitution="false">Submitting script to stop the server.</instructions>
@@ -40,8 +40,8 @@
             <title>Check if server has stopped</title>
             <description>Check to see if the server job is still running</description>
             <prereqStep name="issue_stop"/>
-            <runAsUser substitution="true">$!{instance-CC_ADMIN_CONSOLE}</runAsUser>
-            <approver substitution="true">$!{instance-CC_APPROVER_CONSOLE}</approver>
+            <runAsUser substitution="true">$!{instance-UKO_ADMIN_CONSOLE}</runAsUser>
+            <approver substitution="true">$!{instance-UKO_APPROVER_CONSOLE}</approver>
 
             <instructions substitution="false">Submitting script to stop the server.</instructions>
             <weight>1</weight>
@@ -65,8 +65,8 @@
         <step name="issue_cancel">
             <title>Issue cancel command to the server</title>
             <description>Cancel the server if it is still running</description>
-            <runAsUser substitution="true">$!{instance-CC_ADMIN_CONSOLE}</runAsUser>
-            <approver substitution="true">$!{instance-CC_APPROVER_CONSOLE}</approver>
+            <runAsUser substitution="true">$!{instance-UKO_ADMIN_CONSOLE}</runAsUser>
+            <approver substitution="true">$!{instance-UKO_APPROVER_CONSOLE}</approver>
             <condition>
                 <expression><![CDATA[${check_status.stepState}=="Complete" || ${check_status.stepState} == "Skipped"]]></expression>
                 <description>Only perform check if previous step has completed</description>
@@ -104,8 +104,8 @@
             <title>Check if server has stopped</title>
             <description>Check server status after cancel request</description>
             <prereqStep name="issue_cancel"/>
-            <runAsUser substitution="true">$!{instance-CC_ADMIN_CONSOLE}</runAsUser>
-            <approver substitution="true">$!{instance-CC_APPROVER_CONSOLE}</approver>
+            <runAsUser substitution="true">$!{instance-UKO_ADMIN_CONSOLE}</runAsUser>
+            <approver substitution="true">$!{instance-UKO_APPROVER_CONSOLE}</approver>
             <condition>
                 <expression><![CDATA[${check_status.stepState}=="Complete" || ${check_status.stepState} == "Skipped"]]></expression>
                 <description>Only perform check if previous step has completed</description>
@@ -142,8 +142,8 @@
             <title>Fail if server has not stopped</title>
             <description>This step will deliberately fail unless it is skipped because the server has stopped</description>
             <prereqStep name="check_cancel"/>
-            <runAsUser substitution="true">$!{instance-CC_ADMIN_CONSOLE}</runAsUser>
-            <approver substitution="true">$!{instance-CC_APPROVER_CONSOLE}</approver>
+            <runAsUser substitution="true">$!{instance-UKO_ADMIN_CONSOLE}</runAsUser>
+            <approver substitution="true">$!{instance-UKO_APPROVER_CONSOLE}</approver>
             <condition>
                 <expression><![CDATA[${check_cancel.stepState} == "Complete" || ${check_cancel.stepState} == "Skipped"]]></expression>
                 <description>Should the step be executed based on the CC_REST_STATUS setting</description>
