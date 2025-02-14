@@ -832,6 +832,8 @@
 
                     #UPDATE SCHEMA, SQLID
                     filelist="KMGISQLI";
+                    # ADD COLUMN AND VIEW
+                    filelist="${filelist} KMGUS3A1"                    
                     # NEW TABLE MSDKE
                     filelist="${filelist} KMGUW3C1"                    
                     # SET CURRENT WEB VERSION

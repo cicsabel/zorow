@@ -3,7 +3,7 @@
 //* SPDX-License-Identifier: Apache-2.0                                */
 //**********************************************************************/
 //*******************************************************
-//* GRANT access to the database
+//* REVOKE access to the systable
 //*******************************************************
 //EKMFSQL  EXEC PGM=IKJEFT01,REGION=0M               
 //         EXPORT SYMLIST=*
@@ -28,6 +28,6 @@ SET CURRENT SQLID = '${_step-stepOwnerUpper}';
   #end
 #end
 
-GRANT SELECT ON SYSIBM.SYSTABLES TO &WEBUSER;
+REVOKE SELECT ON SYSIBM.SYSTABLES FROM &WEBUSER;
 
 /*

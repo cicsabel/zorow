@@ -102,6 +102,18 @@ Say "Connect E5 LETS ENCRYPT"
       " RING("||TLS_TRUST_STORE_KEY_RING||")",
       " USAGE(CERTAUTH))"
 
+Say "Connect additional lets encrypt"
+"RACDCERT ID("||SERVER_STC_USER||")",
+   " CONNECT(CERTAUTH LABEL('lets.encrypt')",
+      " RING("||TLS_TRUST_STORE_KEY_RING||")",
+      " USAGE(CERTAUTH))"
+
+Say "Connect keycloak certificate"
+"RACDCERT ID("||SERVER_STC_USER||")",
+   " CONNECT(CERTAUTH LABEL('keycloak-cert')",
+      " RING("||TLS_TRUST_STORE_KEY_RING||")",
+      " USAGE(CERTAUTH))"
+
 Say "Refresh DIGTRING in RACF"
 "SETROPTS RACLIST(DIGTRING) REFRESH"
 
