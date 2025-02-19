@@ -24,14 +24,14 @@ SAF_OWNER="${instance-SAF_OWNER}"
 "RDEFINE EJBROLE" SAFPREFIX".ekmf-rest-api.certificates:import:untrusted OWNER("SAF_OWNER") UACC(NONE)"
 
 
-"PERMIT EJBROLE" SAFPREFIX".ekmf-rest-api.keys:exportCLASS(EJBROLE) ACCESS(READ) ID("ZKEY_GROUP")"
-"PERMIT EJBROLE" SAFPREFIX".ekmf-rest-api.keys:write:exportControlCLASS(EJBROLE) ACCESS(READ) ID("ZKEY_GROUP")" 
-"PERMIT EJBROLE" SAFPREFIX".ekmf-rest-api.keys:write:exportControl:allowedKeys:addCLASS(EJBROLE) ACCESS(READ) ID("ZKEY_GROUP")" 
-"PERMIT EJBROLE" SAFPREFIX".ekmf-rest-api.keys:write:exportControl:allowedKeys:removeCLASS(EJBROLE) ACCESS(READ) ID("ZKEY_GROUP")" 
-"PERMIT EJBROLE" SAFPREFIX".ekmf-rest-api.user:passcode:createCLASS(EJBROLE) ACCESS(READ) ID("ZKEY_GROUP")"
-"PERMIT EJBROLE" SAFPREFIX".ekmf-rest-api.user:passcode:deleteCLASS(EJBROLE) ACCESS(READ) ID("ZKEY_GROUP")"
-"PERMIT EJBROLE" SAFPREFIX".ekmf-rest-api.certificates:importCLASS(EJBROLE) ACCESS(READ) ID("ZKEY_GROUP")"
-"PERMIT EJBROLE" SAFPREFIX".ekmf-rest-api.certificates:import:untrustedCLASS(EJBROLE) ACCESS(READ) ID("ZKEY_GROUP")"
+"PERMIT" SAFPREFIX".ekmf-rest-api.keys:export CLASS(EJBROLE) ACCESS(READ) ID("ZKEY_GROUP")"
+"PERMIT" SAFPREFIX".ekmf-rest-api.keys:write:exportControl CLASS(EJBROLE) ACCESS(READ) ID("ZKEY_GROUP")" 
+"PERMIT" SAFPREFIX".ekmf-rest-api.keys:write:exportControl:allowedKeys:add CLASS(EJBROLE) ACCESS(READ) ID("ZKEY_GROUP")" 
+"PERMIT" SAFPREFIX".ekmf-rest-api.keys:write:exportControl:allowedKeys:remove CLASS(EJBROLE) ACCESS(READ) ID("ZKEY_GROUP")" 
+"PERMIT" SAFPREFIX".ekmf-rest-api.user:passcode:create CLASS(EJBROLE) ACCESS(READ) ID("ZKEY_GROUP")"
+"PERMIT" SAFPREFIX".ekmf-rest-api.user:passcode:delete CLASS(EJBROLE) ACCESS(READ) ID("ZKEY_GROUP")"
+"PERMIT" SAFPREFIX".ekmf-rest-api.certificates:import CLASS(EJBROLE) ACCESS(READ) ID("ZKEY_GROUP")"
+"PERMIT" SAFPREFIX".ekmf-rest-api.certificates:import:untrusted CLASS(EJBROLE) ACCESS(READ) ID("ZKEY_GROUP")"
 
 "SETROPTS REFRESH RACLIST(EJBROLE)"
 

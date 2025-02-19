@@ -36,3 +36,5 @@
 <atCreate name="WORKSTATION_ACCESS_REQUIRED" scope="instance" prompt="true" required="false"/>
 <atCreate name="DB_AGENT_PLAN" scope="instance" prompt="true" required="false"/>
 <atCreate name="DB_CURRENT_SCHEMA" scope="instance" prompt="true" required="false"/>
+<atCreate name="DB_JCC_SSID" scope="instance" prompt="true" required="false"/>
+<atCreate name="DB_LOCATION" scope="instance" prompt="true" required="false"/>
