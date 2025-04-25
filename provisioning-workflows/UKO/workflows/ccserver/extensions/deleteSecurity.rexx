@@ -70,7 +70,7 @@ Say "Remove" SERVER_STC_USER "access from security domain for the server"
 #if(${instance-SAF_PROFILE_PREFIX} && ${instance-SAF_PROFILE_PREFIX} != "EKMFWEB")
 /* if the SAF prefix is dynamic, the groups need to be removed. */
 /* For APPL=EKMFWEB, keep the access for pre v3.1.0.2 compatibility */
-Say "Deleting security domain for the server"
+Say "Delete the security domain BBG.SECPFX."SAFPREFIX "from RACF"
 "RDELETE SERVER BBG.SECPFX."SAFPREFIX
 #end
 
@@ -119,6 +119,16 @@ Say "Removing the server ids READ access to the IFAUSAGE services (PRODMGR)"
 
 Say "Refreshing SERVER"
 "SETROPTS RACLIST(SERVER) GENERIC(SERVER) REFRESH"
+
+/***********************************************************************/
+/* Delete common EJB Roles */
+/***********************************************************************/
+#if(${instance-SAF_PROFILE_PREFIX} && ${instance-SAF_PROFILE_PREFIX} != "EKMFWEB")
+Say "Deleting common EJB roles"
+"RDELETE EJBROLE" SAFPREFIX".*.*"
+"RDELETE EJBROLE" SAFPREFIX".ekmf-rest-api.authenticated"
+"RDELETE EJBROLE" SAFPREFIX".com.ibm.ws.security.oauth20.*"
+#end
 
 /***********************************************************************/
 /* SMF Logging */

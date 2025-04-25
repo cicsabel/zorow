@@ -100,7 +100,7 @@
                 echo "UKO_SERVER_VERSION ${currentversion}" >> ${instance-TEMP_DIR}/zosmf-${_workflow-workflowKey}.properties
                 echo "UKO_SERVER_UPDATE ${newversion}" >> ${instance-TEMP_DIR}/zosmf-${_workflow-workflowKey}.properties
 
-                chmod 744 ${instance-TEMP_DIR}/zosmf-${_workflow-workflowKey}.properties
+                chmod 644 ${instance-TEMP_DIR}/zosmf-${_workflow-workflowKey}.properties
             </inlineTemplate>
             <submitAs>shell-JCL</submitAs>
             <output substitution="true" needResolveConflicts="false">${instance-TEMP_DIR}/zosmf-${_workflow-workflowKey}.properties</output>
@@ -193,7 +193,7 @@
                     transferred="";
 
                     i=0;
-                    while  [ i -lt ${lines} ] 
+                    while  [ $i -lt ${lines} ] 
                     do
                         let i=i+1;
                         # echo "i:$i";
@@ -248,7 +248,7 @@
 
                     #extract all name=value pairs that are not commented out from old file
                     sed '/^[[:blank:]]*#/d;/^$/d' ${instance-UKO_SERVER_DIRECTORY}/backup_${_workflow-workflowKey}/server.env > ${instance-TEMP_DIR}/zosmf-${_workflow-workflowKey}_server.env; 
-                    chmod 755 ${instance-TEMP_DIR}/zosmf-${_workflow-workflowKey}_server.env;
+                    chmod 644 ${instance-TEMP_DIR}/zosmf-${_workflow-workflowKey}_server.env;
 
                     echo "********************************************" >> ${instance-UKO_SERVER_DIRECTORY}/backup_${_workflow-workflowKey}/migration.log;
                     echo "Parameters from server.env to be migrated: " >> ${instance-UKO_SERVER_DIRECTORY}/backup_${_workflow-workflowKey}/migration.log;
@@ -264,7 +264,7 @@
 
 
                     i=0;
-                    while  [ i -lt ${lines} ] 
+                    while  [ $i -lt ${lines} ] 
                     do
                         let i=i+1;
                         # echo "i:$i";
@@ -316,15 +316,15 @@
                 #if(${instance-UKO_SERVER_STC_GROUP} != "" &amp;&amp; ${instance-UKO_SERVER_STC_GROUP})
                     echo "Ensure that ${instance-UKO_SERVER_STC_GROUP} has read access to ${instance-UKO_SERVER_DIRECTORY}/server.env and jvm.options"
                     chown ${instance-UKO_SERVER_STC_USER}:${instance-UKO_SERVER_STC_GROUP} ${instance-UKO_SERVER_DIRECTORY}/server.env
-                    chmod 755 ${instance-UKO_SERVER_DIRECTORY}/server.env
+                    chmod 640 ${instance-UKO_SERVER_DIRECTORY}/server.env
                     chown ${instance-UKO_SERVER_STC_USER}:${instance-UKO_SERVER_STC_GROUP} ${instance-UKO_SERVER_DIRECTORY}/jvm.options
-                    chmod 755 ${instance-UKO_SERVER_DIRECTORY}/jvm.options
+                    chmod 640 ${instance-UKO_SERVER_DIRECTORY}/jvm.options
                 #else
                     echo "Ensure that ${instance-UKO_SERVER_STC_USER} has read access to ${instance-UKO_SERVER_DIRECTORY}/server.env and jvm.options"
                     chown ${instance-UKO_SERVER_STC_USER} ${instance-UKO_SERVER_DIRECTORY}/server.env
-                    chmod 700 ${instance-UKO_SERVER_DIRECTORY}/server.env
+                    chmod 600 ${instance-UKO_SERVER_DIRECTORY}/server.env
                     chown ${instance-UKO_SERVER_STC_USER} ${instance-UKO_SERVER_DIRECTORY}/jvm.options
-                    chmod 700 ${instance-UKO_SERVER_DIRECTORY}/jvm.options
+                    chmod 600 ${instance-UKO_SERVER_DIRECTORY}/jvm.options
                 #end
     
                 if [ $? -gt 1 ]; then 

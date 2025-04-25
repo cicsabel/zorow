@@ -54,6 +54,33 @@ Say "Connect rabbitMQ provider certificate to trust ring"
  end
 #end
 
+/* Microsoft Certificates */                               
+Say "Connect AZURE-BALTCTRT"
+"RACDCERT ID("SERVER_STC_USER")",
+   " CONNECT(CERTAUTH LABEL('AZURE-BALTCTRT')",
+      " RING("TLS_TRUST_STORE_KEY_RING")",
+      " USAGE(CERTAUTH))"
+Say "Connect AZURE-DCGLBRG2"
+"RACDCERT ID("SERVER_STC_USER")",
+   " CONNECT(CERTAUTH LABEL('AZURE-DCGLBRG2')",
+      " RING("TLS_TRUST_STORE_KEY_RING")",
+      " USAGE(CERTAUTH))"
+Say "Connect AZURE-DTRTC3CA"
+"RACDCERT ID("SERVER_STC_USER")",
+   " CONNECT(CERTAUTH LABEL('AZURE-DTRTC3CA')",
+      " RING("TLS_TRUST_STORE_KEY_RING")",
+      " USAGE(CERTAUTH))"
+Say "Connect AZURE-MSECCRCA"
+"RACDCERT ID("SERVER_STC_USER")",
+   " CONNECT(CERTAUTH LABEL('AZURE-MSECCRCA')",
+      " RING("TLS_TRUST_STORE_KEY_RING")",
+      " USAGE(CERTAUTH))"
+Say "Connect AZURE-MSRSARCA"
+"RACDCERT ID("SERVER_STC_USER")",
+   " CONNECT(CERTAUTH LABEL('AZURE-MSRSARCA')",
+      " RING("TLS_TRUST_STORE_KEY_RING")",
+      " USAGE(CERTAUTH))"
+
 Say "Refresh DIGTRING in RACF"
 "SETROPTS RACLIST(DIGTRING) REFRESH"
 
@@ -69,9 +96,6 @@ Say "List the final keyring"
 "RACDCERT ID("SERVER_STC_USER")",
    " LISTRING("TLS_KEY_STORE_KEY_RING")"
 
-#if($!{instance-CC_TLS_KEY_STORE_KEY_RING} != $!{instance-CC_TLS_TRUST_STORE_KEY_RING} )
-/* Connect certificate to trust ring */
 Say "List the final trust keyring"
 "RACDCERT ID("SERVER_STC_USER")",
    " LISTRING("TLS_TRUST_STORE_KEY_RING")"
-#end

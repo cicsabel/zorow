@@ -11,27 +11,6 @@ SAFPREFIX="${instance-SAF_PROFILE_PREFIX}"
 SAF_OWNER="${instance-SAF_OWNER}"
 
 /***********************************************************************/
-/* Creating common EJB Roles */
-/***********************************************************************/
-
-Say "Defining the role class"
-"RDEFINE EJBROLE" SAFPREFIX".*.* ",
-   " OWNER("SAF_OWNER") UACC(NONE)"
-
-Say "Defining EJB roles for authentication"
-"RDEFINE EJBROLE" SAFPREFIX".ekmf-rest-api.authenticated ",
-   " OWNER("SAF_OWNER") UACC(NONE)"
-"RDEFINE EJBROLE" SAFPREFIX".com.ibm.ws.security.oauth20.* ",
-   " OWNER("SAF_OWNER") UACC(NONE)"
-
-Say "Grant access to the EJB roles for authentication to every user"
-"PERMIT" SAFPREFIX".ekmf-rest-api.authenticated CLASS(EJBROLE) ACCESS(READ) ID(*)"
-"PERMIT" SAFPREFIX".com.ibm.ws.security.oauth20.* CLASS(EJBROLE) ACCESS(READ) ID(*)"
-
-Say "Refreshing EJBROLE"
-"SETROPTS RACLIST(EJBROLE) REFRESH"
-
-/***********************************************************************/
 /* Creating Crypto Connect EJB Roles */
 /***********************************************************************/
 

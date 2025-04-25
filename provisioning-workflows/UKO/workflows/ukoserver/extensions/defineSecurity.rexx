@@ -13,11 +13,6 @@ SERVER_STC_GROUP="${instance-UKO_SERVER_STC_GROUP}"
 SERVER_UNAUTHENTICATED_USER="${instance-UKO_UNAUTHENTICATED_USER}"
 SERVER_UNAUTHENTICATED_GROUP="${instance-UKO_UNAUTHENTICATED_GROUP}"
 
-VAULT_ADMIN="${instance-UKO_VAULT_ADMIN_GROUP}"
-KEY_ADMIN="${instance-UKO_KEY_ADMIN_GROUP}"
-KEY_CUSTODIAN1="${instance-UKO_KEY_CUSTODIAN1_GROUP}"
-KEY_CUSTODIAN2="${instance-UKO_KEY_CUSTODIAN2_GROUP}"
-UKO_AUDITOR="${instance-UKO_AUDITOR_GROUP}"
 SERVER_STC_NAME="${instance-UKO_SERVER_STC_NAME}"
 SAFPREFIX="${instance-SAF_PROFILE_PREFIX}"
 SAF_OWNER="${instance-SAF_OWNER}"
@@ -45,18 +40,6 @@ Say "Activating the APPL class"
 Say "Grant an unauthenticated" SERVER_UNAUTHENTICATED_USER "user ID READ access to the profile in the APPL class"
 "PERMIT" SAFPREFIX "CLASS(APPL) ACCESS(READ) ID("SERVER_UNAUTHENTICATED_USER")"
 
-Say "All users that will access UKO are required to have READ access to this resource."
-Say "Grant access to UKO to" VAULT_ADMIN
-"PERMIT" SAFPREFIX "CLASS(APPL) ACCESS(READ) ID("VAULT_ADMIN")"
-Say "Grant access to UKO to" KEY_ADMIN
-"PERMIT" SAFPREFIX "CLASS(APPL) ACCESS(READ) ID("KEY_ADMIN")"
-Say "Grant access to UKO to" KEY_CUSTODIAN1
-"PERMIT" SAFPREFIX "CLASS(APPL) ACCESS(READ) ID("KEY_CUSTODIAN1")"
-Say "Grant access to UKO to" KEY_CUSTODIAN2
-"PERMIT" SAFPREFIX "CLASS(APPL) ACCESS(READ) ID("KEY_CUSTODIAN2")"
-Say "Grant access to UKO to" UKO_AUDITOR
-"PERMIT" SAFPREFIX "CLASS(APPL) ACCESS(READ) ID("UKO_AUDITOR")"
-
 Say "Refreshing APPL"
 "SETROPTS RACLIST(APPL) REFRESH"
 
@@ -77,7 +60,8 @@ Say "Grant the servers id READ access to the security domain for the server"
 
 #if(${instance-WLP_ANGEL_NAME} && ${instance-WLP_ANGEL_NAME} != "")
 Say "Define the class for the named angel process"
-"RDEFINE SERVER BBG.ANGEL.${instance-WLP_ANGEL_NAME} OWNER("SAF_OWNER") UACC(NONE)"
+"RDEFINE SERVER BBG.ANGEL.${instance-WLP_ANGEL_NAME} ",
+   " OWNER("SAF_OWNER") UACC(NONE)"
 Say "Permitting the server access to the angel process"
 "PERMIT BBG.ANGEL.${instance-WLP_ANGEL_NAME} CLASS(SERVER)",
    " ACCESS(READ) ID("SERVER_STC_USER")"
@@ -163,7 +147,7 @@ Say "Refreshing SERVER"
 /* Creating common EJB Roles */
 /***********************************************************************/
 
-Say "Defining the UKOss role class"
+Say "Defining the server's role class"
 "RDEFINE EJBROLE" SAFPREFIX".*.* OWNER("SAF_OWNER") UACC(NONE)"
 
 Say "Defining EJB roles for authentication"
@@ -189,3 +173,5 @@ Say "Granting access to BPX.SMF CLASS(FACILITY) to" SERVER_STC_GROUP
 
 Say "Refreshing FACILITY"
 "SETROPTS RACLIST(FACILITY) REFRESH"
+
+exit

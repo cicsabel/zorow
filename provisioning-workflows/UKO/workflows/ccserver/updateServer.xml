@@ -99,7 +99,7 @@
                 echo "CC_SERVER_VERSION ${currentversion}" >> ${instance-TEMP_DIR}/zosmf-${_workflow-workflowKey}.properties
                 echo "CC_SERVER_UPDATE ${newversion}" >> ${instance-TEMP_DIR}/zosmf-${_workflow-workflowKey}.properties
 
-                chmod 744 ${instance-TEMP_DIR}/zosmf-${_workflow-workflowKey}.properties
+                chmod 644 ${instance-TEMP_DIR}/zosmf-${_workflow-workflowKey}.properties
             </inlineTemplate>
             <submitAs>shell-JCL</submitAs>
             <output substitution="true" needResolveConflicts="false">${instance-TEMP_DIR}/zosmf-${_workflow-workflowKey}.properties</output>
@@ -308,15 +308,15 @@
                 #if(${instance-CC_SERVER_STC_GROUP} != "" &amp;&amp; ${instance-CC_SERVER_STC_GROUP})
                     echo "Ensure that ${instance-CC_SERVER_STC_GROUP} has read access to ${instance-CC_SERVER_DIRECTORY}/server.env and jvm.options"
                     chown ${instance-CC_SERVER_STC_USER}:${instance-CC_SERVER_STC_GROUP} ${instance-CC_SERVER_DIRECTORY}/server.env
-                    chmod 755 ${instance-CC_SERVER_DIRECTORY}/server.env
+                    chmod 640 ${instance-CC_SERVER_DIRECTORY}/server.env
                     chown ${instance-CC_SERVER_STC_USER}:${instance-CC_SERVER_STC_GROUP} ${instance-CC_SERVER_DIRECTORY}/jvm.options
-                    chmod 755 ${instance-CC_SERVER_DIRECTORY}/jvm.options
+                    chmod 640 ${instance-CC_SERVER_DIRECTORY}/jvm.options
                 #else
                     echo "Ensure that ${instance-CC_SERVER_STC_USER} has read access to ${instance-CC_SERVER_DIRECTORY}/server.env and jvm.options"
                     chown ${instance-CC_SERVER_STC_USER} ${instance-CC_SERVER_DIRECTORY}/server.env
-                    chmod 700 ${instance-CC_SERVER_DIRECTORY}/server.env
+                    chmod 600 ${instance-CC_SERVER_DIRECTORY}/server.env
                     chown ${instance-CC_SERVER_STC_USER} ${instance-CC_SERVER_DIRECTORY}/jvm.options
-                    chmod 700 ${instance-CC_SERVER_DIRECTORY}/jvm.options
+                    chmod 600 ${instance-CC_SERVER_DIRECTORY}/jvm.options
                 #end
     
                 if [ $? -gt 1 ]; then 

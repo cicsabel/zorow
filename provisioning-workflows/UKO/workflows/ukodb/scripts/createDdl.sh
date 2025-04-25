@@ -65,7 +65,9 @@ for i in `cat ${instance-TEMP_DIR}/zosmf-${_workflow-workflowKey}.files`; do
   else
     echo "DDL added to list of updates: $i"
     sed -e "$sedstring" ${instance-TEMP_DIR}/zosmf-${_workflow-workflowKey}.tmp.ddl >> ${instance-TEMP_DIR}/zosmf-${_workflow-workflowKey}.unconverted.ddl
-    echo "\nCOMMIT;\n" >> ${instance-TEMP_DIR}/zosmf-${_workflow-workflowKey}.unconverted.ddl;   
+    echo "" >> ${instance-TEMP_DIR}/zosmf-${_workflow-workflowKey}.unconverted.ddl;   
+    echo "COMMIT;" >> ${instance-TEMP_DIR}/zosmf-${_workflow-workflowKey}.unconverted.ddl;   
+    echo "" >> ${instance-TEMP_DIR}/zosmf-${_workflow-workflowKey}.unconverted.ddl;   
   fi
   rm ${instance-TEMP_DIR}/zosmf-${_workflow-workflowKey}.tmp.ddl
   

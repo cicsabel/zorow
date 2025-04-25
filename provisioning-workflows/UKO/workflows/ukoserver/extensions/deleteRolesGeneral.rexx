@@ -7,10 +7,6 @@ SAFPREFIX="${instance-SAF_PROFILE_PREFIX}"
 
 Say "Deleting general roles"
 
-"RDELETE EJBROLE" SAFPREFIX".*.*"
-"RDELETE EJBROLE" SAFPREFIX".ekmf-rest-api.authenticated"
-"RDELETE EJBROLE" SAFPREFIX".com.ibm.ws.security.oauth20.*"
-
 "RDELETE EJBROLE" SAFPREFIX".ekmf-rest-api.keystores:list"
 "RDELETE EJBROLE" SAFPREFIX".ekmf-rest-api.keys:list"
 "RDELETE EJBROLE" SAFPREFIX".ekmf-rest-api.templates:list"

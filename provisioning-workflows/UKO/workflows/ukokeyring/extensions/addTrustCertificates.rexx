@@ -34,6 +34,12 @@ Say "Connect GoogleTrustCert"
       " RING("TLS_TRUST_STORE_KEY_RING")",
       " USAGE(CERTAUTH))"
 
+Say "Connect GoogleTrustCert Subject: C=US, O=Google Trust Services, CN=WE2"
+"RACDCERT ID("SERVER_STC_USER")",
+   " CONNECT(CERTAUTH LABEL('WE2 GTS Root R4 signed')",
+      " RING("TLS_TRUST_STORE_KEY_RING")",
+      " USAGE(CERTAUTH))"
+
 Say "Connect IBMDigiCertGlobalRootCA"
 "RACDCERT ID("SERVER_STC_USER")",
    " CONNECT(CERTAUTH LABEL('IBMDigiCertGlobalRootCA')",

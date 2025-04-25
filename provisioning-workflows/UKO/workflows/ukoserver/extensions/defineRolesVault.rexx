@@ -86,6 +86,8 @@ Say "Grant Permissions to Key Administrator" KEY_ADMIN
 "PERMIT" SAFPREFIX".ekmf-rest-api."VAULT_ID".vaults:read CLASS(EJBROLE) ACCESS(READ) ID("KEY_ADMIN")"
 "PERMIT" SAFPREFIX".ekmf-rest-api."VAULT_ID".vaults:write CLASS(EJBROLE) ACCESS(READ) ID("KEY_ADMIN")"
 "PERMIT" SAFPREFIX".ekmf-rest-api."VAULT_ID".vaults:delete CLASS(EJBROLE) ACCESS(READ) ID("KEY_ADMIN")"
+/* legacy role for importing keys using the v2 import API on the default vault*/
+"PERMIT" SAFPREFIX".ekmf-rest-api."VAULT_ID".keys:non_existing:import CLASS(EJBROLE) ACCESS(READ) ID("KEY_ADMIN")"
 
 Say "Grant Permissions to Key Custodian1" KEY_CUSTODIAN1
 "PERMIT" SAFPREFIX".ekmf-rest-api."VAULT_ID".keys:active:deactivate CLASS(EJBROLE) ACCESS(READ) ID("KEY_CUSTODIAN1")"

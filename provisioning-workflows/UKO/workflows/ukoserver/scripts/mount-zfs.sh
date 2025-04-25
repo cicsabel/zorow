@@ -21,8 +21,8 @@ if [ ! -d "${instance-WLP_USER_DIR}/servers/${instance-UKO_SERVER_STC_NAME}" ]; 
         echo "ERROR: Could not create directory" >&amp;2;
         exit "2"; 
     fi
-    echo "changing access to 775"
-    chmod 775 ${instance-WLP_USER_DIR}/servers/${instance-UKO_SERVER_STC_NAME}
+    echo "changing access to 755"
+    chmod 755 ${instance-WLP_USER_DIR}/servers/${instance-UKO_SERVER_STC_NAME}
 fi
 
 # Query information about the main mountpoint
@@ -80,11 +80,10 @@ fi
 echo "Creating directories / files"
 
 mkdir ${instance-WLP_USER_DIR}/servers/${instance-UKO_SERVER_STC_NAME}/PROVISION_OK
+chmod 755 ${instance-WLP_USER_DIR}/servers/${instance-UKO_SERVER_STC_NAME}
 #if(${instance-UKO_SERVER_STC_GROUP} != "" && ${instance-UKO_SERVER_STC_GROUP})
-chmod 775 ${instance-WLP_USER_DIR}/servers/${instance-UKO_SERVER_STC_NAME}
 chown ${instance-UKO_SERVER_STC_USER}:${instance-UKO_SERVER_STC_GROUP} ${instance-WLP_USER_DIR}/servers/${instance-UKO_SERVER_STC_NAME}
 #else
-chmod 755 ${instance-WLP_USER_DIR}/servers/${instance-UKO_SERVER_STC_NAME}
 #if(${instance-UKO_SERVER_STC_USER} != ${instance-UKO_ADMIN_ZFS})
 chown ${instance-UKO_SERVER_STC_USER} ${instance-WLP_USER_DIR}/servers/${instance-UKO_SERVER_STC_NAME}
 #end
@@ -103,8 +102,8 @@ if [ ! -d "${instance-WLP_OUTPUT_DIR}/${instance-UKO_SERVER_STC_NAME}" ]; then
         echo "ERROR: Could not create directory" >&amp;2;
         exit "2"; 
     fi
-    echo "changing access to 775"
-    chmod 775 ${instance-WLP_OUTPUT_DIR}/${instance-UKO_SERVER_STC_NAME}
+    echo "changing access to 755"
+    chmod 755 ${instance-WLP_OUTPUT_DIR}/${instance-UKO_SERVER_STC_NAME}
 fi
 
 # Query information about the main mountpoint

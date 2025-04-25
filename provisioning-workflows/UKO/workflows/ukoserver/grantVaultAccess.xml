@@ -140,8 +140,8 @@
             </template>
         </step> 
 
-        <step name="configureApplAccess">
-            <title>Ensure everyone has APPL access</title>
+        <step name="configureApplAccessUsers">
+            <title>Grant APPL access to users</title>
             <description>Grant access to the APPL class for the specific server to all groups</description>
             <runAsUser substitution="true">$!{instance-UKO_ADMIN_SECURITY}</runAsUser>
             <approver substitution="true">$!{instance-UKO_APPROVER_SECURITY}</approver>

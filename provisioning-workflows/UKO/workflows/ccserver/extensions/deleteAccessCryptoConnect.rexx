@@ -22,9 +22,6 @@ Say "Delete Permissions from" CC_GROUP
 /* For APPL=EKMFWEB, keep the access for pre v3.1.0.2 compatibility */
 "RDELETE EJBROLE" SAFPREFIX".crypto-connect.operations:data:encrypt"
 "RDELETE EJBROLE" SAFPREFIX".crypto-connect.operations:data:decrypt"
-"RDELETE EJBROLE" SAFPREFIX".ekmf-rest-api.authenticated"
-"RDELETE EJBROLE" SAFPREFIX".com.ibm.ws.security.oauth20.*"
-"RDELETE EJBROLE" SAFPREFIX".*.* "
 #end
 
 /* Refresh */
