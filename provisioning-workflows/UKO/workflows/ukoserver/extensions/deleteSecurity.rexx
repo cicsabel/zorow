@@ -81,7 +81,7 @@ Say "Remove" SERVER_STC_USER "access from security domain for the server"
 "PERMIT BBG.SECPFX."SAFPREFIX "CLASS(SERVER)",
    " DELETE ID("SERVER_STC_USER")"  
 
-#if(${instance-SAF_PROFILE_PREFIX} && ${instance-SAF_PROFILE_PREFIX} == "EKMFWEB")
+#if(${instance-SAF_PROFILE_PREFIX} && ${instance-SAF_PROFILE_PREFIX} != "EKMFWEB")
 /* if the SAF prefix is dynamic, the groups need to be removed. */
 /* For APPL=EKMFWEB, keep the access for pre v3.1.0.2 compatibility */
 Say "Delete the security domain BBG.SECPFX."SAFPREFIX "from RACF"

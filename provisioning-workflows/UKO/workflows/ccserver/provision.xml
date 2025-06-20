@@ -39,7 +39,7 @@
 	<!--+++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
 	&variables;
     &image_properties;
-    
+   
     <!--++++++++++++++++++++++-->
     <!--   Provision Steps    -->
     <!--++++++++++++++++++++++-->  
@@ -102,7 +102,7 @@
 
             <step name="substituteServerEnv">
                 <title>Adjust configuration file server.env</title>
-                <description>Replace values in server.env with the values from the proterties file</description>
+                <description>Replace values in server.env with the values from the properties file</description>
                 <runAsUser substitution="true">$!{instance-UKO_ADMIN_SERVER}</runAsUser>
                 <approver substitution="true">$!{instance-UKO_APPROVER_SERVER}</approver>
                 <variableValue name="CC_INSTALL_DIR" scope="instance" noPromptIfSet="false" required="false"/>
@@ -166,7 +166,7 @@
 
             <step name="substituteJvmOptions">
                 <title>Adjust java options file jvm.options</title>
-                <description>replace values in jvm.options with template variable values</description>
+                <description>replace values in jvm.options with the values from the properties file</description>
                 <runAsUser substitution="true">$!{instance-UKO_ADMIN_SERVER}</runAsUser>
                 <approver substitution="true">$!{instance-UKO_APPROVER_SERVER}</approver>
                 <variableValue name="WLP_USER_DIR" scope="instance" noPromptIfSet="false" required="false"/>
@@ -378,7 +378,7 @@
                             <description>Only execute if required</description>
                             <extendStateExpression>
                                 <description>Skip if no MSDKE HTTP service is required</description>
-                                <expression>${instance-MSDKE_ENABLE_HTTP_SERVICE}  == "false"</expression>
+                                <expression><![CDATA[ ${instance-MSDKE_SUPPORT_REQUIRED}  == "false" && ${instance-MSDKE_ENABLE_HTTP_SERVICE}  == "false"]]> </expression>
                                 <targetState>Skipped</targetState>
                             </extendStateExpression>
                         </targetStateSet>
@@ -435,7 +435,7 @@
             </step>
 
             <step name="loadConfigDropinsCryptoConnect">
-                <title>Load Crypto Connect configDropins</title>
+                <title>Configure Crypto Connect support</title>
                 <description>Configure the configDropins folder to load the Crypto Connect related code</description>
                 <runAsUser substitution="true">$!{instance-UKO_ADMIN_SERVER}</runAsUser>
                 <approver substitution="true">$!{instance-UKO_APPROVER_SERVER}</approver>
@@ -471,6 +471,98 @@
                     <submitAs>shell-JCL</submitAs>
                 </template>
             </step>
+
+            <step name="configureCat">
+                <title>Configure CAT Support</title>
+                <description>Configure the new server for CAT</description>
+
+                <step name="substituteServerCat">
+                    <title>Substitute server.env CAT parameters</title>
+                    <description>Configure server.env with the specified CAT parameters</description>
+                    <runAsUser substitution="true">$!{instance-UKO_ADMIN_SERVER}</runAsUser>
+                    <approver substitution="true">$!{instance-UKO_APPROVER_SERVER}</approver>
+                    <condition>
+                        <expression>"1"=="1"</expression>
+                        <description>always true</description>
+                        <targetStateSet>
+                            <description>Only execute for CAT configuration</description>
+                            <extendStateExpression>
+                                <description>Skip if no CAT configuration is required</description>
+                                <expression>${instance-CAT_SUPPORT_REQUIRED}  == "false"</expression>
+                                <targetState>Skipped</targetState>
+                            </extendStateExpression>
+                        </targetStateSet>
+                    </condition>
+                    <variableValue name="CAT_CORE_DB_URL" scope="instance" noPromptIfSet="false" required="false"/>
+                    <variableValue name="CAT_CORE_DB_USER" scope="instance" noPromptIfSet="false" required="false"/>
+                    <variableValue name="CAT_CORE_DB_PASSWORD" scope="instance" noPromptIfSet="false" required="false"/>
+                    <variableValue name="CAT_KAFKA_URI" scope="instance" noPromptIfSet="false" required="false"/>
+                    <instructions substitution="true">Submit shell script to execute step</instructions>
+                    <weight>1</weight>
+                    <autoEnable>true</autoEnable>
+                    <template>
+                        <inlineTemplate substitution="true">
+
+                            cd ${instance-WLP_USER_DIR}/servers/${instance-CC_SERVER_STC_NAME}
+                            mv ./server.env ./server.env.original
+                            if [ $? -gt 0 ]; then 
+                                echo "ERROR: Original server.env not found, make sure you executed base setup";
+                                exit "8"; 
+                            fi                      
+            
+                            sedstring="s#^[ \#]*CAT_CORE_DB_URL=.*#CAT_CORE_DB_URL=${instance-CAT_CORE_DB_URL}#g;"
+                            sedstring="${sedstring} s#^[ \#]*CAT_CORE_DB_USER=.*#CAT_CORE_DB_USER=${instance-CAT_CORE_DB_USER}#g;"
+                            sedstring="${sedstring} s#^[ \#]*CAT_CORE_DB_PASSWORD=.*#CAT_CORE_DB_PASSWORD=${instance-CAT_CORE_DB_PASSWORD}#g;"
+                            sedstring="${sedstring} s#^[ \#]*CAT_KAFKA_URI=.*#CAT_KAFKA_URI=${instance-CAT_KAFKA_URI}#g;"
+                            sed -e "$sedstring" ./server.env.original > ./server.env
+
+                            rm ./server.env.original
+
+                        </inlineTemplate>
+                        <submitAs>shell-JCL</submitAs>
+                        <maxLrecl>2048</maxLrecl>
+                    </template>
+                </step> 
+
+                <step name="loadConfigDropinsCat">
+                    <title>ConfigDropins for Crypto Connect</title>
+                    <description>load the correct configDropins for CAT</description>
+                    <runAsUser substitution="true">$!{instance-UKO_ADMIN_SERVER}</runAsUser>
+                    <approver substitution="true">$!{instance-UKO_APPROVER_SERVER}</approver>
+                    <condition>
+                        <expression>"1"=="1"</expression>
+                        <description>always true</description>
+                        <targetStateSet>
+                            <description>Only execute for CAT configuration</description>
+                            <extendStateExpression>
+                                <description>Skip if no CAT configuration is required</description>
+                                <expression>${instance-CAT_SUPPORT_REQUIRED}  == "false"</expression>
+                                <targetState>Skipped</targetState>
+                            </extendStateExpression>
+                        </targetStateSet>
+                    </condition>
+                    <instructions substitution="true">Submit shell script to execute step</instructions>
+                    <weight>1</weight>
+                    <autoEnable>true</autoEnable>
+                    <template>
+                        <inlineTemplate substitution="true">
+
+                            cd ${instance-WLP_USER_DIR}/servers/${instance-CC_SERVER_STC_NAME}
+
+                            echo "linking cat-core.xml into overrides folder"
+                            ln -s ${instance-CC_INSTALL_DIR}/configDropins/options/cat-core.xml configDropins/overrides/cat-core.xml
+                            echo "linking cat-api.xml into overrides folder"
+                            ln -s ${instance-CC_INSTALL_DIR}/configDropins/options/cat-api.xml configDropins/overrides/cat-api.xml
+
+                            echo "Finished setting up configDropins:"
+                            ls -al configDropins/overrides
+
+                        </inlineTemplate>
+                        <submitAs>shell-JCL</submitAs>
+                    </template>
+                </step>
+            </step>
+
         </step>
 
         <step name="setDirectoryPermissions">
@@ -510,17 +602,18 @@
                 chown $ownership ${instance-WLP_USER_DIR}/servers/${instance-CC_SERVER_STC_NAME}
                 chown $ownership ${instance-WLP_USER_DIR}/servers/${instance-CC_SERVER_STC_NAME}/server.env
                 chown $ownership ${instance-WLP_USER_DIR}/servers/${instance-CC_SERVER_STC_NAME}/jvm.options
-                chown $ownership ${instance-WLP_USER_DIR}/servers/${instance-CC_SERVER_STC_NAME}/configDropins
-                chown $ownership ${instance-WLP_USER_DIR}/servers/${instance-CC_SERVER_STC_NAME}/configDropins/overrides
                 echo "Change file access to $fileflag"
                 chmod $fileflag ${instance-WLP_USER_DIR}/servers/${instance-CC_SERVER_STC_NAME}/server.env
                 chmod $fileflag ${instance-WLP_USER_DIR}/servers/${instance-CC_SERVER_STC_NAME}/jvm.options
                 echo "Change directory access to $dirflag"
                 chmod $dirflag ${instance-WLP_USER_DIR}/servers/${instance-CC_SERVER_STC_NAME}
-                chmod $dirflag ${instance-WLP_USER_DIR}/servers/${instance-CC_SERVER_STC_NAME}/configDropins
-                chmod $dirflag ${instance-WLP_USER_DIR}/servers/${instance-CC_SERVER_STC_NAME}/configDropins/overrides
-
-
+                if [ -d "${instance-WLP_USER_DIR}/servers/${instance-CC_SERVER_STC_NAME}/configDropins" ] 
+                then
+                    chown $ownership ${instance-WLP_USER_DIR}/servers/${instance-CC_SERVER_STC_NAME}/configDropins
+                    chown $ownership ${instance-WLP_USER_DIR}/servers/${instance-CC_SERVER_STC_NAME}/configDropins/overrides
+                    chmod $dirflag ${instance-WLP_USER_DIR}/servers/${instance-CC_SERVER_STC_NAME}/configDropins
+                    chmod $dirflag ${instance-WLP_USER_DIR}/servers/${instance-CC_SERVER_STC_NAME}/configDropins/overrides
+                fi
                 </inlineTemplate>
             <submitAs>shell-JCL</submitAs>
             </template>
@@ -564,7 +657,6 @@
             <variableValue name="SAF_OWNER" scope="instance" noPromptIfSet="false" required="false"/>
             <variableValue name="WLP_ANGEL_NAME" scope="instance" noPromptIfSet="false" required="false"/>
             <variableValue name="SAF_PROFILE_PREFIX" scope="instance" noPromptIfSet="false" required="false"/>
-            <variableValue name="SAF_OWNER" scope="instance" noPromptIfSet="false" required="false"/>
             <instructions substitution="true">Submit rexx exec to execute step</instructions>
             <weight>1</weight>
             <autoEnable>true</autoEnable>
@@ -580,6 +672,18 @@
             <description>Define the profiles in the CSFSERV class and grant access</description>
             <runAsUser substitution="true">$!{instance-UKO_ADMIN_SECURITY}</runAsUser>
             <approver substitution="true">$!{instance-UKO_APPROVER_SECURITY}</approver>
+            <condition>
+                <expression>"1"=="1"</expression>
+                <description>Only execute this step for MSDKE or Crypto Connect</description>
+                <targetStateSet>
+                    <description>Skip this step if neither MSDKE nor Crypto Connect are required</description>
+                    <extendStateExpression>
+                        <description>Skip the step when data set is selected</description>
+                        <expression><![CDATA[ ${instance-MSDKE_SUPPORT_REQUIRED}  == "false" && ${instance-CRYPTO_CONNECT_SUPPORT_REQUIRED}  == "false"]]> </expression>
+                        <targetState>skipped</targetState>
+                    </extendStateExpression>
+                </targetStateSet>
+            </condition>
             <variableValue name="CC_SERVER_STC_USER" scope="instance" noPromptIfSet="false" required="false"/>
             <variableValue name="SAF_OWNER" scope="instance" noPromptIfSet="false" required="false"/>
             <instructions>Executes a REXX program to create profiles and grant access</instructions>
@@ -597,6 +701,18 @@
             <description>Create entry in CSFKEYS class and grant access</description>
             <runAsUser substitution="true">$!{instance-UKO_ADMIN_SECURITY}</runAsUser>
             <approver substitution="true">$!{instance-UKO_APPROVER_SECURITY}</approver>
+            <condition>
+                <expression>"1"=="1"</expression>
+                <description>Only execute this step for MSDKE or Crypto Connect</description>
+                <targetStateSet>
+                    <description>Skip this step if neither MSDKE nor Crypto Connect are required</description>
+                    <extendStateExpression>
+                        <description>Skip the step when data set is selected</description>
+                        <expression><![CDATA[ ${instance-MSDKE_SUPPORT_REQUIRED}  == "false" && ${instance-CRYPTO_CONNECT_SUPPORT_REQUIRED}  == "false"]]> </expression>
+                        <targetState>skipped</targetState>
+                    </extendStateExpression>
+                </targetStateSet>
+            </condition>
             <variableValue name="CC_KEY_PREFIX" scope="instance" noPromptIfSet="false" required="false"/>
             <variableValue name="CC_SERVER_STC_USER" scope="instance" noPromptIfSet="false" required="false"/>
             <variableValue name="SAF_OWNER" scope="instance" noPromptIfSet="false" required="false"/>

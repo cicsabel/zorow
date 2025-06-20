@@ -6,6 +6,7 @@
 /******************************************************************************/
 
 -->
+<atCreate name="CAT_SUPPORT_REQUIRED" scope="instance" prompt="true" required="false"/>
 
 <atCreate name="MSDKE_SUPPORT_REQUIRED" scope="instance" prompt="true" required="false"/>
 <atCreate name="MSDKE_ENABLE_HTTP_SERVICE" scope="instance" prompt="true" required="false"/>

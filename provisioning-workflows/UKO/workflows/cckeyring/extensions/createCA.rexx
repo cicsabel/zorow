@@ -8,9 +8,9 @@ address tso
 
 
 CA_LABEL="${instance-CC_CA_LABEL}"
-CA_CN="${instance-CC_TLS_KEY_STORE_SERVER_CERT_CN}"
-CA_OU="${instance-CC_TLS_KEY_STORE_SERVER_CERT_OU}"
-CA_O="${instance-CC_TLS_KEY_STORE_SERVER_CERT_O}"
+CA_CN="${instance-CC_CA_CN}"
+CA_OU="${instance-CC_CA_OU}"
+CA_O="${instance-CC_CA_O}"
 
 "SETROPTS CLASSACT(DIGTCERT)"
 

@@ -51,7 +51,7 @@
 
         <step name="substituteAgentConfigNoWorkstation">
             <title>Substitute KMGPARM without Workstation</title>
-            <description>Replace values in KMGPARM with template variable values</description>
+            <description>Replace values in KMGPARM with the values from the properties file</description>
             <runAsUser substitution="true">$!{instance-UKO_ADMIN_SERVER}</runAsUser>
             <approver substitution="true">$!{instance-UKO_APPROVER_SERVER}</approver>
             <condition>
@@ -96,7 +96,7 @@
 
         <step name="substituteAgentConfigWithWorkstation">
             <title>Substitute KMGPARM with Workstation</title>
-            <description>Replace values in KMGPARM with template variable values</description>
+            <description>Replace values in KMGPARM with the values from the properties file</description>
             <runAsUser substitution="true">$!{instance-UKO_ADMIN_SERVER}</runAsUser>
             <approver substitution="true">$!{instance-UKO_APPROVER_SERVER}</approver>
             <condition>
@@ -206,6 +206,8 @@
             <variableValue name="UKO_AGENT_CLIENT_USER" scope="instance" noPromptIfSet="false" required="false"/>
             <variableValue name="UKO_AGENT_CLIENT_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
             <variableValue name="SAF_OWNER" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="SKMGMOD0_APF" scope="instance" noPromptIfSet="false" required="true"/>
+            <variableValue name="UKO_AGENT_RUNLIB_READ" scope="instance" noPromptIfSet="false" required="true"/>
             <instructions substitution="true">Submit rexx exec to execute step</instructions>
             <weight>1</weight>
             <autoEnable>true</autoEnable>

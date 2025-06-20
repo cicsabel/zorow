@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/******************************************************************************/
+/* Copyright Contributors to the zOS-Workflow Project.                        */
+/* SPDX-License-Identifier: Apache-2.0                                        */
+/******************************************************************************/
+
+-->
+<variable name="JAVA_HOME" visibility="public">
+  <label>JAVA_HOME</label>
+  <abstract>Java home path</abstract>
+  <description>The path to the Java home directory.</description>
+  <category>Server variables</category>
+  <string valueMustBeChoice="false">
+    <choice>"/java/java80_64/J8.0_64"</choice>
+    <choice>"/java/java11_bit64_sr18_fp0/J11.0_64"</choice>
+    <choice>"/java/java17_64"</choice>
+    <!-- Path validation, has to start with slash, may contain slashes, must not end with slash or whitespace -->
+  </string>
+</variable>
+
+<!--+++++++++++++++++-->
+<!-- CAT variables   -->
+<!--+++++++++++++++++-->
+
+<variable name="CAT_SUPPORT_REQUIRED" visibility="public">
+  <label>CAT_SUPPORT_REQUIRED</label>
+  <abstract>Enable CAT service?</abstract>
+  <description>Should the CAT service be enabled?</description>
+  <category>CAT variables</category>
+  <string valueMustBeChoice="true">
+    <choice>true</choice>
+    <choice>false</choice>
+    <default>false</default>
+  </string>
+</variable>
+
+<variable name="CAT_AGENT_USER" visibility="public">
+  <label>CAT_AGENT_USER</label>
+  <abstract>User or group running collection</abstract>
+  <description>User or group that will get access to run the CAT collection </description>
+  <category>CAT variables</category>
+  <string>
+  <!-- A validation type of USERID allows for 1-8 alphanumeric (uppercase only)
+  characters, including special characters. -->
+  <regularExpression>^[0-9a-zA-Z$#@]{0,8}$</regularExpression>
+  </string>
+</variable>
+
+<variable name="SAF_OWNER" visibility="private">
+  <label>SAF_OWNER</label>
+  <abstract>Owner for created SAF profiles</abstract>
+  <description>Default owner to be used when creating SAF resources</description>
+  <category>CAT variables</category>
+  <string>
+    <validationType>USERID</validationType>
+  </string>
+</variable>
+
+<variable name="ZOAU_HOME" visibility="public">
+    <label>ZOAU_HOME</label>
+    <abstract>ZOAU installation location</abstract>
+    <description>Installation location of the Z Open Automation Utility</description>
+    <category>CAT variables</category>
+    <string>
+        <!-- Path validation, has to start with slash, may contain slashes, must not end with slash or whitespace -->
+        <regularExpression>^\/([A-z0-9-_+\.]+\/)*([A-z0-9-_+\.])*[^\/\s]$</regularExpression>
+    </string>
+</variable>
+<variable name="CAT_USER_DIR" visibility="public">
+    <label>CAT_USER_DIR</label>
+    <abstract>CAT config directory</abstract>
+    <description>Location where the adjusted CAT configuration files will be placed</description>
+    <category>CAT variables</category>
+    <string>
+        <!-- Path validation, has to start with slash, may contain slashes, must not end with slash or whitespace -->
+        <regularExpression>^\/([A-z0-9-_+\.]+\/)*([A-z0-9-_+\.])*[^\/\s]$</regularExpression>
+    </string>
+</variable>
+<variable name="CAT_INSTALL_DIR" visibility="public">
+    <label>CAT_INSTALL_DIR</label>
+    <abstract>CAT install directory</abstract>
+    <description>Folder where CAT is installed</description>
+    <category>CAT variables</category>
+    <string>
+        <!-- Path validation, has to start with slash, may contain slashes, must not end with slash or whitespace -->
+        <regularExpression>^\/([A-z0-9-_+\.]+\/)*([A-z0-9-_+\.])*[^\/\s]$</regularExpression>
+    </string>
+</variable>
+<variable name="UKO_AGENT_RUNLIB" visibility="public">
+    <label>UKO_AGENT_RUNLIB</label>
+    <abstract>Agent load library</abstract>
+    <description>Libary containing the Agent's load modules</description>
+    <category>UKO Agent variables</category>
+    <string>
+        <validationType>DSNAME</validationType>
+        <default>KMG.SKMGMOD0</default>
+    </string>
+</variable>
+<variable name="CAT_TEMP_HLQ" visibility="public"> <!-- mapped to cat_dsnqual -->
+  <label>CAT_TEMP_HLQ</label>
+  <abstract>HLQ for CAT work datasets</abstract>
+  <description>High level dataset qualifier of MVS work data sets to be used (created and deleted)</description>
+  <category>CAT variables</category>
+  <string>
+    <validationType>DSNAME</validationType>
+  </string>
+</variable>
+<variable name="CAT_SMF" visibility="public">
+  <label>CAT_SMF</label>
+  <abstract>Collect SMF data?</abstract>
+  <description>If yes then SMF collect is continued after ICSF collect has been done. Otherwise, no SMF data will be collected</description>
+  <category>CAT variables</category>
+  <string valueMustBeChoice="true">
+    <choice>yes</choice>
+    <choice>no</choice>
+    <default>yes</default>
+  </string>
+</variable>
+<variable name="KAFKA_HOME" visibility="public">
+    <label>KAFKA_HOME</label>
+    <abstract>Kafka installation location</abstract>
+    <description>Path to Kafka installation location</description>
+    <category>CAT variables</category>
+    <string>
+        <!-- Path validation, has to start with slash, may contain slashes, must not end with slash or whitespace -->
+        <regularExpression>^\/([A-z0-9-_+\.]+\/)*([A-z0-9-_+\.])*[^\/\s]$</regularExpression>
+    </string>
+</variable>
+<variable name="CAT_KAFKA_URI" visibility="public">
+  <label>CAT_KAFKA_URI</label>
+  <abstract>URI of the kafka server</abstract>
+  <description>hostname or IP address and port of Kafka server, e.g. example.com:9092</description>
+  <category>CAT variables</category>
+  <string />
+</variable>
+<variable name="CAT_KAFKA_TRANSACTIONAL_ID" scope="instance" visibility="public">
+  <label>CAT_KAFKA_TRANSACTIONAL_ID</label>
+  <abstract>unique ID for this UKO CAT agent instance</abstract>
+  <description>System wide unique ID of UKO CAT agent instance, each deployed instance must have it's own ID</description>
+  <category>CAT variables</category>
+  <string />
+</variable>
+
+<!-- <variable name="SMFMANDS" visibility="public"> 
+  <label>SMFMANDS</label>
+  <abstract>Active SMF data set</abstract>
+  <description>Name of an active SMF data set for catsmf.conf, Parameter can be specified several times in the config file, but not using this workflow</description>
+  <category>CAT variables</category>
+  <string>
+    <validationType>DSNAME</validationType>
+  </string>
+</variable>
+<variable name="SMFLOGSTREAM" visibility="public"> 
+  <label>SMFLOGSTREAM</label>
+  <abstract>Active SMF logstream</abstract>
+  <description>Name of an active SMF logstream for catsmf.conf, Parameter can be specified several times in the config file, but not using this workflow</description>
+  <category>CAT variables</category>
+  <string>
+    <validationType>DSNAME</validationType>
+  </string>
+</variable> -->
+<variable name="SMFGDGBASE" visibility="public"> 
+  <label>SMFGDGBASE</label>
+  <abstract>GDG base for dumped SMF data sets</abstract>
+  <description>GDG base for dumped SMF data sets for catsmf.conf, if specified, SMFGDGDONE is required</description>
+  <category>CAT variables</category>
+  <string>
+    <validationType>DSNAME</validationType>
+  </string>
+</variable>
+<variable name="SMFGDGDONE" visibility="public"> 
+  <label>SMFGDGDONE</label>
+  <abstract>Latest SMF generation handled, only for SMFGDGBASE</abstract>
+  <description>Name of the latest SMF generation already handled, must be specified with SMFGDGBASE and will be updated in catsmf.conf after each collection </description>
+  <category>CAT variables</category>
+  <string>
+    <validationType>DSNAME</validationType>
+  </string>
+</variable>
+
+<!--+++++++++++++++++++++++++++++-->
+<!-- access confirmation flags   -->
+<!--+++++++++++++++++++++++++++++-->
+
+<variable name="CAT_TEMP_HLQ_ALTER" visibility="private">
+  <label>Access to CAT_TEMP_HLQ dataset?</label>
+  <abstract>Confirm below that the CAT_AGENT_USER id or group can modify datasets under the CAT_TEMP_HLQ</abstract>
+  <description>You have to ensure that the CAT_AGENT_USER id or group can ATLER datasets under the CAT_TEMP_HLQ. This is not part of the workflow
+  </description>
+  <category>manual checks</category>
+  <string valueMustBeChoice="true" multiLine="false">
+    <choice>Confirmed!</choice>
+  </string>
+</variable>
+
+<variable name="UKO_AGENT_RUNLIB_READ" visibility="private">
+  <label>Access to UKO_AGENT_RUNLIB dataset?</label>
+  <abstract>Confirm below that the CAT_AGENT_USER id or group can read the UKO_AGENT_RUNLIB dataset</abstract>
+  <description>The CAT_AGENT_USER id or group needs READ access to the CAT Agent load library (default KMG.SKMGMOD0). This is not part of the workflow
+  </description>
+  <category>manual checks</category>
+  <string valueMustBeChoice="true" multiLine="false">
+    <choice>Confirmed!</choice>
+  </string>
+</variable>
+
+<variable name="CAT_SMF_DATASETS_READ" visibility="private">
+  <label>Access to SMF datasets?</label>
+  <abstract>Confirm below that the CAT_AGENT_USER id or group can read the SMF datasets</abstract>
+  <description>The CAT_AGENT_USER id or group needs READ access to the datasets specified for SMFGDGBASE. This is not part of the workflow
+  </description>
+  <category>manual checks</category>
+  <string valueMustBeChoice="true" multiLine="false">
+    <choice>Confirmed!</choice>
+  </string>
+</variable>
+
+<variable name="SKMGMOD0_APF" visibility="private">
+  <label>SKMGMOD0 APF?</label>
+  <abstract>Confirm below that the SKMGMOD0 library is APF authorized</abstract>
+  <description>The SKMGMOD0 needs to be APF authorized. This is not part of the workflow
+  </description>
+  <category>manual checks</category>
+  <string valueMustBeChoice="true" multiLine="false">
+    <choice>Confirmed!</choice>
+  </string>
+</variable>

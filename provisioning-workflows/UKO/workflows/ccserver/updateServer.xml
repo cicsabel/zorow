@@ -160,7 +160,7 @@
 
         <step name="migrateJvmOptions">
 		    <title>Migrate jvm.options</title>
-	        <description>replace values in jvm.options with template variable values</description>
+	        <description>replace values in jvm.options with the values from the properties file</description>
 	        <runAsUser substitution="true">$!{instance-UKO_ADMIN_SERVER}</runAsUser>
 	        <approver substitution="true">$!{instance-UKO_APPROVER_SERVER}</approver>
             <variableValue name="CC_INSTALL_DIR" scope="instance" noPromptIfSet="false" required="false"/>
@@ -230,7 +230,7 @@
 
         <step name="migrateServerEnv">
 		    <title>Migrate server.env</title>
-	        <description>replace values in server.env with template variable values</description>
+	        <description>replace values in server.env with the values from the properties file</description>
 	        <runAsUser substitution="true">$!{instance-UKO_ADMIN_SERVER}</runAsUser>
 	        <approver substitution="true">$!{instance-UKO_APPROVER_SERVER}</approver>
             <instructions substitution="true">Submit shell script to execute step</instructions>

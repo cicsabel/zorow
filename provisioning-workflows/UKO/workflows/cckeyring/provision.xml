@@ -62,9 +62,9 @@
             </targetStateSet>
         </condition> 
         <variableValue name="CC_CA_LABEL" scope="instance" noPromptIfSet="false" required="false"/>
-        <variableValue name="CC_TLS_KEY_STORE_SERVER_CERT_CN" scope="instance" noPromptIfSet="false" required="false"/>
-        <variableValue name="CC_TLS_KEY_STORE_SERVER_CERT_OU" scope="instance" noPromptIfSet="false" required="false"/>
-        <variableValue name="CC_TLS_KEY_STORE_SERVER_CERT_O" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="CC_CA_CN" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="CC_CA_OU" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="CC_CA_O" scope="instance" noPromptIfSet="false" required="false"/>
         <instructions>Executes a REXX program to create a certificate authority</instructions>
         <weight>1</weight>
         <autoEnable>true</autoEnable>

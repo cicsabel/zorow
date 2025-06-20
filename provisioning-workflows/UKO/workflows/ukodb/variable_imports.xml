@@ -130,6 +130,27 @@
   <category>Certificate variables</category>
   <string />
 </variable>
+<variable name="UKO_CA_CN" scope="instance" visibility="public">
+  <label>UKO_CA_CN</label>
+  <abstract> UKO_CA_CN</abstract>
+  <description>Name of the UKO_CA_CN to use for the server.</description>
+  <category>Certificate variables</category>
+  <string />
+</variable>
+<variable name="UKO_CA_OU" scope="instance" visibility="private">
+  <label>UKO_CA_OU</label>
+  <abstract>UKO_CA_OU</abstract>
+  <description>Name of the UKO_CA_OU to use for the server.</description>
+  <category>Certificate variables</category>
+  <string />
+</variable>
+<variable name="UKO_CA_O" scope="instance" visibility="private">
+  <label>UKO_CA_O</label>
+  <abstract>UKO_CA_O</abstract>
+  <description>Name of the UKO_CA_O to use for the server.</description>
+  <category>Certificate variables</category>
+  <string />
+</variable>
 
 <variable name="UKO_CREATE_KEYRING" visibility="private">
   <label>UKO_CREATE_KEYRING</label>
@@ -954,7 +975,7 @@
 <variable name="SAF_OWNER" visibility="private">
   <label>SAF_OWNER</label>
   <abstract>Owner for created SAF profiles</abstract>
-  <description>Default owner to be used when creating </description>
+  <description>Default owner to be used when creating SAF resources</description>
   <category>UKO Server variables</category>
   <string>
     <validationType>USERID</validationType>

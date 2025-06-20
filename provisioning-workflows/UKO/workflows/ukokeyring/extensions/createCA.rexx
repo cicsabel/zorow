@@ -8,9 +8,9 @@ address tso
 
 
 CA_LABEL="${instance-UKO_CA_LABEL}"
-CA_CN="${instance-UKO_TLS_KEY_STORE_SERVER_CERT_CN}"
-CA_OU="${instance-UKO_TLS_KEY_STORE_SERVER_CERT_OU}"
-CA_O="${instance-UKO_TLS_KEY_STORE_SERVER_CERT_O}"
+CA_CN="${instance-UKO_CA_CN}"
+CA_OU="${instance-UKO_CA_OU}"
+CA_O="${instance-UKO_CA_O}"
 
 "SETROPTS CLASSACT(DIGTCERT)"
 

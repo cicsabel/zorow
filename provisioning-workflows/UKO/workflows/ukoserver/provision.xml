@@ -102,7 +102,7 @@
 
             <step name="substituteServerEnv">
                 <title>Adjust configuration file server.env</title>
-                <description>Replace values in server.env with the values from the proterties file</description>
+                <description>Replace values in server.env with the values from the properties file</description>
                 <runAsUser substitution="true">$!{instance-UKO_ADMIN_SERVER}</runAsUser>
                 <approver substitution="true">$!{instance-UKO_APPROVER_SERVER}</approver>
                 <variableValue name="UKO_INSTALL_DIR" scope="instance" noPromptIfSet="false" required="false"/>
@@ -185,7 +185,7 @@
 
             <step name="substituteJvmOptions">
                 <title>Adjust java options file jvm.options</title>
-                <description>replace values in jvm.options with template variable values</description>
+                <description>replace values in jvm.options with the values from the properties file</description>
                 <runAsUser substitution="true">$!{instance-UKO_ADMIN_SERVER}</runAsUser>
                 <approver substitution="true">$!{instance-UKO_APPROVER_SERVER}</approver>
                 <variableValue name="WLP_USER_DIR" scope="instance" noPromptIfSet="false" required="false"/>
@@ -278,7 +278,7 @@
 
             <step name="substituteServerEnvMsdke">
                 <title>(Optional) Configure server.env for MSDKE</title>
-                <description>Replace values in server.env with the values from the proterties file</description>
+                <description>Replace values in server.env with the values from the properties file</description>
                 <runAsUser substitution="true">$!{instance-UKO_ADMIN_SERVER}</runAsUser>
                 <approver substitution="true">$!{instance-UKO_APPROVER_SERVER}</approver>
                 <condition>
@@ -482,7 +482,6 @@
             <variableValue name="SAF_OWNER" scope="instance" noPromptIfSet="false" required="false"/>
             <variableValue name="WLP_ANGEL_NAME" scope="instance" noPromptIfSet="false" required="false"/>
             <variableValue name="SAF_PROFILE_PREFIX" scope="instance" noPromptIfSet="false" required="false"/>
-            <variableValue name="SAF_OWNER" scope="instance" noPromptIfSet="false" required="false"/>
             <instructions substitution="true">Submit rexx exec to execute step</instructions>
             <weight>1</weight>
             <autoEnable>true</autoEnable>

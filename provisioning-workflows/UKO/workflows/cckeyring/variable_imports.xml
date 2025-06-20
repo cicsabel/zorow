@@ -130,7 +130,27 @@
   <category>Certificate variables</category>
   <string />
 </variable>
-
+<variable name="CC_CA_CN" scope="instance" visibility="public">
+  <label>CC_CA_CN</label>
+  <abstract> CC_CA_CN</abstract>
+  <description>Name of the CC_CA_CN to use for the server.</description>
+  <category>Certificate variables</category>
+  <string />
+</variable>
+<variable name="CC_CA_OU" scope="instance" visibility="private">
+  <label>CC_CA_OU</label>
+  <abstract>CC_CA_OU</abstract>
+  <description>Name of the CC_CA_OU to use for the server.</description>
+  <category>Certificate variables</category>
+  <string />
+</variable>
+<variable name="CC_CA_O" scope="instance" visibility="private">
+  <label>CC_CA_O</label>
+  <abstract>CC_CA_O</abstract>
+  <description>Name of the CC_CA_O to use for the server.</description>
+  <category>Certificate variables</category>
+  <string />
+</variable>
 <variable name="CC_CREATE_KEYRING" visibility="private">
   <label>CC_CREATE_KEYRING</label>
   <abstract>Enable keyring creation</abstract>
@@ -758,8 +778,8 @@
 <variable name="SAF_OWNER" visibility="private">
   <label>SAF_OWNER</label>
   <abstract>Owner for created SAF profiles</abstract>
-  <description>Default owner to be used when creating </description>
-  <category>UKO Server variables</category>
+  <description>Default owner to be used when creating SAF resources</description>
+  <category>Server variables</category>
   <string>
     <validationType>USERID</validationType>
   </string>
@@ -908,5 +928,67 @@
   <abstract>The CC_KEY_PREFIX for the CSFKEYS class</abstract>
   <description>The CC_KEY_PREFIX to be used to generate a profile in the CSFKEYS class</description>
   <category>General variables</category>
+  <string />
+</variable>
+
+<!--++++++++++++++++++++++++++++++-->
+<!-- CAT -->
+<!--++++++++++++++++++++++++++++++-->
+
+<variable name="CAT_SUPPORT_REQUIRED" visibility="public">
+  <label>CAT_SUPPORT_REQUIRED</label>
+  <abstract>Enable CAT service?</abstract>
+  <description>Should the CAT service be enabled?</description>
+  <category>CAT variables</category>
+  <string valueMustBeChoice="true">
+    <choice>true</choice>
+    <choice>false</choice>
+    <default>false</default>
+  </string>
+</variable>
+
+<variable name="CAT_AGENT_USER" visibility="public">
+  <label>CAT_AGENT_USER</label>
+  <abstract>User or group running collection</abstract>
+  <description>User or group that will get access to run the CAT collection </description>
+  <category>CAT variables</category>
+  <string>
+  <!-- A validation type of USERID allows for 1-8 alphanumeric (uppercase only)
+  characters, including special characters. -->
+  <regularExpression>^[0-9a-zA-Z$#@]{0,8}$</regularExpression>
+  </string>
+</variable>
+
+<variable name="CAT_CORE_DB_URL" visibility="public">
+  <label>CAT_CORE_DB_URL</label>
+  <abstract>CAT PostgreSQL database connection parameters</abstract>
+  <description>Connection to the CAT PostgreSQL database, e.g. jdbc:postgresql://example.com:5432/cat?currentSchema=cccat.
+    The CAT server will create the required tables under the specified schema. 
+    If no schema is specified, the default schema `public` is used, which is not recommended.  
+  </description>
+  <category>CAT variables</category>
+  <string />
+</variable>
+<variable name="CAT_CORE_DB_USER" visibility="public">
+  <label>CAT_CORE_DB_USER</label>
+  <abstract>User ID for CAT DB connection</abstract>
+  <description>The user ID used to connect to the CAT PostgreSQL database</description>
+  <category>CAT variables</category>
+  <string />
+</variable>
+<variable name="CAT_CORE_DB_PASSWORD" visibility="public">
+  <label>CAT_CORE_DB_PASSWORD</label>
+  <abstract>Password for CAT DB connection</abstract>
+  <description>The password used to connect to the CAT PostgreSQL database, use the security utility, described at
+    https://www.ibm.com/docs/en/was-liberty/zos?topic=applications-securityutility-command
+    to encrypt the password </description>
+  <category>CAT variables</category>
+  <string />
+</variable>
+<variable name="CAT_KAFKA_URI" visibility="public">
+  <label>CAT_KAFKA_URI</label>
+  <abstract>URI of the kafka server</abstract>
+  <description>hostname or IP address and port of Kafka server, e.g. example.com:9092</description>
+  <category>CAT variables</category>
   <string />
 </variable>
