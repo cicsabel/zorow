@@ -13,8 +13,8 @@ address tso
 
 /* exit 0 */
 
-SERVER_STC_USER="${instance-UKO_SERVER_STC_USER}"
-TLS_TRUST_STORE_KEY_RING="${instance-UKO_TLS_TRUST_STORE_KEY_RING}"
+SERVER_STC_USER="${instance-SERVER_STC_USER}"
+TLS_TRUST_STORE_KEY_RING="${instance-SERVER_TLS_TRUST_STORE_KEY_RING}"
 
 /* ********************************************** */
 /* keyring section start                          */

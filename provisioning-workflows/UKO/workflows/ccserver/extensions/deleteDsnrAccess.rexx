@@ -6,11 +6,11 @@
 
 address tso
 
-SERVER_STC_USER="${instance-CC_SERVER_STC_USER}"
+SERVER_STC_USER="${instance-SERVER_STC_USER}"
 DB_JCC_SSID="${instance-DB_JCC_SSID}"
 
 
-#if($!{instance-CC_CREATE_TECHNICAL_USERIDS} == "true" ) 
+#if($!{instance-CREATE_TECHNICAL_USERIDS} == "true" ) 
 /***********************************************************************/
 /***********************************************************************/
 /* Remove userids from profiles                                        */

@@ -57,17 +57,17 @@
             <targetStateSet>
                 <description>Execute if technical groups are to be created</description>
                 <extendStateExpression>
-                    <description>Skip if UKO_CREATE_TECHNICAL_USER_GROUPS is not true</description>
-                    <expression>${instance-UKO_CREATE_TECHNICAL_USER_GROUPS} != "true"</expression>
+                    <description>Skip if CREATE_TECHNICAL_USER_GROUPS is not true</description>
+                    <expression>${instance-CREATE_TECHNICAL_USER_GROUPS} != "true"</expression>
                     <targetState>Skipped</targetState>
                 </extendStateExpression>
             </targetStateSet>
         </condition>        
-        <variableValue name="UKO_AGENT_STC_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="AGENT_STC_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
         <variableValue name="UKO_AGENT_CLIENT_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
-        <variableValue name="UKO_SERVER_STC_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
-        <variableValue name="UKO_UNAUTHENTICATED_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
-        <variableValue name="UKO_TECHNICAL_SUPERIOR_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="SERVER_STC_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="WLP_UNAUTHENTICATED_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="TECHNICAL_SUPERIOR_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
         <variableValue name="SAF_OWNER" scope="instance" noPromptIfSet="false" required="false"/>
         <instructions substitution="true">Submit rexx exec to execute step. The workflow is using the AUTOGID option to 
             automatically generate a unique ID value in the OMVS segment of a group. If you cannot use AUTOGID, you 
@@ -94,20 +94,20 @@
             <targetStateSet>
                 <description>Execute if technical user ids are to be created</description>
                 <extendStateExpression>
-                    <description>Skip if UKO_CREATE_TECHNICAL_USERIDS is not true</description>
-                    <expression>${instance-UKO_CREATE_TECHNICAL_USERIDS} != "true"</expression>
+                    <description>Skip if CREATE_TECHNICAL_USERIDS is not true</description>
+                    <expression>${instance-CREATE_TECHNICAL_USERIDS} != "true"</expression>
                     <targetState>Skipped</targetState>
                 </extendStateExpression>
             </targetStateSet>
         </condition>
-        <variableValue name="UKO_AGENT_STC_USER" scope="instance" noPromptIfSet="false" required="false"/>
-        <variableValue name="UKO_AGENT_STC_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="AGENT_STC_USER" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="AGENT_STC_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
         <variableValue name="UKO_AGENT_CLIENT_USER" scope="instance" noPromptIfSet="false" required="false"/>
         <variableValue name="UKO_AGENT_CLIENT_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
-        <variableValue name="UKO_SERVER_STC_USER" scope="instance" noPromptIfSet="false" required="false"/>
-        <variableValue name="UKO_SERVER_STC_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
-        <variableValue name="UKO_UNAUTHENTICATED_USER" scope="instance" noPromptIfSet="false" required="false"/>
-        <variableValue name="UKO_UNAUTHENTICATED_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="SERVER_STC_USER" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="SERVER_STC_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="WLP_UNAUTHENTICATED_USER" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="WLP_UNAUTHENTICATED_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
         <variableValue name="USER_HOME_PARENT_DIR" scope="instance" noPromptIfSet="false" required="false"/>
         <variableValue name="SAF_OWNER" scope="instance" noPromptIfSet="false" required="false"/>
         <instructions substitution="true">Submit rexx exec to execute step. The workflow is using the
@@ -136,8 +136,8 @@
             <targetStateSet>
                 <description>Execute if personal user groups are to be created</description>
                 <extendStateExpression>
-                    <description>Skip if UKO_CREATE_PERSONAL_USER_GROUPS is not true</description>
-                    <expression>${instance-UKO_CREATE_PERSONAL_USER_GROUPS} != "true"</expression>
+                    <description>Skip if CREATE_PERSONAL_USER_GROUPS is not true</description>
+                    <expression>${instance-CREATE_PERSONAL_USER_GROUPS} != "true"</expression>
                     <targetState>Skipped</targetState>
                 </extendStateExpression>
             </targetStateSet>
@@ -147,7 +147,7 @@
         <variableValue name="UKO_KEY_CUSTODIAN1_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
         <variableValue name="UKO_KEY_CUSTODIAN2_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
         <variableValue name="UKO_AUDITOR_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
-        <variableValue name="UKO_PERSONAL_SUPERIOR_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="PERSONAL_SUPERIOR_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
         <variableValue name="SAF_OWNER" scope="instance" noPromptIfSet="false" required="false"/>
         <instructions substitution="true">Submit rexx exec to execute step. The workflow is using the AUTOGID option to 
             automatically generate a unique ID value in the OMVS segment of a group. If you cannot use AUTOGID, you 
@@ -174,8 +174,8 @@
             <targetStateSet>
                 <description>Execute if personal user ids are to be created</description>
                 <extendStateExpression>
-                    <description>Skip if UKO_CREATE_PERSONAL_USERIDS is not true</description>
-                    <expression>${instance-UKO_CREATE_PERSONAL_USERIDS} != "true"</expression>
+                    <description>Skip if CREATE_PERSONAL_USERIDS is not true</description>
+                    <expression>${instance-CREATE_PERSONAL_USERIDS} != "true"</expression>
                     <targetState>Skipped</targetState>
                 </extendStateExpression>
             </targetStateSet>

@@ -6,7 +6,7 @@
 
 address tso
 
-SERVER_STC_GROUP="${instance-UKO_SERVER_STC_GROUP}"
+SERVER_STC_GROUP="${instance-SERVER_STC_GROUP}"
 SAF_OWNER="${instance-SAF_OWNER}"
 
 "RDEFINE CSFSERV **      OWNER("SAF_OWNER") UACC(NONE)"

@@ -21,3 +21,16 @@ Say "Granting access to agent task group" CAT_AGENT_USER
 
 Say "Refreshing FACILITY"
 "SETROPTS RACLIST(FACILITY) REFRESH"
+
+
+/***********************************************************************/
+/* ICSF access                                                         */
+/***********************************************************************/
+
+Say "Granting access to CSFSERV resources"
+"PERMIT  CSFPCI  CLASS(CSFSERV) ACCESS(READ) ID("CAT_AGENT_USER")"
+"PERMIT  CSFIQF  CLASS(CSFSERV) ACCESS(READ) ID("CAT_AGENT_USER")"
+"PERMIT  CSFIQA  CLASS(CSFSERV) ACCESS(READ) ID("CAT_AGENT_USER")"
+
+Say "Refreshing CSFSERV"
+"SETROPTS RACLIST(CSFSERV) REFRESH"

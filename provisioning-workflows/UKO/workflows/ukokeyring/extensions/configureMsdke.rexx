@@ -13,9 +13,9 @@ address tso
 
 /* exit 0 */
 
-SERVER_STC_USER="${instance-UKO_SERVER_STC_USER}"
-TLS_TRUST_STORE_KEY_RING="${instance-UKO_TLS_TRUST_STORE_KEY_RING}"
-TLS_KEY_STORE_KEY_RING="${instance-UKO_TLS_KEY_STORE_KEY_RING}"
+SERVER_STC_USER="${instance-SERVER_STC_USER}"
+TLS_TRUST_STORE_KEY_RING="${instance-SERVER_TLS_TRUST_STORE_KEY_RING}"
+TLS_KEY_STORE_KEY_RING="${instance-SERVER_TLS_KEY_STORE_KEY_RING}"
 MSDKE_RABBIT_CA="${instance-MSDKE_RABBIT_CA}"
 MSDKE_RABBIT_CERT="${instance-MSDKE_RABBIT_CERT}"
 
@@ -41,7 +41,7 @@ if RC <> 0 then do
    exit RC
 end
 
-#if($!{instance-UKO_TLS_KEY_STORE_KEY_RING} != $!{instance-UKO_TLS_TRUST_STORE_KEY_RING} )
+#if($!{instance-SERVER_TLS_KEY_STORE_KEY_RING} != $!{instance-SERVER_TLS_TRUST_STORE_KEY_RING} )
 /* Connect certificate to trust ring */
 Say "Connect rabbitMQ provider certificate to trust ring"
 "RACDCERT ID("SERVER_STC_USER")",

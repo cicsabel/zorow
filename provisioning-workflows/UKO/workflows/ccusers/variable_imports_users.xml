@@ -6,8 +6,8 @@
 /******************************************************************************/
 
 -->
-<variable name="CC_TECHNICAL_SUPERIOR_GROUP" visibility="private">
-  <label>CC_TECHNICAL_SUPERIOR_GROUP</label>
+<variable name="TECHNICAL_SUPERIOR_GROUP" visibility="private">
+  <label>TECHNICAL_SUPERIOR_GROUP</label>
   <abstract>The superior group for the technical groups</abstract>
   <description>Superior group to be used for the SUPGROUP parameter</description>
   <category>User ID creation</category>

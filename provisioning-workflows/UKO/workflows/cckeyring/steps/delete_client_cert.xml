@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/******************************************************************************/
+/* Copyright Contributors to the zOS-Workflow Project.                        */
+/* SPDX-License-Identifier: Apache-2.0                                        */
+/******************************************************************************/
+-->
+<step name="deleteClientCert">
+    <title>(Optional) Delete client certificate and associated files and datasets</title>
+    <description>Deletes client certificate, removes client CA from server trust ring, 
+        deletes client CA, deletes export dataset an exported files</description> 
+
+    <step name="removeClientCaToServerTrust">
+        <title>Remove client CA from server trust ring</title>
+        <description>Remove the client CA from the server trust ring, so that the server accepts certificates signed by that CA</description>
+        <runAsUser substitution="true">$!{instance-UKO_ADMIN_SECURITY}</runAsUser>
+        <approver substitution="true">$!{instance-UKO_APPROVER_SECURITY}</approver>
+        <variableValue name="SERVER_STC_USER" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="SERVER_TLS_TRUST_STORE_KEY_RING" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="CLIENT_CA_LABEL" scope="instance" noPromptIfSet="false" required="false"/>
+        <instructions substitution="true">Submit rexx exec to execute step</instructions>
+        <weight>1</weight>
+        <autoEnable>true</autoEnable>
+        <template>
+            <fileTemplate substitution="true">extensions/removeClientCaFromServerTrust.rexx</fileTemplate>
+            <submitAs maxRc="0">TSO-REXX-JCL</submitAs>
+            <maxLrecl>1024</maxLrecl>
+        </template>
+    </step>
+
+    <step name="deleteClientCa">
+        <title>Delete client CA</title>
+        <description>Delete a certificate authority to sign the client certificate with</description>
+        <runAsUser substitution="true">$!{instance-UKO_ADMIN_SECURITY}</runAsUser>
+        <approver substitution="true">$!{instance-UKO_APPROVER_SECURITY}</approver>
+        <variableValue name="CLIENT_CA_LABEL" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="CLIENT_CA_CN" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="CLIENT_CA_OU" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="CLIENT_CA_O" scope="instance" noPromptIfSet="false" required="false"/>
+        <instructions substitution="true">Submit rexx exec to execute step</instructions>
+        <weight>1</weight>
+        <autoEnable>true</autoEnable>
+        <template>
+            <fileTemplate substitution="true">extensions/removeClientCa.rexx</fileTemplate>
+            <submitAs maxRc="0">TSO-REXX-JCL</submitAs>
+            <maxLrecl>1024</maxLrecl>
+        </template>
+    </step>
+
+    <step name="deleteClientCertificate">
+        <title>Delete client certificate</title>
+        <description>Delete a certificate for the user</description>
+        <runAsUser substitution="true">$!{instance-UKO_ADMIN_SECURITY}</runAsUser>
+        <approver substitution="true">$!{instance-UKO_APPROVER_SECURITY}</approver>
+        <variableValue name="CLIENT_CA_LABEL" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="GENERIC_CLIENT_USER" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="CLIENT_CERT_LABEL" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="CLIENT_CERT_CN" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="CLIENT_CERT_OU" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="CLIENT_CERT_O" scope="instance" noPromptIfSet="false" required="false"/>
+        <instructions substitution="true">Submit rexx exec to execute step</instructions>
+        <weight>1</weight>
+        <autoEnable>true</autoEnable>
+        <template>
+            <fileTemplate substitution="true">extensions/removeClientCert.rexx</fileTemplate>
+            <submitAs maxRc="0">TSO-REXX-JCL</submitAs>
+            <maxLrecl>1024</maxLrecl>
+        </template>
+    </step>
+
+    <step name="deleteDatasets">
+        <title>Delete Dataset</title>
+        <description>Delete the data set that the certificate was exported to</description>
+        <runAsUser substitution="true">$!{instance-UKO_ADMIN_SECURITY}</runAsUser>
+        <approver substitution="true">$!{instance-UKO_APPROVER_SECURITY}</approver>
+        <variableValue name="GENERIC_CLIENT_USER" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="EXPORT_HLQ" scope="instance" noPromptIfSet="false" required="false"/>
+        <instructions substitution="true">Run commands to delete the SAF certificate and keyring.</instructions>
+        <weight>1</weight>
+        <autoEnable>true</autoEnable>
+        <template>
+            <fileTemplate substitution="true">jcl/delete-dataset.jcl</fileTemplate>
+            <submitAs>JCL</submitAs>
+        </template>
+    </step>    
+
+    <step name="deleteUssFiles">
+        <title>delete Files from USS</title>
+        <description>Delete the files from USS</description>
+        <runAsUser substitution="true">$!{instance-UKO_ADMIN_SERVER}</runAsUser>
+        <approver substitution="true">$!{instance-UKO_APPROVER_SERVER}</approver>
+        <variableValue name="GENERIC_CLIENT_USER" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="EXPORT_PATH" scope="instance" noPromptIfSet="false" required="false"/>
+        <instructions substitution="true">Submit shell script to execute step</instructions>
+        <weight>1</weight>
+        <autoEnable>true</autoEnable>
+        <template>
+            <inlineTemplate substitution="true">
+                cd ${instance-EXPORT_PATH}
+                
+                echo "removing ${instance-GENERIC_CLIENT_USER}-keystore.p12"
+                rm ${instance-GENERIC_CLIENT_USER}-keystore.p12
+                if [ $? -gt 0 ]; then
+                    echo "no keystore file needed to be deleted"
+                fi
+                echo "removing ${instance-GENERIC_CLIENT_USER}-server.crt"
+                rm ${instance-GENERIC_CLIENT_USER}-server.crt
+                if [ $? -gt 0 ]; then
+                    echo "no server cert needed to be deleted"
+                fi
+
+                echo "removing client *.key and *.crt files"
+                rm ${instance-GENERIC_CLIENT_USER}.crt 
+                if [ $? -gt 0 ]; then
+                    echo "no client crt files needed to be deleted"
+                fi
+                rm ${instance-GENERIC_CLIENT_USER}.key 
+                if [ $? -gt 0 ]; then
+                    echo "no client key files needed to be deleted"
+                fi
+
+                echo "removing ${instance-GENERIC_CLIENT_USER}-truststore.p12"
+                rm ${instance-GENERIC_CLIENT_USER}-truststore.p12 
+                if [ $? -gt 0 ]; then
+                    echo "no truststore files needed to be deleted"
+                fi
+
+                echo "File cleanup finished"
+                
+            </inlineTemplate>
+            <submitAs>shell-JCL</submitAs>
+        </template>
+    </step>
+
+</step>

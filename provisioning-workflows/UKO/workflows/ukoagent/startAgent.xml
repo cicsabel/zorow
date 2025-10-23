@@ -59,7 +59,7 @@
 				<uriPath substitution="true">/zosmf/restconsoles/consoles/defcn</uriPath>
 				<requestBody substitution="true">
 				  {
-				    "cmd" : "START ${instance-UKO_AGENT_STC_NAME}",
+				    "cmd" : "START ${instance-AGENT_STC_NAME}",
 				    "unsol-key" : "CONSOLE INTERFACE READY",
 				    "unsol-detect-sync" : "Y",
 				    "unsol-detect-timeout" : "120",

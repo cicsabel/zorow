@@ -10,9 +10,9 @@ address tso
 /* keyring creation section                       */
 /* ********************************************** */
 
-SERVER_STC_USER="${instance-UKO_SERVER_STC_USER}"
-TLS_KEY_STORE_KEY_RING="${instance-UKO_TLS_KEY_STORE_KEY_RING}"
-TLS_TRUST_STORE_KEY_RING="${instance-UKO_TLS_TRUST_STORE_KEY_RING}"
+SERVER_STC_USER="${instance-SERVER_STC_USER}"
+TLS_KEY_STORE_KEY_RING="${instance-SERVER_TLS_KEY_STORE_KEY_RING}"
+TLS_TRUST_STORE_KEY_RING="${instance-SERVER_TLS_TRUST_STORE_KEY_RING}"
 
 "SETROPTS CLASSACT(DIGTRING)"
 
@@ -24,7 +24,7 @@ Say "Generate the key ring"
    exit RC
  end
 
-#if($!{instance-UKO_TLS_KEY_STORE_KEY_RING} != $!{instance-UKO_TLS_TRUST_STORE_KEY_RING} )
+#if($!{instance-SERVER_TLS_KEY_STORE_KEY_RING} != $!{instance-SERVER_TLS_TRUST_STORE_KEY_RING} )
 Say "Generate the trust ring"
 "RACDCERT ADDRING("TLS_TRUST_STORE_KEY_RING")",
    " ID("SERVER_STC_USER")"

@@ -4,13 +4,12 @@
 /* PDX-License-Identifier: Apache-2.0                             */
 /*----------------------------------------------------------------*/
 
-SERVER_STC_USER="${instance-CC_SERVER_STC_USER}"
-SERVER_STC_GROUP="${instance-CC_SERVER_STC_GROUP}"
+SERVER_STC_USER="${instance-SERVER_STC_USER}"
+SERVER_STC_GROUP="${instance-SERVER_STC_GROUP}"
 
-SERVER_UNAUTHENTICATED_USER="${instance-CC_UNAUTHENTICATED_USER}"
-SERVER_UNAUTHENTICATED_GROUP="${instance-CC_UNAUTHENTICATED_GROUP}"
+SERVER_UNAUTHENTICATED_USER="${instance-WLP_UNAUTHENTICATED_USER}"
+SERVER_UNAUTHENTICATED_GROUP="${instance-WLP_UNAUTHENTICATED_GROUP}"
 
-CC_GROUP="${instance-CRYPTO_CONNECT_USER_GROUP}"
 SAFPREFIX="${instance-SAF_PROFILE_PREFIX}"
 
 
@@ -18,12 +17,12 @@ SAFPREFIX="${instance-SAF_PROFILE_PREFIX}"
 /* Delete the STARTED task for this server                             */
 /***********************************************************************/
 Say "Deleting STARTED task for the server"
-"RDELETE STARTED ${instance-CC_SERVER_STC_NAME}.*"
+"RDELETE STARTED ${instance-SERVER_STC_NAME}.*"
 
 Say "Refreshing STARTED"
 "SETROPTS RACLIST(STARTED) REFRESH"
 
-#if($!{instance-CC_CREATE_TECHNICAL_USERIDS} == "true" ) 
+#if($!{instance-CREATE_TECHNICAL_USERIDS} == "true" ) 
 /***********************************************************************/
 /***********************************************************************/
 /* Remove userids from profiles                                        */
@@ -138,6 +137,18 @@ Say "Removing access to BPX.SMF CLASS(FACILITY) from" SERVER_STC_GROUP
 
 Say "Refreshing FACILITY"
 "SETROPTS RACLIST(FACILITY) REFRESH"
+
+/***********************************************************************/
+/* ICSF keystore policy checking */
+/***********************************************************************/
+
+Say "Removing access from" SERVER_STC_GROUP "on CSF-PKDS-DEFAULT "
+"PERMIT CSF-PKDS-DEFAULT CLASS(CSFKEYS) DELETE ID(" SERVER_STC_GROUP ")"
+Say "Removing access from" SERVER_STC_GROUP "on CSF-CKDS-DEFAULT "
+"PERMIT CSF-CKDS-DEFAULT CLASS(CSFKEYS) DELETE ID(" SERVER_STC_GROUP ")"
+
+Say "Refreshing CSFKEYS"
+"SETROPTS RACLIST(CSFKEYS) REFRESH"
 
 
 /***********************************************************************/

@@ -6,10 +6,10 @@
 
 address tso
 
-KEY_PREFIX="${instance-UKO_KEY_PREFIX}"
-SERVER_STC_USER="${instance-UKO_SERVER_STC_USER}"
+KEY_PREFIX="${instance-KEY_PREFIX}"
+SERVER_STC_USER="${instance-SERVER_STC_USER}"
 
-#if($!{instance-UKO_CREATE_TECHNICAL_USERIDS} == "true" ) 
+#if($!{instance-CREATE_TECHNICAL_USERIDS} == "true" ) 
 Say "Remove access to recovery key"
 "PERMIT ${instance-UKO_RECOVERY_KEY}  CLASS(CSFKEYS) DELETE ID("SERVER_STC_USER")"
 /* "PERMIT ${instance-UKO_RECOVERY_KEY}  CLASS(CSFKEYS) DELETE ID("KEY_ADMIN_GROUP")" */

@@ -21,14 +21,14 @@
 
       The file can be modified to suit the needs of your business. -->
 
-<atCreate name="UKO_SERVER_STC_USER" scope="instance" prompt="true" required="false"/>
-<atCreate name="UKO_SERVER_STC_GROUP" scope="instance" prompt="true" required="false"/>
-<atCreate name="UKO_AGENT_STC_USER" scope="instance" prompt="true" required="false"/>
-<atCreate name="UKO_AGENT_STC_GROUP" scope="instance" prompt="true" required="false"/>
+<atCreate name="SERVER_STC_USER" scope="instance" prompt="true" required="false"/>
+<atCreate name="SERVER_STC_GROUP" scope="instance" prompt="true" required="false"/>
+<atCreate name="AGENT_STC_USER" scope="instance" prompt="true" required="false"/>
+<atCreate name="AGENT_STC_GROUP" scope="instance" prompt="true" required="false"/>
 <atCreate name="UKO_AGENT_CLIENT_USER" scope="instance" prompt="true" required="false"/>
 <atCreate name="UKO_AGENT_CLIENT_GROUP" scope="instance" prompt="true" required="false"/>
-<atCreate name="UKO_UNAUTHENTICATED_USER" scope="instance" prompt="true" required="false"/>
-<atCreate name="UKO_UNAUTHENTICATED_GROUP" scope="instance" prompt="true" required="false"/>
+<atCreate name="WLP_UNAUTHENTICATED_USER" scope="instance" prompt="true" required="false"/>
+<atCreate name="WLP_UNAUTHENTICATED_GROUP" scope="instance" prompt="true" required="false"/>
 <atCreate name="UKO_VAULT_ADMIN" scope="instance" prompt="true" required="false"/>
 <atCreate name="UKO_VAULT_ADMIN_GROUP" scope="instance" prompt="true" required="false"/>
 <atCreate name="UKO_KEY_ADMIN" scope="instance" prompt="true" required="false"/>
@@ -39,4 +39,4 @@
 <atCreate name="UKO_KEY_CUSTODIAN2_GROUP" scope="instance" prompt="true" required="false"/>
 <atCreate name="UKO_AUDITOR" scope="instance" prompt="true" required="false"/>
 <atCreate name="UKO_AUDITOR_GROUP" scope="instance" prompt="true" required="false"/>
-<atCreate name="UKO_SERVER_STC_NAME" scope="instance" prompt="true" required="false"/>
+<atCreate name="SERVER_STC_NAME" scope="instance" prompt="true" required="false"/>

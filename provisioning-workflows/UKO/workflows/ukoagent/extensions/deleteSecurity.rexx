@@ -6,8 +6,8 @@
 
 address tso
 
-AGENT_STC_USER="${instance-UKO_AGENT_STC_USER}"
-AGENT_STC_GROUP="${instance-UKO_AGENT_STC_GROUP}"
+AGENT_STC_USER="${instance-AGENT_STC_USER}"
+AGENT_STC_GROUP="${instance-AGENT_STC_GROUP}"
 
 AGENT_CLIENT_USER="${instance-UKO_AGENT_CLIENT_USER}"
 AGENT_CLIENT_GROUP="${instance-UKO_AGENT_CLIENT_GROUP}"
@@ -18,11 +18,11 @@ AGENT_CLIENT_GROUP="${instance-UKO_AGENT_CLIENT_GROUP}"
 /***********************************************************************/
 
 Say "Deleting STARTED task for the agent"
-"RDELETE STARTED ${instance-UKO_AGENT_STC_NAME}.*"
+"RDELETE STARTED ${instance-AGENT_STC_NAME}.*"
 
 "SETROPTS RACLIST(STARTED) REFRESH"
 
-#if($!{instance-UKO_CREATE_TECHNICAL_USERIDS} == "true" ) 
+#if($!{instance-CREATE_TECHNICAL_USERIDS} == "true" ) 
 /***********************************************************************/
 /***********************************************************************/
 /* Remove userids from profiles                                        */
@@ -87,6 +87,18 @@ Say "Removing access to BATCH profile from" AGENT_STC_USER
 Say "Refreshing DSNR"
 "SETROPTS RACLIST(DSNR) REFRESH"
 #end
+
+/***********************************************************************/
+/* ICSF keystore policy checking */
+/***********************************************************************/
+
+Say "Removing access from" AGENT_STC_GROUP "on CSF-PKDS-DEFAULT "
+"PERMIT CSF-PKDS-DEFAULT CLASS(CSFKEYS) DELETE ID(" AGENT_STC_GROUP ")"
+Say "Removing access from" AGENT_STC_GROUP "on CSF-CKDS-DEFAULT "
+"PERMIT CSF-CKDS-DEFAULT CLASS(CSFKEYS) DELETE ID(" AGENT_STC_GROUP ")"
+
+Say "Refreshing CSFKEYS"
+"SETROPTS RACLIST(CSFKEYS) REFRESH"
 
 /***********************************************************************/
 /***********************************************************************/

@@ -6,8 +6,8 @@
 
 address tso
 
-SERVER_STC_USER="${instance-UKO_SERVER_STC_USER}"
-KEY_PREFIX="${instance-UKO_KEY_PREFIX}"
+SERVER_STC_USER="${instance-SERVER_STC_USER}"
+KEY_PREFIX="${instance-KEY_PREFIX}"
 RECOVERY_KEY="${instance-UKO_RECOVERY_KEY}"
 
 SAF_OWNER="${instance-SAF_OWNER}"

@@ -6,7 +6,7 @@
 
 address tso
 
-CC_GROUP="${instance-CRYPTO_CONNECT_USER_GROUP}"
+CC_GROUP="${instance-GENERIC_CLIENT_GROUP}"
 SAFPREFIX="${instance-SAF_PROFILE_PREFIX}"
 SAF_OWNER="${instance-SAF_OWNER}"
 

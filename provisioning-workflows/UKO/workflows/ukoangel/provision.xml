@@ -51,7 +51,7 @@
            <runAsUser substitution="true">$!{instance-UKO_ADMIN_TSO}</runAsUser>
            <approver substitution="true">$!{instance-UKO_APPROVER_TSO}</approver>
         <variableValue name="WLP_ANGEL_NAME" scope="instance" noPromptIfSet="false" required="false"/>
-        <variableValue name="UKO_ZOS_PROCLIB" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="ZOS_PROCLIB" scope="instance" noPromptIfSet="false" required="false"/>
         <variableValue name="WLP_INSTALL_DIR" scope="instance" noPromptIfSet="false" required="false"/>
         <instructions substitution="true">Submit JCL to execute step</instructions>
         <weight>5</weight>
@@ -124,7 +124,7 @@
                     }
                 </requestBody>
                 <expectedStatusCode>200</expectedStatusCode>
-                <propertyMapping mapTo="UKO_REST_STATUS">["sol-key-detected"]</propertyMapping>
+                <propertyMapping mapTo="SERVER_REST_STATUS">["sol-key-detected"]</propertyMapping>
             </rest>
         </step>
     
@@ -168,7 +168,7 @@
 				  }	
 				</requestBody>
 				<expectedStatusCode>200</expectedStatusCode>
-				<propertyMapping mapTo="UKO_REST_STATUS">["status"]</propertyMapping>
+				<propertyMapping mapTo="SERVER_REST_STATUS">["status"]</propertyMapping>
 			</rest>
     	</step>
     	
@@ -180,12 +180,12 @@
             <approver substitution="true">$!{instance-UKO_APPROVER_TSO}</approver>
             <condition>
                 <expression><![CDATA[${startAngel_console.stepState} == "Complete" || ${startAngel_console.stepState} == "Skipped"]]></expression>
-                <description>Should the step be executed based on the UKO_REST_STATUS setting</description>
+                <description>Should the step be executed based on the SERVER_REST_STATUS setting</description>
                 <targetStateSet>
                     <description>Check to see whether this step should be skipped</description>
                     <extendStateExpression>
-                        <description>Only execute it UKO_REST_STATUS is not detected</description>
-                        <expression><![CDATA[ ${instance-UKO_REST_STATUS} == "detected"]]></expression>
+                        <description>Only execute it SERVER_REST_STATUS is not detected</description>
+                        <expression><![CDATA[ ${instance-SERVER_REST_STATUS} == "detected"]]></expression>
                         <targetState>Skipped</targetState>
                     </extendStateExpression>
 	      			<extendStateExpression>

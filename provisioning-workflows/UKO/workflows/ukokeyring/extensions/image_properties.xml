@@ -21,16 +21,16 @@
 
       The file can be modified to suit the needs of your business. -->
 
-<atCreate name="UKO_SERVER_STC_USER" scope="instance" prompt="true" required="false"/>
-<!-- <atCreate name="UKO_CREATE_CA" scope="instance" prompt="true" required="false"/> -->
-<!-- <atCreate name="UKO_CREATE_CERTIFICATES" scope="instance" prompt="true" required="false"/> -->
-<!-- <atCreate name="UKO_CREATE_KEYRING" scope="instance" prompt="true" required="false"/> -->
+<atCreate name="SERVER_STC_USER" scope="instance" prompt="true" required="false"/>
+<!-- <atCreate name="SERVER_CREATE_CA" scope="instance" prompt="true" required="false"/> -->
+<!-- <atCreate name="SERVER_CREATE_CERTIFICATES" scope="instance" prompt="true" required="false"/> -->
+<!-- <atCreate name="SERVER_CREATE_KEYRING" scope="instance" prompt="true" required="false"/> -->
 
-<atCreate name="UKO_CA_LABEL" scope="instance" prompt="true" required="false"/>
-<atCreate name="UKO_TLS_KEY_STORE_KEY_RING" scope="instance" prompt="true" required="false"/>
-<atCreate name="UKO_TLS_TRUST_STORE_KEY_RING" scope="instance" prompt="true" required="false"/>
-<atCreate name="UKO_TLS_KEY_STORE_SERVER_CERT" scope="instance" prompt="true" required="false"/>
-<atCreate name="UKO_OIDC_PROVIDER_CERT" scope="instance" prompt="true" required="false"/>
-<atCreate name="UKO_TLS_KEY_STORE_SERVER_CERT_CN" scope="instance" prompt="true" required="false"/>
+<atCreate name="SERVER_CA_LABEL" scope="instance" prompt="true" required="false"/>
+<atCreate name="SERVER_TLS_KEY_STORE_KEY_RING" scope="instance" prompt="true" required="false"/>
+<atCreate name="SERVER_TLS_TRUST_STORE_KEY_RING" scope="instance" prompt="true" required="false"/>
+<atCreate name="SERVER_TLS_KEY_STORE_SERVER_CERT" scope="instance" prompt="true" required="false"/>
+<atCreate name="SERVER_OIDC_PROVIDER_CERT" scope="instance" prompt="true" required="false"/>
+<atCreate name="SERVER_TLS_KEY_STORE_SERVER_CERT_CN" scope="instance" prompt="true" required="false"/>
 
 <atCreate name="MSDKE_SUPPORT_REQUIRED" scope="instance" prompt="true" required="false"/>

@@ -11,7 +11,7 @@
 //SYSIN    DD   *
  DEFINE CLUSTER ( -
             NAME( -
-            ${instance-CC_FILE_SYSTEM_HLQ}.${instance-CC_SERVER_STC_NAME}) -
+            ${instance-SERVER_FILE_SYSTEM_HLQ}.${instance-SERVER_STC_NAME}) -
             ZFS CYL(300 10) -
 #if(${instance-ZOS_ZFS_DATACLASS} && $!{instance-ZOS_ZFS_DATACLASS} != "")
       DATACLAS(${instance-ZOS_ZFS_DATACLASS}))
@@ -28,14 +28,14 @@
 //* not required anymore since z/OS 2.3
 //*******************************************************
 //*CREATE   EXEC   PGM=IOEAGFMT,REGION=0M,
-//* PARM=('-aggregate ${instance-CC_FILE_SYSTEM_HLQ}.${instance-CC_SERVER_STC_NAME} -compat')
+//* PARM=('-aggregate ${instance-SERVER_FILE_SYSTEM_HLQ}.${instance-SERVER_STC_NAME} -compat')
 //*SYSPRINT DD     SYSOUT=*
 //*STDOUT   DD     SYSOUT=*
 //*STDERR   DD     SYSOUT=*
 //*SYSUDUMP DD     SYSOUT=*
 //*CEEDUMP  DD     SYSOUT=*
 //*
-#if(${instance-WLP_OUTPUT_DIR} && $!{instance-WLP_OUTPUT_DIR} != "")
+#if(${instance-SERVER_OUTPUT_DIR} && $!{instance-SERVER_OUTPUT_DIR} != "")
 //*******************************************************
 //* Define new zfs for the output directory (logs, ect...)
 //*******************************************************
@@ -45,7 +45,7 @@
 //SYSIN    DD   *
  DEFINE CLUSTER ( -
             NAME( -
-            ${instance-CC_FILE_SYSTEM_HLQ}.${instance-CC_SERVER_STC_NAME}.OUTPUT) -
+            ${instance-SERVER_FILE_SYSTEM_HLQ}.${instance-SERVER_STC_NAME}.OUTPUT) -
             ZFS CYL(300 10) -
 #if(${instance-ZOS_ZFS_DATACLASS} && $!{instance-ZOS_ZFS_DATACLASS} != "")
       DATACLAS(${instance-ZOS_ZFS_DATACLASS}))
@@ -62,7 +62,7 @@
 //* not required anymore since z/OS 2.3
 //*******************************************************
 //*CREATEO   EXEC   PGM=IOEAGFMT,REGION=0M,
-//* PARM=('-aggregate ${instance-CC_FILE_SYSTEM_HLQ}.${instance-CC_SERVER_STC_NAME}.OUTPUT -compat')
+//* PARM=('-aggregate ${instance-SERVER_FILE_SYSTEM_HLQ}.${instance-SERVER_STC_NAME}.OUTPUT -compat')
 //*SYSPRINT DD     SYSOUT=*
 //*STDOUT   DD     SYSOUT=*
 //*STDERR   DD     SYSOUT=*

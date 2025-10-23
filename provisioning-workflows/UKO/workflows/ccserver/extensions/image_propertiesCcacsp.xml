@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/******************************************************************************/
+/* Copyright Contributors to the zOS-Workflow Project.                        */
+/* SPDX-License-Identifier: Apache-2.0                                        */
+/******************************************************************************/
+
+-->
+<atCreate name="START_SERVER" scope="instance" prompt="true" required="false"/>
+<atCreate name="SERVER_INSTALL_DIR" scope="instance" prompt="true" required="false"/>
+<atCreate name="JAVA_HOME" scope="instance" prompt="true" required="false"/>
+
+<atCreate name="SERVER_STC_NAME" scope="instance" prompt="true" required="false"/>
+<atCreate name="SERVER_PORT_NOTLS" scope="instance" prompt="true" required="false"/>
+<atCreate name="SERVER_PORT_TLS" scope="instance" prompt="true" required="false"/>
+<atCreate name="CONFIGURATION_PORT" scope="instance" prompt="true" required="false"/>
+
+<atCreate name="SERVER_STC_USER" scope="instance" prompt="true" required="false"/>
+<atCreate name="SERVER_STC_GROUP" scope="instance" prompt="true" required="false"/>
+<atCreate name="GENERIC_CLIENT_USER" scope="instance" prompt="true" required="false"/>
+<atCreate name="GENERIC_CLIENT_GROUP" scope="instance" prompt="true" required="false"/>
+
+<atCreate name="SAF_PROFILE_PREFIX" scope="instance" prompt="true" required="false"/>
+
+<atCreate name="SERVER_TLS_KEY_STORE_KEY_RING" scope="instance" prompt="true" required="false"/>
+<atCreate name="SERVER_TLS_KEY_STORE_SERVER_CERT" scope="instance" prompt="true" required="false"/>
+<atCreate name="SERVER_TLS_TRUST_STORE_KEY_RING" scope="instance" prompt="true" required="false"/>
+
+<atCreate name="CC_LPALIB" scope="instance" prompt="true" required="false"/>
+<atCreate name="CC_SAMPLIB" scope="instance" prompt="true" required="false"/>

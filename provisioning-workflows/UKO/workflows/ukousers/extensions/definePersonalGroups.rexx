@@ -10,7 +10,7 @@ KEY_CUSTODIAN1_GROUP="${instance-UKO_KEY_CUSTODIAN1_GROUP}"
 KEY_CUSTODIAN2_GROUP="${instance-UKO_KEY_CUSTODIAN2_GROUP}"
 UKO_AUDITOR_GROUP="${instance-UKO_AUDITOR_GROUP}"
 
-SUPERIOR_GROUP="${instance-UKO_PERSONAL_SUPERIOR_GROUP}"
+SUPERIOR_GROUP="${instance-PERSONAL_SUPERIOR_GROUP}"
 SAF_OWNER="${instance-SAF_OWNER}"
 
 /***********************************************************************/

@@ -6,45 +6,26 @@
 
 address tso
 
-SERVER_STC_USER="${instance-CC_SERVER_STC_USER}"
-SERVER_STC_GROUP="${instance-CC_SERVER_STC_GROUP}"
+SERVER_STC_USER="${instance-SERVER_STC_USER}"
+SERVER_STC_GROUP="${instance-SERVER_STC_GROUP}"
 
-SERVER_UNAUTHENTICATED_USER="${instance-CC_UNAUTHENTICATED_USER}"
-SERVER_UNAUTHENTICATED_GROUP="${instance-CC_UNAUTHENTICATED_GROUP}"
+#if(${instance-SERVER_UNAUTHENTICATED_USER} && ${instance-SERVER_UNAUTHENTICATED_USER} != "")
+SERVER_UNAUTHENTICATED_USER="${instance-WLP_UNAUTHENTICATED_USER}"
+SERVER_UNAUTHENTICATED_GROUP="${instance-WLP_UNAUTHENTICATED_GROUP}"
+#end
 
-SUPERIOR_GROUP="${instance-CC_TECHNICAL_SUPERIOR_GROUP}"
+GENERIC_CLIENT_USER="${instance-GENERIC_CLIENT_USER}"
+GENERIC_CLIENT_GROUP="${instance-GENERIC_CLIENT_GROUP}"
 
 SAF_OWNER="${instance-SAF_OWNER}"
 
-#if($!{instance-CC_CREATE_TECHNICAL_USER_GROUPS} == "true" ) 
-/***********************************************************************/
-/* Creating required groups                                        */
-/***********************************************************************/
-Say "Creating required groups"
-Say "Creating Liberty started task group" SERVER_STC_GROUP
-"ADDGROUP" SERVER_STC_GROUP "SUPGROUP("SUPERIOR_GROUP") ",
-   " OWNER("SAF_OWNER") OMVS(AUTOGID)"
-if RC <> 0 then do
-   Say "Creation failed, exiting"
-   exit RC
-end
-Say "Creating unauthenticated group" SERVER_UNAUTHENTICATED_GROUP
-"ADDGROUP" SERVER_UNAUTHENTICATED_GROUP "SUPGROUP("SUPERIOR_GROUP") ",
-   " OWNER("SAF_OWNER") OMVS(AUTOGID)"
-if RC <> 0 then do
-   Say "Creation failed, exiting"
-   exit RC
-end
-#end
-
-#if($!{instance-CC_CREATE_TECHNICAL_USERIDS} == "true" ) 
 /***********************************************************************/
 /* Creating all required user ids                                      */
 /***********************************************************************/
 
-Say "Creating Liberty started task user ID" SERVER_STC_USER
+Say "Creating Server started task user ID" SERVER_STC_USER
 "ADDUSER" SERVER_STC_USER "NOPASSWORD",
-   " DFLTGRP("SERVER_STC_GROUP") NAME('CC Liberty SERVER')",
+   " DFLTGRP("SERVER_STC_GROUP") NAME('CC SERVER')",
    " OWNER("SAF_OWNER") OMVS(AUTOUID ",
    " HOME('${instance-USER_HOME_PARENT_DIR}/"SERVER_STC_USER"'))"
 if RC <> 0 then do
@@ -52,16 +33,26 @@ if RC <> 0 then do
    exit RC
 end
 
+#if(${instance-SERVER_UNAUTHENTICATED_USER} && ${instance-SERVER_UNAUTHENTICATED_USER} != "")
 /* unauthenticated user for Liberty server (WSGUEST by default)" */
 Say "Creating unauthenticated user ID" SERVER_UNAUTHENTICATED_USER
 "ADDUSER" SERVER_UNAUTHENTICATED_USER "RESTRICTED NOOIDCARD NOPASSWORD",
-   " DFLTGRP("SERVER_UNAUTHENTICATED_GROUP") NAME('WAS DEFAULT USER')",
+   " DFLTGRP("SERVER_UNAUTHENTICATED_GROUP")",
+   " NAME('Liberty DEFAULT USER')",
    " OWNER("SAF_OWNER") OMVS(AUTOUID ",
    " HOME('${instance-USER_HOME_PARENT_DIR}/"SERVER_UNAUTHENTICATED_USER"')) "
 if RC <> 0 then do
    Say "Creation failed, exiting"
    exit RC
 end
-#end 
+#end
 
-
+Say "Creating CC client user ID" GENERIC_CLIENT_USER
+"ADDUSER" GENERIC_CLIENT_USER "NOPASSWORD",
+   " DFLTGRP("GENERIC_CLIENT_GROUP") NAME('CC CLIENT')",
+   " OWNER("SAF_OWNER") OMVS(AUTOUID ",
+   " HOME('${instance-USER_HOME_PARENT_DIR}/"GENERIC_CLIENT_USER"'))"
+if RC <> 0 then do
+   Say "Creation failed, exiting"
+   exit RC
+end

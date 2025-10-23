@@ -10,11 +10,11 @@
 //STDERR  DD SYSOUT=*
 //STDPARM DD *
 sh
-if [ -d ${instance-WLP_USER_DIR}/servers/${instance-UKO_SERVER_STC_NAME}/PROVISION_OK ];
+if [ -d ${instance-SERVER_USER_DIR}/servers/${instance-SERVER_STC_NAME}/PROVISION_OK ];
 then
-/usr/sbin/unmount -o immediate ${instance-WLP_USER_DIR}/servers/${instance-UKO_SERVER_STC_NAME};
-#if(${instance-WLP_OUTPUT_DIR} && $!{instance-WLP_OUTPUT_DIR} != "")
-/usr/sbin/unmount -o immediate ${instance-WLP_OUTPUT_DIR}/${instance-UKO_SERVER_STC_NAME};
+/usr/sbin/unmount -o immediate ${instance-SERVER_USER_DIR}/servers/${instance-SERVER_STC_NAME};
+#if(${instance-SERVER_OUTPUT_DIR} && $!{instance-SERVER_OUTPUT_DIR} != "")
+/usr/sbin/unmount -o immediate ${instance-SERVER_OUTPUT_DIR}/${instance-SERVER_STC_NAME};
 #end
 
 else echo "No mount directory to unmount.";
@@ -33,19 +33,19 @@ fi
 //DELETE    EXEC PGM=IDCAMS,REGION=1M
 //SYSPRINT DD SYSOUT=*
 //SYSIN    DD *
- DELETE ${instance-UKO_FILE_SYSTEM_HLQ}.${instance-UKO_SERVER_STC_NAME}
+ DELETE ${instance-SERVER_FILE_SYSTEM_HLQ}.${instance-SERVER_STC_NAME}
  IF MAXCC EQ 8 THEN DO
    SET MAXCC = 0
    END
 /*
-#if(${instance-WLP_OUTPUT_DIR} && $!{instance-WLP_OUTPUT_DIR} != "")
+#if(${instance-SERVER_OUTPUT_DIR} && $!{instance-SERVER_OUTPUT_DIR} != "")
 //*--------------------------------------------------------------------
 //* Delete the ZFS output dataset
 //*-------------------------------------------------------------------
 //DELETE    EXEC PGM=IDCAMS,REGION=1M
 //SYSPRINT DD SYSOUT=*
 //SYSIN    DD *
- DELETE ${instance-UKO_FILE_SYSTEM_HLQ}.${instance-UKO_SERVER_STC_NAME}.OUTPUT
+ DELETE ${instance-SERVER_FILE_SYSTEM_HLQ}.${instance-SERVER_STC_NAME}.OUTPUT
  IF MAXCC EQ 8 THEN DO
    SET MAXCC = 0
    END

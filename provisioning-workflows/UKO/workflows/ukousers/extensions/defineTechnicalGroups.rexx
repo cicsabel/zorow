@@ -4,12 +4,12 @@
 /* PDX-License-Identifier: Apache-2.0                             */
 /*----------------------------------------------------------------*/
 
-AGENT_STC_GROUP="${instance-UKO_AGENT_STC_GROUP}"
+AGENT_STC_GROUP="${instance-AGENT_STC_GROUP}"
 AGENT_CLIENT_GROUP="${instance-UKO_AGENT_CLIENT_GROUP}"
-SERVER_STC_GROUP="${instance-UKO_SERVER_STC_GROUP}"
-SERVER_UNAUTHENTICATED_GROUP="${instance-UKO_UNAUTHENTICATED_GROUP}"
+SERVER_STC_GROUP="${instance-SERVER_STC_GROUP}"
+SERVER_UNAUTHENTICATED_GROUP="${instance-WLP_UNAUTHENTICATED_GROUP}"
 
-SUPERIOR_GROUP="${instance-UKO_TECHNICAL_SUPERIOR_GROUP}"
+SUPERIOR_GROUP="${instance-TECHNICAL_SUPERIOR_GROUP}"
 SAF_OWNER="${instance-SAF_OWNER}"
 
 /***********************************************************************/

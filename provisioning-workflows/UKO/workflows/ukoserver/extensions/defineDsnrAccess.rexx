@@ -7,7 +7,7 @@
 /* Granting access to Db2 Naming protected access profiles */
 /***********************************************************************/
 
-SERVER_STC_USER="${instance-UKO_SERVER_STC_USER}"
+SERVER_STC_USER="${instance-SERVER_STC_USER}"
 DB_JCC_SSID="${instance-DB_JCC_SSID}"
 SAF_OWNER="${instance-SAF_OWNER}"
 

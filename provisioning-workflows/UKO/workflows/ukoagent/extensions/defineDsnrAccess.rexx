@@ -7,7 +7,7 @@
 /* Granting access to Db2 Naming protected access profiles */
 /***********************************************************************/
 
-AGENT_STC_USER="${instance-UKO_AGENT_STC_USER}"
+AGENT_STC_USER="${instance-AGENT_STC_USER}"
 DB_JCC_SSID="${instance-DB_JCC_SSID}"
 SAF_OWNER="${instance-SAF_OWNER}"
 

@@ -3,6 +3,7 @@
 <!-- Declare external file containing WAS variables referenced in the following steps -->
 <!DOCTYPE workflow [<!ENTITY variables SYSTEM "variable_imports.xml">
                     <!ENTITY image_properties SYSTEM "extensions/image_properties.xml">
+                    <!ENTITY step_create_client_cert SYSTEM "steps/create_client_cert.xml">
                     ]> 
                     
 <!--
@@ -55,16 +56,16 @@
             <targetStateSet>
                 <description>Only create the certificate authority if requested</description>
                 <extendStateExpression>
-                    <description>Skip if CC_CREATE_CA is false</description>
-                    <expression><![CDATA[ ${instance-CC_CREATE_CA} == undefined || ${instance-CC_CREATE_CA} != "true"]]></expression>
+                    <description>Skip if SERVER_CREATE_CA is false</description>
+                    <expression><![CDATA[ ${instance-SERVER_CREATE_CA} == undefined || ${instance-SERVER_CREATE_CA} != "true"]]></expression>
                     <targetState>Skipped</targetState>
                 </extendStateExpression>
             </targetStateSet>
         </condition> 
-        <variableValue name="CC_CA_LABEL" scope="instance" noPromptIfSet="false" required="false"/>
-        <variableValue name="CC_CA_CN" scope="instance" noPromptIfSet="false" required="false"/>
-        <variableValue name="CC_CA_OU" scope="instance" noPromptIfSet="false" required="false"/>
-        <variableValue name="CC_CA_O" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="SERVER_CA_LABEL" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="SERVER_CA_CN" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="SERVER_CA_OU" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="SERVER_CA_O" scope="instance" noPromptIfSet="false" required="false"/>
         <instructions>Executes a REXX program to create a certificate authority</instructions>
         <weight>1</weight>
         <autoEnable>true</autoEnable>
@@ -86,19 +87,19 @@
             <targetStateSet>
                 <description>Only create the certificates if requested</description>
                 <extendStateExpression>
-                    <description>Skip if CC_CREATE_CERTIFICATES is false</description>
-                    <expression><![CDATA[ ${instance-CC_CREATE_CERTIFICATES} == undefined || ${instance-CC_CREATE_CERTIFICATES} != "true"]]></expression>
+                    <description>Skip if SERVER_CREATE_CERTIFICATES is false</description>
+                    <expression><![CDATA[ ${instance-SERVER_CREATE_CERTIFICATES} == undefined || ${instance-SERVER_CREATE_CERTIFICATES} != "true"]]></expression>
                     <targetState>Skipped</targetState>
                 </extendStateExpression>
             </targetStateSet>
         </condition> 
-        <variableValue name="CC_SERVER_STC_USER" scope="instance" noPromptIfSet="false" required="false"/>
-        <variableValue name="CC_CA_LABEL" scope="instance" noPromptIfSet="false" required="false"/>
-        <variableValue name="CC_TLS_KEY_STORE_SERVER_CERT" scope="instance" noPromptIfSet="false" required="false"/>
-        <variableValue name="CC_OIDC_PROVIDER_CERT" scope="instance" noPromptIfSet="false" required="false"/>
-        <variableValue name="CC_TLS_KEY_STORE_SERVER_CERT_CN" scope="instance" noPromptIfSet="false" required="false"/>
-        <variableValue name="CC_TLS_KEY_STORE_SERVER_CERT_OU" scope="instance" noPromptIfSet="false" required="false"/>
-        <variableValue name="CC_TLS_KEY_STORE_SERVER_CERT_O" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="SERVER_STC_USER" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="SERVER_CA_LABEL" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="SERVER_TLS_KEY_STORE_SERVER_CERT" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="SERVER_OIDC_PROVIDER_CERT" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="SERVER_TLS_KEY_STORE_SERVER_CERT_CN" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="SERVER_TLS_KEY_STORE_SERVER_CERT_OU" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="SERVER_TLS_KEY_STORE_SERVER_CERT_O" scope="instance" noPromptIfSet="false" required="false"/>
         <instructions>Executes a REXX program to create certificates. 
             Important: adjust the NOTAFTER DATE and TIME parameters and potentially also the RSA SIZE to match your environment needs. 
         </instructions>
@@ -122,15 +123,15 @@
             <targetStateSet>
                 <description>Only create the key and trust ring if requested</description>
                 <extendStateExpression>
-                    <description>Skip if CC_CREATE_KEYRING is NO</description>
-                    <expression><![CDATA[ ${instance-CC_CREATE_KEYRING} == undefined || ${instance-CC_CREATE_KEYRING} != "true"]]></expression>
+                    <description>Skip if SERVER_CREATE_KEYRING is NO</description>
+                    <expression><![CDATA[ ${instance-SERVER_CREATE_KEYRING} == undefined || ${instance-SERVER_CREATE_KEYRING} != "true"]]></expression>
                     <targetState>Skipped</targetState>
                 </extendStateExpression>
             </targetStateSet>
         </condition> 
-        <variableValue name="CC_SERVER_STC_USER" scope="instance" noPromptIfSet="false" required="false"/>
-        <variableValue name="CC_TLS_KEY_STORE_KEY_RING" scope="instance" noPromptIfSet="false" required="false"/>
-        <variableValue name="CC_TLS_TRUST_STORE_KEY_RING" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="SERVER_STC_USER" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="SERVER_TLS_KEY_STORE_KEY_RING" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="SERVER_TLS_TRUST_STORE_KEY_RING" scope="instance" noPromptIfSet="false" required="false"/>
         <instructions>Executes a REXX program to create the key ring and potentially trust ring</instructions>
         <weight>1</weight>
         <autoEnable>true</autoEnable>
@@ -146,9 +147,9 @@
         <description>Granting access to the keyring</description>
         <runAsUser substitution="true">$!{instance-UKO_ADMIN_SECURITY}</runAsUser>
         <approver substitution="true">$!{instance-UKO_APPROVER_SECURITY}</approver>
-        <variableValue name="CC_SERVER_STC_USER" scope="instance" noPromptIfSet="false" required="false"/>
-        <variableValue name="CC_TLS_KEY_STORE_KEY_RING" scope="instance" noPromptIfSet="false" required="false"/>
-        <variableValue name="CC_TLS_TRUST_STORE_KEY_RING" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="SERVER_STC_USER" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="SERVER_TLS_KEY_STORE_KEY_RING" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="SERVER_TLS_TRUST_STORE_KEY_RING" scope="instance" noPromptIfSet="false" required="false"/>
         <variableValue name="SAF_OWNER" scope="instance" noPromptIfSet="false" required="false"/>
         <instructions>Executes a REXX program to define access to the key ring and potentially trust ring. 
             This script assumes that you use the RDATALIB class. 
@@ -175,17 +176,17 @@
                 <description>Skip for existing keyring and certificate</description>
                 <extendStateExpression>
                     <description>If certificates and key ring are already existing, assume that the certificates have been added to the key ring</description>
-                    <expression><![CDATA[ ${instance-CC_CREATE_KEYRING} == "false" && ${instance-CC_CREATE_CERTIFICATES} == "false"]]></expression>
+                    <expression><![CDATA[ ${instance-SERVER_CREATE_KEYRING} == "false" && ${instance-SERVER_CREATE_CERTIFICATES} == "false"]]></expression>
                     <targetState>Skipped</targetState>
                 </extendStateExpression>
             </targetStateSet>
         </condition> 
-        <variableValue name="CC_SERVER_STC_USER" scope="instance" noPromptIfSet="false" required="false"/>
-        <variableValue name="CC_CA_LABEL" scope="instance" noPromptIfSet="false" required="false"/>
-        <variableValue name="CC_TLS_KEY_STORE_SERVER_CERT" scope="instance" noPromptIfSet="false" required="false"/>
-        <variableValue name="CC_OIDC_PROVIDER_CERT" scope="instance" noPromptIfSet="false" required="false"/>
-        <variableValue name="CC_TLS_KEY_STORE_KEY_RING" scope="instance" noPromptIfSet="false" required="false"/>
-        <variableValue name="CC_TLS_TRUST_STORE_KEY_RING" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="SERVER_STC_USER" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="SERVER_CA_LABEL" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="SERVER_TLS_KEY_STORE_SERVER_CERT" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="SERVER_OIDC_PROVIDER_CERT" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="SERVER_TLS_KEY_STORE_KEY_RING" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="SERVER_TLS_TRUST_STORE_KEY_RING" scope="instance" noPromptIfSet="false" required="false"/>
         <instructions>Executes a REXX program to add certificates and the CA to the key ring and potentially trust ring</instructions>
         <weight>1</weight>
         <autoEnable>true</autoEnable>
@@ -195,25 +196,6 @@
             <maxLrecl>1024</maxLrecl>
         </template>
     </step>
-
-    <!-- <step name="addMoreCertificatesToTrustRing">
-        <title>Add additional certificates to trust ring </title>
-        <description>Add trusted certificates to the server's trust keyring, for example to connect to cloud keystores</description>
-        <runAsUser substitution="true">$!{instance-UKO_ADMIN_SECURITY}</runAsUser>
-        <approver substitution="true">$!{instance-UKO_APPROVER_SECURITY}</approver>
-        <variableValue name="CC_SERVER_STC_USER" scope="instance" noPromptIfSet="false" required="false"/>
-        <variableValue name="CC_TLS_TRUST_STORE_KEY_RING" scope="instance" noPromptIfSet="false" required="false"/>
-        <instructions>Adjust and execute this REXX program to add additional certificates to the trust keyring. 
-            Adjust the names to reflect your own local certificate labels.
-        </instructions>
-        <weight>1</weight>
-        <autoEnable>true</autoEnable>
-        <template>
-            <fileTemplate substitution="true">extensions/addTrustCertificates.rexx</fileTemplate>
-            <submitAs maxRc="0">TSO-REXX-JCL</submitAs>
-            <maxLrecl>1024</maxLrecl>
-        </template>
-    </step> -->
 
     <step name="configureForMsdke">
         <title>(Optional) Configure for MSDKE</title>
@@ -233,11 +215,11 @@
             </targetStateSet>
         </condition>
         <variableValue name="MSDKE_SUPPORT_REQUIRED" scope="instance" noPromptIfSet="false" required="false"/>
-        <variableValue name="CC_SERVER_STC_USER" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="SERVER_STC_USER" scope="instance" noPromptIfSet="false" required="false"/>
         <variableValue name="MSDKE_RABBIT_CA" scope="instance" noPromptIfSet="false" required="false"/>
         <variableValue name="MSDKE_RABBIT_CERT" scope="instance" noPromptIfSet="false" required="false"/>
-        <variableValue name="CC_TLS_KEY_STORE_KEY_RING" scope="instance" noPromptIfSet="false" required="false"/>
-        <variableValue name="CC_TLS_TRUST_STORE_KEY_RING" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="SERVER_TLS_KEY_STORE_KEY_RING" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="SERVER_TLS_TRUST_STORE_KEY_RING" scope="instance" noPromptIfSet="false" required="false"/>
         <instructions substitution="true">Execute the rexx script to add your rabbitMQ certificate and
             CA to the key- and trustring. Note that in this example, the certificate is already existing
             and has been defined as site certificate</instructions>
@@ -250,4 +232,10 @@
         </template>
     </step>
 
+    <!--+++++++++++++++++++++++++-->
+    <!--   Create client cert    -->
+    <!--+++++++++++++++++++++++++-->
+    &step_create_client_cert;
+     
+    
 </workflow>

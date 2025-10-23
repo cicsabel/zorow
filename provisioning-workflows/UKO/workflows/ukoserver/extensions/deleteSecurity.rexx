@@ -6,30 +6,30 @@
 
 address tso
 
-SERVER_STC_USER="${instance-UKO_SERVER_STC_USER}"
-SERVER_STC_GROUP="${instance-UKO_SERVER_STC_GROUP}"
+SERVER_STC_USER="${instance-SERVER_STC_USER}"
+SERVER_STC_GROUP="${instance-SERVER_STC_GROUP}"
 
-SERVER_UNAUTHENTICATED_USER="${instance-UKO_UNAUTHENTICATED_USER}"
-SERVER_UNAUTHENTICATED_GROUP="${instance-UKO_UNAUTHENTICATED_GROUP}"
+SERVER_UNAUTHENTICATED_USER="${instance-WLP_UNAUTHENTICATED_USER}"
+SERVER_UNAUTHENTICATED_GROUP="${instance-WLP_UNAUTHENTICATED_GROUP}"
 
 VAULT_ADMIN="${instance-UKO_VAULT_ADMIN_GROUP}"
 KEY_ADMIN="${instance-UKO_KEY_ADMIN_GROUP}"
 KEY_CUSTODIAN1="${instance-UKO_KEY_CUSTODIAN1_GROUP}"
 KEY_CUSTODIAN2="${instance-UKO_KEY_CUSTODIAN2_GROUP}"
 UKO_AUDITOR="${instance-UKO_AUDITOR_GROUP}"
-SERVER_STC_NAME="${instance-UKO_SERVER_STC_NAME}"
+SERVER_STC_NAME="${instance-SERVER_STC_NAME}"
 SAFPREFIX="${instance-SAF_PROFILE_PREFIX}"
 
 /***********************************************************************/
 /* Delete the STARTED task for this server                             */
 /***********************************************************************/
 Say "Deleting STARTED task for the server"
-"RDELETE STARTED ${instance-UKO_SERVER_STC_NAME}.*"
+"RDELETE STARTED ${instance-SERVER_STC_NAME}.*"
 
 Say "Refreshing STARTED"
 "SETROPTS RACLIST(STARTED) REFRESH"
 
-#if($!{instance-UKO_CREATE_TECHNICAL_USERIDS} == "true" ) 
+#if($!{instance-CREATE_TECHNICAL_USERIDS} == "true" ) 
 /***********************************************************************/
 /***********************************************************************/
 /* Remove userids from profiles                                        */
@@ -153,6 +153,17 @@ Say "Removing access to BPX.SMF CLASS(FACILITY) from" SERVER_STC_GROUP
 Say "Refreshing FACILITY"
 "SETROPTS RACLIST(FACILITY) REFRESH"
 
+/***********************************************************************/
+/* ICSF keystore policy checking */
+/***********************************************************************/
+
+Say "Removing access from" SERVER_STC_GROUP "on CSF-PKDS-DEFAULT "
+"PERMIT CSF-PKDS-DEFAULT CLASS(CSFKEYS) DELETE ID(" SERVER_STC_GROUP ")"
+Say "Removing access from" SERVER_STC_GROUP "on CSF-CKDS-DEFAULT "
+"PERMIT CSF-CKDS-DEFAULT CLASS(CSFKEYS) DELETE ID(" SERVER_STC_GROUP ")"
+
+Say "Refreshing CSFKEYS"
+"SETROPTS RACLIST(CSFKEYS) REFRESH"
 
 /***********************************************************************/
 /***********************************************************************/

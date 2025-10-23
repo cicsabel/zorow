@@ -6,7 +6,7 @@
 
 address tso
 
-AGENT_STC_GROUP="${instance-UKO_AGENT_STC_GROUP}"
+AGENT_STC_GROUP="${instance-AGENT_STC_GROUP}"
 PUBLIC_KEY_HASH="${instance-UKO_SERVER_PUBLIC_KEY_HASH}"
 
 SAF_OWNER="${instance-SAF_OWNER}"

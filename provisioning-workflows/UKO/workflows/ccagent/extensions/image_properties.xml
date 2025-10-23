@@ -12,4 +12,4 @@
 <atCreate name="ZOAU_HOME" scope="instance" prompt="true" required="false"/>
 <atCreate name="CAT_INSTALL_DIR" scope="instance" prompt="true" required="false"/>
 <atCreate name="CAT_USER_DIR" scope="instance" prompt="true" required="false"/>
-<atCreate name="UKO_AGENT_RUNLIB" scope="instance" prompt="true" required="false"/>
+<atCreate name="AGENT_RUNLIB" scope="instance" prompt="true" required="false"/>

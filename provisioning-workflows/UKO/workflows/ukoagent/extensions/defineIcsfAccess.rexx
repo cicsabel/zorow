@@ -6,7 +6,7 @@
 
 address tso
 
-AGENT_STC_GROUP="${instance-UKO_AGENT_STC_USER}"
+AGENT_STC_GROUP="${instance-AGENT_STC_USER}"
 SAF_OWNER="${instance-SAF_OWNER}"
 
 "RDEFINE CSFSERV **      OWNER("SAF_OWNER") UACC(NONE)"

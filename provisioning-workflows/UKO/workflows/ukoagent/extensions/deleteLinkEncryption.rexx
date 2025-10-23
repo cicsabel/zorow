@@ -6,10 +6,9 @@
 
 address tso
 
-AGENT_STC_USER="${instance-UKO_AGENT_STC_USER}"
-AGENT_STC_GROUP="${instance-UKO_AGENT_STC_GROUP}"
+AGENT_STC_USER="${instance-AGENT_STC_USER}"
+AGENT_STC_GROUP="${instance-AGENT_STC_GROUP}"
 
-AGENT_CLIENT_USER="${instance-UKO_AGENT_CLIENT_USER}"
 AGENT_CLIENT_GROUP="${instance-UKO_AGENT_CLIENT_GROUP}"
 
 PUBLIC_KEY_HASH="${instance-UKO_SERVER_PUBLIC_KEY_HASH}"
@@ -19,7 +18,7 @@ PUBLIC_KEY_HASH="${instance-UKO_SERVER_PUBLIC_KEY_HASH}"
 /***********************************************************************/
 
 
-#if($!{instance-UKO_CREATE_TECHNICAL_USERIDS} == "true" ) 
+#if($!{instance-CREATE_TECHNICAL_USERIDS} == "true" ) 
 
 Say "Removing access to KMG.WS."PUBLIC_KEY_HASH "class(XFACILIT) from" AGENT_STC_GROUP
 "PERMIT KMG.WS."PUBLIC_KEY_HASH "CLASS(XFACILIT) DELETE ID("AGENT_STC_GROUP")"

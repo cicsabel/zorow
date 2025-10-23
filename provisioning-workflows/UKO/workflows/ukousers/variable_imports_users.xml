@@ -6,8 +6,8 @@
 /******************************************************************************/
 
 -->
-<variable name="UKO_TECHNICAL_SUPERIOR_GROUP" visibility="private">
-  <label>UKO_TECHNICAL_SUPERIOR_GROUP</label>
+<variable name="TECHNICAL_SUPERIOR_GROUP" visibility="private">
+  <label>TECHNICAL_SUPERIOR_GROUP</label>
   <abstract>The superior group for the technical groups</abstract>
   <description>Superior group to be used for the SUPGROUP parameter</description>
   <category>User ID creation</category>
@@ -16,8 +16,8 @@
     <default>SYS1</default>
   </string>
 </variable>
-<variable name="UKO_PERSONAL_SUPERIOR_GROUP" visibility="private">
-  <label>UKO_PERSONAL_SUPERIOR_GROUP</label>
+<variable name="PERSONAL_SUPERIOR_GROUP" visibility="private">
+  <label>PERSONAL_SUPERIOR_GROUP</label>
   <abstract>The superior group for the role groups</abstract>
   <description>Superior group to be used for the SUPGROUP parameter</description>
   <category>User ID creation</category>

@@ -7,13 +7,13 @@
 /* Define dynamic security profiles for the server                     */
 /***********************************************************************/
 
-SERVER_STC_USER="${instance-CC_SERVER_STC_USER}"
-SERVER_STC_GROUP="${instance-CC_SERVER_STC_GROUP}"
+SERVER_STC_USER="${instance-SERVER_STC_USER}"
+SERVER_STC_GROUP="${instance-SERVER_STC_GROUP}"
 
-SERVER_UNAUTHENTICATED_USER="${instance-CC_UNAUTHENTICATED_USER}"
-SERVER_UNAUTHENTICATED_GROUP="${instance-CC_UNAUTHENTICATED_GROUP}"
+SERVER_UNAUTHENTICATED_USER="${instance-WLP_UNAUTHENTICATED_USER}"
+SERVER_UNAUTHENTICATED_GROUP="${instance-WLP_UNAUTHENTICATED_GROUP}"
 
-SERVER_STC_NAME="${instance-CC_SERVER_STC_NAME}"
+SERVER_STC_NAME="${instance-SERVER_STC_NAME}"
 SAFPREFIX="${instance-SAF_PROFILE_PREFIX}"
 SAF_OWNER="${instance-SAF_OWNER}"
 
@@ -173,5 +173,22 @@ Say "Granting access to BPX.SMF CLASS(FACILITY) to" SERVER_STC_GROUP
 
 Say "Refreshing FACILITY"
 "SETROPTS RACLIST(FACILITY) REFRESH"
+
+/***********************************************************************/
+/* ICSF keystore policy checking */
+/***********************************************************************/
+
+/* If ICSF keystore policy checking is active and the  */
+/* CSF.PKDS.TOKEN.CHECK.DEFAULT.LABEL resource in XFACILIT class is  */
+/* defined, the CSF-PKDS-DEFAULT resource in CSFKEYS class must also  */
+/* be defined and the Server's <task-user> needs access.*/
+
+Say "Granting access to" SERVER_STC_GROUP "on CSF-PKDS-DEFAULT "
+"PERMIT CSF-PKDS-DEFAULT CLASS(CSFKEYS) ACCESS(read) ID(" SERVER_STC_GROUP ")"
+Say "Granting access to" SERVER_STC_GROUP "on CSF-CKDS-DEFAULT "
+"PERMIT CSF-CKDS-DEFAULT CLASS(CSFKEYS) ACCESS(read) ID(" SERVER_STC_GROUP ")"
+
+Say "Refreshing CSFKEYS"
+"SETROPTS RACLIST(CSFKEYS) REFRESH"
 
 exit

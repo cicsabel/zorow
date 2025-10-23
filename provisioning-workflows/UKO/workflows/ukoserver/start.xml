@@ -60,14 +60,14 @@
                 <uriPath substitution="true">/zosmf/restconsoles/consoles/defcn</uriPath>
                 <requestBody substitution="true">
                     { 
-                      "cmd" : "d a,${instance-UKO_SERVER_STC_NAME}",
+                      "cmd" : "d a,${instance-SERVER_STC_NAME}",
                       "sol-key" : "NOT FOUND",
                       "system" : "${_workflow-systemName}"
                       
                     }
                 </requestBody>
                 <expectedStatusCode>200</expectedStatusCode>
-                <propertyMapping mapTo="UKO_REST_STATUS">["sol-key-detected"]</propertyMapping>
+                <propertyMapping mapTo="SERVER_REST_STATUS">["sol-key-detected"]</propertyMapping>
             </rest>
         </step>
 
@@ -78,12 +78,12 @@
             <approver substitution="true">$!{instance-UKO_APPROVER_ZFS}</approver>
             <condition>
                 <expression><![CDATA["1" == "1"]]></expression>
-                <description>Should the step be executed based on the UKO_REST_STATUS setting</description>
+                <description>Should the step be executed based on the SERVER_REST_STATUS setting</description>
                 <targetStateSet>
                     <description>Check to see whether this step should be skipped</description>
                     <extendStateExpression>
-                        <description>Only execute it UKO_REST_STATUS is not detected</description>
-                        <expression><![CDATA[ ${instance-UKO_REST_STATUS} == "false"]]></expression>
+                        <description>Only execute it SERVER_REST_STATUS is not detected</description>
+                        <expression><![CDATA[ ${instance-SERVER_REST_STATUS} == "false"]]></expression>
                         <targetState>Skipped</targetState>
                     </extendStateExpression>
                 </targetStateSet>
@@ -95,11 +95,11 @@
             <template>
                 <inlineTemplate substitution="true">
                     #set ( $d = "$")
-                    #set ($zfs = "${instance-UKO_FILE_SYSTEM_HLQ}.${instance-UKO_SERVER_STC_NAME}")
-                    if [ ! -d ${instance-WLP_USER_DIR}/servers/${instance-UKO_SERVER_STC_NAME}/PROVISION_OK ];
+                    #set ($zfs = "${instance-SERVER_FILE_SYSTEM_HLQ}.${instance-SERVER_STC_NAME}")
+                    if [ ! -d ${instance-SERVER_USER_DIR}/servers/${instance-SERVER_STC_NAME}/PROVISION_OK ];
                     then
 						# Query information about the main mountpoint
-						df_out=${d}(df ${instance-WLP_USER_DIR})
+						df_out=${d}(df ${instance-SERVER_USER_DIR})
 						
 						echo "df_out set to ${d}df_out"
 						
@@ -109,7 +109,7 @@
 						echo "dataset set to ${d}dataset"
 						
 						# Using the data set restrict using grep in the mount -qv comment
-						mount_info=${d}(mount -qv ${instance-WLP_USER_DIR} | grep ${d}dataset)
+						mount_info=${d}(mount -qv ${instance-SERVER_USER_DIR} | grep ${d}dataset)
 						
 						echo "mount_info set to ${d}mount_info"
 						
@@ -136,9 +136,9 @@
 						
 						echo "mountvalue ${d}mountvalue"
 						
-						echo "Running command: mount -t ZFS -a ${d}mountvalue -f ${zfs} ${instance-WLP_USER_DIR}/servers/${instance-UKO_SERVER_STC_NAME}"
+						echo "Running command: mount -t ZFS -a ${d}mountvalue -f ${zfs} ${instance-SERVER_USER_DIR}/servers/${instance-SERVER_STC_NAME}"
 						
-						mount -t ZFS -a ${d}mountvalue -f ${zfs} ${instance-WLP_USER_DIR}/servers/${instance-UKO_SERVER_STC_NAME}
+						mount -t ZFS -a ${d}mountvalue -f ${zfs} ${instance-SERVER_USER_DIR}/servers/${instance-SERVER_STC_NAME}
 						rc=${d}?
 						if [ ${d}rc -gt 0 ]; then
 						  echo "Failed to mount the directory see STDERR with RC ${d}rc"
@@ -159,12 +159,12 @@
             <approver substitution="true">$!{instance-UKO_APPROVER_ZFS}</approver>
             <condition>
                 <expression><![CDATA["1" == "1"]]></expression>
-                <description>Should the step be executed based on the UKO_REST_STATUS setting</description>
+                <description>Should the step be executed based on the SERVER_REST_STATUS setting</description>
                 <targetStateSet>
                     <description>Check to see whether this step should be skipped</description>
                     <extendStateExpression>
-                        <description>Only execute it UKO_REST_STATUS is not detected</description>
-                        <expression><![CDATA[ ${instance-UKO_REST_STATUS} == "false"]]></expression>
+                        <description>Only execute it SERVER_REST_STATUS is not detected</description>
+                        <expression><![CDATA[ ${instance-SERVER_REST_STATUS} == "false"]]></expression>
                         <targetState>Skipped</targetState>
                     </extendStateExpression>
                 </targetStateSet>
@@ -176,11 +176,11 @@
             <template>
                 <inlineTemplate substitution="true">
                     #set ( $d = "$")
-                    #set ($zfs = "${instance-UKO_FILE_SYSTEM_HLQ}.${instance-UKO_SERVER_STC_NAME}.OUTPUT")
-                    if [ ! -d ${instance-WLP_OUTPUT_DIR}/${instance-UKO_SERVER_STC_NAME}/PROVISION_OK ];
+                    #set ($zfs = "${instance-SERVER_FILE_SYSTEM_HLQ}.${instance-SERVER_STC_NAME}.OUTPUT")
+                    if [ ! -d ${instance-SERVER_OUTPUT_DIR}/${instance-SERVER_STC_NAME}/PROVISION_OK ];
                     then
 						# Query information about the main mountpoint
-						df_out=${d}(df ${instance-WLP_OUTPUT_DIR})
+						df_out=${d}(df ${instance-SERVER_OUTPUT_DIR})
 						
 						echo "df_out set to ${d}df_out"
 						
@@ -190,7 +190,7 @@
 						echo "dataset set to ${d}dataset"
 						
 						# Using the data set restrict using grep in the mount -qv comment
-						mount_info=${d}(mount -qv ${instance-WLP_OUTPUT_DIR} | grep ${d}dataset)
+						mount_info=${d}(mount -qv ${instance-SERVER_OUTPUT_DIR} | grep ${d}dataset)
 						
 						echo "mount_info set to ${d}mount_info"
 						
@@ -217,9 +217,9 @@
 						
 						echo "mountvalue ${d}mountvalue"
 						
-						echo "Running command: mount -t ZFS -a ${d}mountvalue -f ${zfs} ${instance-WLP_OUTPUT_DIR}/${instance-UKO_SERVER_STC_NAME}"
+						echo "Running command: mount -t ZFS -a ${d}mountvalue -f ${zfs} ${instance-SERVER_OUTPUT_DIR}/${instance-SERVER_STC_NAME}"
 						
-						mount -t ZFS -a ${d}mountvalue -f ${zfs} ${instance-WLP_OUTPUT_DIR}/${instance-UKO_SERVER_STC_NAME}
+						mount -t ZFS -a ${d}mountvalue -f ${zfs} ${instance-SERVER_OUTPUT_DIR}/${instance-SERVER_STC_NAME}
 						rc=${d}?
 						if [ ${d}rc -gt 0 ]; then
 						  echo "Failed to mount the directory see STDERR with RC ${d}rc"
@@ -241,12 +241,12 @@
 	        <approver substitution="true">$!{instance-UKO_APPROVER_CONSOLE}</approver>
             <condition>
                 <expression><![CDATA["1" == "1"]]></expression>
-                <description>Should the step be executed based on the UKO_REST_STATUS setting</description>
+                <description>Should the step be executed based on the SERVER_REST_STATUS setting</description>
                 <targetStateSet>
                     <description>Check to see whether this step should be skipped</description>
                     <extendStateExpression>
-                        <description>Only execute it UKO_REST_STATUS is not detected</description>
-                        <expression><![CDATA[ ${instance-UKO_REST_STATUS} == "false"]]></expression>
+                        <description>Only execute it SERVER_REST_STATUS is not detected</description>
+                        <expression><![CDATA[ ${instance-SERVER_REST_STATUS} == "false"]]></expression>
                         <targetState>Skipped</targetState>
                     </extendStateExpression>
                 </targetStateSet>
@@ -259,8 +259,8 @@
 				<uriPath substitution="true">/zosmf/restconsoles/consoles/defcn</uriPath>
 				<requestBody substitution="true">
 				  {
-				    "cmd" : "START ${instance-UKO_SERVER_STC_NAME},PARMS='${instance-UKO_SERVER_STC_NAME}'",
-				    "unsol-key" : "CWWKF0011I: The ${instance-UKO_SERVER_STC_NAME} server is ready",
+				    "cmd" : "START ${instance-SERVER_STC_NAME},PARMS='${instance-SERVER_STC_NAME}'",
+				    "unsol-key" : "CWWKF0011I: The ${instance-SERVER_STC_NAME} server is ready",
 				    "unsol-detect-sync" : "Y",
 				    "unsol-detect-timeout" : "200",
 				    "detect-time" : "200",
@@ -269,7 +269,7 @@
 				  }	
 				</requestBody>
 				<expectedStatusCode>200</expectedStatusCode>
-				<propertyMapping mapTo="UKO_REST_STATUS">["status"]</propertyMapping>
+				<propertyMapping mapTo="SERVER_REST_STATUS">["status"]</propertyMapping>
 			</rest>
     	</step>
 
@@ -281,12 +281,12 @@
             <approver substitution="true">$!{instance-UKO_APPROVER_TSO}</approver>
             <condition>
                 <expression><![CDATA[${startServer_console.stepState} == "Complete" || ${startServer_console.stepState} == "Skipped"]]></expression>
-                <description>Should the step be executed based on the UKO_REST_STATUS setting</description>
+                <description>Should the step be executed based on the SERVER_REST_STATUS setting</description>
                 <targetStateSet>
                     <description>Check to see whether this step should be skipped</description>
                     <extendStateExpression>
-                        <description>Only execute it UKO_REST_STATUS is not detected</description>
-                        <expression><![CDATA[ ${instance-UKO_REST_STATUS} == "detected"]]></expression>
+                        <description>Only execute it SERVER_REST_STATUS is not detected</description>
+                        <expression><![CDATA[ ${instance-SERVER_REST_STATUS} == "detected"]]></expression>
                         <targetState>Skipped</targetState>
                     </extendStateExpression>
                     <extendStateExpression>

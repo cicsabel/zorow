@@ -6,16 +6,16 @@
 
 address tso
 
-SERVER_STC_USER="${instance-CC_SERVER_STC_USER}"
-CA_LABEL="${instance-CC_CA_LABEL}"
+SERVER_STC_USER="${instance-SERVER_STC_USER}"
+CA_LABEL="${instance-SERVER_CA_LABEL}"
 /* Name of the server certificate */
-TLS_KEY_STORE_SERVER_CERT="${instance-CC_TLS_KEY_STORE_SERVER_CERT}"
+TLS_KEY_STORE_SERVER_CERT="${instance-SERVER_TLS_KEY_STORE_SERVER_CERT}"
 /* Name of the OpenID certificate */
-OIDC_PROVIDER_CERT="${instance-CC_OIDC_PROVIDER_CERT}"
+OIDC_PROVIDER_CERT="${instance-SERVER_OIDC_PROVIDER_CERT}"
 
-TLS_CN="${instance-CC_TLS_KEY_STORE_SERVER_CERT_CN}"
-TLS_OU="${instance-CC_TLS_KEY_STORE_SERVER_CERT_OU}"
-TLS_O="${instance-CC_TLS_KEY_STORE_SERVER_CERT_O}"
+TLS_CN="${instance-SERVER_TLS_KEY_STORE_SERVER_CERT_CN}"
+TLS_OU="${instance-SERVER_TLS_KEY_STORE_SERVER_CERT_OU}"
+TLS_O="${instance-SERVER_TLS_KEY_STORE_SERVER_CERT_O}"
 
 /***********************************************************************/
 /*                                                                     */
@@ -43,7 +43,7 @@ Say "Define" TLS_KEY_STORE_SERVER_CERT "for" SERVER_STC_USER "with CA" CA_LABEL
    exit RC
  end
 
-#if($!{instance-CC_TLS_KEY_STORE_SERVER_CERT} != $!{instance-CC_OIDC_PROVIDER_CERT} )
+#if($!{instance-SERVER_TLS_KEY_STORE_SERVER_CERT} != $!{instance-SERVER_OIDC_PROVIDER_CERT} )
 Say "Generate an OIDC certificate"
 Say "Define" OIDC_PROVIDER_CERT "for" SERVER_STC_USER "with CA" CA_LABEL
 "RACDCERT ID("SERVER_STC_USER") GENCERT",

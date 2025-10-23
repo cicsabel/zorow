@@ -4,8 +4,8 @@
 /* PDX-License-Identifier: Apache-2.0                             */
 /*----------------------------------------------------------------*/
 
-SERVER_STC_USER="${instance-CC_SERVER_STC_USER}"
-KEY_PREFIX="${instance-CC_KEY_PREFIX}"
+SERVER_STC_USER="${instance-SERVER_STC_USER}"
+KEY_PREFIX="${instance-KEY_PREFIX}"
 
 SAF_OWNER="${instance-SAF_OWNER}"
 

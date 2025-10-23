@@ -21,7 +21,7 @@
 
       The file can be modified to suit the needs of your business. -->
 
-<atCreate name="UKO_SERVER_STC_USER" scope="instance" prompt="true" required="false"/>
+<atCreate name="SERVER_STC_USER" scope="instance" prompt="true" required="false"/>
 <atCreate name="DB_CURRENT_SCHEMA" scope="instance" prompt="true" required="false"/>
 <atCreate name="DB_CURRENT_SQLID" scope="instance" prompt="true" required="false"/>
 
@@ -33,7 +33,7 @@
 <atCreate name="DB_DATASET_INSTALL_HLQ" scope="instance" prompt="true" required="false"/>
 
 <atCreate name="WORKSTATION_ACCESS_REQUIRED" scope="instance" prompt="true" required="false"/>
-<atCreate name="UKO_AGENT_STC_USER" scope="instance" prompt="true" required="false"/>
+<atCreate name="AGENT_STC_USER" scope="instance" prompt="true" required="false"/>
 <atCreate name="UKO_AGENT_CLIENT_USER" scope="instance" prompt="true" required="false"/>
 <atCreate name="UKO_AGENT_CLIENT_GROUP" scope="instance" prompt="true" required="false"/>
 <atCreate name="DB_AGENT_PLAN" scope="instance" prompt="true" required="false"/>

@@ -6,10 +6,10 @@
 
 address tso
 
-AGENT_STC_USER="${instance-UKO_AGENT_STC_USER}"
+AGENT_STC_USER="${instance-AGENT_STC_USER}"
 DB_JCC_SSID="${instance-DB_JCC_SSID}"
 
-#if($!{instance-UKO_CREATE_TECHNICAL_USERIDS} == "true" ) 
+#if($!{instance-CREATE_TECHNICAL_USERIDS} == "true" ) 
 /***********************************************************************/
 /***********************************************************************/
 /* Remove userids from profiles                                        */

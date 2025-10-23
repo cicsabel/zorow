@@ -7,14 +7,14 @@
 /* Define dynamic security profiles for the server                     */
 /***********************************************************************/
 
-AGENT_STC_USER="${instance-UKO_AGENT_STC_USER}"
+AGENT_STC_USER="${instance-AGENT_STC_USER}"
 SAF_OWNER="${instance-SAF_OWNER}"
 
 /* If &SYS-ECCSIGN-PREFIX and &SYS-RSAKEK-PREFIX are defined in KMGPARM, */
 /* the agent needs access to the keys. */
 /* In addition, the agent needs access to the PE keys that need to be */
 /* installed into the CKDS*/
-KEY_PREFIX="${instance-UKO_KEY_PREFIX}"
+KEY_PREFIX="${instance-KEY_PREFIX}"
 
 Say "Defining key prefix profile" KEY_PREFIX".** in case this has not been done"
 "RDEF CSFKEYS" KEY_PREFIX".** OWNER("SAF_OWNER") UACC(NONE) ",

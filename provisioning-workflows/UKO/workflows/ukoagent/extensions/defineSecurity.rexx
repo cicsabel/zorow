@@ -7,8 +7,8 @@
 /* Define security profiles for the agent                              */
 /***********************************************************************/
 
-AGENT_STC_USER="${instance-UKO_AGENT_STC_USER}"
-AGENT_STC_GROUP="${instance-UKO_AGENT_STC_GROUP}"
+AGENT_STC_USER="${instance-AGENT_STC_USER}"
+AGENT_STC_GROUP="${instance-AGENT_STC_GROUP}"
 
 AGENT_CLIENT_USER="${instance-UKO_AGENT_CLIENT_USER}"
 AGENT_CLIENT_GROUP="${instance-UKO_AGENT_CLIENT_GROUP}"
@@ -19,7 +19,7 @@ SAF_OWNER="${instance-SAF_OWNER}"
 /* Setup the STARTED task for this server                              */
 /***********************************************************************/
 Say "Defining STARTED task for the agent"
-"RDEF STARTED ${instance-UKO_AGENT_STC_NAME}.* OWNER("SAF_OWNER") UACC(NONE)",
+"RDEF STARTED ${instance-AGENT_STC_NAME}.* OWNER("SAF_OWNER") UACC(NONE)",
    " STDATA(USER("AGENT_STC_USER") PRIVILEGED(NO) TRUSTED(NO) TRACE(YES))"
 
 "SETROPTS RACLIST(STARTED) REFRESH"
@@ -107,9 +107,21 @@ Say "Granting" AGENT_STC_GROUP "access to KMG.WEBCLIENT."AGENT_CLIENT_USER
 
 "SETROPTS RACL(XFACILIT) REFRESH"
 
+/***********************************************************************/
+/* ICSF keystore policy checking */
+/***********************************************************************/
+
 /* If ICSF keystore policy checking is active and the  */
 /* CSF.PKDS.TOKEN.CHECK.DEFAULT.LABEL resource in XFACILIT class is  */
 /* defined, the CSF-PKDS-DEFAULT resource in CSFKEYS class must also  */
 /* be defined and the Agent's <task-user> needs access.*/
+
+Say "Granting access to" AGENT_STC_GROUP "on CSF-PKDS-DEFAULT "
+"PERMIT CSF-PKDS-DEFAULT CLASS(CSFKEYS) ACCESS(read) ID(" AGENT_STC_GROUP ")"
+Say "Granting access to" AGENT_STC_GROUP "on CSF-CKDS-DEFAULT "
+"PERMIT CSF-CKDS-DEFAULT CLASS(CSFKEYS) ACCESS(read) ID(" AGENT_STC_GROUP ")"
+
+Say "Refreshing CSFKEYS"
+"SETROPTS RACLIST(CSFKEYS) REFRESH"
 
 

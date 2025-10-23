@@ -14,7 +14,7 @@
             <description>Issue a stop command for the server.</description>
             <runAsUser substitution="true">$!{instance-UKO_ADMIN_CONSOLE}</runAsUser>
             <approver substitution="true">$!{instance-UKO_APPROVER_CONSOLE}</approver>
-            <variableValue name="CC_SERVER_STC_NAME" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="SERVER_STC_NAME" scope="instance" noPromptIfSet="false" required="false"/>
             <variableValue name="ZOS_STC_STOP_TIMEOUT" scope="instance" noPromptIfSet="false" required="false"/>
             <instructions substitution="false">Submitting script to stop the server.</instructions>
             <weight>1</weight>
@@ -24,7 +24,7 @@
                 <uriPath substitution="true">/zosmf/restconsoles/consoles/defcn</uriPath>
                 <requestBody substitution="true">
                   {
-                    "cmd" : "STOP ${instance-CC_SERVER_STC_NAME}",
+                    "cmd" : "STOP ${instance-SERVER_STC_NAME}",
                     "unsol-key" : "DUMMY",
                     "unsol-detect-sync" : "Y",
                     "unsol-detect-timeout" : "${instance-ZOS_STC_STOP_TIMEOUT}",
@@ -51,14 +51,14 @@
                 <uriPath substitution="true">/zosmf/restconsoles/consoles/defcn</uriPath>
                 <requestBody substitution="true">
                   {
-                    "cmd" : "d a,${instance-CC_SERVER_STC_NAME}",
+                    "cmd" : "d a,${instance-SERVER_STC_NAME}",
                     "sol-key" : "NOT FOUND",
                     "system" : "${_workflow-systemName}"
 
                   }
                 </requestBody>
                 <expectedStatusCode>200</expectedStatusCode>
-                <propertyMapping mapTo="CC_REST_STATUS">["sol-key-detected"]</propertyMapping>
+                <propertyMapping mapTo="SERVER_REST_STATUS">["sol-key-detected"]</propertyMapping>
             </rest>
         </step>
 
@@ -71,10 +71,10 @@
                 <expression><![CDATA[${check_status.stepState}=="Complete" || ${check_status.stepState} == "Skipped"]]></expression>
                 <description>Only perform check if previous step has completed</description>
                 <targetStateSet>
-                    <description>Set state to Skipped if CC_REST_STATUS does not equal false</description>
+                    <description>Set state to Skipped if SERVER_REST_STATUS does not equal false</description>
                     <extendStateExpression>
-                           <description>Only execute it CC_REST_STATUS is false</description>
-                           <expression><![CDATA[ ${instance-CC_REST_STATUS} != "false"]]></expression>
+                           <description>Only execute it SERVER_REST_STATUS is false</description>
+                           <expression><![CDATA[ ${instance-SERVER_REST_STATUS} != "false"]]></expression>
                            <targetState>Skipped</targetState>
                     </extendStateExpression>
 
@@ -88,7 +88,7 @@
                 <uriPath substitution="true">/zosmf/restconsoles/consoles/defcn</uriPath>
                 <requestBody substitution="true">
                   {
-                    "cmd" : "CANCEL ${instance-CC_SERVER_STC_NAME}",
+                    "cmd" : "CANCEL ${instance-SERVER_STC_NAME}",
                     "unsol-key" : "DUMMY",
                     "unsol-detect-sync" : "Y",
                     "unsol-detect-timeout" : "${instance-ZOS_STC_STOP_TIMEOUT}",
@@ -110,10 +110,10 @@
                 <expression><![CDATA[${check_status.stepState}=="Complete" || ${check_status.stepState} == "Skipped"]]></expression>
                 <description>Only perform check if previous step has completed</description>
                 <targetStateSet>
-                    <description>Set state to Skipped if CC_REST_STATUS does not equal false</description>
+                    <description>Set state to Skipped if SERVER_REST_STATUS does not equal false</description>
                     <extendStateExpression>
-                           <description>Only execute it CC_REST_STATUS is false</description>
-                           <expression><![CDATA[ ${instance-CC_REST_STATUS} != "false"]]></expression>
+                           <description>Only execute it SERVER_REST_STATUS is false</description>
+                           <expression><![CDATA[ ${instance-SERVER_REST_STATUS} != "false"]]></expression>
                            <targetState>Skipped</targetState>
                     </extendStateExpression>
 
@@ -127,14 +127,14 @@
                 <uriPath substitution="true">/zosmf/restconsoles/consoles/defcn</uriPath>
                 <requestBody substitution="true">
                   {
-                    "cmd" : "d a,${instance-CC_SERVER_STC_NAME}",
+                    "cmd" : "d a,${instance-SERVER_STC_NAME}",
                     "sol-key" : "NOT FOUND",
                     "system" : "${_workflow-systemName}"
 
                   }
                 </requestBody>
                 <expectedStatusCode>200</expectedStatusCode>
-                <propertyMapping mapTo="CC_REST_STATUS">["sol-key-detected"]</propertyMapping>
+                <propertyMapping mapTo="SERVER_REST_STATUS">["sol-key-detected"]</propertyMapping>
             </rest>
         </step>
 
@@ -146,12 +146,12 @@
             <approver substitution="true">$!{instance-UKO_APPROVER_CONSOLE}</approver>
             <condition>
                 <expression><![CDATA[${check_cancel.stepState} == "Complete" || ${check_cancel.stepState} == "Skipped"]]></expression>
-                <description>Should the step be executed based on the CC_REST_STATUS setting</description>
+                <description>Should the step be executed based on the SERVER_REST_STATUS setting</description>
                 <targetStateSet>
                     <description>Check to see whether this step should be skipped</description>
                     <extendStateExpression>
-                           <description>Only execute if CC_REST_STATUS is false</description>
-                           <expression><![CDATA[ ${instance-CC_REST_STATUS} != "false"]]></expression>
+                           <description>Only execute if SERVER_REST_STATUS is false</description>
+                           <expression><![CDATA[ ${instance-SERVER_REST_STATUS} != "false"]]></expression>
                            <targetState>Skipped</targetState>
                     </extendStateExpression>
 

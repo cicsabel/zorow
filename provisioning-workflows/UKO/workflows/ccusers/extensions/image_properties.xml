@@ -9,7 +9,9 @@
 
 
 
-<atCreate name="CC_SERVER_STC_USER" scope="instance" prompt="true" required="false"/>
-<atCreate name="CC_SERVER_STC_GROUP" scope="instance" prompt="true" required="false"/>
-<atCreate name="CC_UNAUTHENTICATED_USER" scope="instance" prompt="true" required="false"/>
-<atCreate name="CC_UNAUTHENTICATED_GROUP" scope="instance" prompt="true" required="false"/>
+<atCreate name="SERVER_STC_USER" scope="instance" prompt="true" required="false"/>
+<atCreate name="SERVER_STC_GROUP" scope="instance" prompt="true" required="false"/>
+<atCreate name="WLP_UNAUTHENTICATED_USER" scope="instance" prompt="true" required="false"/>
+<atCreate name="WLP_UNAUTHENTICATED_GROUP" scope="instance" prompt="true" required="false"/>
+<atCreate name="GENERIC_CLIENT_USER" scope="instance" prompt="true" required="false"/>
+<atCreate name="GENERIC_CLIENT_GROUP" scope="instance" prompt="true" required="false"/>

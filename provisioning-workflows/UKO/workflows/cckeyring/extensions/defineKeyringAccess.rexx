@@ -6,9 +6,9 @@
 
 address tso
 
-SERVER_STC_USER="${instance-CC_SERVER_STC_USER}"
-TLS_KEY_STORE_KEY_RING="${instance-CC_TLS_KEY_STORE_KEY_RING}"
-TLS_TRUST_STORE_KEY_RING="${instance-CC_TLS_TRUST_STORE_KEY_RING}"
+SERVER_STC_USER="${instance-SERVER_STC_USER}"
+TLS_KEY_STORE_KEY_RING="${instance-SERVER_TLS_KEY_STORE_KEY_RING}"
+TLS_TRUST_STORE_KEY_RING="${instance-SERVER_TLS_TRUST_STORE_KEY_RING}"
 SAF_OWNER="${instance-SAF_OWNER}"
 
 Say "RDATALIB definitions: "
@@ -18,7 +18,7 @@ Say "Define" SERVER_STC_USER"."TLS_KEY_STORE_KEY_RING
    SERVER_STC_USER"."TLS_KEY_STORE_KEY_RING".LST",
    " UACC(NONE) OWNER("SAF_OWNER") "
 
-#if($!{instance-CC_CREATE_KEYRING} == "true" && $!{instance-CC_CREATE_CERTIFICATES} == "false")
+#if($!{instance-SERVER_CREATE_KEYRING} == "true" && $!{instance-SERVER_CREATE_CERTIFICATES} == "false")
 /* if existing certificates are added to the new key ring, then CONTROL is required */
 /* to be able to access the private keys */
 Say "Grant CONTROL access to" SERVER_STC_USER "in RDATALIB"
@@ -38,7 +38,7 @@ if RC <> 0 then do
    exit RC
 end
 
-#if($!{instance-CC_TLS_KEY_STORE_KEY_RING} != $!{instance-CC_TLS_TRUST_STORE_KEY_RING} )
+#if($!{instance-SERVER_TLS_KEY_STORE_KEY_RING} != $!{instance-SERVER_TLS_TRUST_STORE_KEY_RING} )
 Say "Define" SERVER_STC_USER"."TLS_TRUST_STORE_KEY_RING
 "RDEFINE RDATALIB",
    SERVER_STC_USER"."TLS_TRUST_STORE_KEY_RING".LST",

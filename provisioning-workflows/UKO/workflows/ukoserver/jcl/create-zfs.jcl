@@ -11,13 +11,13 @@
 //SYSIN    DD   *
  DEFINE CLUSTER ( -
             NAME( -
-            ${instance-UKO_FILE_SYSTEM_HLQ}.${instance-UKO_SERVER_STC_NAME}) -
+            ${instance-SERVER_FILE_SYSTEM_HLQ}.${instance-SERVER_STC_NAME}) -
             ZFS CYL(300 10) -
-#if(${instance-UKO_ZFS_DATACLASS} && $!{instance-UKO_ZFS_DATACLASS} != "")
-      DATACLAS(${instance-UKO_ZFS_DATACLASS}))
+#if(${instance-ZOS_ZFS_DATACLASS} && $!{instance-ZOS_ZFS_DATACLASS} != "")
+      DATACLAS(${instance-ZOS_ZFS_DATACLASS}))
 #else
-      #if(${instance-UKO_ZOS_VSAM_VOLUME} != "SMS")
-      VOLUME(${instance-UKO_ZOS_VSAM_VOLUME}))
+      #if(${instance-ZOS_VSAM_VOLUME} != "SMS")
+      VOLUME(${instance-ZOS_VSAM_VOLUME}))
       #else
       )
       #end
@@ -28,14 +28,14 @@
 //* not required anymore since z/OS 2.3
 //*******************************************************
 //*CREATE   EXEC   PGM=IOEAGFMT,REGION=0M,
-//* PARM=('-aggregate ${instance-UKO_FILE_SYSTEM_HLQ}.${instance-UKO_SERVER_STC_NAME} -compat')
+//* PARM=('-aggregate ${instance-SERVER_FILE_SYSTEM_HLQ}.${instance-SERVER_STC_NAME} -compat')
 //*SYSPRINT DD     SYSOUT=*
 //*STDOUT   DD     SYSOUT=*
 //*STDERR   DD     SYSOUT=*
 //*SYSUDUMP DD     SYSOUT=*
 //*CEEDUMP  DD     SYSOUT=*
 //*
-#if(${instance-WLP_OUTPUT_DIR} && $!{instance-WLP_OUTPUT_DIR} != "")
+#if(${instance-SERVER_OUTPUT_DIR} && $!{instance-SERVER_OUTPUT_DIR} != "")
 //*******************************************************
 //* Define new zfs for the output directory (logs, ect...)
 //*******************************************************
@@ -45,13 +45,13 @@
 //SYSIN    DD   *
  DEFINE CLUSTER ( -
             NAME( -
-            ${instance-UKO_FILE_SYSTEM_HLQ}.${instance-UKO_SERVER_STC_NAME}.OUTPUT) -
+            ${instance-SERVER_FILE_SYSTEM_HLQ}.${instance-SERVER_STC_NAME}.OUTPUT) -
             ZFS CYL(300 10) -
-#if(${instance-UKO_ZFS_DATACLASS} && $!{instance-UKO_ZFS_DATACLASS} != "")
-      DATACLAS(${instance-UKO_ZFS_DATACLASS}))
+#if(${instance-ZOS_ZFS_DATACLASS} && $!{instance-ZOS_ZFS_DATACLASS} != "")
+      DATACLAS(${instance-ZOS_ZFS_DATACLASS}))
 #else
-      #if(${instance-UKO_ZOS_VSAM_VOLUME} != "SMS")
-      VOLUME(${instance-UKO_ZOS_VSAM_VOLUME}))
+      #if(${instance-ZOS_VSAM_VOLUME} != "SMS")
+      VOLUME(${instance-ZOS_VSAM_VOLUME}))
       #else
       )
       #end
@@ -62,7 +62,7 @@
 //* not required anymore since z/OS 2.3
 //*******************************************************
 //*CREATEO   EXEC   PGM=IOEAGFMT,REGION=0M,
-//* PARM=('-aggregate ${instance-UKO_FILE_SYSTEM_HLQ}.${instance-UKO_SERVER_STC_NAME}.OUTPUT -compat')
+//* PARM=('-aggregate ${instance-SERVER_FILE_SYSTEM_HLQ}.${instance-SERVER_STC_NAME}.OUTPUT -compat')
 //*SYSPRINT DD     SYSOUT=*
 //*STDOUT   DD     SYSOUT=*
 //*STDERR   DD     SYSOUT=*

@@ -7,7 +7,7 @@
 //*******************************************************
 //CCSQL  EXEC PGM=IKJEFT01,REGION=0M               
 //         EXPORT SYMLIST=*
-//         SET WEBUSER='${instance-CC_SERVER_STC_USER}'
+//         SET WEBUSER='${instance-SERVER_STC_USER}'
 //STEPLIB  DD DISP=SHR,DSN=${instance-DB_HLQ}.SDSNLOAD               
 //SYSTSPRT DD SYSOUT=*,DCB=BLKSIZE=131                         
 //SYSPRINT DD SYSOUT=*                                         

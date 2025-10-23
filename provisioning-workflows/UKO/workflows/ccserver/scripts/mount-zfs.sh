@@ -12,21 +12,21 @@
 #
 ## Set the $ sign for use in the script
 #set ( $d = "$")
-#set ($zfs = "${instance-CC_FILE_SYSTEM_HLQ}.${instance-CC_SERVER_STC_NAME}")
+#set ($zfs = "${instance-SERVER_FILE_SYSTEM_HLQ}.${instance-SERVER_STC_NAME}")
 
-if [ ! -d "${instance-WLP_USER_DIR}/servers/${instance-CC_SERVER_STC_NAME}" ]; then
-    echo "Creating server directory ${instance-WLP_USER_DIR}/servers/${instance-CC_SERVER_STC_NAME}"
-    mkdir -p ${instance-WLP_USER_DIR}/servers/${instance-CC_SERVER_STC_NAME}
+if [ ! -d "${instance-SERVER_USER_DIR}/servers/${instance-SERVER_STC_NAME}" ]; then
+    echo "Creating server directory ${instance-SERVER_USER_DIR}/servers/${instance-SERVER_STC_NAME}"
+    mkdir -p ${instance-SERVER_USER_DIR}/servers/${instance-SERVER_STC_NAME}
     if [ $? -gt 0 ]; then 
         echo "ERROR: Could not create directory" >&amp;2;
         exit "2"; 
     fi
     echo "changing access to 755"
-    chmod 755 ${instance-WLP_USER_DIR}/servers/${instance-CC_SERVER_STC_NAME}
+    chmod 755 ${instance-SERVER_USER_DIR}/servers/${instance-SERVER_STC_NAME}
 fi
 
 # Query information about the main mountpoint
-df_out=${d}(df ${instance-WLP_USER_DIR})
+df_out=${d}(df ${instance-SERVER_USER_DIR})
 
 echo "df_out set to ${d}df_out"
 
@@ -36,7 +36,7 @@ dataset=${d}(echo ${d}df_out | sed -e 's/.*(//' | sed -e 's/).*//')
 echo "dataset set to ${d}dataset"
 
 # Using the data set restrict using grep in the mount -qv comment
-mount_info=${d}(mount -qv ${instance-WLP_USER_DIR} | grep ${d}dataset)
+mount_info=${d}(mount -qv ${instance-SERVER_USER_DIR} | grep ${d}dataset)
 
 echo "mount_info set to ${d}mount_info"
 
@@ -64,11 +64,11 @@ esac
 echo "mountvalue ${d}mountvalue"
 
 if [ -z "${mountvalue}" ]; then
-    echo "Running command: mount -t ZFS -f ${zfs} ${instance-WLP_USER_DIR}/servers/${instance-CC_SERVER_STC_NAME}"
-    mount -t ZFS -f ${zfs} ${instance-WLP_USER_DIR}/servers/${instance-CC_SERVER_STC_NAME}
+    echo "Running command: mount -t ZFS -f ${zfs} ${instance-SERVER_USER_DIR}/servers/${instance-SERVER_STC_NAME}"
+    mount -t ZFS -f ${zfs} ${instance-SERVER_USER_DIR}/servers/${instance-SERVER_STC_NAME}
 else
-    echo "Running command: mount -t ZFS -a ${d}mountvalue -f ${zfs} ${instance-WLP_USER_DIR}/servers/${instance-CC_SERVER_STC_NAME}"
-    mount -t ZFS -a ${d}mountvalue -f ${zfs} ${instance-WLP_USER_DIR}/servers/${instance-CC_SERVER_STC_NAME}
+    echo "Running command: mount -t ZFS -a ${d}mountvalue -f ${zfs} ${instance-SERVER_USER_DIR}/servers/${instance-SERVER_STC_NAME}"
+    mount -t ZFS -a ${d}mountvalue -f ${zfs} ${instance-SERVER_USER_DIR}/servers/${instance-SERVER_STC_NAME}
 fi
 
 rc=${d}?
@@ -79,35 +79,35 @@ fi
 
 echo "Creating directories / files"
 
-mkdir ${instance-WLP_USER_DIR}/servers/${instance-CC_SERVER_STC_NAME}/PROVISION_OK
-chmod 755 ${instance-WLP_USER_DIR}/servers/${instance-CC_SERVER_STC_NAME}
-#if(${instance-CC_SERVER_STC_GROUP} != "" && ${instance-CC_SERVER_STC_GROUP})
-chown ${instance-CC_SERVER_STC_USER}:${instance-CC_SERVER_STC_GROUP} ${instance-WLP_USER_DIR}/servers/${instance-CC_SERVER_STC_NAME}
+mkdir ${instance-SERVER_USER_DIR}/servers/${instance-SERVER_STC_NAME}/PROVISION_OK
+chmod 755 ${instance-SERVER_USER_DIR}/servers/${instance-SERVER_STC_NAME}
+#if(${instance-SERVER_STC_GROUP} != "" && ${instance-SERVER_STC_GROUP})
+chown ${instance-SERVER_STC_USER}:${instance-SERVER_STC_GROUP} ${instance-SERVER_USER_DIR}/servers/${instance-SERVER_STC_NAME}
 #else
-#if(${instance-CC_SERVER_STC_USER} != ${instance-CC_ADMIN_ZFS})
-chown ${instance-CC_SERVER_STC_USER} ${instance-WLP_USER_DIR}/servers/${instance-CC_SERVER_STC_NAME}
+#if(${instance-SERVER_STC_USER} != ${instance-CC_ADMIN_ZFS})
+chown ${instance-SERVER_STC_USER} ${instance-SERVER_USER_DIR}/servers/${instance-SERVER_STC_NAME}
 #end
 #end
 
 # ##########################
 
-#if(${instance-WLP_OUTPUT_DIR} && $!{instance-WLP_OUTPUT_DIR} != "")
-# mount WLP_OUTPUT_DIR if specified
-#set ($zfs = "${instance-CC_FILE_SYSTEM_HLQ}.${instance-CC_SERVER_STC_NAME}.OUTPUT")
+#if(${instance-SERVER_OUTPUT_DIR} && $!{instance-SERVER_OUTPUT_DIR} != "")
+# mount SERVER_OUTPUT_DIR if specified
+#set ($zfs = "${instance-SERVER_FILE_SYSTEM_HLQ}.${instance-SERVER_STC_NAME}.OUTPUT")
 
-if [ ! -d "${instance-WLP_OUTPUT_DIR}/${instance-CC_SERVER_STC_NAME}" ]; then
-    echo "Creating output directory ${instance-WLP_OUTPUT_DIR}/${instance-CC_SERVER_STC_NAME}"
-    mkdir -p ${instance-WLP_OUTPUT_DIR}/${instance-CC_SERVER_STC_NAME}
+if [ ! -d "${instance-SERVER_OUTPUT_DIR}/${instance-SERVER_STC_NAME}" ]; then
+    echo "Creating output directory ${instance-SERVER_OUTPUT_DIR}/${instance-SERVER_STC_NAME}"
+    mkdir -p ${instance-SERVER_OUTPUT_DIR}/${instance-SERVER_STC_NAME}
     if [ $? -gt 0 ]; then 
         echo "ERROR: Could not create directory" >&amp;2;
         exit "2"; 
     fi
     echo "changing access to 755"
-    chmod 755 ${instance-WLP_OUTPUT_DIR}/${instance-CC_SERVER_STC_NAME}
+    chmod 755 ${instance-SERVER_OUTPUT_DIR}/${instance-SERVER_STC_NAME}
 fi
 
 # Query information about the main mountpoint
-df_out=${d}(df ${instance-WLP_OUTPUT_DIR})
+df_out=${d}(df ${instance-SERVER_OUTPUT_DIR})
 
 echo "df_out set to ${d}df_out"
 
@@ -117,7 +117,7 @@ dataset=${d}(echo ${d}df_out | sed -e 's/.*(//' | sed -e 's/).*//')
 echo "dataset set to ${d}dataset"
 
 # Using the data set restrict using grep in the mount -qv comment
-mount_info=${d}(mount -qv ${instance-WLP_OUTPUT_DIR} | grep ${d}dataset)
+mount_info=${d}(mount -qv ${instance-SERVER_OUTPUT_DIR} | grep ${d}dataset)
 
 echo "mount_info set to ${d}mount_info"
 
@@ -145,11 +145,11 @@ esac
 echo "mountvalue ${d}mountvalue"
 
 if [ -z "${mountvalue}" ]; then
-    echo "Running command: mount -t ZFS -f ${zfs} ${instance-WLP_OUTPUT_DIR}/${instance-CC_SERVER_STC_NAME}"
-    mount -t ZFS -f ${zfs} ${instance-WLP_OUTPUT_DIR}/${instance-CC_SERVER_STC_NAME}
+    echo "Running command: mount -t ZFS -f ${zfs} ${instance-SERVER_OUTPUT_DIR}/${instance-SERVER_STC_NAME}"
+    mount -t ZFS -f ${zfs} ${instance-SERVER_OUTPUT_DIR}/${instance-SERVER_STC_NAME}
 else
-    echo "Running command: mount -t ZFS -a ${d}mountvalue -f ${zfs} ${instance-WLP_OUTPUT_DIR}/${instance-CC_SERVER_STC_NAME}"
-    mount -t ZFS -a ${d}mountvalue -f ${zfs} ${instance-WLP_OUTPUT_DIR}/${instance-CC_SERVER_STC_NAME}
+    echo "Running command: mount -t ZFS -a ${d}mountvalue -f ${zfs} ${instance-SERVER_OUTPUT_DIR}/${instance-SERVER_STC_NAME}"
+    mount -t ZFS -a ${d}mountvalue -f ${zfs} ${instance-SERVER_OUTPUT_DIR}/${instance-SERVER_STC_NAME}
 fi
 
 rc=${d}?
@@ -157,6 +157,6 @@ if [ ${d}rc -gt 0 ]; then
   echo "Failed to mount the output directory see STDERR with RC ${d}rc"
   exit ${d}rc
 fi
-mkdir ${instance-WLP_OUTPUT_DIR}/${instance-CC_SERVER_STC_NAME}/PROVISION_OK
+mkdir ${instance-SERVER_OUTPUT_DIR}/${instance-SERVER_STC_NAME}/PROVISION_OK
 
 #end

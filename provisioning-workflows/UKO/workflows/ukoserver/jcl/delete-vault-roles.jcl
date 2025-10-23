@@ -4,7 +4,7 @@
 //**********************************************************************/
 //REXXUSS  EXEC PGM=IKJEFT01  
 // EXPORT SYMLIST=*
-// SET ZFSFILE='${instance-UKO_SERVER_STC_NAME}-deleteRolesVault.rexx'
+// SET ZFSFILE='${instance-SERVER_STC_NAME}-deleteRolesVault.rexx'
 //SYSTSPRT DD SYSOUT=*        
 //STDERR   DD SYSOUT=*        
 //SYSIN    DD DUMMY           

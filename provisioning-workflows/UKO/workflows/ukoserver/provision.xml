@@ -53,12 +53,12 @@
             <description>If requested, create and mount a new ZFS</description>
             <runAsUser substitution="true">$!{instance-UKO_ADMIN_ZFS}</runAsUser>
             <approver substitution="true">$!{instance-UKO_APPROVER_ZFS}</approver>
-            <variableValue name="UKO_SERVER_STC_NAME" scope="instance" noPromptIfSet="false" required="false"/>
-            <variableValue name="WLP_USER_DIR" scope="instance" noPromptIfSet="false" required="false"/>
-            <variableValue name="UKO_ZOS_VSAM_VOLUME" scope="instance" noPromptIfSet="false" required="false"/>
-            <variableValue name="UKO_ZFS_DATACLASS" scope="instance" noPromptIfSet="false" required="false"/>
-            <variableValue name="UKO_FILE_SYSTEM_HLQ" scope="instance" noPromptIfSet="false" required="false"/>
-            <variableValue name="WLP_OUTPUT_DIR" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="SERVER_STC_NAME" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="SERVER_USER_DIR" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="ZOS_VSAM_VOLUME" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="ZOS_ZFS_DATACLASS" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="SERVER_FILE_SYSTEM_HLQ" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="SERVER_OUTPUT_DIR" scope="instance" noPromptIfSet="false" required="false"/>
             <instructions substitution="true">Submit JCL to execute step</instructions>
             <weight>1</weight>
             <autoEnable>true</autoEnable>
@@ -70,16 +70,16 @@
         
         <step name="MountZFS" optional="false">
             <title>Mount zFS filesystem</title>
-            <description>This step runs a script to mount the zFS dataset within the directory specified by the templates WLP_USER_DIR property. The job is run under the userid specified by the templates UKO_ADMIN_ZFS property.</description>
+            <description>This step runs a script to mount the zFS dataset within the directory specified by the templates SERVER_USER_DIR property. The job is run under the userid specified by the templates UKO_ADMIN_ZFS property.</description>
             <prereqStep name="createZFS"/>
             <runAsUser substitution="true">$!{instance-UKO_ADMIN_ZFS}</runAsUser>
             <approver substitution="true">$!{instance-UKO_APPROVER_ZFS}</approver>
-            <variableValue name="WLP_USER_DIR" scope="instance" noPromptIfSet="false" required="false"/>
-            <variableValue name="WLP_OUTPUT_DIR" scope="instance" noPromptIfSet="false" required="false"/>
-            <variableValue name="UKO_SERVER_STC_NAME" scope="instance" noPromptIfSet="false" required="false"/>
-            <variableValue name="UKO_SERVER_STC_USER" scope="instance" noPromptIfSet="false" required="false"/>
-            <variableValue name="UKO_SERVER_STC_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
-            <variableValue name="UKO_FILE_SYSTEM_HLQ" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="SERVER_USER_DIR" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="SERVER_OUTPUT_DIR" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="SERVER_STC_NAME" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="SERVER_STC_USER" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="SERVER_STC_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="SERVER_FILE_SYSTEM_HLQ" scope="instance" noPromptIfSet="false" required="false"/>
             <instructions>Execute the mount zFS script to mount the zFS dataset (MountZFS.sh)</instructions>
             <weight>1</weight>
             <autoEnable>true</autoEnable>
@@ -105,19 +105,19 @@
                 <description>Replace values in server.env with the values from the properties file</description>
                 <runAsUser substitution="true">$!{instance-UKO_ADMIN_SERVER}</runAsUser>
                 <approver substitution="true">$!{instance-UKO_APPROVER_SERVER}</approver>
-                <variableValue name="UKO_INSTALL_DIR" scope="instance" noPromptIfSet="false" required="false"/>
-                <variableValue name="WLP_OUTPUT_DIR" scope="instance" noPromptIfSet="false" required="false"/>
-                <variableValue name="WLP_USER_DIR" scope="instance" noPromptIfSet="false" required="false"/>
+                <variableValue name="SERVER_INSTALL_DIR" scope="instance" noPromptIfSet="false" required="false"/>
+                <variableValue name="SERVER_OUTPUT_DIR" scope="instance" noPromptIfSet="false" required="false"/>
+                <variableValue name="SERVER_USER_DIR" scope="instance" noPromptIfSet="false" required="false"/>
                 <variableValue name="JAVA_HOME" scope="instance" noPromptIfSet="false" required="false"/>
-                <variableValue name="UKO_TLS_KEY_STORE_KEY_RING" scope="instance" noPromptIfSet="false" required="false"/>
-                <variableValue name="UKO_TLS_TRUST_STORE_KEY_RING" scope="instance" noPromptIfSet="false" required="false"/>
-                <variableValue name="UKO_TLS_KEY_STORE_SERVER_CERT" scope="instance" noPromptIfSet="false" required="false"/>
-                <variableValue name="UKO_HTTP_PORT" scope="instance" noPromptIfSet="false" required="false"/>
-                <variableValue name="UKO_HTTPS_PORT" scope="instance" noPromptIfSet="false" required="false"/>
-                <variableValue name="UKO_UNAUTHENTICATED_USER" scope="instance" noPromptIfSet="false" required="false"/>
-                <variableValue name="UKO_OAUTH_CLIENT_ID" scope="instance" noPromptIfSet="false" required="false"/>
-                <variableValue name="UKO_OAUTH_CLIENT_ID_OPENAPI" scope="instance" noPromptIfSet="false" required="false"/>
-                <variableValue name="UKO_OIDC_PROVIDER_CERT" scope="instance" noPromptIfSet="false" required="false"/>
+                <variableValue name="SERVER_TLS_KEY_STORE_KEY_RING" scope="instance" noPromptIfSet="false" required="false"/>
+                <variableValue name="SERVER_TLS_TRUST_STORE_KEY_RING" scope="instance" noPromptIfSet="false" required="false"/>
+                <variableValue name="SERVER_TLS_KEY_STORE_SERVER_CERT" scope="instance" noPromptIfSet="false" required="false"/>
+                <variableValue name="SERVER_PORT_NOTLS" scope="instance" noPromptIfSet="false" required="false"/>
+                <variableValue name="SERVER_PORT_TLS" scope="instance" noPromptIfSet="false" required="false"/>
+                <variableValue name="WLP_UNAUTHENTICATED_USER" scope="instance" noPromptIfSet="false" required="false"/>
+                <variableValue name="SERVER_OAUTH_CLIENT_ID" scope="instance" noPromptIfSet="false" required="false"/>
+                <variableValue name="SERVER_OAUTH_CLIENT_ID_OPENAPI" scope="instance" noPromptIfSet="false" required="false"/>
+                <variableValue name="SERVER_OIDC_PROVIDER_CERT" scope="instance" noPromptIfSet="false" required="false"/>
                 <variableValue name="SAF_PROFILE_PREFIX" scope="instance" noPromptIfSet="false" required="false"/>
                 <variableValue name="DB_LOCATION" scope="instance" noPromptIfSet="false" required="false"/>
                 <variableValue name="DB_CURRENT_SCHEMA" scope="instance" noPromptIfSet="false" required="false"/>
@@ -141,10 +141,10 @@
 
 
                         sed "s#JAVA_HOME=.*#JAVA_HOME=${instance-JAVA_HOME}#g;
-                            #if(${instance-WLP_OUTPUT_DIR} &amp;&amp; ${instance-WLP_OUTPUT_DIR} != "")
-                                s#^[ \#]*WLP_OUTPUT_DIR=.*#WLP_OUTPUT_DIR=${instance-WLP_OUTPUT_DIR}#g;
+                            #if(${instance-SERVER_OUTPUT_DIR} &amp;&amp; ${instance-SERVER_OUTPUT_DIR} != "")
+                                s#^[ \#]*WLP_OUTPUT_DIR=.*#WLP_OUTPUT_DIR=${instance-SERVER_OUTPUT_DIR}#g;
                             #else
-                                s#^[ \#]*WLP_OUTPUT_DIR=.*#WLP_OUTPUT_DIR=${instance-WLP_USER_DIR}/servers#g;
+                                s#^[ \#]*WLP_OUTPUT_DIR=.*#WLP_OUTPUT_DIR=${instance-SERVER_USER_DIR}/servers#g;
                             #end
                             #if(${instance-ENABLE_MTLS_VIA_HTTPS_PORT} &amp;&amp; ${instance-ENABLE_MTLS_VIA_HTTPS_PORT} != "")
                                 s#^[ \#]*TLS_CLIENT_AUTHENTICATION_SUPPORTED=.*#TLS_CLIENT_AUTHENTICATION_SUPPORTED=${instance-ENABLE_MTLS_VIA_HTTPS_PORT}#g;
@@ -155,9 +155,9 @@
                             #if(${instance-UKO_WELCOME_MESSAGE} &amp;&amp; ${instance-UKO_WELCOME_MESSAGE} != "")
                                 s#^[ \#]*EKMF_DESCRIPTION=.*#EKMF_DESCRIPTION=\"${welcomemessage}\"#g;
                             #end
-                            s#^[ \#]*TLS_KEY_STORE_KEY_RING=.*#TLS_KEY_STORE_KEY_RING=${instance-UKO_TLS_KEY_STORE_KEY_RING}#g;
-                            s#^[ \#]*TLS_TRUST_STORE_KEY_RING=.*#TLS_TRUST_STORE_KEY_RING=${instance-UKO_TLS_TRUST_STORE_KEY_RING}#g;
-                            s#^[ \#]*TLS_KEY_STORE_SERVER_CERT=.*#TLS_KEY_STORE_SERVER_CERT=${instance-UKO_TLS_KEY_STORE_SERVER_CERT}#g;
+                            s#^[ \#]*TLS_KEY_STORE_KEY_RING=.*#TLS_KEY_STORE_KEY_RING=${instance-SERVER_TLS_KEY_STORE_KEY_RING}#g;
+                            s#^[ \#]*TLS_TRUST_STORE_KEY_RING=.*#TLS_TRUST_STORE_KEY_RING=${instance-SERVER_TLS_TRUST_STORE_KEY_RING}#g;
+                            s#^[ \#]*TLS_KEY_STORE_SERVER_CERT=.*#TLS_KEY_STORE_SERVER_CERT=${instance-SERVER_TLS_KEY_STORE_SERVER_CERT}#g;
                             s#^[ \#]*EKMF_API_DB_NAME=.*#EKMF_API_DB_NAME=${instance-DB_LOCATION}#g;
                             s#^[ \#]*DATA_SET_DB_NAME=.*#DATA_SET_DB_NAME=${instance-DB_LOCATION}#g;
                             s#^[ \#]*DB_CURRENT_SCHEMA=.*#DB_CURRENT_SCHEMA=${instance-DB_CURRENT_SCHEMA}#g;
@@ -165,18 +165,18 @@
                             s#^[ \#]*LIBPATH=.*#LIBPATH=${instance-DB_LIBPATH}#g;
                             s#^[ \#]*DB_LIBPATH=.*#DB_LIBPATH=${instance-DB_LIBPATH}#g;
                             s#^[ \#]*DB_CLASSPATH=.*#DB_CLASSPATH=${instance-DB_CLASSPATH}#g;
-                            s#^[ \#]*HTTP_PORT=.*#HTTP_PORT=${instance-UKO_HTTP_PORT}#g;
-                            s#^[ \#]*HTTPS_PORT=.*#HTTPS_PORT=${instance-UKO_HTTPS_PORT}#g;
-                            s#^[ \#]*SAF_UNAUTHENTICATED_USER_ID=.*#SAF_UNAUTHENTICATED_USER_ID=${instance-UKO_UNAUTHENTICATED_USER}#g;
+                            s#^[ \#]*HTTP_PORT=.*#HTTP_PORT=${instance-SERVER_PORT_NOTLS}#g;
+                            s#^[ \#]*HTTPS_PORT=.*#HTTPS_PORT=${instance-SERVER_PORT_TLS}#g;
+                            s#^[ \#]*SAF_UNAUTHENTICATED_USER_ID=.*#SAF_UNAUTHENTICATED_USER_ID=${instance-WLP_UNAUTHENTICATED_USER}#g;
                             s#^[ \#]*SAF_PROFILE_PREFIX=.*#SAF_PROFILE_PREFIX=${instance-SAF_PROFILE_PREFIX}#g;
-                            #if(${instance-UKO_OAUTH_CLIENT_ID} &amp;&amp; ${instance-UKO_OAUTH_CLIENT_ID} != "")
-                                s#^[ \#]*EKMF_OAUTH_CLIENT_ID=.*#EKMF_OAUTH_CLIENT_ID=${instance-UKO_OAUTH_CLIENT_ID}#g;
+                            #if(${instance-SERVER_OAUTH_CLIENT_ID} &amp;&amp; ${instance-SERVER_OAUTH_CLIENT_ID} != "")
+                                s#^[ \#]*EKMF_OAUTH_CLIENT_ID=.*#EKMF_OAUTH_CLIENT_ID=${instance-SERVER_OAUTH_CLIENT_ID}#g;
                             #end
-                            #if(${instance-UKO_OAUTH_CLIENT_ID_OPENAPI} &amp;&amp; ${instance-UKO_OAUTH_CLIENT_ID_OPENAPI} != "")
-                                s#^[ \#]*EKMF_OAUTH_CLIENT_ID_OPENAPI=.*#EKMF_OAUTH_CLIENT_ID_OPENAPI=${instance-UKO_OAUTH_CLIENT_ID_OPENAPI}#g;
+                            #if(${instance-SERVER_OAUTH_CLIENT_ID_OPENAPI} &amp;&amp; ${instance-SERVER_OAUTH_CLIENT_ID_OPENAPI} != "")
+                                s#^[ \#]*EKMF_OAUTH_CLIENT_ID_OPENAPI=.*#EKMF_OAUTH_CLIENT_ID_OPENAPI=${instance-SERVER_OAUTH_CLIENT_ID_OPENAPI}#g;
                             #end
-                            s#^[ \#]*OIDC_PROVIDER_TRUST_ALIAS_NAME=.*#OIDC_PROVIDER_TRUST_ALIAS_NAME=${instance-UKO_OIDC_PROVIDER_CERT}#g;
-                            s#^[ \#]*OIDC_PROVIDER_KEY_ALIAS_NAME=.*#OIDC_PROVIDER_KEY_ALIAS_NAME=${instance-UKO_OIDC_PROVIDER_CERT}#g" ${instance-UKO_INSTALL_DIR}/server.env > ${instance-WLP_USER_DIR}/servers/${instance-UKO_SERVER_STC_NAME}/server.env;
+                            s#^[ \#]*OIDC_PROVIDER_TRUST_ALIAS_NAME=.*#OIDC_PROVIDER_TRUST_ALIAS_NAME=${instance-SERVER_OIDC_PROVIDER_CERT}#g;
+                            s#^[ \#]*OIDC_PROVIDER_KEY_ALIAS_NAME=.*#OIDC_PROVIDER_KEY_ALIAS_NAME=${instance-SERVER_OIDC_PROVIDER_CERT}#g" ${instance-SERVER_INSTALL_DIR}/server.env > ${instance-SERVER_USER_DIR}/servers/${instance-SERVER_STC_NAME}/server.env;
 
                         </inlineTemplate>
                     <submitAs>shell-JCL</submitAs>
@@ -188,9 +188,9 @@
                 <description>replace values in jvm.options with the values from the properties file</description>
                 <runAsUser substitution="true">$!{instance-UKO_ADMIN_SERVER}</runAsUser>
                 <approver substitution="true">$!{instance-UKO_APPROVER_SERVER}</approver>
-                <variableValue name="WLP_USER_DIR" scope="instance" noPromptIfSet="false" required="false"/>
-                <variableValue name="UKO_SERVER_STC_NAME" scope="instance" noPromptIfSet="false" required="false"/>
-                <variableValue name="UKO_INSTALL_DIR" scope="instance" noPromptIfSet="false" required="false"/>
+                <variableValue name="SERVER_USER_DIR" scope="instance" noPromptIfSet="false" required="false"/>
+                <variableValue name="SERVER_STC_NAME" scope="instance" noPromptIfSet="false" required="false"/>
+                <variableValue name="SERVER_INSTALL_DIR" scope="instance" noPromptIfSet="false" required="false"/>
                 <variableValue name="WLP_ANGEL_NAME" scope="instance" noPromptIfSet="false" required="false"/>
                 <variableValue name="DB_JCC_SSID" scope="instance" noPromptIfSet="false" required="false"/>
                 <instructions substitution="true">Submit shell script to execute step</instructions>
@@ -198,11 +198,11 @@
                 <autoEnable>true</autoEnable>
                 <template>
                     <inlineTemplate substitution="true">
-                        sed "s#-Djava.util.prefs.userRoot=.*#-Djava.util.prefs.userRoot=${instance-WLP_USER_DIR}/servers/${instance-UKO_SERVER_STC_NAME}/preferences#g;
+                        sed "s#-Djava.util.prefs.userRoot=.*#-Djava.util.prefs.userRoot=${instance-SERVER_USER_DIR}/servers/${instance-SERVER_STC_NAME}/preferences#g;
                             #if(${instance-WLP_ANGEL_NAME} &amp;&amp; ${instance-WLP_ANGEL_NAME} != "")
                                 s#^[ \#]*-Dcom.ibm.ws.zos.core.angelName=.*#-Dcom.ibm.ws.zos.core.angelName=${instance-WLP_ANGEL_NAME}#g;
                             #end
-                            s#^[ \#]*-Ddb2.jcc.ssid=.*#-Ddb2.jcc.ssid=${instance-DB_JCC_SSID}#g" ${instance-UKO_INSTALL_DIR}/jvm.options > ${instance-WLP_USER_DIR}/servers/${instance-UKO_SERVER_STC_NAME}/jvm.options;
+                            s#^[ \#]*-Ddb2.jcc.ssid=.*#-Ddb2.jcc.ssid=${instance-DB_JCC_SSID}#g" ${instance-SERVER_INSTALL_DIR}/jvm.options > ${instance-SERVER_USER_DIR}/servers/${instance-SERVER_STC_NAME}/jvm.options;
                     </inlineTemplate>
                     <submitAs>shell-JCL</submitAs>
                 </template>
@@ -213,10 +213,10 @@
                 <description>Submit script to setup the configDropins directory and create symbolic links to the installation diretory. </description>
                 <runAsUser substitution="true">$!{instance-UKO_ADMIN_SERVER}</runAsUser>
                 <approver substitution="true">$!{instance-UKO_APPROVER_SERVER}</approver>
-                <variableValue name="WLP_USER_DIR" scope="instance" noPromptIfSet="false" required="false"/>
-                <variableValue name="WLP_OUTPUT_DIR" scope="instance" noPromptIfSet="false" required="false"/>
-                <variableValue name="UKO_SERVER_STC_NAME" scope="instance" noPromptIfSet="false" required="false"/>
-                <variableValue name="UKO_INSTALL_DIR" scope="instance" noPromptIfSet="false" required="false"/>
+                <variableValue name="SERVER_USER_DIR" scope="instance" noPromptIfSet="false" required="false"/>
+                <variableValue name="SERVER_OUTPUT_DIR" scope="instance" noPromptIfSet="false" required="false"/>
+                <variableValue name="SERVER_STC_NAME" scope="instance" noPromptIfSet="false" required="false"/>
+                <variableValue name="SERVER_INSTALL_DIR" scope="instance" noPromptIfSet="false" required="false"/>
                 <instructions substitution="true">Submit shell script to execute step</instructions>
                 <weight>1</weight>
                 <autoEnable>true</autoEnable>
@@ -224,43 +224,43 @@
                     <inlineTemplate substitution="true">
 
                         # Create symlinks to the installation folder
-                        cd ${instance-WLP_USER_DIR}/servers/${instance-UKO_SERVER_STC_NAME}
-                        echo "creating symlink to ${instance-UKO_INSTALL_DIR}/EkmfWeb.properties"
-                        ln -s ${instance-UKO_INSTALL_DIR}/EkmfWeb.properties EkmfWeb.properties
-                        echo "creating symlink to ${instance-UKO_INSTALL_DIR}/apps"
-                        ln -s ${instance-UKO_INSTALL_DIR}/apps apps
+                        cd ${instance-SERVER_USER_DIR}/servers/${instance-SERVER_STC_NAME}
+                        echo "creating symlink to ${instance-SERVER_INSTALL_DIR}/EkmfWeb.properties"
+                        ln -s ${instance-SERVER_INSTALL_DIR}/EkmfWeb.properties EkmfWeb.properties
+                        echo "creating symlink to ${instance-SERVER_INSTALL_DIR}/apps"
+                        ln -s ${instance-SERVER_INSTALL_DIR}/apps apps
 
-                        if [ -d "${instance-UKO_INSTALL_DIR}/includes" ] 
+                        if [ -d "${instance-SERVER_INSTALL_DIR}/includes" ] 
                         then
-                            echo "creating symlink to ${instance-UKO_INSTALL_DIR}/includes"
-                            ln -s ${instance-UKO_INSTALL_DIR}/includes includes; 
+                            echo "creating symlink to ${instance-SERVER_INSTALL_DIR}/includes"
+                            ln -s ${instance-SERVER_INSTALL_DIR}/includes includes; 
                         fi
 
-                        echo "creating symlink to ${instance-UKO_INSTALL_DIR}/resources"
-                        ln -s ${instance-UKO_INSTALL_DIR}/resources resources
-                        echo "creating symlink to ${instance-UKO_INSTALL_DIR}/server.xml"
-                        ln -s ${instance-UKO_INSTALL_DIR}/server.xml server.xml			    
+                        echo "creating symlink to ${instance-SERVER_INSTALL_DIR}/resources"
+                        ln -s ${instance-SERVER_INSTALL_DIR}/resources resources
+                        echo "creating symlink to ${instance-SERVER_INSTALL_DIR}/server.xml"
+                        ln -s ${instance-SERVER_INSTALL_DIR}/server.xml server.xml			    
 
-                        #if(${instance-WLP_OUTPUT_DIR} != "" &amp;&amp; ${instance-WLP_OUTPUT_DIR})
-                            echo "Creating a symlink to the ${instance-WLP_OUTPUT_DIR}/${instance-UKO_SERVER_STC_NAME} output directory for convenience"
-                            ln -s ${instance-WLP_OUTPUT_DIR}/${instance-UKO_SERVER_STC_NAME} output
+                        #if(${instance-SERVER_OUTPUT_DIR} != "" &amp;&amp; ${instance-SERVER_OUTPUT_DIR})
+                            echo "Creating a symlink to the ${instance-SERVER_OUTPUT_DIR}/${instance-SERVER_STC_NAME} output directory for convenience"
+                            ln -s ${instance-SERVER_OUTPUT_DIR}/${instance-SERVER_STC_NAME} output
                         #end
 
-                        if [ -d "${instance-UKO_INSTALL_DIR}/configDropins" ] 
+                        if [ -d "${instance-SERVER_INSTALL_DIR}/configDropins" ] 
                         then
-                            echo "configDropins folder found in ${instance-UKO_INSTALL_DIR}"
-                            echo "creating ${instance-WLP_USER_DIR}/servers/${instance-UKO_SERVER_STC_NAME}/configDropins"
+                            echo "configDropins folder found in ${instance-SERVER_INSTALL_DIR}"
+                            echo "creating ${instance-SERVER_USER_DIR}/servers/${instance-SERVER_STC_NAME}/configDropins"
                             mkdir configDropins
-                            echo "creating ${instance-WLP_USER_DIR}/servers/${instance-UKO_SERVER_STC_NAME}/configDropins/overrides"
+                            echo "creating ${instance-SERVER_USER_DIR}/servers/${instance-SERVER_STC_NAME}/configDropins/overrides"
                             mkdir configDropins/overrides   
                                                 
                             echo "creating symlinks to the configDropins subfolders"
 
-                            echo "creating symlink to ${instance-UKO_INSTALL_DIR}/configDropins/defaults"
-                            ln -s ${instance-UKO_INSTALL_DIR}/configDropins/defaults configDropins/defaults
+                            echo "creating symlink to ${instance-SERVER_INSTALL_DIR}/configDropins/defaults"
+                            ln -s ${instance-SERVER_INSTALL_DIR}/configDropins/defaults configDropins/defaults
 
-                            echo "creating symlink to ${instance-UKO_INSTALL_DIR}/configDropins/options"
-                            ln -s ${instance-UKO_INSTALL_DIR}/configDropins/options configDropins/options
+                            echo "creating symlink to ${instance-SERVER_INSTALL_DIR}/configDropins/options"
+                            ln -s ${instance-SERVER_INSTALL_DIR}/configDropins/options configDropins/options
 
                             echo "Finished setting up configDropins:"
                             ls -al configDropins/
@@ -293,8 +293,8 @@
                         </extendStateExpression>
                     </targetStateSet>
                 </condition>
-                <variableValue name="WLP_USER_DIR" scope="instance" noPromptIfSet="false" required="false"/>
-                <variableValue name="UKO_SERVER_STC_NAME" scope="instance" noPromptIfSet="false" required="false"/>
+                <variableValue name="SERVER_USER_DIR" scope="instance" noPromptIfSet="false" required="false"/>
+                <variableValue name="SERVER_STC_NAME" scope="instance" noPromptIfSet="false" required="false"/>
                 <variableValue name="MSDKE_SUPPORT_REQUIRED" scope="instance" noPromptIfSet="false" required="false"/>
                 <variableValue name="MSDKE_RABBIT_URI" scope="instance" noPromptIfSet="false" required="false"/>
                 <variableValue name="MSDKE_WRAPPING_KEK_LABEL" scope="instance" noPromptIfSet="false" required="false"/>
@@ -304,7 +304,7 @@
                 <autoEnable>true</autoEnable>
                 <template>
                     <inlineTemplate substitution="true">
-                        cd ${instance-WLP_USER_DIR}/servers/${instance-UKO_SERVER_STC_NAME}
+                        cd ${instance-SERVER_USER_DIR}/servers/${instance-SERVER_STC_NAME}
 
                         mv ./server.env ./server.env.old
 
@@ -368,19 +368,19 @@
                             # getting rid of potential dashes in the codepage
                             ccsid=$(echo "${instance-DB_CODEPAGE}" | sed 's/-//g')
 
-                            echo "/* Agent configuration parameters */" > ${instance-TEMP_DIR}/${instance-UKO_AGENT_STC_NAME}-KMGPARM;    
-                            sed "s#^\&amp;IP-PORT.*#\&amp;IP-PORT(${instance-UKO_AGENT_PORT})#g;
-                                s#^\&amp;SYS-RSAKEK-PREFIX.*#\&amp;SYS-RSAKEK-PREFIX(${instance-UKO_KEY_PREFIX}.RSAKEK)#g;
-                                s#^\&amp;SYS-ECCSIGN-PREFIX.*#\&amp;SYS-ECCSIGN-PREFIX(${instance-UKO_KEY_PREFIX}.ECCSIGN)#g;
+                            echo "/* Agent configuration parameters */" > ${instance-TEMP_DIR}/${instance-AGENT_STC_NAME}-KMGPARM;    
+                            sed "s#^\&amp;IP-PORT.*#\&amp;IP-PORT(${instance-AGENT_PORT})#g;
+                                s#^\&amp;SYS-RSAKEK-PREFIX.*#\&amp;SYS-RSAKEK-PREFIX(${instance-KEY_PREFIX}.RSAKEK)#g;
+                                s#^\&amp;SYS-ECCSIGN-PREFIX.*#\&amp;SYS-ECCSIGN-PREFIX(${instance-KEY_PREFIX}.ECCSIGN)#g;
                                 s#^\&amp;DB2-PLAN.*#\&amp;DB2-PLAN(${instance-DB_AGENT_PLAN})#g;
                                 s#^\&amp;DB2-SYSTEM.*#\&amp;DB2-SYSTEM(${instance-DB_JCC_SSID})#g;
                                 s#^\&amp;SYS-CCSID.*#\&amp;SYS-CCSID(${ccsid})#g;
                                 s#^\&amp;SYS-JDBC-LOCATION.*#\&amp;SYS-JDBC-LOCATION(${instance-DB_LOCATION})#g;
                                 s#^\&amp;SYS-JDBC-PORT.*#\&amp;SYS-JDBC-PORT(${instance-DB_JDBC_PORT})#g;
                                 s#^\&amp;SYS-JDBC-SECPORT.*#\&amp;SYS-JDBC-SECPORT(${instance-DB_JDBC_SECPORT})#g;
-                                s#^\&amp;WEBCLIENT.*#\&amp;WEBCLIENT(${instance-UKO_AGENT_CLIENT_USER})#g" "//'${instance-UKO_AGENT_EXECLIB}(KMGOPDB2)'" >> ${instance-TEMP_DIR}/${instance-UKO_AGENT_STC_NAME}-KMGPARM;
+                                s#^\&amp;WEBCLIENT.*#\&amp;WEBCLIENT(${instance-UKO_AGENT_CLIENT_USER})#g" "//'${instance-AGENT_EXECLIB}(KMGOPDB2)'" >> ${instance-TEMP_DIR}/${instance-AGENT_STC_NAME}-KMGPARM;
 
-                            echo "&amp;DB2-QUALIFIER(${instance-DB_CURRENT_SCHEMA})" >> ${instance-TEMP_DIR}/${instance-UKO_AGENT_STC_NAME}-KMGPARM;    
+                            echo "&amp;DB2-QUALIFIER(${instance-DB_CURRENT_SCHEMA})" >> ${instance-TEMP_DIR}/${instance-AGENT_STC_NAME}-KMGPARM;    
                                 
                         </inlineTemplate>
                     <submitAs>shell-JCL</submitAs>
@@ -394,49 +394,49 @@
             <description>Remove read and execute access for all users to the zFS file system and set group access if required</description>
             <runAsUser substitution="true">$!{instance-UKO_ADMIN_SERVER}</runAsUser>
             <approver substitution="true">$!{instance-UKO_APPROVER_SERVER}</approver>
-            <variableValue name="WLP_USER_DIR" scope="instance" noPromptIfSet="false" required="false"/>
-            <variableValue name="WLP_OUTPUT_DIR" scope="instance" noPromptIfSet="false" required="false"/>
-            <variableValue name="UKO_SERVER_STC_NAME" scope="instance" noPromptIfSet="false" required="false"/>
-            <variableValue name="UKO_SERVER_STC_USER" scope="instance" noPromptIfSet="false" required="false"/>
-            <variableValue name="UKO_SERVER_STC_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
-            <instructions substitution="true">Remove access to all users from ${instance-WLP_USER_DIR}/servers/${instance-UKO_SERVER_STC_NAME}</instructions>
+            <variableValue name="SERVER_USER_DIR" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="SERVER_OUTPUT_DIR" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="SERVER_STC_NAME" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="SERVER_STC_USER" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="SERVER_STC_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
+            <instructions substitution="true">Remove access to all users from ${instance-SERVER_USER_DIR}/servers/${instance-SERVER_STC_NAME}</instructions>
             <weight>1</weight>
             <autoEnable>true</autoEnable>
             <template>
                 <inlineTemplate substitution="true">
 
-            #if(${instance-UKO_SERVER_STC_GROUP} != "" &amp;&amp; ${instance-UKO_SERVER_STC_GROUP})               
-                ownership="${instance-UKO_SERVER_STC_USER}:${instance-UKO_SERVER_STC_GROUP}"
+            #if(${instance-SERVER_STC_GROUP} != "" &amp;&amp; ${instance-SERVER_STC_GROUP})               
+                ownership="${instance-SERVER_STC_USER}:${instance-SERVER_STC_GROUP}"
                 dirflag=750
                 fileflag=640
             #else
-                ownership="${instance-UKO_SERVER_STC_USER}"
+                ownership="${instance-SERVER_STC_USER}"
                 dirflag=700
                 fileflag=600
             #end
 
-            #if(${instance-WLP_OUTPUT_DIR} != "" &amp;&amp; ${instance-WLP_OUTPUT_DIR})
-                echo "Changing ownership of ${instance-WLP_OUTPUT_DIR}/${instance-UKO_SERVER_STC_NAME} to $ownership"
-                chown -R $ownership ${instance-WLP_OUTPUT_DIR}/${instance-UKO_SERVER_STC_NAME}
-                echo "Ensure read and write access to ${instance-WLP_OUTPUT_DIR}/${instance-UKO_SERVER_STC_NAME}"
-                chmod -R u+rw ${instance-WLP_OUTPUT_DIR}/${instance-UKO_SERVER_STC_NAME}
+            #if(${instance-SERVER_OUTPUT_DIR} != "" &amp;&amp; ${instance-SERVER_OUTPUT_DIR})
+                echo "Changing ownership of ${instance-SERVER_OUTPUT_DIR}/${instance-SERVER_STC_NAME} to $ownership"
+                chown -R $ownership ${instance-SERVER_OUTPUT_DIR}/${instance-SERVER_STC_NAME}
+                echo "Ensure read and write access to ${instance-SERVER_OUTPUT_DIR}/${instance-SERVER_STC_NAME}"
+                chmod -R u+rw ${instance-SERVER_OUTPUT_DIR}/${instance-SERVER_STC_NAME}
             #end
 
-            echo "Transfer ownership of ${instance-WLP_USER_DIR}/servers/${instance-UKO_SERVER_STC_NAME} to $ownership"
-            chown $ownership ${instance-WLP_USER_DIR}/servers/${instance-UKO_SERVER_STC_NAME}
-            chown $ownership ${instance-WLP_USER_DIR}/servers/${instance-UKO_SERVER_STC_NAME}/server.env
-            chown $ownership ${instance-WLP_USER_DIR}/servers/${instance-UKO_SERVER_STC_NAME}/jvm.options
+            echo "Transfer ownership of ${instance-SERVER_USER_DIR}/servers/${instance-SERVER_STC_NAME} to $ownership"
+            chown $ownership ${instance-SERVER_USER_DIR}/servers/${instance-SERVER_STC_NAME}
+            chown $ownership ${instance-SERVER_USER_DIR}/servers/${instance-SERVER_STC_NAME}/server.env
+            chown $ownership ${instance-SERVER_USER_DIR}/servers/${instance-SERVER_STC_NAME}/jvm.options
             echo "Change file access to $fileflag"
-            chmod $fileflag ${instance-WLP_USER_DIR}/servers/${instance-UKO_SERVER_STC_NAME}/server.env
-            chmod $fileflag ${instance-WLP_USER_DIR}/servers/${instance-UKO_SERVER_STC_NAME}/jvm.options
+            chmod $fileflag ${instance-SERVER_USER_DIR}/servers/${instance-SERVER_STC_NAME}/server.env
+            chmod $fileflag ${instance-SERVER_USER_DIR}/servers/${instance-SERVER_STC_NAME}/jvm.options
             echo "Change directory access to $dirflag"
-            chmod $dirflag ${instance-WLP_USER_DIR}/servers/${instance-UKO_SERVER_STC_NAME}
-            if [ -d "${instance-WLP_USER_DIR}/servers/${instance-UKO_SERVER_STC_NAME}/configDropins" ] 
+            chmod $dirflag ${instance-SERVER_USER_DIR}/servers/${instance-SERVER_STC_NAME}
+            if [ -d "${instance-SERVER_USER_DIR}/servers/${instance-SERVER_STC_NAME}/configDropins" ] 
             then
-                chown $ownership ${instance-WLP_USER_DIR}/servers/${instance-UKO_SERVER_STC_NAME}/configDropins
-                chown $ownership ${instance-WLP_USER_DIR}/servers/${instance-UKO_SERVER_STC_NAME}/configDropins/overrides
-                chmod $dirflag ${instance-WLP_USER_DIR}/servers/${instance-UKO_SERVER_STC_NAME}/configDropins
-                chmod $dirflag ${instance-WLP_USER_DIR}/servers/${instance-UKO_SERVER_STC_NAME}/configDropins/overrides
+                chown $ownership ${instance-SERVER_USER_DIR}/servers/${instance-SERVER_STC_NAME}/configDropins
+                chown $ownership ${instance-SERVER_USER_DIR}/servers/${instance-SERVER_STC_NAME}/configDropins/overrides
+                chmod $dirflag ${instance-SERVER_USER_DIR}/servers/${instance-SERVER_STC_NAME}/configDropins
+                chmod $dirflag ${instance-SERVER_USER_DIR}/servers/${instance-SERVER_STC_NAME}/configDropins/overrides
             fi
                 </inlineTemplate>
             <submitAs>shell-JCL</submitAs>
@@ -450,11 +450,11 @@
         <description>Create the server proc</description>
            <runAsUser substitution="true">$!{instance-UKO_ADMIN_TSO}</runAsUser>
            <approver substitution="true">$!{instance-UKO_APPROVER_TSO}</approver>
-        <variableValue name="UKO_SERVER_STC_NAME" scope="instance" noPromptIfSet="false" required="false"/>
-        <variableValue name="UKO_ZOS_PROCLIB" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="SERVER_STC_NAME" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="ZOS_PROCLIB" scope="instance" noPromptIfSet="false" required="false"/>
         <variableValue name="DB_HLQ" scope="instance" noPromptIfSet="false" required="false"/>
         <variableValue name="WLP_INSTALL_DIR" scope="instance" noPromptIfSet="false" required="false"/>
-        <variableValue name="WLP_USER_DIR" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="SERVER_USER_DIR" scope="instance" noPromptIfSet="false" required="false"/>
         <variableValue name="JAVA_HOME" scope="instance" noPromptIfSet="false" required="false"/>
         <instructions substitution="true">Submit JCL to execute step</instructions>
         <weight>5</weight>
@@ -475,10 +475,10 @@
             <description>Configure the new UKO server for z/OS authentication to the angel</description>
             <runAsUser substitution="true">$!{instance-UKO_ADMIN_SECURITY}</runAsUser>
             <approver substitution="true">$!{instance-UKO_APPROVER_SECURITY}</approver>
-            <variableValue name="UKO_SERVER_STC_USER" scope="instance" noPromptIfSet="false" required="false"/>
-            <variableValue name="UKO_SERVER_STC_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
-            <variableValue name="UKO_UNAUTHENTICATED_USER" scope="instance" noPromptIfSet="false" required="false"/>
-            <variableValue name="UKO_UNAUTHENTICATED_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="SERVER_STC_USER" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="SERVER_STC_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="WLP_UNAUTHENTICATED_USER" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="WLP_UNAUTHENTICATED_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
             <variableValue name="SAF_OWNER" scope="instance" noPromptIfSet="false" required="false"/>
             <variableValue name="WLP_ANGEL_NAME" scope="instance" noPromptIfSet="false" required="false"/>
             <variableValue name="SAF_PROFILE_PREFIX" scope="instance" noPromptIfSet="false" required="false"/>
@@ -497,7 +497,7 @@
             <description>Define the profiles in the CSFSERV class and grant access</description>
             <runAsUser substitution="true">$!{instance-UKO_ADMIN_SECURITY}</runAsUser>
             <approver substitution="true">$!{instance-UKO_APPROVER_SECURITY}</approver>
-            <variableValue name="UKO_SERVER_STC_USER" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="SERVER_STC_USER" scope="instance" noPromptIfSet="false" required="false"/>
             <variableValue name="SAF_OWNER" scope="instance" noPromptIfSet="false" required="false"/>
             <instructions>Executes a REXX program to create profiles and grant access</instructions>
             <weight>1</weight>
@@ -514,9 +514,9 @@
             <description>Create entry in CSFKEYS class and grant access</description>
             <runAsUser substitution="true">$!{instance-UKO_ADMIN_SECURITY}</runAsUser>
             <approver substitution="true">$!{instance-UKO_APPROVER_SECURITY}</approver>
-            <variableValue name="UKO_KEY_PREFIX" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="KEY_PREFIX" scope="instance" noPromptIfSet="false" required="false"/>
             <variableValue name="UKO_RECOVERY_KEY" scope="instance" noPromptIfSet="false" required="false"/>
-            <variableValue name="UKO_SERVER_STC_USER" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="SERVER_STC_USER" scope="instance" noPromptIfSet="false" required="false"/>
             <variableValue name="SAF_OWNER" scope="instance" noPromptIfSet="false" required="false"/>
             <instructions>Executes a REXX program to create the key prefix</instructions>
             <weight>1</weight>
@@ -534,7 +534,7 @@
             <runAsUser substitution="true">$!{instance-UKO_ADMIN_SECURITY}</runAsUser>
             <approver substitution="true">$!{instance-UKO_APPROVER_SECURITY}</approver>
             <variableValue name="DB_JCC_SSID" scope="instance" noPromptIfSet="false" required="false"/>
-            <variableValue name="UKO_SERVER_STC_USER" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="SERVER_STC_USER" scope="instance" noPromptIfSet="false" required="false"/>
             <variableValue name="SAF_OWNER" scope="instance" noPromptIfSet="false" required="false"/>
             <instructions substitution="true">Review rexx and execute it to create the required DSNR profiles and grant access</instructions>
             <weight>1</weight>
@@ -702,7 +702,7 @@
                     </extendStateExpression>
                 </targetStateSet>
             </condition>
-            <variableValue name="UKO_SERVER_STC_NAME" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="SERVER_STC_NAME" scope="instance" noPromptIfSet="false" required="false"/>
             <instructions>Execute console API to check if its set up correctly</instructions>
             <weight>1</weight>
             <skills>z/OS administration</skills>
@@ -712,14 +712,14 @@
                 <uriPath substitution="true">/zosmf/restconsoles/consoles/defcn</uriPath>
                 <requestBody substitution="true">
                     { 
-                      "cmd" : "d a,${instance-UKO_SERVER_STC_NAME}",
+                      "cmd" : "d a,${instance-SERVER_STC_NAME}",
                       "sol-key" : "NOT FOUND",
                       "system" : "${_workflow-systemName}"
                       
                     }
                 </requestBody>
                 <expectedStatusCode>200</expectedStatusCode>
-                <propertyMapping mapTo="UKO_REST_STATUS">["sol-key-detected"]</propertyMapping>
+                <propertyMapping mapTo="SERVER_REST_STATUS">["sol-key-detected"]</propertyMapping>
             </rest>
         </step>
     
@@ -753,8 +753,8 @@
 				<uriPath substitution="true">/zosmf/restconsoles/consoles/defcn</uriPath>
 				<requestBody substitution="true">
 				  {
-				    "cmd" : "START ${instance-UKO_SERVER_STC_NAME},PARMS='${instance-UKO_SERVER_STC_NAME}'",
-				    "unsol-key" : "CWWKF0011I: The ${instance-UKO_SERVER_STC_NAME} server is ready",
+				    "cmd" : "START ${instance-SERVER_STC_NAME},PARMS='${instance-SERVER_STC_NAME}'",
+				    "unsol-key" : "CWWKF0011I: The ${instance-SERVER_STC_NAME} server is ready",
                     "unsol-detect-sync" : "Y",
 				    "unsol-detect-timeout" : "120",
 				    "detect-time" : "120",
@@ -763,7 +763,7 @@
 				  }	
 				</requestBody>
 				<expectedStatusCode>200</expectedStatusCode>
-				<propertyMapping mapTo="UKO_REST_STATUS">["status"]</propertyMapping>
+				<propertyMapping mapTo="SERVER_REST_STATUS">["status"]</propertyMapping>
 			</rest>
     	</step>
     	
@@ -775,12 +775,12 @@
             <approver substitution="true">$!{instance-UKO_APPROVER_TSO}</approver>
             <condition>
                 <expression><![CDATA[${startServer_console.stepState} == "Complete" || ${startServer_console.stepState} == "Skipped"]]></expression>
-                <description>Should the step be executed based on the UKO_REST_STATUS setting</description>
+                <description>Should the step be executed based on the SERVER_REST_STATUS setting</description>
                 <targetStateSet>
                     <description>Check to see whether this step should be skipped</description>
                     <extendStateExpression>
-                        <description>Only execute it UKO_REST_STATUS is not detected</description>
-                        <expression><![CDATA[ ${instance-UKO_REST_STATUS} == "detected"]]></expression>
+                        <description>Only execute it SERVER_REST_STATUS is not detected</description>
+                        <expression><![CDATA[ ${instance-SERVER_REST_STATUS} == "detected"]]></expression>
                         <targetState>Skipped</targetState>
                     </extendStateExpression>
 	      			<extendStateExpression>
@@ -825,22 +825,22 @@
                     echo "ERROR: Could not query hostname" >&amp;2;
                     exit "11"; 
                 fi
-                echo "UKO_ADDRESS https://$host:${instance-UKO_HTTPS_PORT}" >> ${instance-TEMP_DIR}/${instance-UKO_SERVER_STC_NAME}.properties
+                echo "SERVER_ADDRESS https://$host:${instance-SERVER_PORT_TLS}" >> ${instance-TEMP_DIR}/${instance-SERVER_STC_NAME}.properties
                 if [ $? -gt 0 ]; then 
                     echo "ERROR: Could not create properties file" >&amp;2;
                     exit "7"; 
                 fi 
 
-                currentversion=$(iconv -t IBM037 -f utf-8 ${instance-WLP_USER_DIR}/servers/${instance-UKO_SERVER_STC_NAME}/EkmfWeb.properties | grep com.ibm.websphere.productVersion | sed -E 's/.*=([^\$])/\1/')
+                currentversion=$(iconv -t IBM037 -f utf-8 ${instance-SERVER_USER_DIR}/servers/${instance-SERVER_STC_NAME}/EkmfWeb.properties | grep com.ibm.websphere.productVersion | sed -E 's/.*=([^\$])/\1/')
 
-                echo "UKO_SERVER_VERSION $currentversion" >> ${instance-TEMP_DIR}/${instance-UKO_SERVER_STC_NAME}.properties
+                echo "SERVER_VERSION $currentversion" >> ${instance-TEMP_DIR}/${instance-SERVER_STC_NAME}.properties
 
-                serverdirectory=${instance-WLP_USER_DIR}/servers/${instance-UKO_SERVER_STC_NAME}
-                echo "UKO_SERVER_DIRECTORY $serverdirectory" >> ${instance-TEMP_DIR}/${instance-UKO_SERVER_STC_NAME}.properties
+                serverdirectory=${instance-SERVER_USER_DIR}/servers/${instance-SERVER_STC_NAME}
+                echo "SERVER_DIRECTORY $serverdirectory" >> ${instance-TEMP_DIR}/${instance-SERVER_STC_NAME}.properties
 
             </inlineTemplate>
             <submitAs>shell-JCL</submitAs>
-            <output substitution="true" needResolveConflicts="false">${instance-TEMP_DIR}/${instance-UKO_SERVER_STC_NAME}.properties</output>
+            <output substitution="true" needResolveConflicts="false">${instance-TEMP_DIR}/${instance-SERVER_STC_NAME}.properties</output>
         </template>
     </step>
 

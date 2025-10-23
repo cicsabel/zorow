@@ -4,7 +4,7 @@
 /* PDX-License-Identifier: Apache-2.0                             */
 /*----------------------------------------------------------------*/
 
-CC_GROUP="${instance-CRYPTO_CONNECT_USER_GROUP}"
+CC_GROUP="${instance-GENERIC_CLIENT_GROUP}"
 SAFPREFIX="${instance-SAF_PROFILE_PREFIX}"
 
 /***********************************************************************/

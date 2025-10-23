@@ -4,14 +4,14 @@
 //**********************************************************************/
 //COPY1 EXEC PGM=IEBGENER,MEMLIMIT=0M
 //SYSUT2 DD DISP=SHR,
-//          DSN=${instance-UKO_ZOS_PROCLIB}(${instance-WLP_ANGEL_NAME})
+//          DSN=${instance-ZOS_PROCLIB}(${instance-WLP_ANGEL_NAME})
 //SYSPRINT DD SYSOUT=*
 //SYSIN  DD *
 //SYSUT1 DD DATA,DLM='@@'
 //${instance-WLP_ANGEL_NAME} PROC PARMS='',COLD=N,
 //        NAME='${instance-WLP_ANGEL_NAME}',SAFLOG=N
 //*------------------------------------------------------------------
-//* UKO Liberty Angel Process
+//* Liberty Angel Process
 //*------------------------------------------------------------------
 //* PARMS   - Angel process name
 //* WLP_INSTALL_DIR- The path to the root of WebSphere Liberty Profile
@@ -35,15 +35,15 @@
 @@
 /*
 ## Create the STCJOBS member if required
-#if(${instance-UKO_STC_JOB_CARD} && $!{instance-UKO_STC_JOB_CARD} != "")
+#if(${instance-ZOS_STC_JOB_CARD} && $!{instance-ZOS_STC_JOB_CARD} != "")
 //COPY2 EXEC PGM=IEBGENER,MEMLIMIT=0M
 //SYSUT2 DD DISP=SHR,
-//          DSN=${instance-UKO_ZOS_STCJOBS}(${instance-WLP_ANGEL_NAME})
+//          DSN=${instance-ZOS_STCJOBS}(${instance-WLP_ANGEL_NAME})
 //SYSPRINT DD SYSOUT=*
 //SYSIN  DD *
 //SYSUT1 DD DATA,DLM='@@'
 #set($jobcard = "//${instance-WLP_ANGEL_NAME} ")
-#set($stc = "${instance-UKO_STC_JOB_CARD}")
+#set($stc = "${instance-ZOS_STC_JOB_CARD}")
 ## Parse the jobcard passed in looking for ,
 #foreach( $parm in $stc.split(","))
 #set($temp = "${jobcard}${parm},")
@@ -59,7 +59,7 @@ $jobcard.substring(0,$jobcard.lastIndexOf(","))
 //*
 //* Set proc order and then execute angel
 //*
-//PROCLIB JCLLIB ORDER=${instance-UKO_ZOS_PROCLIB}
+//PROCLIB JCLLIB ORDER=${instance-ZOS_PROCLIB}
 //ANGEL    EXEC ${instance-WLP_ANGEL_NAME}
 @@
 /*

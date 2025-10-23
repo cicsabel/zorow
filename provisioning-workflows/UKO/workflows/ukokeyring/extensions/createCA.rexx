@@ -7,10 +7,10 @@
 address tso
 
 
-CA_LABEL="${instance-UKO_CA_LABEL}"
-CA_CN="${instance-UKO_CA_CN}"
-CA_OU="${instance-UKO_CA_OU}"
-CA_O="${instance-UKO_CA_O}"
+CA_LABEL="${instance-SERVER_CA_LABEL}"
+CA_CN="${instance-SERVER_CA_CN}"
+CA_OU="${instance-SERVER_CA_OU}"
+CA_O="${instance-SERVER_CA_O}"
 
 "SETROPTS CLASSACT(DIGTCERT)"
 

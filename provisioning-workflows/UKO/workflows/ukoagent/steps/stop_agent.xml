@@ -22,11 +22,11 @@
                 <uriPath substitution="true">/zosmf/restconsoles/consoles/defcn</uriPath>
                 <requestBody substitution="true">
                   {
-                    "cmd" : "STOP ${instance-UKO_AGENT_STC_NAME}",
+                    "cmd" : "STOP ${instance-AGENT_STC_NAME}",
                     "unsol-key" : "DUMMY",
                     "unsol-detect-sync" : "Y",
-                    "unsol-detect-timeout" : "${instance-STC_STOP_TIMEOUT}",
-                    "detect-time" : "${instance-STC_STOP_TIMEOUT}",
+                    "unsol-detect-timeout" : "${instance-ZOS_STC_STOP_TIMEOUT}",
+                    "detect-time" : "${instance-ZOS_STC_STOP_TIMEOUT}",
                     "system" : "${_workflow-systemName}"
                   }
                 </requestBody>
@@ -48,7 +48,7 @@
                 <uriPath substitution="true">/zosmf/restconsoles/consoles/defcn</uriPath>
                 <requestBody substitution="true">
                   {
-                    "cmd" : "d a,${instance-UKO_AGENT_STC_NAME}",
+                    "cmd" : "d a,${instance-AGENT_STC_NAME}",
                     "sol-key" : "NOT FOUND",
                     "system" : "${_workflow-systemName}"
 
@@ -85,11 +85,11 @@
                 <uriPath substitution="true">/zosmf/restconsoles/consoles/defcn</uriPath>
                 <requestBody substitution="true">
                   {
-                    "cmd" : "CANCEL ${instance-UKO_AGENT_STC_NAME}",
+                    "cmd" : "CANCEL ${instance-AGENT_STC_NAME}",
                     "unsol-key" : "DUMMY",
                     "unsol-detect-sync" : "Y",
-                    "unsol-detect-timeout" : "${instance-STC_STOP_TIMEOUT}",
-                    "detect-time" : "${instance-STC_STOP_TIMEOUT}",
+                    "unsol-detect-timeout" : "${instance-ZOS_STC_STOP_TIMEOUT}",
+                    "detect-time" : "${instance-ZOS_STC_STOP_TIMEOUT}",
                     "system" : "${_workflow-systemName}"
                   }
                 </requestBody>
@@ -124,7 +124,7 @@
                 <uriPath substitution="true">/zosmf/restconsoles/consoles/defcn</uriPath>
                 <requestBody substitution="true">
                   {
-                    "cmd" : "d a,${instance-UKO_AGENT_STC_NAME}",
+                    "cmd" : "d a,${instance-AGENT_STC_NAME}",
                     "sol-key" : "NOT FOUND",
                     "system" : "${_workflow-systemName}"
 

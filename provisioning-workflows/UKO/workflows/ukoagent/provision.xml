@@ -67,12 +67,12 @@
                 </targetStateSet>
             </condition>
             <variableValue name="UKO_AGENT_CLIENT_USER" scope="instance" noPromptIfSet="false" required="false"/>
-            <variableValue name="UKO_AGENT_PORT" scope="instance" noPromptIfSet="false" required="false"/>
-            <variableValue name="UKO_KEY_PREFIX" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="AGENT_PORT" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="KEY_PREFIX" scope="instance" noPromptIfSet="false" required="false"/>
             <variableValue name="DB_CODEPAGE" scope="instance" noPromptIfSet="false" required="false"/>
             <variableValue name="TEMP_DIR" scope="instance" noPromptIfSet="false" required="false"/>
-            <variableValue name="UKO_AGENT_STC_NAME" scope="instance" noPromptIfSet="false" required="false"/>
-            <variableValue name="UKO_AGENT_SAMPLIB" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="AGENT_STC_NAME" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="AGENT_SAMPLIB" scope="instance" noPromptIfSet="false" required="false"/>
             <instructions substitution="true">Submit shell script to execute step</instructions>
             <weight>1</weight>
             <autoEnable>true</autoEnable>
@@ -82,12 +82,12 @@
                         # getting rid of potential dashes in the codepage
                         ccsid=$(echo "${instance-DB_CODEPAGE}" | sed 's/-//g')
 
-                        echo "/* Agent configuration parameters */" > ${instance-TEMP_DIR}/${instance-UKO_AGENT_STC_NAME}-KMGPARM;    
-                        sed "s#^\&amp;IP-PORT.*#\&amp;IP-PORT(${instance-UKO_AGENT_PORT})#g;
-                            s#^\&amp;SYS-RSAKEK-PREFIX.*#\&amp;SYS-RSAKEK-PREFIX(${instance-UKO_KEY_PREFIX}.RSAKEK)#g;
-                            s#^\&amp;SYS-ECCSIGN-PREFIX.*#\&amp;SYS-ECCSIGN-PREFIX(${instance-UKO_KEY_PREFIX}.ECCSIGN)#g;
+                        echo "/* Agent configuration parameters */" > ${instance-TEMP_DIR}/${instance-AGENT_STC_NAME}-KMGPARM;    
+                        sed "s#^\&amp;IP-PORT.*#\&amp;IP-PORT(${instance-AGENT_PORT})#g;
+                            s#^\&amp;SYS-RSAKEK-PREFIX.*#\&amp;SYS-RSAKEK-PREFIX(${instance-KEY_PREFIX}.RSAKEK)#g;
+                            s#^\&amp;SYS-ECCSIGN-PREFIX.*#\&amp;SYS-ECCSIGN-PREFIX(${instance-KEY_PREFIX}.ECCSIGN)#g;
                             s#^\&amp;SYS-CCSID.*#\&amp;SYS-CCSID(${ccsid})#g;
-                            s#^\&amp;WEBCLIENT.*#\&amp;WEBCLIENT(${instance-UKO_AGENT_CLIENT_USER})#g" "//'${instance-UKO_AGENT_SAMPLIB}(KMGOPCRY)'" >> ${instance-TEMP_DIR}/${instance-UKO_AGENT_STC_NAME}-KMGPARM;
+                            s#^\&amp;WEBCLIENT.*#\&amp;WEBCLIENT(${instance-UKO_AGENT_CLIENT_USER})#g" "//'${instance-AGENT_SAMPLIB}(KMGOPCRY)'" >> ${instance-TEMP_DIR}/${instance-AGENT_STC_NAME}-KMGPARM;
                             
                     </inlineTemplate>
                 <submitAs>shell-JCL</submitAs>
@@ -112,18 +112,18 @@
                 </targetStateSet>
             </condition>
             <variableValue name="UKO_AGENT_CLIENT_USER" scope="instance" noPromptIfSet="false" required="false"/>
-            <variableValue name="UKO_AGENT_PORT" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="AGENT_PORT" scope="instance" noPromptIfSet="false" required="false"/>
             <variableValue name="DB_AGENT_PLAN" scope="instance" noPromptIfSet="false" required="false"/>
             <variableValue name="DB_JCC_SSID" scope="instance" noPromptIfSet="false" required="false"/>
             <variableValue name="DB_LOCATION" scope="instance" noPromptIfSet="false" required="false"/>
             <variableValue name="DB_JDBC_PORT" scope="instance" noPromptIfSet="false" required="false"/>
             <variableValue name="DB_JDBC_SECPORT" scope="instance" noPromptIfSet="false" required="false"/>
-            <variableValue name="UKO_KEY_PREFIX" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="KEY_PREFIX" scope="instance" noPromptIfSet="false" required="false"/>
             <variableValue name="DB_CURRENT_SCHEMA" scope="instance" noPromptIfSet="false" required="false"/>
             <variableValue name="DB_CODEPAGE" scope="instance" noPromptIfSet="false" required="false"/>
             <variableValue name="TEMP_DIR" scope="instance" noPromptIfSet="false" required="false"/>
-            <variableValue name="UKO_AGENT_STC_NAME" scope="instance" noPromptIfSet="false" required="false"/>
-            <variableValue name="UKO_AGENT_SAMPLIB" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="AGENT_STC_NAME" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="AGENT_SAMPLIB" scope="instance" noPromptIfSet="false" required="false"/>
             <instructions substitution="true">Submit shell script to execute step</instructions>
             <weight>1</weight>
             <autoEnable>true</autoEnable>
@@ -133,19 +133,19 @@
                         # getting rid of potential dashes in the codepage
                         ccsid=$(echo "${instance-DB_CODEPAGE}" | sed 's/-//g')
 
-                        echo "/* Agent configuration parameters */" > ${instance-TEMP_DIR}/${instance-UKO_AGENT_STC_NAME}-KMGPARM;    
-                        sed "s#^\&amp;IP-PORT.*#\&amp;IP-PORT(${instance-UKO_AGENT_PORT})#g;
-                            s#^\&amp;SYS-RSAKEK-PREFIX.*#\&amp;SYS-RSAKEK-PREFIX(${instance-UKO_KEY_PREFIX}.RSAKEK)#g;
-                            s#^\&amp;SYS-ECCSIGN-PREFIX.*#\&amp;SYS-ECCSIGN-PREFIX(${instance-UKO_KEY_PREFIX}.ECCSIGN)#g;
+                        echo "/* Agent configuration parameters */" > ${instance-TEMP_DIR}/${instance-AGENT_STC_NAME}-KMGPARM;    
+                        sed "s#^\&amp;IP-PORT.*#\&amp;IP-PORT(${instance-AGENT_PORT})#g;
+                            s#^\&amp;SYS-RSAKEK-PREFIX.*#\&amp;SYS-RSAKEK-PREFIX(${instance-KEY_PREFIX}.RSAKEK)#g;
+                            s#^\&amp;SYS-ECCSIGN-PREFIX.*#\&amp;SYS-ECCSIGN-PREFIX(${instance-KEY_PREFIX}.ECCSIGN)#g;
                             s#^\&amp;DB2-PLAN.*#\&amp;DB2-PLAN(${instance-DB_AGENT_PLAN})#g;
                             s#^\&amp;DB2-SYSTEM.*#\&amp;DB2-SYSTEM(${instance-DB_JCC_SSID})#g;
                             s#^\&amp;SYS-CCSID.*#\&amp;SYS-CCSID(${ccsid})#g;
                             s#^\&amp;SYS-JDBC-LOCATION.*#\&amp;SYS-JDBC-LOCATION(${instance-DB_LOCATION})#g;
                             s#^\&amp;SYS-JDBC-PORT.*#\&amp;SYS-JDBC-PORT(${instance-DB_JDBC_PORT})#g;
                             s#^\&amp;SYS-JDBC-SECPORT.*#\&amp;SYS-JDBC-SECPORT(${instance-DB_JDBC_SECPORT})#g;
-                            s#^\&amp;WEBCLIENT.*#\&amp;WEBCLIENT(${instance-UKO_AGENT_CLIENT_USER})#g" "//'${instance-UKO_AGENT_SAMPLIB}(KMGOPDB2)'" >> ${instance-TEMP_DIR}/${instance-UKO_AGENT_STC_NAME}-KMGPARM;
+                            s#^\&amp;WEBCLIENT.*#\&amp;WEBCLIENT(${instance-UKO_AGENT_CLIENT_USER})#g" "//'${instance-AGENT_SAMPLIB}(KMGOPDB2)'" >> ${instance-TEMP_DIR}/${instance-AGENT_STC_NAME}-KMGPARM;
 
-                        echo "&amp;DB2-QUALIFIER(${instance-DB_CURRENT_SCHEMA})" >> ${instance-TEMP_DIR}/${instance-UKO_AGENT_STC_NAME}-KMGPARM;    
+                        echo "&amp;DB2-QUALIFIER(${instance-DB_CURRENT_SCHEMA})" >> ${instance-TEMP_DIR}/${instance-AGENT_STC_NAME}-KMGPARM;    
                             
                     </inlineTemplate>
                 <submitAs>shell-JCL</submitAs>
@@ -158,8 +158,8 @@
 	        <runAsUser substitution="true">$!{instance-UKO_ADMIN_SERVER}</runAsUser>
 	        <approver substitution="true">$!{instance-UKO_APPROVER_SERVER}</approver>
             <variableValue name="TEMP_DIR" scope="instance" noPromptIfSet="false" required="false"/>
-            <variableValue name="UKO_AGENT_STC_NAME" scope="instance" noPromptIfSet="false" required="false"/>
-            <variableValue name="UKO_ZOS_PARMLIB" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="AGENT_STC_NAME" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="ZOS_PARMLIB" scope="instance" noPromptIfSet="false" required="false"/>
         	<instructions substitution="true">Submit JCL to execute step</instructions>
             <weight>5</weight>
             <autoEnable>true</autoEnable>
@@ -175,10 +175,10 @@
             <description>Create the agent proc</description>
        		<runAsUser substitution="true">$!{instance-UKO_ADMIN_TSO}</runAsUser>
        		<approver substitution="true">$!{instance-UKO_APPROVER_TSO}</approver>
-            <variableValue name="UKO_ZOS_PROCLIB" scope="instance" noPromptIfSet="false" required="false"/>
-            <variableValue name="UKO_ZOS_PARMLIB" scope="instance" noPromptIfSet="false" required="false"/>
-            <variableValue name="UKO_AGENT_STC_NAME" scope="instance" noPromptIfSet="false" required="false"/>
-            <variableValue name="UKO_AGENT_RUNLIB" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="ZOS_PROCLIB" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="ZOS_PARMLIB" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="AGENT_STC_NAME" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="AGENT_RUNLIB" scope="instance" noPromptIfSet="false" required="false"/>
             <variableValue name="TCPIP_HLQ" scope="instance" noPromptIfSet="false" required="false"/>
         	<instructions substitution="true">Submit JCL to execute step</instructions>
             <weight>5</weight>
@@ -200,14 +200,14 @@
             <description>Configure UKO agent Security</description>
             <runAsUser substitution="true">$!{instance-UKO_ADMIN_SECURITY}</runAsUser>
             <approver substitution="true">$!{instance-UKO_APPROVER_SECURITY}</approver>
-            <variableValue name="UKO_AGENT_STC_NAME" scope="instance" noPromptIfSet="false" required="false"/>
-            <variableValue name="UKO_AGENT_STC_USER" scope="instance" noPromptIfSet="false" required="false"/>
-            <variableValue name="UKO_AGENT_STC_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="AGENT_STC_NAME" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="AGENT_STC_USER" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="AGENT_STC_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
             <variableValue name="UKO_AGENT_CLIENT_USER" scope="instance" noPromptIfSet="false" required="false"/>
             <variableValue name="UKO_AGENT_CLIENT_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
             <variableValue name="SAF_OWNER" scope="instance" noPromptIfSet="false" required="false"/>
             <variableValue name="SKMGMOD0_APF" scope="instance" noPromptIfSet="false" required="true"/>
-            <variableValue name="UKO_AGENT_RUNLIB_READ" scope="instance" noPromptIfSet="false" required="true"/>
+            <variableValue name="AGENT_RUNLIB_READ" scope="instance" noPromptIfSet="false" required="true"/>
             <instructions substitution="true">Submit rexx exec to execute step</instructions>
             <weight>1</weight>
             <autoEnable>true</autoEnable>
@@ -223,7 +223,7 @@
             <description>Define the profiles in the CSFSERV class and grant access</description>
             <runAsUser substitution="true">$!{instance-UKO_ADMIN_SECURITY}</runAsUser>
             <approver substitution="true">$!{instance-UKO_APPROVER_SECURITY}</approver>
-            <variableValue name="UKO_AGENT_STC_USER" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="AGENT_STC_USER" scope="instance" noPromptIfSet="false" required="false"/>
             <variableValue name="SAF_OWNER" scope="instance" noPromptIfSet="false" required="false"/>
             <instructions>Executes a REXX program to create profiles and grant access</instructions>
             <weight>1</weight>
@@ -240,8 +240,8 @@
             <description>Create entry in CSFKEYS class and grant access</description>
             <runAsUser substitution="true">$!{instance-UKO_ADMIN_SECURITY}</runAsUser>
             <approver substitution="true">$!{instance-UKO_APPROVER_SECURITY}</approver>
-            <variableValue name="UKO_KEY_PREFIX" scope="instance" noPromptIfSet="false" required="false"/>
-            <variableValue name="UKO_AGENT_STC_USER" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="KEY_PREFIX" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="AGENT_STC_USER" scope="instance" noPromptIfSet="false" required="false"/>
             <variableValue name="SAF_OWNER" scope="instance" noPromptIfSet="false" required="false"/>
             <instructions>Executes a REXX program to create the key prefix</instructions>
             <weight>1</weight>
@@ -271,7 +271,7 @@
                 </targetStateSet>
             </condition>            
             <variableValue name="DB_JCC_SSID" scope="instance" noPromptIfSet="false" required="false"/>
-            <variableValue name="UKO_AGENT_STC_USER" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="AGENT_STC_USER" scope="instance" noPromptIfSet="false" required="false"/>
             <variableValue name="SAF_OWNER" scope="instance" noPromptIfSet="false" required="false"/>
             <instructions substitution="true">If this agent is used by the EKMF Workstation as well, review the rexx and execute it to create the required DSNR profile and grant access</instructions>
             <weight>1</weight>
@@ -289,7 +289,7 @@
             <runAsUser substitution="true">$!{instance-UKO_ADMIN_SECURITY}</runAsUser>
             <approver substitution="true">$!{instance-UKO_APPROVER_SECURITY}</approver>
             <variableValue name="UKO_SERVER_PUBLIC_KEY_HASH" scope="instance" noPromptIfSet="false" required="false"/>
-            <variableValue name="UKO_AGENT_STC_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="AGENT_STC_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
             <variableValue name="SAF_OWNER" scope="instance" noPromptIfSet="false" required="false"/>
             <instructions substitution="true">Submit rexx exec to execute step</instructions>
             <weight>1</weight>
@@ -324,7 +324,7 @@
                     </extendStateExpression>
                 </targetStateSet>
             </condition>
-            <variableValue name="UKO_AGENT_STC_NAME" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="AGENT_STC_NAME" scope="instance" noPromptIfSet="false" required="false"/>
             <instructions>Execute console API to check if its set up correctly</instructions>
             <weight>1</weight>
             <skills>z/OS administration</skills>
@@ -334,14 +334,14 @@
                 <uriPath substitution="true">/zosmf/restconsoles/consoles/defcn</uriPath>
                 <requestBody substitution="true">
                     { 
-                      "cmd" : "d a,${instance-UKO_AGENT_STC_NAME}",
+                      "cmd" : "d a,${instance-AGENT_STC_NAME}",
                       "sol-key" : "NOT FOUND",
                       "system" : "${_workflow-systemName}"
                       
                     }
                 </requestBody>
                 <expectedStatusCode>200</expectedStatusCode>
-                <propertyMapping mapTo="UKO_REST_STATUS">["sol-key-detected"]</propertyMapping>
+                <propertyMapping mapTo="SERVER_REST_STATUS">["sol-key-detected"]</propertyMapping>
             </rest>
         </step>    
 
@@ -362,7 +362,7 @@
 	      			</extendStateExpression>
 				</targetStateSet>
 			</condition>
-            <variableValue name="UKO_AGENT_STC_NAME" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="AGENT_STC_NAME" scope="instance" noPromptIfSet="false" required="false"/>
      		<instructions substitution="false">Submitting script to stop the server.</instructions>
         	<weight>1</weight>
         	<autoEnable>true</autoEnable>
@@ -371,7 +371,7 @@
 				<uriPath substitution="true">/zosmf/restconsoles/consoles/defcn</uriPath>
 				<requestBody substitution="true">
 				  {
-				    "cmd" : "START ${instance-UKO_AGENT_STC_NAME}",
+				    "cmd" : "START ${instance-AGENT_STC_NAME}",
 				    "unsol-key" : "CONSOLE INTERFACE READY",
 				    "unsol-detect-sync" : "Y",
 				    "unsol-detect-timeout" : "120",

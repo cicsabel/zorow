@@ -2,7 +2,6 @@
 
 <!-- Declare external file containing WAS variables referenced in the following steps -->
 <!DOCTYPE workflow [<!ENTITY variables SYSTEM "variable_imports.xml">
-                    <!ENTITY variables_cat SYSTEM "variable_imports_cat.xml">
                     <!ENTITY image_properties SYSTEM "extensions/image_properties.xml">
                     ]> 
                     
@@ -38,7 +37,7 @@
   	<!--+++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
 	<!--     Include variables used by the following steps     -->
 	<!--+++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
-    &variables_cat;
+    &variables;
     &image_properties;
    
     <!--++++++++++++++++++++++-->
@@ -184,7 +183,7 @@
         <variableValue name="CAT_AGENT_USER" scope="instance" noPromptIfSet="false" required="true"/>
         <variableValue name="SAF_OWNER" scope="instance" noPromptIfSet="false" required="true"/>
         <variableValue name="CAT_TEMP_HLQ_ALTER" scope="instance" noPromptIfSet="false" required="true"/>
-        <variableValue name="UKO_AGENT_RUNLIB_READ" scope="instance" noPromptIfSet="false" required="true"/>
+        <variableValue name="AGENT_RUNLIB_READ" scope="instance" noPromptIfSet="false" required="true"/>
         <variableValue name="CAT_SMF_DATASETS_READ" scope="instance" noPromptIfSet="false" required="true"/>
         <variableValue name="SKMGMOD0_APF" scope="instance" noPromptIfSet="false" required="true"/>
         <instructions substitution="true">Submit rexx exec to execute step</instructions>
@@ -207,7 +206,7 @@
         <variableValue name="CAT_INSTALL_DIR" scope="instance" noPromptIfSet="false" required="false"/>
         <variableValue name="CAT_USER_DIR" scope="instance" noPromptIfSet="false" required="false"/>
         <variableValue name="ZOAU_HOME" scope="instance" noPromptIfSet="false" required="false"/>
-        <variableValue name="UKO_AGENT_RUNLIB" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="AGENT_RUNLIB" scope="instance" noPromptIfSet="false" required="false"/>
         <instructions substitution="true">Submit JCL to collect</instructions>
         <weight>5</weight>
         <autoEnable>true</autoEnable>
