@@ -41,6 +41,16 @@ if RC <> 0 then do
    exit RC
 end
 
+/* in our example, this is a SITE certificate, so the access to the keyring */
+/* must be CONTROL to read the preivate key */
+Say "Grant CONTROL access to" SERVER_STC_USER "in RDATALIB for SITE cert"
+"PERMIT",
+   SERVER_STC_USER"."TLS_KEY_STORE_KEY_RING".LST",
+   " CLASS(RDATALIB)",
+   " ACCESS(CONTROL) ID("SERVER_STC_USER")"
+Say "Refresh RDATALIB"
+"SETROPTS RACLIST(RDATALIB) REFRESH"
+
 #if($!{instance-SERVER_TLS_KEY_STORE_KEY_RING} != $!{instance-SERVER_TLS_TRUST_STORE_KEY_RING} )
 /* Connect certificate to trust ring */
 Say "Connect rabbitMQ provider certificate to trust ring"

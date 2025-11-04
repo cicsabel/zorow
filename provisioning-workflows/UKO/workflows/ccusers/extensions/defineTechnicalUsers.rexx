@@ -9,7 +9,7 @@ address tso
 SERVER_STC_USER="${instance-SERVER_STC_USER}"
 SERVER_STC_GROUP="${instance-SERVER_STC_GROUP}"
 
-#if(${instance-SERVER_UNAUTHENTICATED_USER} && ${instance-SERVER_UNAUTHENTICATED_USER} != "")
+#if(${instance-WLP_UNAUTHENTICATED_USER} && ${instance-WLP_UNAUTHENTICATED_USER} != "")
 SERVER_UNAUTHENTICATED_USER="${instance-WLP_UNAUTHENTICATED_USER}"
 SERVER_UNAUTHENTICATED_GROUP="${instance-WLP_UNAUTHENTICATED_GROUP}"
 #end
@@ -33,7 +33,7 @@ if RC <> 0 then do
    exit RC
 end
 
-#if(${instance-SERVER_UNAUTHENTICATED_USER} && ${instance-SERVER_UNAUTHENTICATED_USER} != "")
+#if(${instance-WLP_UNAUTHENTICATED_USER} && ${instance-WLP_UNAUTHENTICATED_USER} != "")
 /* unauthenticated user for Liberty server (WSGUEST by default)" */
 Say "Creating unauthenticated user ID" SERVER_UNAUTHENTICATED_USER
 "ADDUSER" SERVER_UNAUTHENTICATED_USER "RESTRICTED NOOIDCARD NOPASSWORD",
