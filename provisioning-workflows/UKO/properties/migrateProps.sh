@@ -29,8 +29,6 @@ echo "Migration script will now process '$old_config_file' to create '$new_confi
 
 sedstring=""
 sedstring="${sedstring} s#UKO_INSTALL_DIR#SERVER_INSTALL_DIR#g;"
-
-# Define old and new variable names
 sedstring="${sedstring} s#UKO_INSTALL_DIR#SERVER_INSTALL_DIR#g;"
 sedstring="${sedstring} s#WLP_USER_DIR#SERVER_USER_DIR#g;"
 sedstring="${sedstring} s#WLP_OUTPUT_DIR#SERVER_OUTPUT_DIR#g;"
@@ -71,6 +69,10 @@ sedstring="${sedstring} s#UKO_OIDC_PROVIDER_CERT#SERVER_OIDC_PROVIDER_CERT#g;"
 sedstring="${sedstring} s#UKO_SERVER_STC_NAME#SERVER_STC_NAME#g;"
 sedstring="${sedstring} s#UKO_SERVER_STC_USER#SERVER_STC_USER#g;"
 sedstring="${sedstring} s#UKO_SERVER_STC_GROUP#SERVER_STC_GROUP#g;"
+
+sed -e "$sedstring" ${old_config_file} > ${new_config_file}_temp;
+sedstring=""
+
 sedstring="${sedstring} s#UKO_UNAUTHENTICATED_USER#WLP_UNAUTHENTICATED_USER#g;"
 sedstring="${sedstring} s#UKO_UNAUTHENTICATED_GROUP#WLP_UNAUTHENTICATED_GROUP#g;"
 sedstring="${sedstring} s#UKO_HTTP_PORT#SERVER_PORT_NOTLS#g;"
@@ -105,7 +107,8 @@ sedstring="${sedstring} s#CC_HTTP_PORT#SERVER_PORT_NOTLS#g;"
 sedstring="${sedstring} s#CC_HTTPS_PORT#SERVER_PORT_TLS#g;"
 sedstring="${sedstring} s#CC_KEY_PREFIX#KEY_PREFIX#g;"
 
-sed -e "$sedstring" ${old_config_file} > ${new_config_file};
+sed -e "$sedstring" ${new_config_file}_temp > ${new_config_file};
+rm ${new_config_file}_temp
 
 echo "Migration complete. New configuration saved to ${new_config_file}"
 
