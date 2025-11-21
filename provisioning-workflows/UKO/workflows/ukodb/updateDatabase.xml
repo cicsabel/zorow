@@ -22,7 +22,6 @@
 
   <workflowInfo>
       <workflowID>ukodb_Update</workflowID>
-      <workflowDescription>Update UKO database</workflowDescription>
     <workflowVersion>1.0.0.0</workflowVersion>
         <!-- Build timestamp 2021.05.09.21.03.24 -->
       <vendor>IBM</vendor>
@@ -1595,7 +1594,7 @@
                     fi
                     #UPDATE SCHEMA, SQLID
                     filelist="KMGISQLI";
-                    # V3R17 changes
+                    # V3R18 changes
                     filelist="${filelist} KMGUW3G1"                    
                     # SET CURRENT WEB VERSION
                     filelist="${filelist} KMGINWME"
@@ -1673,6 +1672,7 @@
     </step>
     
     <!-- END 3.1.0.8  -->
+
 
     <step name="configureDatabaseAccess">
         <title>Configure Access to the Db2 database</title>
