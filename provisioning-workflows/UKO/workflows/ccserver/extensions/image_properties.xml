@@ -37,6 +37,7 @@
 
 <atCreate name="SAF_PROFILE_PREFIX" scope="instance" prompt="true" required="false"/>
 
+<atCreate name="SERVER_HOSTNAME" scope="instance" prompt="true" required="false"/>
 <atCreate name="SERVER_TLS_KEY_STORE_KEY_RING" scope="instance" prompt="true" required="false"/>
 <atCreate name="SERVER_TLS_KEY_STORE_SERVER_CERT" scope="instance" prompt="true" required="false"/>
 <atCreate name="SERVER_TLS_TRUST_STORE_KEY_RING" scope="instance" prompt="true" required="false"/>

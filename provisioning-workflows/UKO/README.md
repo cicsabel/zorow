@@ -28,6 +28,12 @@ The [cc_install.properties]({{site.data.keyword.uko_workflow_url}}/provisioning-
 
 ## change notes
 
+### 3.1.0.9
+- re-introduce HOST variable as SERVER_HOSTNAME, also in update flow
+- 3.1.0.9 database updates and grants to new views
+- access to CC CAT and ACSP roles
+- acces to analytics roles
+
 ### 3.1.0.8
 
 - add ACSP provisionCcacsp.xml workflow and related scripts

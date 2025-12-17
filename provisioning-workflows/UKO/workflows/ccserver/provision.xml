@@ -117,6 +117,7 @@
                 <variableValue name="WLP_UNAUTHENTICATED_USER" scope="instance" noPromptIfSet="false" required="false"/>
                 <variableValue name="SERVER_OAUTH_CLIENT_ID" scope="instance" noPromptIfSet="false" required="false"/>
                 <variableValue name="SERVER_OAUTH_CLIENT_ID_OPENAPI" scope="instance" noPromptIfSet="false" required="false"/>
+                <variableValue name="SERVER_HOSTNAME" scope="instance" noPromptIfSet="false" required="false"/>
                 <variableValue name="SERVER_OIDC_PROVIDER_CERT" scope="instance" noPromptIfSet="false" required="false"/>
                 <variableValue name="SAF_PROFILE_PREFIX" scope="instance" noPromptIfSet="false" required="false"/>
                 <instructions substitution="true">Submit shell script to execute step</instructions>
@@ -154,8 +155,8 @@
                         sedstring="${sedstring} s#^[ \#]*EKMF_OAUTH_CLIENT_ID_OPENAPI=.*#EKMF_OAUTH_CLIENT_ID_OPENAPI=${instance-SERVER_OAUTH_CLIENT_ID_OPENAPI}#g;"
                     #end
                     sedstring="${sedstring} s#^[ \#]*OIDC_PROVIDER_TRUST_ALIAS_NAME=.*#OIDC_PROVIDER_TRUST_ALIAS_NAME=${instance-SERVER_OIDC_PROVIDER_CERT}#g;"
-                    sedstring="${sedstring} s#^[ \#]*OIDC_PROVIDER_KEY_ALIAS_NAME=.*#OIDC_PROVIDER_KEY_ALIAS_NAME=${instance-SERVER_OIDC_PROVIDER_CERT}#g" 
-                    
+                    sedstring="${sedstring} s#^[ \#]*OIDC_PROVIDER_KEY_ALIAS_NAME=.*#OIDC_PROVIDER_KEY_ALIAS_NAME=${instance-SERVER_OIDC_PROVIDER_CERT}#g;" 
+                    sedstring="${sedstring} s#^[ \#]*HOST=.*#HOST=${instance-SERVER_HOSTNAME}#g"               
                     sed -e "$sedstring" ${instance-SERVER_INSTALL_DIR}/server.env > ${instance-SERVER_USER_DIR}/servers/${instance-SERVER_STC_NAME}/server.env;
                                             
                     </inlineTemplate>
@@ -784,6 +785,36 @@
                 <autoEnable>true</autoEnable>
                 <template>
                     <fileTemplate substitution="true">extensions/defineAccessCryptoConnect.rexx</fileTemplate>
+                    <submitAs maxRc="4">TSO-REXX-JCL</submitAs>
+                    <maxLrecl>1024</maxLrecl>
+                </template>
+            </step>
+
+            <step name="defineCatAccess">
+                <title>Define roles and access for CAT</title>
+                <description>Define the EJBROLE profiles to run CAT</description>
+                <runAsUser substitution="true">$!{instance-UKO_ADMIN_SECURITY}</runAsUser>
+                <approver substitution="true">$!{instance-UKO_APPROVER_SECURITY}</approver>
+                <condition>
+                    <expression>"1"=="1"</expression>
+                    <description>always true</description>
+                    <targetStateSet>
+                        <description>Only execute for Crypto Connect configuration</description>
+                        <extendStateExpression>
+                            <description>Skip if no Crypto Connect configuration is required</description>
+                            <expression>${instance-CAT_SUPPORT_REQUIRED}  == "false"</expression>
+                            <targetState>Skipped</targetState>
+                        </extendStateExpression>
+                    </targetStateSet>
+                </condition>
+                <variableValue name="GENERIC_CLIENT_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
+                <variableValue name="SAF_PROFILE_PREFIX" scope="instance" noPromptIfSet="false" required="false"/>        
+                <variableValue name="SAF_OWNER" scope="instance" noPromptIfSet="false" required="false"/>        
+                <instructions>Executes a REXX program to create EJB roles and grant access</instructions>
+                <weight>1</weight>
+                <autoEnable>true</autoEnable>
+                <template>
+                    <fileTemplate substitution="true">extensions/defineAccessCat.rexx</fileTemplate>
                     <submitAs maxRc="4">TSO-REXX-JCL</submitAs>
                     <maxLrecl>1024</maxLrecl>
                 </template>

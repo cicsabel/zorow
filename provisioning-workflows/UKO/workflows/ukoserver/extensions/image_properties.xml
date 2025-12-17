@@ -49,11 +49,13 @@
 <atCreate name="SAF_PROFILE_PREFIX" scope="instance" prompt="true" required="false"/>
 <atCreate name="UKO_VAULT_ID" scope="instance" prompt="true" required="false"/>
 
+<atCreate name="SERVER_HOSTNAME" scope="instance" prompt="true" required="false"/>
 <atCreate name="SERVER_TLS_KEY_STORE_KEY_RING" scope="instance" prompt="true" required="false"/>
 <atCreate name="SERVER_TLS_KEY_STORE_SERVER_CERT" scope="instance" prompt="true" required="false"/>
 <atCreate name="SERVER_OIDC_PROVIDER_CERT" scope="instance" prompt="true" required="false"/>
 <atCreate name="SERVER_OAUTH_CLIENT_ID" scope="instance" prompt="true" required="false"/>
 <atCreate name="SERVER_OAUTH_CLIENT_ID_OPENAPI" scope="instance" prompt="true" required="false"/>
+<!-- <atCreate name="SERVER_OAUTH_CLIENT_SECRET" scope="instance" prompt="true" required="false"/> -->
 <!-- <atCreate name="UKO_TRACE_OPTIONS" scope="instance" prompt="true" required="false"/> -->
 <atCreate name="UKO_WELCOME_MESSAGE" scope="instance" prompt="true" required="false"/>
 

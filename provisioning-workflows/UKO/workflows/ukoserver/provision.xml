@@ -117,6 +117,8 @@
                 <variableValue name="WLP_UNAUTHENTICATED_USER" scope="instance" noPromptIfSet="false" required="false"/>
                 <variableValue name="SERVER_OAUTH_CLIENT_ID" scope="instance" noPromptIfSet="false" required="false"/>
                 <variableValue name="SERVER_OAUTH_CLIENT_ID_OPENAPI" scope="instance" noPromptIfSet="false" required="false"/>
+                <!-- <variableValue name="SERVER_OAUTH_CLIENT_SECRET" scope="instance" noPromptIfSet="false" required="false"/> -->
+                <variableValue name="SERVER_HOSTNAME" scope="instance" noPromptIfSet="false" required="false"/>
                 <variableValue name="SERVER_OIDC_PROVIDER_CERT" scope="instance" noPromptIfSet="false" required="false"/>
                 <variableValue name="SAF_PROFILE_PREFIX" scope="instance" noPromptIfSet="false" required="false"/>
                 <variableValue name="DB_LOCATION" scope="instance" noPromptIfSet="false" required="false"/>
@@ -176,6 +178,10 @@
                                 s#^[ \#]*EKMF_OAUTH_CLIENT_ID_OPENAPI=.*#EKMF_OAUTH_CLIENT_ID_OPENAPI=${instance-SERVER_OAUTH_CLIENT_ID_OPENAPI}#g;
                             #end
                             s#^[ \#]*OIDC_PROVIDER_TRUST_ALIAS_NAME=.*#OIDC_PROVIDER_TRUST_ALIAS_NAME=${instance-SERVER_OIDC_PROVIDER_CERT}#g;
+                            #if(${instance-SERVER_OAUTH_CLIENT_SECRET} &amp;&amp; ${instance-SERVER_OAUTH_CLIENT_SECRET} != "")
+                                s#^[ \#]*EKMF_OAUTH_CLIENT_SECRET=.*#EKMF_OAUTH_CLIENT_SECRET=${instance-SERVER_OAUTH_CLIENT_SECRET}#g;
+                            #end
+                            s#^[ \#]*HOST=.*#HOST=${instance-SERVER_HOSTNAME}#g;
                             s#^[ \#]*OIDC_PROVIDER_KEY_ALIAS_NAME=.*#OIDC_PROVIDER_KEY_ALIAS_NAME=${instance-SERVER_OIDC_PROVIDER_CERT}#g" ${instance-SERVER_INSTALL_DIR}/server.env > ${instance-SERVER_USER_DIR}/servers/${instance-SERVER_STC_NAME}/server.env;
 
                         </inlineTemplate>

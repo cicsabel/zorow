@@ -269,7 +269,20 @@
   <category>Server variables</category>
   <string />
 </variable>
-
+<variable name="SERVER_OAUTH_CLIENT_SECRET" scope="instance" visibility="public">
+  <label>SERVER_OAUTH_CLIENT_SECRET</label>
+  <abstract>SERVER_OAUTH_CLIENT_SECRET</abstract>
+  <description>Secret used together with client id to access api</description>
+  <category>Server variables</category>
+  <string />
+</variable>
+<variable name="SERVER_HOSTNAME" scope="instance" visibility="public">
+  <label>SERVER_HOSTNAME</label>
+  <abstract>SERVER_HOSTNAME</abstract>
+  <description>Server hostname</description>
+  <category>Server variables</category>
+  <string />
+</variable>
 <!--++++++++++++++++++++++++++++++++-->
 <!-- Other server related variables -->
 <!--++++++++++++++++++++++++++++++++-->

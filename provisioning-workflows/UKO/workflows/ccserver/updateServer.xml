@@ -588,6 +588,51 @@
         	</template>
         </step>
 
+        <step name="reintroduceHostname">
+		    <title>Reintroduce Host name</title>
+	        <description>In V3.1.0.9 the HOST property in server.env, represented by the SERVER_HOSTNAME variable, was re-introduced and needs to be set</description>
+	        <runAsUser substitution="true">$!{instance-UKO_ADMIN_SERVER}</runAsUser>
+	        <approver substitution="true">$!{instance-UKO_APPROVER_SERVER}</approver>
+            <condition>
+                <expression><![CDATA[${createVersionVariables.stepState} == "Complete"]]></expression>
+                <description>Version variables must have been set</description>
+                <targetStateSet>
+                    <description>Skip this step if we are on 3.1.0.9 or higher</description>
+                    <extendStateExpression>
+                        <description>Skip if the current version is already 3.1.0.9 or higher</description>
+                        <expression>${instance-SERVER_VERSION} >= "3.1.0.9"</expression>
+                        <targetState>skipped</targetState>
+                    </extendStateExpression>
+                    <extendStateExpression>
+                        <description>Skip if you are upgrading to version lower than 3.1.0.9</description>
+                        <expression>${instance-NEW_SERVER_VERSION} &lt; "3.1.0.9"</expression>
+                        <targetState>skipped</targetState>
+                    </extendStateExpression>
+                </targetStateSet>
+            </condition>
+            <variableValue name="SERVER_HOSTNAME" scope="instance" noPromptIfSet="false" required="false"/>
+            <instructions substitution="true">Submit shell script to execute step</instructions>
+            <weight>1</weight>
+            <autoEnable>true</autoEnable>
+            <template>
+   		        <inlineTemplate substitution="true">
+                    # creating a copy of the server.env to work on, otherwise the sed command does not work
+                    cp ${instance-SERVER_DIRECTORY}/server.env ${instance-SERVER_DIRECTORY}/server.env_temp
+                    sedstring="s#^[ \#]*HOST=.*#HOST=${instance-SERVER_HOSTNAME}#g"
+
+                    # This script assumes that you migrated your properties to the new server.env file. 
+                    # Otherwise, uncomment this line
+                    #sedstring="s#^[ \#] Open ID Connect start#\# Open ID Connect start\n\# Hostname of this server\nHOST=${instance-SERVER_HOSTNAME}#g"
+                    sed -e "$sedstring" ${instance-SERVER_DIRECTORY}/server.env_temp > ${instance-SERVER_DIRECTORY}/server.env;
+
+                    # deleting the copy
+                    rm ${instance-SERVER_DIRECTORY}/server.env_temp
+
+                </inlineTemplate>
+            	<submitAs>shell-JCL</submitAs>
+        	</template>
+        </step>
+
     </step>
 
     <step name="startServer">
@@ -670,30 +715,6 @@
             </template>
         </step> 
     </step>
-
-    <!--I can't make the rest update work with a file as part of the body 
-
-        <step name="UpdateInstance" optional="false">
-        <title>Update instance variables</title>
-        <description>Make REST API call to update instance variables</description>
-        <instructions>Call REST API to update instance variable</instructions>
-        <weight>1</weight>
-        <autoEnable>true</autoEnable>
-        <rest>
-            <httpMethod>PUT</httpMethod>
-            <uriPath substitution="true">/zosmf/provisioning/rest/1.0/scr/${_workflow-parentRegistryID}/variables</uriPath>
-            <requestBody substitution="true">
-                #set ($restbody = ${(cat ${instance-TEMP_DIR}/zosmf-${_workflow-workflowKey}.properties)})
-                {
-   					"variables":[
-                       ${restbody}
-   					]
-				}
-            </requestBody>
-            <expectedStatusCode>204</expectedStatusCode>
-        </rest>
-    </step> 
--->
 
     <step name="cleanUpVariables">
         <title>Clean up variables</title>

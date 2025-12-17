@@ -46,8 +46,28 @@ Say "Delete Permissions from Key Administrator"
 "PERMIT" SAFPREFIX".ekmf-rest-api.templates:list CLASS(EJBROLE) DELETE ID("KEY_ADMIN")"
 "PERMIT" SAFPREFIX".ekmf-rest-api.vaults:list CLASS(EJBROLE) DELETE ID("KEY_ADMIN")"
 
+/* analytics roles */
+"PERMIT" SAFPREFIX".ekmf-rest-api.meta:get-analytics-statistics CLASS(EJBROLE) DELETE ID("KEY_ADMIN")"
+"PERMIT" SAFPREFIX".ekmf-rest-api.meta:get-analytics-settings CLASS(EJBROLE) DELETE ID("KEY_ADMIN")"
+"PERMIT" SAFPREFIX".ekmf-rest-api.meta:get-analytics-schedules CLASS(EJBROLE) DELETE ID("KEY_ADMIN")"
+"PERMIT" SAFPREFIX".ekmf-rest-api.meta:list-analytics-runs CLASS(EJBROLE) DELETE ID("KEY_ADMIN")"
+/* Those roles are only for the admin */
+"PERMIT" SAFPREFIX".ekmf-rest-api.meta:set-analytics-settings CLASS(EJBROLE) DELETE ID("KEY_ADMIN")"
+"PERMIT" SAFPREFIX".ekmf-rest-api.meta:create-analytics-schedule CLASS(EJBROLE) DELETE ID("KEY_ADMIN")"
+"PERMIT" SAFPREFIX".ekmf-rest-api.meta:update-analytics-schedule CLASS(EJBROLE) DELETE ID("KEY_ADMIN")"
+"PERMIT" SAFPREFIX".ekmf-rest-api.meta:delete-analytics-schedule CLASS(EJBROLE) DELETE ID("KEY_ADMIN")"
+"PERMIT" SAFPREFIX".ekmf-rest-api.meta:initiate-analytics-run CLASS(EJBROLE) DELETE ID("KEY_ADMIN")"
+"PERMIT" SAFPREFIX".ekmf-rest-api.meta:get-analytics-run CLASS(EJBROLE) DELETE ID("KEY_ADMIN")"
+"PERMIT" SAFPREFIX".ekmf-rest-api.meta:stop-analytics-run CLASS(EJBROLE) DELETE ID("KEY_ADMIN")"
+
 "PERMIT" SAFPREFIX".ekmf-rest-api.user:passcode:create CLASS(EJBROLE) DELETE ID("KEY_ADMIN")"
 "PERMIT" SAFPREFIX".ekmf-rest-api.user:passcode:delete CLASS(EJBROLE) DELETE ID("KEY_ADMIN")"
+
+/* ACSP integration */
+"PERMIT" SAFPREFIX".crypto-connect.servers:list CLASS(EJBROLE) DELETE ID("KEY_ADMIN")"
+"PERMIT" SAFPREFIX".crypto-connect.servers:read CLASS(EJBROLE) DELETE ID("KEY_ADMIN")"
+"PERMIT" SAFPREFIX".crypto-connect.servers:write CLASS(EJBROLE) DELETE ID("KEY_ADMIN")"
+"PERMIT" SAFPREFIX".crypto-connect.servers:delete CLASS(EJBROLE) DELETE ID("KEY_ADMIN")"
 
 Say "Delete Permissions from Key Custodian1"
 "PERMIT" SAFPREFIX".ekmf-rest-api.datasets:read CLASS(EJBROLE) DELETE ID("KEY_CUSTODIAN1")"
@@ -56,8 +76,18 @@ Say "Delete Permissions from Key Custodian1"
 "PERMIT" SAFPREFIX".ekmf-rest-api.templates:list CLASS(EJBROLE) DELETE ID("KEY_CUSTODIAN1")"
 "PERMIT" SAFPREFIX".ekmf-rest-api.vaults:list CLASS(EJBROLE) DELETE ID("KEY_CUSTODIAN1")"
 
+/* analytics roles */
+"PERMIT" SAFPREFIX".ekmf-rest-api.meta:get-analytics-statistics CLASS(EJBROLE) DELETE ID("KEY_CUSTODIAN1")"
+"PERMIT" SAFPREFIX".ekmf-rest-api.meta:get-analytics-settings CLASS(EJBROLE) DELETE ID("KEY_CUSTODIAN1")"
+"PERMIT" SAFPREFIX".ekmf-rest-api.meta:get-analytics-schedules CLASS(EJBROLE) DELETE ID("KEY_CUSTODIAN1")"
+"PERMIT" SAFPREFIX".ekmf-rest-api.meta:list-analytics-runs CLASS(EJBROLE) DELETE ID("KEY_CUSTODIAN1")"
+
 "PERMIT" SAFPREFIX".ekmf-rest-api.user:passcode:create CLASS(EJBROLE) DELETE ID("KEY_CUSTODIAN1")"
 "PERMIT" SAFPREFIX".ekmf-rest-api.user:passcode:delete CLASS(EJBROLE) DELETE ID("KEY_CUSTODIAN1")"
+
+/* ACSP integration */
+"PERMIT" SAFPREFIX".crypto-connect.servers:list CLASS(EJBROLE) DELETE ID("KEY_CUSTODIAN1")"
+"PERMIT" SAFPREFIX".crypto-connect.servers:read CLASS(EJBROLE) DELETE ID("KEY_CUSTODIAN1")"
 
 Say "Delete Permissions from Key Custodian2"
 "PERMIT" SAFPREFIX".ekmf-rest-api.datasets:read CLASS(EJBROLE) DELETE ID("KEY_CUSTODIAN2")"
@@ -66,8 +96,18 @@ Say "Delete Permissions from Key Custodian2"
 "PERMIT" SAFPREFIX".ekmf-rest-api.templates:list CLASS(EJBROLE) DELETE ID("KEY_CUSTODIAN2")"
 "PERMIT" SAFPREFIX".ekmf-rest-api.vaults:list CLASS(EJBROLE) DELETE ID("KEY_CUSTODIAN2")"
 
+/* analytics roles */
+"PERMIT" SAFPREFIX".ekmf-rest-api.meta:get-analytics-statistics CLASS(EJBROLE) DELETE ID("KEY_CUSTODIAN2")"
+"PERMIT" SAFPREFIX".ekmf-rest-api.meta:get-analytics-settings CLASS(EJBROLE) DELETE ID("KEY_CUSTODIAN2")"
+"PERMIT" SAFPREFIX".ekmf-rest-api.meta:get-analytics-schedules CLASS(EJBROLE) DELETE ID("KEY_CUSTODIAN2")"
+"PERMIT" SAFPREFIX".ekmf-rest-api.meta:list-analytics-runs CLASS(EJBROLE) DELETE ID("KEY_CUSTODIAN2")"
+
 "PERMIT" SAFPREFIX".ekmf-rest-api.user:passcode:create CLASS(EJBROLE) DELETE ID("KEY_CUSTODIAN2")"
 "PERMIT" SAFPREFIX".ekmf-rest-api.user:passcode:delete CLASS(EJBROLE) DELETE ID("KEY_CUSTODIAN2")"
+
+/* ACSP integration */
+"PERMIT" SAFPREFIX".crypto-connect.servers:list CLASS(EJBROLE) DELETE ID("KEY_CUSTODIAN2")"
+"PERMIT" SAFPREFIX".crypto-connect.servers:read CLASS(EJBROLE) DELETE ID("KEY_CUSTODIAN2")"
 
 Say "Delete Permissions from Auditor"
 "PERMIT" SAFPREFIX".ekmf-rest-api.auditlog:read CLASS(EJBROLE) DELETE ID("UKO_AUDITOR")"
