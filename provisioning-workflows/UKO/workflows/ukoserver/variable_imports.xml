@@ -49,9 +49,10 @@
   <description>The path to the Java home directory.</description>
   <category>Server variables</category>
   <string valueMustBeChoice="false">
-    <choice>"/java/java80_64/J8.0_64"</choice>
+    <choice>"/java/J8.0_64"</choice>
     <choice>"/java/java11_bit64_sr18_fp0/J11.0_64"</choice>
     <choice>"/java/java17_64"</choice>
+    <choice>"/java/java21"</choice>    
     <!-- Path validation, has to start with slash, may contain slashes, must not end with slash or whitespace -->
   </string>
 </variable>
@@ -483,7 +484,7 @@
 </variable>
 
 <variable name="SERVER_PORT_NOTLS" visibility="public">
-  <label>HTTP port</label>
+  <label>SERVER_PORT_NOTLS</label>
   <abstract>HTTP_PORT for the Server</abstract>
   <description>HTTP port for the Sserver</description>
   <category>Server variables</category>
@@ -499,7 +500,7 @@
 </variable>
 
 <variable name="SERVER_PORT_TLS" visibility="public">
-  <label>HTTPS port</label>
+  <label>SERVER_PORT_TLS</label>
   <abstract>HTTPS_PORT for the server</abstract>
   <description>HTTPS port for the server</description>
   <category>Server variables</category>

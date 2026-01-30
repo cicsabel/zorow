@@ -626,7 +626,14 @@
    		        <inlineTemplate substitution="true">
                     # creating a copy of the server.env to work on, otherwise the sed command does not work
                     cp ${instance-SERVER_DIRECTORY}/server.env ${instance-SERVER_DIRECTORY}/server.env_temp
-                    sedstring="s#^[ \#]*HOST=.*#HOST=${instance-SERVER_HOSTNAME}#g"
+
+                    #if(${instance-SERVER_HOSTNAME} &amp;&amp; ${instance-SERVER_HOSTNAME} != "")
+                        sedstring="s#^[ \#]*HOST=.*#HOST=${instance-SERVER_HOSTNAME}#g"
+                    #else
+                        export host=$(hostname | tr [:upper:] [:lower:])
+                        sedstring="s#^[ \#]*HOST=.*#HOST=${host}#g"
+                    #end
+
 
                     # This script assumes that you migrated your properties to the new server.env file. 
                     # Otherwise, uncomment this line

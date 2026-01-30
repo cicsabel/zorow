@@ -114,6 +114,7 @@
                 <variableValue name="SERVER_TLS_KEY_STORE_SERVER_CERT" scope="instance" noPromptIfSet="false" required="false"/>
                 <variableValue name="SERVER_PORT_NOTLS" scope="instance" noPromptIfSet="false" required="false"/>
                 <variableValue name="SERVER_PORT_TLS" scope="instance" noPromptIfSet="false" required="false"/>
+                <variableValue name="ENABLE_MTLS_VIA_HTTPS_PORT" scope="instance" noPromptIfSet="false" required="false"/>
                 <variableValue name="WLP_UNAUTHENTICATED_USER" scope="instance" noPromptIfSet="false" required="false"/>
                 <variableValue name="SERVER_OAUTH_CLIENT_ID" scope="instance" noPromptIfSet="false" required="false"/>
                 <variableValue name="SERVER_OAUTH_CLIENT_ID_OPENAPI" scope="instance" noPromptIfSet="false" required="false"/>
@@ -148,8 +149,8 @@
                     sedstring="${sedstring} s#^[ \#]*HTTPS_PORT=.*#HTTPS_PORT=${instance-SERVER_PORT_TLS}#g;"
                     sedstring="${sedstring} s#^[ \#]*SAF_UNAUTHENTICATED_USER_ID=.*#SAF_UNAUTHENTICATED_USER_ID=${instance-WLP_UNAUTHENTICATED_USER}#g;"
                     sedstring="${sedstring} s#^[ \#]*SAF_PROFILE_PREFIX=.*#SAF_PROFILE_PREFIX=${instance-SAF_PROFILE_PREFIX}#g;"
-                    #if(${instance-SERVER_OAUTH_CLIENT_ID_OPENAPI} &amp;&amp; ${instance-SERVER_OAUTH_CLIENT_ID_OPENAPI} != "")
-                        sedstring="${sedstring} s#^[ \#]*EKMF_OAUTH_CLIENT_ID=.*#EKMF_OAUTH_CLIENT_ID=${instance-SERVER_OAUTH_CLIENT_ID_OPENAPI}#g;"
+                    #if(${instance-SERVER_OAUTH_CLIENT_ID} &amp;&amp; ${instance-SERVER_OAUTH_CLIENT_ID} != "")
+                        sedstring="${sedstring} s#^[ \#]*EKMF_OAUTH_CLIENT_ID=.*#EKMF_OAUTH_CLIENT_ID=${instance-SERVER_OAUTH_CLIENT_ID}#g;"
                     #end
                     #if(${instance-SERVER_OAUTH_CLIENT_ID_OPENAPI} &amp;&amp; ${instance-SERVER_OAUTH_CLIENT_ID_OPENAPI} != "")
                         sedstring="${sedstring} s#^[ \#]*EKMF_OAUTH_CLIENT_ID_OPENAPI=.*#EKMF_OAUTH_CLIENT_ID_OPENAPI=${instance-SERVER_OAUTH_CLIENT_ID_OPENAPI}#g;"
