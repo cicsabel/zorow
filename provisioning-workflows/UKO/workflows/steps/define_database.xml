@@ -1,0 +1,443 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/******************************************************************************/
+/* Copyright Contributors to the zOS-Workflow Project.                        */
+/* SPDX-License-Identifier: Apache-2.0                                        */
+/******************************************************************************/
+-->
+<step name="createDatabase">
+    <title>Create the database</title>
+    <description>Create the UKO databases and transfer ownership</description>
+
+    <step name="createEmptyDatabase">
+        <title>Create empty database</title>
+        <description>Create the empty databases</description>
+        <runAsUser substitution="true">$!{instance-UKO_ADMIN_DB}</runAsUser>
+        <approver substitution="true">$!{instance-UKO_APPROVER_DB}</approver>
+        <variableValue name="DB_NAME_UKO" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="DB_NAME_DATASET_ENCRYPTION_STATUS" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="DB_PROGRAM" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="DB_PLAN" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="DB_RUNLIB" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="DB_HLQ" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="DB_JCC_SSID" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="DB_BUFFERPOOL_DEFAULT" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="DB_BUFFERPOOL_INDEX" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="DB_CURRENT_SQLID" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="DB_CURRENT_SCHEMA" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="DB_STOGROUP" scope="instance" noPromptIfSet="false" required="false"/>
+        <instructions substitution="true">Submit jcl to execute step</instructions>
+        <weight>1</weight>
+        <autoEnable>true</autoEnable>
+        <template>
+            <fileTemplate substitution="true">jcl/db-create-database.jcl</fileTemplate>
+            <submitAs maxRc="0">JCL</submitAs>
+            <maxLrecl>80</maxLrecl>
+        </template>
+    </step>
+
+
+    <step name="legacyDatabaseCreationFromFiles">
+        <title>Legacy database creation for EKMF Web V2 (skip for UKO)</title>
+        <description>Executing the DDLs to create tables and views</description>
+
+        <step name="createDDLFromFile" optional="false">
+            <title>Create DDL from files (only for EKMF Web V2)</title>
+            <description>Create the DDL to be executed</description>
+            <runAsUser substitution="true">$!{instance-UKO_ADMIN_ZFS}</runAsUser>
+            <approver substitution="true">$!{instance-UKO_APPROVER_ZFS}</approver>
+            <condition>
+                <expression>"1"=="1"</expression>
+                <description>Skip this step if the DDLs come from a data set</description>
+                <targetStateSet>
+                    <description>Skip this step if the DDLs come from a data set</description>
+                    <extendStateExpression>
+                        <description>Skip the step when data set is selected</description>
+                        <expression>${instance-DB_INSTALL_FROM_FILE_OR_DATASET} == null || ${instance-DB_INSTALL_FROM_FILE_OR_DATASET} == "DATASET"</expression>
+                        <targetState>skipped</targetState>
+                    </extendStateExpression>
+                </targetStateSet>
+            </condition>
+            <variableValue name="DB_CURRENT_SQLID" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="DB_FILE_INSTALL_PATH" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="DB_NAME_UKO" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="DB_NAME_DATASET_ENCRYPTION_STATUS" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="DB_CODEPAGE" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="DB_BUFFERPOOL_TABLESPACE_8K" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="DB_BUFFERPOOL_TABLESPACE_32K" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="DB_STOGROUP" scope="instance" noPromptIfSet="false" required="false"/>
+            <instructions substitution="true">Legacy - Only execute this step if you are installing EKMF Web V2 and not UKO V3</instructions>
+            <weight>1</weight>
+            <autoEnable>true</autoEnable>
+            <template>
+                <inlineTemplate substitution="true">
+                    echo "Changing to the path in the file system where the ddls are located."
+                    cd ${instance-DB_FILE_INSTALL_PATH}/resources/db_definitions;
+                    if [ $? -gt 0 ]; then
+                        echo "ERROR: the directory containing the ddls does not exist under" ${instance-DB_FILE_INSTALL_PATH}
+                        echo "installation is cancelled"
+                        exit "11"; 
+                    fi 
+                    # retrieve the numbers from the codepage to select the correct sub folder
+                    subfolder=$(echo ${instance-DB_CODEPAGE} | sed -E 's/[^[:digit:]]*([:digit:]*)/\1/' )
+                    echo "changing to the subfolder with code page" ${instance-DB_CODEPAGE}
+                    cd ${subfolder};
+                    if [ $? -gt 0 ]; then
+                        echo "ERROR: no ddls exist for this codepage."
+                        echo "installation is cancelled"
+                        exit "11"; 
+                    fi 
+                    # replacing the default values in the ddls
+                    sedstring="s/DKMGWEB/${instance-DB_NAME_UKO}/g;"
+                    sedstring="${sedstring} s/DKMGPE1/${instance-DB_NAME_DATASET_ENCRYPTION_STATUS}/g;"
+                    sedstring="${sedstring} s/BP8K0/${instance-DB_BUFFERPOOL_TABLESPACE_8K}/g;"
+                    sedstring="${sedstring} s/BP32K/${instance-DB_BUFFERPOOL_TABLESPACE_32K}/g;"
+                    sedstring="${sedstring} s/GKMG0001/${instance-DB_STOGROUP}/g"
+
+                    tempversion="";
+                    echo "SET CURRENT SQLID = '${instance-DB_CURRENT_SQLID}' ;" > ${instance-TEMP_DIR}/zosmf-${_workflow-workflowKey}.ddl;
+                    echo "SET CURRENT SCHEMA = '${instance-DB_CURRENT_SCHEMA}' ;" >> ${instance-TEMP_DIR}/zosmf-${_workflow-workflowKey}.ddl;
+                    for i in `ls  *.ddl | xargs echo`; do
+                        tempversion=$(echo $i | cut -c 1-6);
+
+                        #check whether the current ddl contains database creation
+                        if (grep -Fq "CREATE DATABASE" $i)
+                        then
+                            echo "$i contains database creation and will not be added";
+                        else
+                            echo "DDL added to list of updates: $i"
+                            sed -e "$sedstring" $i >> ${instance-TEMP_DIR}/zosmf-${_workflow-workflowKey}.ddl
+                            echo "COMMIT;" >> ${instance-TEMP_DIR}/zosmf-${_workflow-workflowKey}.ddl;   
+                        fi
+
+                    done; 
+                    echo "making ${instance-UKO_ADMIN_DB} the owner of the ddl file zosmf-${_workflow-workflowKey}.ddl"
+                    chown ${instance-UKO_ADMIN_DB} ${instance-TEMP_DIR}/zosmf-${_workflow-workflowKey}.ddl
+                    echo "Database version will be: $tempversion"
+                    echo "UKO_DB_VERSION $tempversion" >> ${instance-TEMP_DIR}/zosmf-${_workflow-workflowKey}.properties
+
+                </inlineTemplate>
+                <submitAs>shell-JCL</submitAs>
+                <output substitution="true" needResolveConflicts="false">${instance-TEMP_DIR}/zosmf-${_workflow-workflowKey}.properties</output>
+            </template>
+        </step>
+
+    </step>
+
+    <step name="createTablesAndViews">
+        <title>Create tables and views</title>
+        <description>Executing the DDLs to create tables and views</description>
+
+        <step name="createDdlListFromDataset" optional="false">
+            <title>Create list of DDLs from a data set</title>
+            <description>Create the list of DDLs to be executed</description>
+            <runAsUser substitution="true">$!{instance-UKO_ADMIN_ZFS}</runAsUser>
+            <approver substitution="true">$!{instance-UKO_APPROVER_ZFS}</approver>
+            <condition>
+                <expression>"1"=="1"</expression>
+                <description>Skip this step if the DDLs come from files</description>
+                <targetStateSet>
+                    <description>Skip this step if the DDLs come from files</description>
+                    <extendStateExpression>
+                        <description>Skip the step when file is selected</description>
+                        <expression>${instance-DB_INSTALL_FROM_FILE_OR_DATASET} == "FILE"</expression>
+                        <targetState>skipped</targetState>
+                    </extendStateExpression>
+                </targetStateSet>
+            </condition>
+            <variableValue name="DB_DATASET_INSTALL_HLQ" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="TEMP_DIR" scope="instance" noPromptIfSet="false" required="false"/>
+            <instructions substitution="true">Submit shell script to execute step</instructions>
+            <weight>1</weight>
+            <autoEnable>true</autoEnable>
+            <template>
+                <inlineTemplate substitution="true">
+                    #if(${instance-WORKSTATION_ACCESS_REQUIRED} &amp;&amp; ${instance-WORKSTATION_ACCESS_REQUIRED} == "true")
+                        echo "workstation access is required, querying file list from KMGJCWSW"
+                        filelist=$(sed -En 's/(\/\/[^\*]).*&amp;SQL\((.*)\).*/\2/gp' "//'${instance-DB_DATASET_INSTALL_HLQ}(KMGJCWSW)'")
+                    #else
+                        echo "workstation access is not required, querying file list from KMGJCWEB"
+                        filelist=$(sed -En 's/(\/\/[^\*]).*&amp;SQL\((.*)\).*/\2/gp' "//'${instance-DB_DATASET_INSTALL_HLQ}(KMGJCWEB)'")
+                    #end
+                    if [ $? -gt 0 ]; then 
+                        echo "List of DDL files could not be created, exiting"
+                        exit "8"
+                    fi
+                    rm -f ${instance-TEMP_DIR}/zosmf-${_workflow-workflowKey}.files
+                    echo $filelist > ${instance-TEMP_DIR}/zosmf-${_workflow-workflowKey}.files
+                    echo "the following DDL files have been added to the list:"
+                    cat ${instance-TEMP_DIR}/zosmf-${_workflow-workflowKey}.files
+                </inlineTemplate>
+                <submitAs>shell-JCL</submitAs>
+            </template>
+        </step>
+        
+        <step name="createDDLFromDataset" optional="false">
+            <title>Create DDL from data set</title>
+            <description>Create the DDL to be executed</description>
+            <runAsUser substitution="true">$!{instance-UKO_ADMIN_ZFS}</runAsUser>
+            <approver substitution="true">$!{instance-UKO_APPROVER_ZFS}</approver>
+            <condition>
+                <expression>"1"=="1"</expression>
+                <description>Skip this step if the DDLs come from files</description>
+                <targetStateSet>
+                    <description>Skip this step if the DDLs come from files</description>
+                    <extendStateExpression>
+                        <description>Skip the step when file is selected</description>
+                        <expression>${instance-DB_INSTALL_FROM_FILE_OR_DATASET} == "FILE"</expression>
+                        <targetState>skipped</targetState>
+                    </extendStateExpression>
+                </targetStateSet>
+            </condition>
+            <variableValue name="DB_CURRENT_SCHEMA" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="DB_CURRENT_SQLID" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="DB_DATASET_INSTALL_HLQ" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="DB_NAME_UKO" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="DB_NAME_DATASET_ENCRYPTION_STATUS" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="DB_CODEPAGE" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="DB_BUFFERPOOL_TABLESPACE_8K" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="DB_BUFFERPOOL_TABLESPACE_32K" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="DB_STOGROUP" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="TEMP_DIR" scope="instance" noPromptIfSet="false" required="false"/>
+            <instructions substitution="true">Submit shell script to execute step</instructions>
+            <weight>1</weight>
+            <autoEnable>true</autoEnable>
+            <template>
+                <fileTemplate substitution="true">scripts/createDdl.sh</fileTemplate>
+                <submitAs>shell-JCL</submitAs>
+            </template>
+        </step>
+
+        <step name="executeDDL">
+            <title>Execute DDLs for Db2 database</title>
+            <description>Execute the Db2 DDLs to create tables</description>
+            <runAsUser substitution="true">$!{instance-UKO_ADMIN_DB}</runAsUser>
+            <approver substitution="true">$!{instance-UKO_APPROVER_DB}</approver>
+            <variableValue name="DB_PROGRAM" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="DB_PLAN" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="DB_RUNLIB" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="DB_HLQ" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="DB_JCC_SSID" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="DB_TEMP_HLQ" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="DB_CURRENT_SCHEMA" scope="instance" noPromptIfSet="false" required="false"/>
+            <instructions substitution="true">Submit jcl to execute step</instructions>
+            <weight>1</weight>
+            <autoEnable>true</autoEnable>
+            <template>
+                <fileTemplate substitution="true">jcl/db-update-database.jcl</fileTemplate>
+                <submitAs maxRc="0">JCL</submitAs>
+                <maxLrecl>80</maxLrecl>
+            </template>
+        </step>
+
+    </step>
+    
+    <step name="bindPackagePlan">
+        <title>Bind packages and plan (EKMF Workstation only)</title>
+        <description>Bind packages and plan for EKMF Workstation access</description>
+
+        <step name="bindPackages">
+            <title>Bind packages (EKMF Workstation only)</title>
+            <description>Bind packages, only required, if this database is going to be used by EKMF Workstation as well</description>        
+            <runAsUser substitution="true">$!{instance-UKO_ADMIN_DB}</runAsUser>
+            <approver substitution="true">$!{instance-UKO_APPROVER_DB}</approver>
+            <condition>
+                <expression>"1"=="1"</expression>
+                <description>Skip this step if the DDLs come from files</description>
+                <targetStateSet>
+                    <description>Skip this step if the DDLs come from files</description>
+                    <extendStateExpression>
+                        <description>Skip the step when file is selected</description>
+                        <expression>${instance-DB_INSTALL_FROM_FILE_OR_DATASET} == "FILE"</expression>
+                        <targetState>skipped</targetState>
+                    </extendStateExpression>
+                    <extendStateExpression>
+                        <description>Skip if no workstation access is required</description>
+                        <expression>${instance-WORKSTATION_ACCESS_REQUIRED} == "false"</expression>
+                        <targetState>Skipped</targetState>
+                    </extendStateExpression>
+                </targetStateSet>
+            </condition>
+            <variableValue name="DB_CURRENT_SQLID" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="DB_AGENT_PACKAGE" scope="instance" noPromptIfSet="false" required="false"/>
+            <instructions substitution="true">Submit jcl to execute step</instructions>
+            <weight>1</weight>
+            <autoEnable>true</autoEnable>
+            <template>
+                <fileTemplate substitution="true">jcl/db-bind-package.jcl</fileTemplate>
+                <submitAs maxRc="4">JCL</submitAs>
+                <maxLrecl>80</maxLrecl>
+            </template>
+        </step>
+
+        <step name="bindPlan">
+            <title>Bind plan (EKMF Workstation only)</title>
+            <description>Bind plan, only required, if this database is going to be used by EKMF Workstation as well</description>        
+            <runAsUser substitution="true">$!{instance-UKO_ADMIN_DB}</runAsUser>
+            <approver substitution="true">$!{instance-UKO_APPROVER_DB}</approver>
+            <condition>
+                <expression>"1"=="1"</expression>
+                <description>Skip this step if the DDLs come from files</description>
+                <targetStateSet>
+                    <description>Skip this step if the DDLs come from files</description>
+                    <extendStateExpression>
+                        <description>Skip the step when file is selected</description>
+                        <expression>${instance-DB_INSTALL_FROM_FILE_OR_DATASET} == "FILE"</expression>
+                        <targetState>skipped</targetState>
+                    </extendStateExpression>
+                    <extendStateExpression>
+                        <description>Skip if no workstation access is required</description>
+                        <expression>${instance-WORKSTATION_ACCESS_REQUIRED} == "false"</expression>
+                        <targetState>Skipped</targetState>
+                    </extendStateExpression>
+                </targetStateSet>
+            </condition>
+            <variableValue name="DB_AGENT_PACKAGE" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="DB_AGENT_PLAN" scope="instance" noPromptIfSet="false" required="false"/>
+            <instructions substitution="true">Submit jcl to execute step</instructions>
+            <weight>1</weight>
+            <autoEnable>true</autoEnable>
+            <template>
+                <fileTemplate substitution="true">jcl/db-bind-plan.jcl</fileTemplate>
+                <submitAs maxRc="4">JCL</submitAs>
+                <maxLrecl>80</maxLrecl>
+            </template>
+        </step>
+
+    </step>
+
+    <step name="configureDatabaseAccess">
+        <title>Configure Access to the Db2 database</title>
+        <description>Configure the new UKO server to be able to access the required tables</description>
+
+        <step name="configureDatabaseAccessServer">
+            <title>Configure db access for the server</title>
+            <description>Configure the new UKO server to be able to access the required tables</description>        
+            <runAsUser substitution="true">$!{instance-UKO_ADMIN_DB}</runAsUser>
+            <approver substitution="true">$!{instance-UKO_APPROVER_DB}</approver>
+            <variableValue name="SERVER_STC_USER" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="DB_HLQ" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="DB_JCC_SSID" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="DB_PROGRAM" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="DB_PLAN" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="DB_RUNLIB" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="DB_CURRENT_SQLID" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="DB_CURRENT_SCHEMA" scope="instance" noPromptIfSet="false" required="false"/>
+            <instructions substitution="true">Submit jcl to execute step</instructions>
+            <weight>1</weight>
+            <autoEnable>true</autoEnable>
+            <template>
+                <fileTemplate substitution="true">jcl/db-database-grant-access.jcl</fileTemplate>
+                <submitAs maxRc="8">JCL</submitAs>
+                <maxLrecl>80</maxLrecl>
+            </template>
+        </step>
+
+        <step name="configureSystableAccess">
+            <title>Configure access to SYSIBM.SYSTABLES for system status</title>
+            <description>Configure access to the SYSIBM.SYSTABLES table which is required to run the system status checks</description>
+            <runAsUser substitution="true">$!{instance-UKO_ADMIN_DB}</runAsUser>
+            <approver substitution="true">$!{instance-UKO_APPROVER_DB}</approver>
+            <variableValue name="SERVER_STC_USER" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="DB_HLQ" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="DB_JCC_SSID" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="DB_PROGRAM" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="DB_PLAN" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="DB_RUNLIB" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="DB_CURRENT_SQLID" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="DB_CURRENT_SCHEMA" scope="instance" noPromptIfSet="false" required="false"/>
+            <instructions substitution="true">Submit jcl to execute step</instructions>
+            <weight>1</weight>
+            <autoEnable>true</autoEnable>
+            <template>
+                <fileTemplate substitution="true">jcl/db-database-grant-access-systable.jcl</fileTemplate>
+                <submitAs maxRc="8">JCL</submitAs>
+                <maxLrecl>80</maxLrecl>
+            </template>
+        </step>
+
+        <step name="configureDatabaseAccessClient">
+            <title>Configure db access for the client user</title>
+            <description>Configure Access to the Db2 database for the client user</description>        
+            <runAsUser substitution="true">$!{instance-UKO_ADMIN_DB}</runAsUser>
+            <approver substitution="true">$!{instance-UKO_APPROVER_DB}</approver>
+            <condition>
+                <expression>"1"=="1"</expression>
+                <description>Skip this step if the DDLs come from files or no workstation access is required</description>
+                <targetStateSet>
+                    <description>Skip this step if the DDLs come from files</description>
+                    <extendStateExpression>
+                        <description>Skip the step when file is selected</description>
+                        <expression>${instance-DB_INSTALL_FROM_FILE_OR_DATASET} == "FILE"</expression>
+                        <targetState>skipped</targetState>
+                    </extendStateExpression>
+                    <extendStateExpression>
+                        <description>Skip if no workstation access is required</description>
+                        <expression>${instance-WORKSTATION_ACCESS_REQUIRED} == "false"</expression>
+                        <targetState>Skipped</targetState>
+                    </extendStateExpression>
+                </targetStateSet>
+            </condition>
+            <variableValue name="UKO_AGENT_CLIENT_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="DB_HLQ" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="DB_JCC_SSID" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="DB_PROGRAM" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="DB_PLAN" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="DB_RUNLIB" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="DB_CURRENT_SQLID" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="DB_CURRENT_SCHEMA" scope="instance" noPromptIfSet="false" required="false"/>
+            <instructions substitution="true">Submit jcl to execute step</instructions>
+            <weight>1</weight>
+            <autoEnable>true</autoEnable>
+            <template>
+                <fileTemplate substitution="true">jcl/db-database-grant-access-client.jcl</fileTemplate>
+                <submitAs maxRc="4">JCL</submitAs>
+                <maxLrecl>80</maxLrecl>
+            </template>
+        </step>
+
+    </step>
+
+    <step name="optionalSteps">
+        <title>Optional steps</title>
+        <description>Additional steps you can execute</description>
+
+        <step name="removeTempFiles">
+            <title>Delete temporary files</title>
+            <description>Submit script to clean up temp variables</description>
+            <runAsUser substitution="true">$!{instance-UKO_ADMIN_SERVER}</runAsUser>
+            <approver substitution="true">$!{instance-UKO_APPROVER_SERVER}</approver>
+            <instructions substitution="true">Submit shell script to execute step</instructions>
+            <weight>1</weight>
+            <autoEnable>true</autoEnable>
+            <template>
+                <inlineTemplate substitution="true">
+
+                    # Remove temporary files created by the workflow
+                    rm ${instance-TEMP_DIR}/zosmf-${_workflow-workflowKey}*
+                    if [ $? -gt 0 ]; then 
+                        echo "no temp files needed to be deleted"
+                    fi
+
+                </inlineTemplate>
+                <submitAs>shell-JCL</submitAs>
+            </template>
+        </step>
+
+        <step name="deleteTempDatasets">
+            <title>Delete temporary data sets</title>
+            <description>Delete the temp data sets that have been created</description>
+            <runAsUser substitution="true">$!{instance-UKO_ADMIN_DB}</runAsUser>
+            <approver substitution="true">$!{instance-UKO_APPROVER_DB}</approver>
+            <instructions substitution="true">Submit jcl to execute step</instructions>
+            <weight>1</weight>
+            <autoEnable>true</autoEnable>
+            <template>
+                <fileTemplate substitution="true">jcl/db-delete-ddl-dataset.jcl</fileTemplate>
+                <submitAs maxRc="4">JCL</submitAs>
+                <maxLrecl>80</maxLrecl>
+            </template>
+        </step>
+
+    </step>
+</step>

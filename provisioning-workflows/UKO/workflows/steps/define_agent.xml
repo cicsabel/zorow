@@ -1,0 +1,265 @@
+<?xml version="1.0" encoding="UTF-8"?>                    
+<!--
+/******************************************************************************/
+/* Copyright Contributors to the zOS-Workflow Project.                        */
+/* SPDX-License-Identifier: Apache-2.0                                        */
+/******************************************************************************/
+-->
+<step name="configureAgent">
+    <title>Configure UKO agent</title>
+    <description>Configure the agent to start as a started task</description>
+
+    <step name="substituteAgentConfigNoWorkstation">
+        <title>Substitute KMGPARM without Workstation</title>
+        <description>Replace values in KMGPARM with the values from the properties file</description>
+        <runAsUser substitution="true">$!{instance-UKO_ADMIN_SERVER}</runAsUser>
+        <approver substitution="true">$!{instance-UKO_APPROVER_SERVER}</approver>
+        <condition>
+            <expression>"1"=="1"</expression>
+            <description>always true</description>
+            <targetStateSet>
+                <description>Execute if no workstation access is required</description>
+                <extendStateExpression>
+                    <description>Skip if workstation access is required</description>
+                    <expression>${instance-WORKSTATION_ACCESS_REQUIRED} == "true"</expression>
+                    <targetState>Skipped</targetState>
+                </extendStateExpression>
+            </targetStateSet>
+        </condition>
+        <variableValue name="UKO_AGENT_CLIENT_USER" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="AGENT_PORT" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="KEY_PREFIX" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="DB_CODEPAGE" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="TEMP_DIR" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="AGENT_STC_NAME" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="AGENT_SAMPLIB" scope="instance" noPromptIfSet="false" required="false"/>
+        <instructions substitution="true">Submit shell script to execute step</instructions>
+        <weight>1</weight>
+        <autoEnable>true</autoEnable>
+        <template>
+                <inlineTemplate substitution="true">
+                    echo "workstation access is not required, using sample options member KMGOPCRY"
+                    # getting rid of potential dashes in the codepage
+                    ccsid=$(echo "${instance-DB_CODEPAGE}" | sed 's/-//g')
+
+                    echo "/* Agent configuration parameters */" > ${instance-TEMP_DIR}/${instance-AGENT_STC_NAME}-KMGPARM;    
+                    sed "s#^\&amp;IP-PORT.*#\&amp;IP-PORT(${instance-AGENT_PORT})#g;
+                        s#^\&amp;SYS-RSAKEK-PREFIX.*#\&amp;SYS-RSAKEK-PREFIX(${instance-KEY_PREFIX}.RSAKEK)#g;
+                        s#^\&amp;SYS-ECCSIGN-PREFIX.*#\&amp;SYS-ECCSIGN-PREFIX(${instance-KEY_PREFIX}.ECCSIGN)#g;
+                        s#^\&amp;SYS-CCSID.*#\&amp;SYS-CCSID(${ccsid})#g;
+                        s#^\&amp;WEBCLIENT.*#\&amp;WEBCLIENT(${instance-UKO_AGENT_CLIENT_USER})#g" "//'${instance-AGENT_SAMPLIB}(KMGOPCRY)'" >> ${instance-TEMP_DIR}/${instance-AGENT_STC_NAME}-KMGPARM;
+                        
+                </inlineTemplate>
+            <submitAs>shell-JCL</submitAs>
+        </template>
+    </step>
+
+    <step name="substituteAgentConfigWithWorkstation">
+        <title>Substitute KMGPARM with Workstation</title>
+        <description>Replace values in KMGPARM with the values from the properties file</description>
+        <runAsUser substitution="true">$!{instance-UKO_ADMIN_SERVER}</runAsUser>
+        <approver substitution="true">$!{instance-UKO_APPROVER_SERVER}</approver>
+        <condition>
+            <expression>"1"=="1"</expression>
+            <description>always true</description>
+            <targetStateSet>
+                <description>Only execute for workstation access</description>
+                <extendStateExpression>
+                    <description>Skip if no workstation access is required</description>
+                    <expression>${instance-WORKSTATION_ACCESS_REQUIRED} == "false"</expression>
+                    <targetState>Skipped</targetState>
+                </extendStateExpression>
+            </targetStateSet>
+        </condition>
+        <variableValue name="UKO_AGENT_CLIENT_USER" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="AGENT_PORT" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="DB_AGENT_PLAN" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="DB_JCC_SSID" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="DB_LOCATION" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="DB_JDBC_PORT" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="DB_JDBC_SECPORT" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="KEY_PREFIX" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="DB_CURRENT_SCHEMA" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="DB_CODEPAGE" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="TEMP_DIR" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="AGENT_STC_NAME" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="AGENT_SAMPLIB" scope="instance" noPromptIfSet="false" required="false"/>
+        <instructions substitution="true">Submit shell script to execute step</instructions>
+        <weight>1</weight>
+        <autoEnable>true</autoEnable>
+        <template>
+                <inlineTemplate substitution="true">
+                    echo "workstation access is required, using sample options member KMGOPDB2"
+                    # getting rid of potential dashes in the codepage
+                    ccsid=$(echo "${instance-DB_CODEPAGE}" | sed 's/-//g')
+
+                    echo "/* Agent configuration parameters */" > ${instance-TEMP_DIR}/${instance-AGENT_STC_NAME}-KMGPARM;    
+                    sed "s#^\&amp;IP-PORT.*#\&amp;IP-PORT(${instance-AGENT_PORT})#g;
+                        s#^\&amp;SYS-RSAKEK-PREFIX.*#\&amp;SYS-RSAKEK-PREFIX(${instance-KEY_PREFIX}.RSAKEK)#g;
+                        s#^\&amp;SYS-ECCSIGN-PREFIX.*#\&amp;SYS-ECCSIGN-PREFIX(${instance-KEY_PREFIX}.ECCSIGN)#g;
+                        s#^\&amp;DB2-PLAN.*#\&amp;DB2-PLAN(${instance-DB_AGENT_PLAN})#g;
+                        s#^\&amp;DB2-SYSTEM.*#\&amp;DB2-SYSTEM(${instance-DB_JCC_SSID})#g;
+                        s#^\&amp;SYS-CCSID.*#\&amp;SYS-CCSID(${ccsid})#g;
+                        s#^\&amp;SYS-JDBC-LOCATION.*#\&amp;SYS-JDBC-LOCATION(${instance-DB_LOCATION})#g;
+                        s#^\&amp;SYS-JDBC-PORT.*#\&amp;SYS-JDBC-PORT(${instance-DB_JDBC_PORT})#g;
+                        s#^\&amp;SYS-JDBC-SECPORT.*#\&amp;SYS-JDBC-SECPORT(${instance-DB_JDBC_SECPORT})#g;
+                        s#^\&amp;WEBCLIENT.*#\&amp;WEBCLIENT(${instance-UKO_AGENT_CLIENT_USER})#g" "//'${instance-AGENT_SAMPLIB}(KMGOPDB2)'" >> ${instance-TEMP_DIR}/${instance-AGENT_STC_NAME}-KMGPARM;
+
+                    echo "&amp;DB2-QUALIFIER(${instance-DB_CURRENT_SCHEMA})" >> ${instance-TEMP_DIR}/${instance-AGENT_STC_NAME}-KMGPARM;    
+                        
+                </inlineTemplate>
+            <submitAs>shell-JCL</submitAs>
+        </template>
+    </step>
+
+    <step name="copyAgentConfiguration">
+        <title>Copy KMGPARM into place</title>
+        <description>Copy KMGPARM template into the PROCLIB</description>
+        <runAsUser substitution="true">$!{instance-UKO_ADMIN_SERVER}</runAsUser>
+        <approver substitution="true">$!{instance-UKO_APPROVER_SERVER}</approver>
+        <variableValue name="TEMP_DIR" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="AGENT_STC_NAME" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="ZOS_PARMLIB" scope="instance" noPromptIfSet="false" required="false"/>
+        <instructions substitution="true">Submit JCL to execute step</instructions>
+        <weight>5</weight>
+        <autoEnable>true</autoEnable>
+        <template>
+            <fileTemplate substitution="true">jcl/copy-agent-config.jcl</fileTemplate>
+            <submitAs>JCL</submitAs>
+            <maxLrecl>80</maxLrecl>
+        </template>
+    </step> 
+
+    <step name="createAgentProc">
+        <title>Create Agent Proc</title>
+        <description>Create the agent proc</description>
+        <runAsUser substitution="true">$!{instance-UKO_ADMIN_TSO}</runAsUser>
+        <approver substitution="true">$!{instance-UKO_APPROVER_TSO}</approver>
+        <variableValue name="ZOS_PROCLIB" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="ZOS_PARMLIB" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="AGENT_STC_NAME" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="AGENT_RUNLIB" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="TCPIP_HLQ" scope="instance" noPromptIfSet="false" required="false"/>
+        <instructions substitution="true">Submit JCL to execute step</instructions>
+        <weight>5</weight>
+        <autoEnable>true</autoEnable>
+        <template>
+            <fileTemplate substitution="true">jcl/create-agent-proc.jcl</fileTemplate>
+            <submitAs>JCL</submitAs>
+            <maxLrecl>80</maxLrecl>
+        </template>
+    </step>
+
+    <step name="configureAgentSecurity">
+    	<title>Configure Security for UKO agent</title>
+    	<description>Configure security for UKO agent and related resources</description>
+
+        <step name="configureAgentSAFSecurityProfiles">
+            <title>Configure SAF Security</title>
+            <description>Configure UKO agent Security</description>
+            <runAsUser substitution="true">$!{instance-UKO_ADMIN_SECURITY}</runAsUser>
+            <approver substitution="true">$!{instance-UKO_APPROVER_SECURITY}</approver>
+            <variableValue name="AGENT_STC_NAME" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="AGENT_STC_USER" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="AGENT_STC_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="UKO_AGENT_CLIENT_USER" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="UKO_AGENT_CLIENT_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="SAF_OWNER" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="SKMGMOD0_APF" scope="instance" noPromptIfSet="false" required="true"/>
+            <variableValue name="AGENT_RUNLIB_READ" scope="instance" noPromptIfSet="false" required="true"/>
+            <instructions substitution="true">Submit rexx exec to execute step</instructions>
+            <weight>1</weight>
+            <autoEnable>true</autoEnable>
+            <template>
+                <fileTemplate substitution="true">rexx/defineAgentSecurity.rexx</fileTemplate>
+                <submitAs maxRc="0">TSO-REXX-JCL</submitAs>
+                <maxLrecl>1024</maxLrecl>
+            </template>
+        </step>
+
+        <step name="defineAgentIcsfAccess">
+            <title>Define access to ICSF</title>
+            <description>Define the profiles in the CSFSERV class and grant access</description>
+            <runAsUser substitution="true">$!{instance-UKO_ADMIN_SECURITY}</runAsUser>
+            <approver substitution="true">$!{instance-UKO_APPROVER_SECURITY}</approver>
+            <variableValue name="AGENT_STC_USER" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="SAF_OWNER" scope="instance" noPromptIfSet="false" required="false"/>
+            <instructions>Executes a REXX program to create profiles and grant access</instructions>
+            <weight>1</weight>
+            <autoEnable>true</autoEnable>
+            <template>
+                <fileTemplate substitution="true">rexx/defineAgentIcsfAccess.rexx</fileTemplate>
+                <submitAs maxRc="4">TSO-REXX-JCL</submitAs>
+                <maxLrecl>1024</maxLrecl>
+            </template>
+        </step>
+
+        <step name="defineAgentKeyAccess">
+            <title>Key prefix creation</title>
+            <description>Create entry in CSFKEYS class and grant access</description>
+            <runAsUser substitution="true">$!{instance-UKO_ADMIN_SECURITY}</runAsUser>
+            <approver substitution="true">$!{instance-UKO_APPROVER_SECURITY}</approver>
+            <variableValue name="KEY_PREFIX" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="AGENT_STC_USER" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="SAF_OWNER" scope="instance" noPromptIfSet="false" required="false"/>
+            <instructions>Executes a REXX program to create the key prefix</instructions>
+            <weight>1</weight>
+            <autoEnable>true</autoEnable>
+            <template>
+                <fileTemplate substitution="true">rexx/defineAgentKeyAccess.rexx</fileTemplate>
+                <submitAs maxRc="4">TSO-REXX-JCL</submitAs>
+                <maxLrecl>1024</maxLrecl>
+            </template>
+        </step>
+
+        <step name="configureAgentDsnrAccess">
+            <title>Define DSNR BATCH access (Workstation only)</title>
+            <description>If the agent is used with EKMF Workstation, it requires access to the BATCH profile in the DSNR class for the TSO attachment facility, the call attachment facility (aka CAF) and Db2 utilities</description>        
+            <runAsUser substitution="true">$!{instance-UKO_ADMIN_SECURITY}</runAsUser>
+            <approver substitution="true">$!{instance-UKO_APPROVER_SECURITY}</approver>
+            <condition>
+                <expression>"1"=="1"</expression>
+                <description>always true</description>
+                <targetStateSet>
+                    <description>Only execute for workstation access</description>
+                    <extendStateExpression>
+                        <description>Skip if no workstation access is required</description>
+                        <expression>${instance-WORKSTATION_ACCESS_REQUIRED} == "false"</expression>
+                        <targetState>Skipped</targetState>
+                    </extendStateExpression>
+                </targetStateSet>
+            </condition>            
+            <variableValue name="DB_JCC_SSID" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="AGENT_STC_USER" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="SAF_OWNER" scope="instance" noPromptIfSet="false" required="false"/>
+            <instructions substitution="true">If this agent is used by the EKMF Workstation as well, review the rexx and execute it to create the required DSNR profile and grant access</instructions>
+            <weight>1</weight>
+            <autoEnable>true</autoEnable>
+            <template>
+                <fileTemplate substitution="true">rexx/defineAgentDsnrAccess.rexx</fileTemplate>
+                <submitAs maxRc="0">TSO-REXX-JCL</submitAs>
+                <maxLrecl>1024</maxLrecl>
+            </template>
+        </step>
+
+        <step name="defineAgentLinkEncryption">
+            <title>Define link encryption</title>
+            <description>Define link encryption between the agent and clients</description>
+            <runAsUser substitution="true">$!{instance-UKO_ADMIN_SECURITY}</runAsUser>
+            <approver substitution="true">$!{instance-UKO_APPROVER_SECURITY}</approver>
+            <variableValue name="UKO_SERVER_PUBLIC_KEY_HASH" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="AGENT_STC_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="SAF_OWNER" scope="instance" noPromptIfSet="false" required="false"/>
+            <instructions substitution="true">Submit rexx exec to execute step</instructions>
+            <weight>1</weight>
+            <autoEnable>true</autoEnable>
+            <template>
+                <fileTemplate substitution="true">rexx/defineAgentLinkEncryption.rexx</fileTemplate>
+                <submitAs maxRc="0">TSO-REXX-JCL</submitAs>
+                <maxLrecl>1024</maxLrecl>
+            </template>
+        </step>
+
+	</step>
+
+</step>

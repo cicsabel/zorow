@@ -1,0 +1,1814 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/******************************************************************************/
+/* Copyright Contributors to the zOS-Workflow Project.                        */
+/* SPDX-License-Identifier: Apache-2.0                                        */
+/******************************************************************************/
+
+-->
+<!--+++++++++++++++++++-->
+<!-- Basic Variables   -->
+<!--+++++++++++++++++++-->
+
+<variable name="WLP_INSTALL_DIR" visibility="private">
+  <label>WLP_INSTALL_DIR</label>
+  <abstract>WebSphere Liberty installation directory</abstract>
+  <description>The path to the WebSphere Liberty install directory.</description>
+  <category>Server variables</category>
+  <string>
+    <!-- Path validation, has to start with slash, may contain slashes, must not end with slash or whitespace -->
+    <regularExpression>^\/([A-z0-9-_+\.]+\/)*([A-z0-9-_+\.])*[^\/\s]$</regularExpression>
+  </string>
+</variable>
+
+<variable name="SERVER_INSTALL_DIR" visibility="public">
+  <label>SERVER_INSTALL_DIR</label>
+  <abstract>Server installation directory</abstract>
+  <description>The path to the Server install directory.</description>
+  <category>Server variables</category>
+  <string>
+    <!-- Path validation, has to start with slash, may contain slashes, must not end with slash or whitespace -->
+    <regularExpression>^\/([A-z0-9-_+\.]+\/)*([A-z0-9-_+\.])*[^\/\s]$</regularExpression>
+  </string>
+</variable>
+
+<variable name="SERVER_OUTPUT_DIR" visibility="public">
+  <label>SERVER_OUTPUT_DIR</label>
+  <abstract>Server output directory</abstract>
+  <description>The path to the Server output directory for logs and messages.</description>
+  <category>Server variables</category>
+  <string>
+    <!-- Path validation, has to start with slash, may contain slashes, must not end with slash or whitespace -->
+    <regularExpression>^\/([A-z0-9-_+\.]+\/)*([A-z0-9-_+\.])*[^\/\s]$</regularExpression>
+  </string>
+</variable>
+
+<variable name="JAVA_HOME" visibility="public">
+  <label>JAVA_HOME</label>
+  <abstract>Java home path</abstract>
+  <description>The path to the Java home directory.</description>
+  <category>Server variables</category>
+  <string valueMustBeChoice="false">
+    <choice>"/java/J8.0_64"</choice>
+    <choice>"/java/java11_bit64_sr18_fp0/J11.0_64"</choice>
+    <choice>"/java/java17_64"</choice>
+    <choice>"/java/java21"</choice>    
+    <!-- Path validation, has to start with slash, may contain slashes, must not end with slash or whitespace -->
+  </string>
+</variable>
+
+<variable name="TEMP_DIR" visibility="private">
+  <label>TEMP_DIR</label>
+  <abstract>Temp directory</abstract>
+  <description>The path to a temp directory for files created and removed at runtime</description>
+  <category>General variables</category>
+  <string>
+    <!-- Path validation, has to start with slash, may contain slashes, must not end with slash or whitespace -->
+    <regularExpression>^\/([A-z0-9-_+\.]+\/)*([A-z0-9-_+\.])*[^\/\s]$</regularExpression>
+    <default>/tmp</default>
+  </string>
+</variable>
+
+<!--++++++++++++++++++++-->
+<!-- Angel              -->
+<!--++++++++++++++++++++-->
+
+<variable name="CREATE_ANGEL" visibility="private">
+  <label>CREATE_ANGEL</label>
+  <abstract>Enable Angel creation</abstract>
+  <description>Flag to indicate if an Angel server is to be created</description>
+  <category>General variables</category>
+  <string valueMustBeChoice="true">
+    <choice>true</choice>
+    <choice>false</choice>
+    <default>false</default>
+  </string>
+</variable>
+
+<variable name="WLP_ANGEL_NAME" visibility="private">
+  <label>WLP_ANGEL_NAME</label>
+  <abstract>Name of the Angel server</abstract>
+  <description>If an Angel is to be created, this will be the name. If no name specified, a name
+    will be generated. If no Angel is to be created, this is the existing Angel to connect to. If no
+    name specified, the Liberty server will connect to the default Angel</description>
+  <category>Server variables</category>
+  <string>
+    <validationType>USERID</validationType>
+  </string>
+</variable>
+
+<variable name="ANGEL_STC_USER" visibility="public">
+  <label>ANGEL_STC_USER</label>
+  <abstract>The user id running the Angel</abstract>
+  <description>The id of the user authorized to run the Angel as started task</description>
+  <category>Server variables</category>
+  <string>
+    <validationType>USERID</validationType>
+  </string>
+</variable>
+
+<!--++++++++++++++++++++-->
+<!-- SSL Authentication -->
+<!--++++++++++++++++++++-->
+<variable name="SERVER_CREATE_CA" visibility="private">
+  <label>SERVER_CREATE_CA</label>
+  <abstract>Enable CA creation</abstract>
+  <description>Flag to indicate if a CA is to be created</description>
+  <category>Certificate variables</category>
+  <string valueMustBeChoice="true">
+    <choice>true</choice>
+    <choice>false</choice>
+    <default>false</default>
+  </string>
+</variable>
+<variable name="SERVER_CA_LABEL" scope="instance" visibility="public">
+  <label>SERVER_CA_LABEL</label>
+  <abstract>SERVER_CA_LABEL</abstract>
+  <description>Name of the SERVER_CA_LABEL to use for the server.</description>
+  <category>Certificate variables</category>
+  <string />
+</variable>
+<variable name="SERVER_CA_CN" scope="instance" visibility="public">
+  <label>SERVER_CA_CN</label>
+  <abstract> SERVER_CA_CN</abstract>
+  <description>Name of the SERVER_CA_CN to use for the server.</description>
+  <category>Certificate variables</category>
+  <string />
+</variable>
+<variable name="SERVER_CA_OU" scope="instance" visibility="private">
+  <label>SERVER_CA_OU</label>
+  <abstract>SERVER_CA_OU</abstract>
+  <description>Name of the SERVER_CA_OU to use for the server.</description>
+  <category>Certificate variables</category>
+  <string />
+</variable>
+<variable name="SERVER_CA_O" scope="instance" visibility="private">
+  <label>SERVER_CA_O</label>
+  <abstract>SERVER_CA_O</abstract>
+  <description>Name of the SERVER_CA_O to use for the server.</description>
+  <category>Certificate variables</category>
+  <string />
+</variable>
+
+<variable name="SERVER_CREATE_KEYRING" visibility="private">
+  <label>SERVER_CREATE_KEYRING</label>
+  <abstract>Enable keyring creation</abstract>
+  <description>Flag to indicate if a keyring is to be created</description>
+  <category>Certificate variables</category>
+  <string valueMustBeChoice="true">
+    <choice>true</choice>
+    <choice>false</choice>
+    <default>false</default>
+  </string>
+</variable>
+<variable name="SERVER_USE_KEYRING_AS_TRUST_STORE" visibility="private">
+  <label>SERVER_USE_KEYRING_AS_TRUST_STORE</label>
+  <abstract>Uses the same ring as key ring and trust store</abstract>
+  <description>Will create only one keyring for key and trust store, so SERVER_TLS_TRUST_STORE_KEY_RING will be SERVER_TLS_KEY_STORE_KEY_RING. 
+    Any value set for SERVER_TLS_TRUST_STORE_KEY_RING will then be ignored. 
+  </description>
+  <category>Certificate variables</category>
+  <string valueMustBeChoice="true">
+    <choice>true</choice>
+    <choice>false</choice>
+    <default>false</default>
+  </string>
+</variable>
+<variable name="SERVER_TLS_KEY_STORE_KEY_RING" scope="instance" visibility="public">
+  <label>SERVER_TLS_KEY_STORE_KEY_RING</label>
+  <abstract>SERVER_TLS_KEY_STORE_KEY_RING</abstract>
+  <description>Name of the SERVER_TLS_KEY_STORE_KEY_RING to use for the server.</description>
+  <category>Certificate variables</category>
+  <string />
+</variable>
+<variable name="SERVER_TLS_KEY_STORE_OWNER" scope="instance" visibility="public">
+  <label>SERVER_TLS_KEY_STORE_OWNER</label>
+  <abstract>SERVER_TLS_KEY_STORE_OWNER</abstract>
+  <description>Name of the SERVER_TLS_KEY_STORE_OWNER to use for the server.</description>
+  <category>Certificate variables</category>
+  <string>
+    <validationType>USERID</validationType>
+  </string>
+</variable>
+<variable name="SERVER_TLS_TRUST_STORE_KEY_RING" scope="instance" visibility="public">
+  <label>SERVER_TLS_TRUST_STORE_KEY_RING</label>
+  <abstract>SERVER_TLS_TRUST_STORE_KEY_RING</abstract>
+  <description>Name of the SERVER_TLS_TRUST_STORE_KEY_RING to use for the server.</description>
+  <category>Certificate variables</category>
+  <string />
+</variable>
+
+<variable name="SERVER_CREATE_CERTIFICATES" visibility="private">
+  <label>SERVER_CREATE_CERTIFICATES</label>
+  <abstract>Enable certificate creation</abstract>
+  <description>Flag to indicate if certificates are to be created</description>
+  <category>Certificate variables</category>
+  <string valueMustBeChoice="true">
+    <choice>true</choice>
+    <choice>false</choice>
+    <default>false</default>
+  </string>
+</variable>
+<variable name="SERVER_TLS_KEY_STORE_SERVER_CERT_CN" scope="instance" visibility="public">
+  <label>SERVER_TLS_KEY_STORE_SERVER_CERT_CN</label>
+  <abstract> SERVER_TLS_KEY_STORE_SERVER_CERT_CN</abstract>
+  <description>Name of the SERVER_TLS_KEY_STORE_SERVER_CERT_CN to use for the server.</description>
+  <category>Certificate variables</category>
+  <string />
+</variable>
+<variable name="SERVER_TLS_KEY_STORE_SERVER_CERT_OU" scope="instance" visibility="private">
+  <label>SERVER_TLS_KEY_STORE_SERVER_CERT_OU</label>
+  <abstract>SERVER_TLS_KEY_STORE_SERVER_CERT_OU</abstract>
+  <description>Name of the SERVER_TLS_KEY_STORE_SERVER_CERT_OU to use for the server.</description>
+  <category>Certificate variables</category>
+  <string />
+</variable>
+<variable name="SERVER_TLS_KEY_STORE_SERVER_CERT_O" scope="instance" visibility="private">
+  <label>SERVER_TLS_KEY_STORE_SERVER_CERT_O</label>
+  <abstract>SERVER_TLS_KEY_STORE_SERVER_CERT_O</abstract>
+  <description>Name of the SERVER_TLS_KEY_STORE_SERVER_CERT_O to use for the server.</description>
+  <category>Certificate variables</category>
+  <string />
+</variable>
+<variable name="SERVER_TLS_KEY_STORE_SERVER_CERT" scope="instance" visibility="public">
+  <label>SERVER_TLS_KEY_STORE_SERVER_CERT</label>
+  <abstract>SERVER_TLS_KEY_STORE_SERVER_CERT</abstract>
+  <description>Name of the SERVER_TLS_KEY_STORE_SERVER_CERT to use for the server.</description>
+  <category>Certificate variables</category>
+  <string />
+</variable>
+<variable name="ENABLE_MTLS_VIA_HTTPS_PORT" visibility="public">
+  <label>ENABLE_MTLS_VIA_HTTPS_PORT</label>
+  <abstract>Enable mTLS authentication via the https port?</abstract>
+  <description>This option allows mTLS authentication using the https port instead of a separate mTLS port</description>
+  <category>Server variables</category>
+  <string valueMustBeChoice="true">
+    <choice>true</choice>
+    <choice>false</choice>
+    <default>false</default>
+  </string>
+</variable>
+
+<variable name="SERVER_OIDC_PROVIDER_CERT" scope="instance" visibility="public">
+  <label>SERVER_OIDC_PROVIDER_CERT</label>
+  <abstract>SERVER_OIDC_PROVIDER_CERT</abstract>
+  <description>Name of the SERVER_OIDC_PROVIDER_CERT to use for the server.</description>
+  <category>Certificate variables</category>
+  <string />
+</variable>
+<variable name="SERVER_OAUTH_CLIENT_ID" scope="instance" visibility="public">
+  <label>SERVER_OAUTH_CLIENT_ID</label>
+  <abstract>SERVER_OAUTH_CLIENT_ID</abstract>
+  <description>Client ID is used by the OpenID Connect framework to identify the clients connecting to the server</description>
+  <category>Server variables</category>
+  <string />
+</variable>
+<variable name="SERVER_OAUTH_CLIENT_ID_OPENAPI" scope="instance" visibility="public">
+  <label>SERVER_OAUTH_CLIENT_ID_OPENAPI</label>
+  <abstract>SERVER_OAUTH_CLIENT_ID_OPENAPI</abstract>
+  <description>Client ID used by the OpenAPI user interface</description>
+  <category>Server variables</category>
+  <string />
+</variable>
+<variable name="SERVER_OAUTH_CLIENT_SECRET" scope="instance" visibility="public">
+  <label>SERVER_OAUTH_CLIENT_SECRET</label>
+  <abstract>SERVER_OAUTH_CLIENT_SECRET</abstract>
+  <description>Secret used together with client id to access api</description>
+  <category>Server variables</category>
+  <string />
+</variable>
+<variable name="SERVER_HOSTNAME" scope="instance" visibility="public">
+  <label>SERVER_HOSTNAME</label>
+  <abstract>SERVER_HOSTNAME</abstract>
+  <description>Server hostname</description>
+  <category>Server variables</category>
+  <string />
+</variable>
+<!--++++++++++++++++++++++++++++++++-->
+<!-- Other server related variables -->
+<!--++++++++++++++++++++++++++++++++-->
+
+<variable name="UKO_SERVER_PUBLIC_KEY_HASH" scope="instance" visibility="public">
+  <label>UKO_SERVER_PUBLIC_KEY_HASH</label>
+  <abstract>Public key hash of the UKO server</abstract>
+  <description>UKO server public key hash consisting of 64 hex characters you find it when you click on the question mark in the top right corner. Specify * if you want this agent to be accessible by any client.</description>
+  <category>Server variables</category>
+  <string>
+    <!-- 64 hex caharacters or * -->
+    <regularExpression>^[0-9a-fA-F]{64}$|^\*$</regularExpression>
+    <default>*</default>
+  </string>
+</variable>
+
+<variable name="SAF_PROFILE_PREFIX" scope="instance" visibility="public">
+  <label>SAF_PROFILE_PREFIX</label>
+  <abstract>SAF prefix for EJBROLE profiles</abstract>
+  <description>SAF prefix to be used for profiles in the EJBROLE class</description>
+  <category>Server variables</category>
+  <string />
+</variable>
+
+<variable name="UKO_VAULT_ID" visibility="public">
+  <label>UKO_VAULT_ID</label>
+  <abstract>Vault ID to grant access to, select "ekmfwebv2" for EKMF Web 2.x</abstract>
+  <description>Specify the vault ID to grant access to, where 00000000-0000-0000-0000-000000000000 is the default vault, * will be all vaults. Chose "ekmfwebv2" if you provision UKO pre V3.1.</description>
+  <category>Server variables</category>
+  <string valueMustBeChoice="false">
+    <choice>*</choice>
+    <choice>ekmfwebv2</choice>
+    <choice>00000000-0000-0000-0000-000000000000</choice>
+    <default>00000000-0000-0000-0000-000000000000</default>
+  </string>
+</variable>
+
+<variable name="SERVER_VERSION" scope="instance" visibility="public">
+  <label>SERVER_VERSION</label>
+  <abstract>Server version</abstract>
+  <description>Which version of the server is this?</description>
+  <category>Server variables</category>
+  <string />
+</variable>
+
+<!--++++++++++++++++++++++++++++-->
+<!-- MSDKE related variables    -->
+<!--++++++++++++++++++++++++++++-->
+<variable name="MSDKE_SUPPORT_REQUIRED" visibility="public">
+  <label>MSDKE_SUPPORT_REQUIRED</label>
+  <abstract>Is MSDKE support required</abstract>
+  <description>Will connection to Microsoft Double Key Encryption be required</description>
+  <category>MSDKE variables</category>
+  <string valueMustBeChoice="true">
+    <choice>true</choice>
+    <choice>false</choice>
+    <default>false</default>
+  </string>
+</variable>
+
+<variable name="MSDKE_UKO_SERVER_NAME" visibility="public">
+    <label>MSDKE_UKO_SERVER_NAME</label>
+    <abstract>Name of UKO Server for keystore services</abstract>
+    <description>The name of the UKO Server that this CC instance is supposed to work together with</description>
+    <category>MSDKE variables</category>
+    <string />
+</variable>
+
+<variable name="MSDKE_RABBIT_URI" visibility="public">
+  <label>MSDKE_RABBIT_URI</label>
+  <abstract>URI of rabbitMQ instance</abstract>
+  <description>The URI of the rabbitMQ instance that will be used for MSDKE services</description>
+  <category>MSDKE variables</category>
+  <string />
+</variable>
+
+<variable name="MSDKE_WRAPPING_KEK_LABEL" visibility="public">
+  <label>MSDKE_WRAPPING_KEK_LABEL</label>
+  <abstract>KEK for wrapping MSDKE keys</abstract>
+  <description>Key label of the key encryption key, that will be used for wrapping keys related to MSDKE services</description>
+  <category>MSDKE variables</category>
+  <string />
+</variable>
+
+<variable name="MSDKE_RABBIT_VIRTUAL_HOST" visibility="public">
+  <label>MSDKE_RABBIT_VIRTUAL_HOST</label>
+  <abstract>Virtual host in RabbitMQ to connect to</abstract>
+  <description>If multiple servers are connecting to the same rabbitMQ instance, they must use seprarate virtual hosts to avoid conflicts</description>
+  <category>MSDKE variables</category>
+  <string valueMustBeChoice="false">
+    <choice>/</choice>
+    <default>/</default>
+  </string>
+</variable>
+
+<variable name="MSDKE_RABBIT_CERT" visibility="public">
+  <label>MSDKE_RABBIT_CERT</label>
+  <abstract>Certificate for mTLS connection with rabbitMQ</abstract>
+  <description>Label of the certificate used for mTLS authentication with rabbitMQ</description>
+  <category>MSDKE variables</category>
+  <string />
+</variable>
+
+<variable name="MSDKE_RABBIT_CA" visibility="public">
+  <label>MSDKE_RABBIT_CA</label>
+  <abstract>CA that signed rabbitMQ certificate</abstract>
+  <description>CA that signed the certificate used for mTLS authentication with rabbitMQ</description>
+  <category>MSDKE variables</category>
+  <string />
+</variable>
+<variable name="MSDKE_ENABLE_HTTP_SERVICE" visibility="public">
+  <label>MSDKE_ENABLE_HTTP_SERVICE</label>
+  <abstract>Enable MSDKE test HTTP Service?</abstract>
+  <description>Should the integrated test HTTP service for MSDKE be enabled? Note that this is not
+    recommended for production</description>
+  <category>MSDKE variables</category>
+  <string valueMustBeChoice="true">
+    <choice>true</choice>
+    <choice>false</choice>
+    <default>false</default>
+  </string>
+</variable>
+
+<variable name="MSDKE_EC_TRUSTED_KEYS_X509_ENCODED" visibility="private">
+    <label>MSDKE_EC_TRUSTED_KEYS_X509_ENCODED</label>
+    <abstract>Trusted keys for MSDKE</abstract>
+    <description>A comma-separated list of trusted keys; they are printed out by UKO and/or other instances of MSDKE Crypto service when the server starts</description>
+    <category>MSDKE variables</category>
+    <string/>
+</variable>
+
+<variable name="MSDKE_EC_IDENTITY_KEY_LABEL" visibility="private">
+    <label>MSDKE_EC_IDENTITY_KEY_LABEL</label>
+    <abstract>EC identity key label for MSDKE</abstract>
+    <description>The EC identity key label to use by this MSDKE Crypto Service</description>
+    <category>MSDKE variables</category>
+    <string/>
+</variable>
+
+<!--++++++++++++++++++++++++++++-->
+<!-- Crypto Connect variables   -->
+<!--++++++++++++++++++++++++++++-->
+
+<variable name="CRYPTO_CONNECT_SUPPORT_REQUIRED" visibility="public">
+  <label>CRYPTO_CONNECT_SUPPORT_REQUIRED</label>
+  <abstract>Enable Crypto Connect service?</abstract>
+  <description>Should the Crypto Connect encrypt and decrypt service be enabled?</description>
+  <category>CC variables</category>
+  <string valueMustBeChoice="true">
+    <choice>true</choice>
+    <choice>false</choice>
+    <default>false</default>
+  </string>
+</variable>
+
+<!--++++++++++++++++++++++++++++-->
+<!-- Network resource variables -->
+<!--++++++++++++++++++++++++++++-->
+
+<variable name="AGENT_PORT" visibility="public">
+  <label>Agent Port</label>
+  <abstract>Port for the UKO Agent</abstract>
+  <description>Port for the UKO Agent</description>
+  <category>UKO Agent variables</category>
+  <string />
+</variable>
+
+<variable name="AGENT_PORT_ID" visibility="private">
+  <label>AGENT_PORT_ID</label>
+  <abstract>Port ID for the UKO Agent</abstract>
+  <description>The ID of the reserved Agent Port address to use during deprovisioning</description>
+  <category>REST</category>
+  <string />
+</variable>
+
+<variable name="SERVER_PORT_NOTLS" visibility="public">
+  <label>SERVER_PORT_NOTLS</label>
+  <abstract>HTTP_PORT for the Server</abstract>
+  <description>HTTP port for the Sserver</description>
+  <category>Server variables</category>
+  <string />
+</variable>
+
+<variable name="SERVER_PORT_NOTLS_ID" visibility="private">
+  <label>SERVER_PORT_NOTLS_ID</label>
+  <abstract>HTTP port ID for the server</abstract>
+  <description>The ID of the reserved HTTP Port address to use during deprovisioning</description>
+  <category>REST</category>
+  <string />
+</variable>
+
+<variable name="SERVER_PORT_TLS" visibility="public">
+  <label>SERVER_PORT_TLS</label>
+  <abstract>HTTPS_PORT for the server</abstract>
+  <description>HTTPS port for the server</description>
+  <category>Server variables</category>
+  <string />
+</variable>
+
+<variable name="SERVER_PORT_TLS_ID" visibility="private">
+  <label>SERVER_PORT_TLS_ID</label>
+  <abstract>HTTPS port ID for the server</abstract>
+  <description>The ID of the reserved HTTPS Port address to use during deprovisioning</description>
+  <category>REST</category>
+  <string />
+</variable>
+
+<variable name="CONFIGURATION_PORT" visibility="public">
+  <label>CONFIGURATION_PORT</label>
+  <abstract>Configuration port for CC ACSP</abstract>
+  <description>Port to be used for the monitor.agent.port in the CC ACSP server configuration</description>
+  <category>Server variables</category>
+  <string />
+</variable>
+
+<variable name="CONFIGURATION_PORT_ID" visibility="private">
+  <label>CONFIGURATION_PORT_ID</label>
+  <abstract>Port ID for the CC ACSP monitoring port</abstract>
+  <description>The ID of the reserved monitoring port to use during deprovisioning</description>
+  <category>REST</category>
+  <string />
+</variable>
+
+<variable name="SERVER_ADDRESS" scope="instance" visibility="public">
+  <label>SERVER_ADDRESS</label>
+  <abstract>Hostname that the server is running on</abstract>
+  <description>Hostname that the server is running on.</description>
+  <category>Server variables</category>
+  <string />
+</variable>
+
+<!--++++++++++++++++++++++++-->
+<!-- Start option variables -->
+<!--++++++++++++++++++++++++-->
+
+<variable name="ZOS_PROCLIB" visibility="private">
+  <label>ZOS_PROCLIB</label>
+  <abstract>The PROCLIB dataset</abstract>
+  <description>The PROCLIB dataset</description>
+  <category>General variables</category>
+  <string>
+    <validationType>DSNAME</validationType>
+  </string>
+</variable>
+
+<variable name="ZOS_PARMLIB" visibility="private">
+  <label>ZOS_PARMLIB</label>
+  <abstract>The PARMLIB dataset</abstract>
+  <description>The PARMLIB dataset</description>
+  <category>General variables</category>
+  <string>
+    <validationType>DSNAME</validationType>
+  </string>
+</variable>
+
+<variable name="SERVER_REST_STATUS" scope="instance" visibility="private">
+  <label>SERVER_REST_STATUS</label>
+  <abstract>Holds the status of the server REST request</abstract>
+  <description>Holds the status of the server REST request issued to the console API</description>
+  <category>REST</category>
+  <string />
+</variable>
+
+<variable name="INSTANCE_STATUS" visibility="public">
+    <label>INSTANCE_STATUS</label>
+    <abstract>Variable indicating the last known status of the instance.</abstract>
+    <description>Variable indicating the last known status of the instance. The value is updated by calling the checkStatus action on the provisioned instance.</description>
+    <category>REST</category>
+    <string valueMustBeChoice="true">
+        <choice>active</choice>
+        <choice>inactive</choice>
+    </string>
+</variable>
+
+<variable name="AGENT_REST_STATUS" scope="instance" visibility="private">
+  <label>AGENT_REST_STATUS</label>
+  <abstract>Holds the status of the agent REST request</abstract>
+  <description>Holds the status of the agent REST request issued to the console API</description>
+  <category>REST</category>
+  <string />
+</variable>
+
+<variable name="START_SERVER" visibility="public">
+  <label>START_SERVER</label>
+  <abstract>Indicates whether during the provision flow, the subsystem should be started</abstract>
+  <description>This option allows a provision to be done, without starting the subsystem. By default the subsystem is started.</description>
+  <category>Server variables</category>
+  <string valueMustBeChoice="true">
+    <choice>true</choice>
+    <choice>false</choice>
+    <default>true</default>
+  </string>
+</variable>
+
+<variable name="START_AGENT" visibility="public">
+  <label>START_AGENT</label>
+  <abstract>Indicates whether during the provision flow, the subsystem should be started</abstract>
+  <description>This option allows a provision to be done, without starting the subsystem. By default the subsystem is started.</description>
+  <category>UKO Agent variables</category>
+  <string valueMustBeChoice="true">
+    <choice>true</choice>
+    <choice>false</choice>
+    <default>true</default>
+  </string>
+</variable>
+
+<variable name="ZOS_STC_STOP_TIMEOUT" scope="instance" visibility="private">
+  <label>ZOS_STC_STOP_TIMEOUT</label>
+  <abstract>Stop timeout</abstract>
+  <description>Number of seconds to wait for started tasks to stop before taking further action</description>
+  <category>General variables</category>
+  <integer>
+    <minValue>10</minValue>
+    <maxValue>600</maxValue>
+    <default>30</default>
+  </integer>
+</variable>
+
+<!--++++++++++++++++++++++-->
+<!-- File System creation -->
+<!--++++++++++++++++++++++-->
+
+<variable name="SERVER_USER_DIR" visibility="private">
+  <label>SERVER_USER_DIR</label>
+  <abstract> zfsMountPoint</abstract>
+  <description>zfsMountPoint</description>
+  <category>Server variables</category>
+  <string>
+    <!-- Path validation, has to start with slash, may contain slashes, must not end with slash or whitespace -->
+    <regularExpression>^\/([A-z0-9-_+\.]+\/)*([A-z0-9-_+\.])*[^\/\s]$</regularExpression>
+  </string>
+</variable>
+
+<variable name="SERVER_FILE_SYSTEM_HLQ" visibility="private">
+  <label>SERVER_FILE_SYSTEM_HLQ</label>
+  <abstract>zfsHLQ</abstract>
+  <description>zfsHLQ</description>
+  <category>Server variables</category>
+  <string>
+    <validationType>DSNAME</validationType>
+  </string>
+</variable>
+
+<variable name="ZOS_ZFS_DATACLASS" scope="instance" visibility="private">
+  <label>ZOS_ZFS_DATACLASS</label>
+  <abstract>zFS DataClass for zFS dataset, ignored if ZOS_VSAM_VOLUME=SMS</abstract>
+  <description>zFS DataClass used to define the zFS dataset, If the value for ZOS_VSAM_VOLUME 
+    is specified as SMS (Storage Management Subsystem), this value is ignored</description>
+  <category>General variables</category>
+  <string />
+</variable>
+
+<variable name="ZOS_VSAM_VOLUME" scope="instance" visibility="private">
+  <label>ZOS_VSAM_VOLUME</label>
+  <abstract>Volume for Datasets or SMS</abstract>
+  <description>VOLUME value to be used when creating Datasets (eg SYSDA), set to SMS if SMS is used. 
+    If SMS is not used, you also must specify the DATACLASS.</description>
+  <category>General variables</category>
+  <string>
+    <minLength>1</minLength>
+    <maxLength>25</maxLength>
+  </string>
+</variable>
+
+<!-- STC JOBS -->
+<variable name="ZOS_STC_JOB_CARD" visibility="private">
+  <label>STC_JOB_CARD</label>
+  <abstract>Job card to be used by STC Jobs</abstract>
+  <description>Specifies the job card to use for the started task of the provisioned instance. When
+    specified, ZOS_STCJOBS must also be used to indicate the data set prefix for STCJOBS.</description>
+  <category>General variables</category>
+  <string />
+</variable>
+
+<variable name="ZOS_STCJOBS" scope="instance" visibility="private">
+  <label>ZOS_STCJOBS</label>
+  <abstract>User STCJOBS location</abstract>
+  <description>Names the data set into which the workflow can create the source JCL that defines the
+    job level characteristics of the started task for the provisioned instance. Used only when
+    ZOS_STC_JOB_CARD is also specified. </description>
+  <category>General variables</category>
+  <string>
+    <validationType>DSNAME</validationType>
+  </string>
+</variable>
+
+<variable name="SERVER_STC_NAME" visibility="public">
+  <label>SERVER_STC_NAME</label>
+  <abstract>Server STC name</abstract>
+  <description>The started task name of the Liberty server</description>
+  <category>Server variables</category>
+  <string />
+</variable>
+
+<variable name="SERVER_DIRECTORY" scope="instance" visibility="public">
+  <label>Server directory</label>
+  <abstract>The provisioned server's directory</abstract>
+  <description>The provisioned server's directory containing server.env, jvm.options and product links</description>
+  <category>Server variables</category>
+  <string>
+    <default>NONE</default>
+  </string>
+</variable>
+
+<!--++++++++++++++++++++++++++++++-->
+<!-- Approval and run as user ids -->
+<!--++++++++++++++++++++++++++++++-->
+
+<variable name="UKO_ADMIN_SERVER" visibility="private">
+  <label>UKO_ADMIN_SERVER</label>
+  <abstract>RunAs User for administrating the server</abstract>
+  <description>The userid under which the server administration tasks will be run as </description>
+  <category>Template variables</category>
+  <string>
+    <validationType>USERID</validationType>
+  </string>
+</variable>
+<variable name="UKO_APPROVER_SERVER" visibility="private">
+  <label>UKO_APPROVER_SERVER</label>
+  <abstract>The userid to approve the servers run as userid</abstract>
+  <description>The userid to approve the servers run as userid</description>
+  <category>Template variables</category>
+  <string>
+    <!-- Validate for a list of one or more space separated SAF userids -->
+    <regularExpression>^[0-9a-zA-Z$#@ ]*$</regularExpression>
+  </string>
+</variable>
+
+<variable name="UKO_ADMIN_DB" visibility="private">
+  <label>UKO_ADMIN_DB</label>
+  <abstract>Userid for running database related tasks</abstract>
+  <description>The userid that database related tasks will run under</description>
+  <category>Template variables</category>
+  <string>
+    <validationType>USERID</validationType>
+  </string>
+</variable>
+<variable name="UKO_APPROVER_DB" visibility="private">
+  <label>UKO_APPROVER_DB</label>
+  <abstract>The userid to approve the database run as userid</abstract>
+  <description>The userid to approve the database run as userid</description>
+  <category>Template variables</category>
+  <string>
+    <!-- Validate for a list of one or more space separated SAF userids -->
+    <regularExpression>^[0-9a-zA-Z$#@ ]*$</regularExpression>
+  </string>
+</variable>
+
+<variable name="UKO_ADMIN_SECURITY" visibility="private">
+  <label>UKO_ADMIN_SECURITY</label>
+  <abstract>APF authorized user id for security related provisioning tasks</abstract>
+  <description>The APF authorized userid to run SAF certificate creation/deletion and SAF profile creation/deletion</description>
+  <category>Template variables</category>
+  <string>
+    <validationType>USERID</validationType>
+  </string>
+</variable>
+<variable name="UKO_APPROVER_SECURITY" visibility="private">
+  <label>UKO_APPROVER_SECURITY</label>
+  <abstract>The user id to approve security related provisioning tasks</abstract>
+  <description>The user id to approve security related provisioning tasks</description>
+  <category>Template variables</category>
+  <string>
+    <!-- Validate for a list of one or more space separated SAF userids -->
+    <regularExpression>^[0-9a-zA-Z$#@]*$</regularExpression>
+  </string>
+</variable>
+
+<variable name="UKO_ADMIN_ZFS" visibility="private">
+  <label>UKO_ADMIN_ZFS</label>
+  <abstract>The user id for file system creation and mounting</abstract>
+  <description>The id of the user authorized to create and mount file systems</description>
+  <category>Template variables</category>
+  <string>
+    <validationType>USERID</validationType>
+  </string>
+</variable>
+<variable name="UKO_APPROVER_ZFS" visibility="private">
+  <label>UKO_APPROVER_ZFS</label>
+  <abstract>The user id to approve file system creation</abstract>
+  <description>The user id to approve file system creation</description>
+  <category>Template variables</category>
+  <string>
+    <!-- Validate for a list of one or more space separated SAF userids -->
+    <regularExpression>^[0-9a-zA-Z$#@ ]*$</regularExpression>
+  </string>
+</variable>
+
+<variable name="UKO_ADMIN_CONSOLE" visibility="private">
+  <label>UKO_ADMIN_CONSOLE</label>
+  <abstract>The user id for executing mvs console start and stop commands</abstract>
+  <description>The user id for executing mvs console start and stop commands</description>
+  <category>Template variables</category>
+  <string>
+    <validationType>USERID</validationType>
+  </string>
+</variable>
+<variable name="UKO_APPROVER_CONSOLE" visibility="private">
+  <label>UKO_APPROVER_CONSOLE</label>
+  <abstract>The user id to approve the execution of console commands</abstract>
+  <description>The user id to approve the execution of console commands</description>
+  <category>Template variables</category>
+  <string>
+    <!-- Validate for a list of one or more space separated SAF userids -->
+    <regularExpression>^[0-9a-zA-Z$#@ ]*$</regularExpression>
+  </string>
+</variable>
+
+<variable name="UKO_ADMIN_TSO" visibility="private">
+  <label>UKO_ADMIN_TSO</label>
+  <abstract>The user id for adding and removing procedures from the proclib</abstract>
+  <description>The user id for adding and removing procedures from the proclib</description>
+  <category>Template variables</category>
+  <string />
+</variable>
+<variable name="UKO_APPROVER_TSO" visibility="private">
+  <label>UKO_APPROVER_TSO</label>
+  <abstract>The user id to approval proclib additions</abstract>
+  <description>The user id to approval proclib additions</description>
+  <category>Template variables</category>
+  <string>
+    <!-- Validate for a list of one or more space separated SAF userids -->
+    <regularExpression>^[0-9a-zA-Z$#@ ]*$</regularExpression>
+  </string>
+</variable>
+
+<!--++++++++++++++++++++++++++++++-->
+<!-- Technical user ids           -->
+<!--++++++++++++++++++++++++++++++-->
+<variable name="CREATE_TECHNICAL_USER_GROUPS" visibility="private">
+  <label>CREATE_TECHNICAL_USER_GROUPS</label>
+  <abstract>Create the required groups</abstract>
+  <description>Flag to indicate if groups are to be created</description>
+  <category>User ID creation</category>
+  <string valueMustBeChoice="true">
+    <choice>true</choice>
+    <choice>false</choice>
+    <default>false</default>
+  </string>
+</variable>
+
+<variable name="SERVER_STC_GROUP" visibility="public">
+  <label>SERVER_STC_GROUP</label>
+  <abstract>The group containing the user id running the server</abstract>
+  <description>The group containing the id of the user authorized to run the Server as started task</description>
+  <category>Server variables</category>
+  <string>
+    <validationType>USERID</validationType>
+  </string>
+</variable>
+
+<variable name="WLP_UNAUTHENTICATED_GROUP" visibility="public">
+  <label>WLP_UNAUTHENTICATED_GROUP</label>
+  <abstract>The group containing the unauthenticated user id of the Liberty server</abstract>
+  <description>The group containing the Liberty unauthenticated userid</description>
+  <category>Server variables</category>
+  <string>
+    <validationType>USERID</validationType>
+  </string>
+</variable>
+
+<variable name="AGENT_STC_GROUP" visibility="public">
+  <label>AGENT_STC_GROUP</label>
+  <abstract>The group containing the user id running the UKO agent</abstract>
+  <description>The group containing the id of the user authorized to run the UKO agent as started task</description>
+  <category>UKO Agent variables</category>
+  <string>
+    <validationType>USERID</validationType>
+  </string>
+</variable>
+
+<variable name="UKO_AGENT_CLIENT_GROUP" visibility="public">
+  <label>UKO_AGENT_CLIENT_GROUP</label>
+  <abstract>The group containing the user id representing clients to connect to the UKO agent</abstract>
+  <description>The group containing the id of a client connecting to the UKO agent, which is the
+    user ID defined in the &amp;WEBCLIENT KPMGPARM</description>
+  <category>UKO Agent variables</category>
+  <string>
+    <validationType>USERID</validationType>
+  </string>
+</variable>
+
+<variable name="GENERIC_CLIENT_GROUP" visibility="public">
+  <label>GENERIC_CLIENT_GROUP</label>
+  <abstract>Generic group containing the user ids representing clients to connect to the server</abstract>
+  <description>Generic group containing the client user(s) that are connecting to this server, can be used for granting access</description>
+  <category>Server variables</category>
+  <string>
+    <validationType>USERID</validationType>
+  </string>
+</variable>
+
+<variable name="CREATE_TECHNICAL_USERIDS" visibility="private">
+  <label>CREATE_TECHNICAL_USERIDS</label>
+  <abstract>Create the required userids</abstract>
+  <description>Flag to indicate if userids are to be created</description>
+  <category>User ID creation</category>
+  <string valueMustBeChoice="true">
+    <choice>true</choice>
+    <choice>false</choice>
+    <default>false</default>
+  </string>
+</variable>
+
+<variable name="SERVER_STC_USER" visibility="public">
+  <label>SERVER_STC_USER</label>
+  <abstract>The user id running the server</abstract>
+  <description>The id of the user authorized to run the Server as started task</description>
+  <category>Server variables</category>
+  <string>
+    <validationType>USERID</validationType>
+  </string>
+</variable>
+
+<variable name="WLP_UNAUTHENTICATED_USER" visibility="public">
+  <label>WLP_UNAUTHENTICATED_USER</label>
+  <abstract>The unauthenticated user id of the Liberty server</abstract>
+  <description>The Liberty unauthenticated userid</description>
+  <category>Server variables</category>
+  <string>
+    <validationType>USERID</validationType>
+  </string>
+</variable>
+
+<variable name="AGENT_STC_USER" visibility="public">
+  <label>AGENT_STC_USER</label>
+  <abstract>The user id running the UKO agent</abstract>
+  <description>The id of the user authorized to run the UKO agent as started task</description>
+  <category>UKO Agent variables</category>
+  <string>
+    <validationType>USERID</validationType>
+  </string>
+</variable>
+
+<variable name="UKO_AGENT_CLIENT_USER" visibility="public">
+  <label>UKO_AGENT_CLIENT_USER</label>
+  <abstract>The user id representing clients to connect to the UKO agent</abstract>
+  <description>The id of a client connecting to the UKO agent, which is the user ID defined in the
+    &amp;WEBCLIENT KPMGPARM</description>
+  <category>UKO Agent variables</category>
+  <string>
+    <validationType>USERID</validationType>
+  </string>
+</variable>
+
+<variable name="GENERIC_CLIENT_USER" visibility="public">
+  <label>GENERIC_CLIENT_USER</label>
+  <abstract>Generic client user id connecting to this server</abstract>
+  <description>This is a generic client user that you can use to create client certificates</description>
+  <category>Server variables</category>
+  <string>
+    <validationType>USERID</validationType>
+  </string>
+</variable>
+
+<!--++++++++++++++++++++++++++++++-->
+<!-- Role user ids                -->
+<!--++++++++++++++++++++++++++++++-->
+
+<variable name="CREATE_PERSONAL_USER_GROUPS" visibility="private">
+  <label>CREATE_PERSONAL_USER_GROUPS</label>
+  <abstract>Create the groups representing access roles</abstract>
+  <description>Flag to indicate if groups are to be created holding the different access roles</description>
+  <category>User ID creation</category>
+  <string valueMustBeChoice="true">
+    <choice>true</choice>
+    <choice>false</choice>
+    <default>false</default>
+  </string>
+</variable>
+
+<variable name="CREATE_PERSONAL_USERIDS" visibility="private">
+  <label>CREATE_PERSONAL_USERIDS</label>
+  <abstract>Create the userids representing access roles</abstract>
+  <description>Flag to indicate if userids for different access roles like key admin or custodian are to be created</description>
+  <category>User ID creation</category>
+  <string valueMustBeChoice="true">
+    <choice>true</choice>
+    <choice>false</choice>
+    <default>false</default>
+  </string>
+</variable>
+
+<variable name="UKO_VAULT_ADMIN" visibility="public">
+  <label>UKO_VAULT_ADMIN</label>
+  <abstract>The UKO Vault Administrator</abstract>
+  <description>Valut Administrator who sets up and manages the vaults</description>
+  <category>Server variables</category>
+  <string>
+    <validationType>USERID</validationType>
+  </string>
+</variable>
+<variable name="UKO_VAULT_ADMIN_GROUP" visibility="public">
+  <label>UKO_VAULT_ADMIN_GROUP</label>
+  <abstract>The group containing UKO Vault Administrator</abstract>
+  <description>Group containing the Vault Administrator who sets up and manages the vaults</description>
+  <category>Server variables</category>
+  <string>
+    <validationType>USERID</validationType>
+  </string>
+</variable>
+
+<variable name="UKO_KEY_ADMIN" visibility="public">
+  <label>UKO_KEY_ADMIN</label>
+  <abstract>The UKO Key Administrator</abstract>
+  <description>Key Administrator who sets up the key hierarchy, and controls keystores and
+    templates, as well as performs special key state actions.</description>
+  <category>Server variables</category>
+  <string>
+    <validationType>USERID</validationType>
+  </string>
+</variable>
+<variable name="UKO_KEY_ADMIN_GROUP" visibility="public">
+  <label>UKO_KEY_ADMIN_GROUP</label>
+  <abstract>The group containing UKO Key Administrator</abstract>
+  <description>Group containing the Key Administrator who sets up the key hierarchy, and controls
+    keystores and templates, as well as performs special key state actions.</description>
+  <category>Server variables</category>
+  <string>
+    <validationType>USERID</validationType>
+  </string>
+</variable>
+
+<variable name="UKO_KEY_CUSTODIAN1" visibility="public">
+  <label>UKO_KEY_CUSTODIAN1</label>
+  <abstract>The first UKO Key Custodian</abstract>
+  <description>Key Custodian who can generate keys in PRE-ACTIVATION state, but cannot Activate and
+    Distribute them. Destroy and Compromise actions are also possible.</description>
+  <category>Server variables</category>
+  <string>
+    <validationType>USERID</validationType>
+  </string>
+</variable>
+<variable name="UKO_KEY_CUSTODIAN1_GROUP" visibility="public">
+  <label>UKO_KEY_CUSTODIAN1_GROUP</label>
+  <abstract>The group holding the first UKO Key Custodians</abstract>
+  <description>Group for Key Custodians who can generate keys in PRE-ACTIVATION state, but cannot Activate and
+    Distribute them. Destroy and Compromise actions are also possible.</description>
+  <category>Server variables</category>
+  <string>
+    <validationType>USERID</validationType>
+  </string>
+</variable>
+
+<variable name="UKO_KEY_CUSTODIAN2" visibility="public">
+  <label>UKO_KEY_CUSTODIAN2</label>
+  <abstract>The second UKO Key Custodian</abstract>
+  <description>Key Custodian who cannot Generate, but can Activate keys bringing them from
+    PRE-ACTIVATION to ACTIVE state (then distributes them). Destroy and Compromise actions are also possible.
+</description>
+  <category>Server variables</category>
+  <string>
+    <validationType>USERID</validationType>
+  </string>
+</variable>
+<variable name="UKO_KEY_CUSTODIAN2_GROUP" visibility="public">
+  <label>UKO_KEY_CUSTODIAN2_GROUP</label>
+  <abstract>The group holding the second UKO Key Custodians</abstract>
+  <description>The group holding the Key Custodians who cannot Generate, but can Activate keys bringing them from
+    PRE-ACTIVATION to ACTIVE state (then distributes them). Destroy and Compromise actions are also possible.
+</description>
+  <category>Server variables</category>
+  <string>
+    <validationType>USERID</validationType>
+  </string>
+</variable>
+
+<variable name="UKO_AUDITOR" visibility="public">
+  <label>UKO_AUDITOR</label>
+  <abstract>The UKO Auditor</abstract>
+  <description>Auditor who can view the audit log as well as keystores, templates, keys, and status of dataset encryption.
+</description>
+  <category>Server variables</category>
+  <string>
+    <validationType>USERID</validationType>
+  </string>
+</variable>
+
+<variable name="UKO_AUDITOR_GROUP" visibility="public">
+  <label>UKO_AUDITOR_GROUP</label>
+  <abstract>The group holding the UKO Auditors</abstract>
+  <description>The group holding the auditors who can view the audit log as well as keystores, templates, keys, and status of dataset encryption.
+</description>
+  <category>Server variables</category>
+  <string>
+    <validationType>USERID</validationType>
+  </string>
+</variable>
+
+<!--++++++++++++++++++++++++++++++-->
+<!-- Db2 variables                -->
+<!--++++++++++++++++++++++++++++++-->
+<variable name="DB_TEMP_HLQ" visibility="private">
+  <label>DB_TEMP_HLQ</label>
+  <abstract>HLQ for temporary datasets</abstract>
+  <description>HLQ for temporary datasets that are created to store temporary DDLs and other files created 
+    during database creation, update and load. All files will be created under SERVER_FILE_SYSTEM_HLQ.DB_CURRENT_SCHEMA.*</description>
+  <category>DB variables</category>
+  <string>
+    <validationType>DSNAME</validationType>
+  </string>
+</variable>
+
+<variable name="DB_HLQ" visibility="private">
+  <label>DB_HLQ</label>
+  <abstract>The DB_HLQ dataset</abstract>
+  <description>The HLQ of where Db2 is installed</description>
+  <category>DB variables</category>
+  <string>
+    <validationType>DSNAME</validationType>
+  </string>
+</variable>
+
+<variable name="DB_RUNLIB" visibility="public">
+  <label>DB_RUNLIB</label>
+  <abstract>The DB_RUNLIB dataset</abstract>
+  <description>The HLQ of the Db2 runlib</description>
+  <category>DB variables</category>
+  <string>
+    <validationType>DSNAME</validationType>
+  </string>
+</variable>
+
+<variable name="DB_JCC_SSID" visibility="public">
+  <label>DB_JCC_SSID</label>
+  <abstract>The DB_JCC_SSID </abstract>
+  <description>The SSID of Db2</description>
+  <category>DB variables</category>
+  <string>
+    <minLength>4</minLength>
+    <maxLength>4</maxLength>
+  </string>
+</variable>
+
+<variable name="DB_INSTALL_FROM_FILE_OR_DATASET" scope="instance" visibility="public">
+  <label>DB_INSTALL_FROM_FILE_OR_DATASET</label>
+  <abstract>Install from file or data set</abstract>
+  <description>Specify whether the database DDL files are in a folder or data set. If you are updating: specify where the last update came from.</description>
+  <category>DB Legacy</category>
+  <string valueMustBeChoice="true" multiLine="false">
+      <choice>FILE</choice>
+      <choice>DATASET</choice>
+      <default>DATASET</default>
+  </string>
+</variable>
+
+<variable name="DB_CURRENT_SCHEMA" visibility="public">
+  <label>DB_CURRENT_SCHEMA</label>
+  <abstract>The DB_CURRENT_SCHEMA</abstract>
+  <description>The current schema of the Db2 database</description>
+  <category>DB variables</category>
+  <string />
+</variable>
+
+<variable name="DB_CURRENT_SQLID" visibility="public">
+  <label>DB_CURRENT_SQLID</label>
+  <abstract>The DB_CURRENT_SQLID</abstract>
+  <description>The current SQL ID of the Db2 database</description>
+  <category>DB variables</category>
+  <string />
+</variable>
+
+<variable name="DB_NAME_UKO" visibility="public">
+  <label>DB_NAME_UKO</label>
+  <abstract>The DB_NAME_UKO</abstract>
+  <description>The name of the database for the UKO key repository</description>
+  <category>DB variables</category>
+  <string />
+</variable>
+
+<variable name="DB_NAME_DATASET_ENCRYPTION_STATUS" visibility="public">
+  <label>DB_NAME_DATASET_ENCRYPTION_STATUS</label>
+  <abstract>The Db2 DB_NAME_DATASET_ENCRYPTION_STATUS</abstract>
+  <description>The name of the database for the PE data set status</description>
+  <category>DB variables</category>
+  <string />
+</variable>
+
+<variable name="DB_FILE_INSTALL_PATH" visibility="public">
+  <label>DB_FILE_INSTALL_PATH</label>
+  <abstract>Legacy: only with DB_INSTALL_FROM_FILE_OR_DATASET=FILE with DDLs shipped by EKMF Web pre v3.1</abstract>
+  <description>Legacy option, before v3.1 the DDLs were shipped in a folder location as part of EKMF Web. From UKO 3.1 use the database provided in a data set as separate FMID</description>
+  <category>DB Legacy</category>
+  <string>
+    <!-- Path validation, has to start with slash, may contain slashes, must not end with slash or whitespace, or might be empty -->
+    <regularExpression>(^\/([A-z0-9-_+\.]+\/)*([A-z0-9-_+\.])*[^\/\s]$|^$)</regularExpression>
+  </string>
+</variable>
+
+<variable name="DB_DATASET_INSTALL_HLQ" visibility="public">
+  <label>DB_DATASET_INSTALL_HLQ</label>
+  <abstract>UKO database HLQ from which DB is installed if DB_INSTALL_FROM_FILE_OR_DATASET=DATASET</abstract>
+  <description>Dataset where the UKO database has been installed, containing the SKMGSQL dataset
+  </description>
+  <category>DB variables</category>
+  <string>
+    <!-- must be valid dataset, or might be empty depending on installation type-->
+    <regularExpression>(^(?=.{1,44}$)[A-Z#$@][A-Z0-9\}#$@-]{0,7}([.][A-Z#$@][A-Z0-9\}#$@-]{0,7}){0,21}$|^$)</regularExpression>
+  </string>
+</variable>
+
+
+<variable name="DB_CODEPAGE" visibility="private">
+  <label>DB_CODEPAGE</label>
+  <abstract>The Db2 DB_CODEPAGE</abstract>
+  <description>The DB_CODEPAGE of the Db2 database</description>
+  <category>DB variables</category>
+  <string />
+</variable>
+
+<variable name="DB_BUFFERPOOL_TABLESPACE_8K" visibility="private">
+  <label>DB_BUFFERPOOL_TABLESPACE_8K</label>
+  <abstract>The Db2 bufferpool for 8K table spaces</abstract>
+  <description>The buffer pool for 8K table spaces created in the Db2 database</description>
+  <category>DB variables</category>
+  <string />
+</variable>
+
+<variable name="DB_BUFFERPOOL_TABLESPACE_32K" visibility="private">
+  <label>DB_BUFFERPOOL_TABLESPACE_32K</label>
+  <abstract>The Db2 bufferpool for 32K table spaces</abstract>
+  <description>The buffer pool for 32K table spaces created in the Db2 database</description>
+  <category>DB variables</category>
+  <string />
+</variable>
+
+<variable name="DB_BUFFERPOOL_DEFAULT" visibility="private">
+  <label>DB_BUFFERPOOL_DEFAULT</label>
+  <abstract>The Db2 default bufferpool for table spaces</abstract>
+  <description>Specifies the default buffer pool name to be used for table spaces created within the database.</description>
+  <category>DB variables</category>
+  <string />
+</variable>
+
+<variable name="DB_BUFFERPOOL_INDEX" visibility="private">
+  <label>DB_BUFFERPOOL_INDEX</label>
+  <abstract>The Db2 default bufferpool for indexes</abstract>
+  <description>Specifies the default buffer pool name to be used for the indexes created within the database.</description>
+  <category>DB variables</category>
+  <string />
+</variable>
+
+<variable name="DB_STOGROUP" visibility="private">
+  <label>DB_STOGROUP</label>
+  <abstract>The Db2 DB_STOGROUP</abstract>
+  <description>The DB_STOGROUP of the Db2 database</description>
+  <category>DB variables</category>
+  <string />
+</variable>
+
+<variable name="DB_PLAN" visibility="private">
+  <label>DB_PLAN</label>
+  <abstract>The Db2 DB_PLAN</abstract>
+  <description>The DB_PLAN of the Db2 database</description>
+  <category>DB variables</category>
+  <string />
+</variable>
+
+<variable name="DB_PROGRAM" visibility="private">
+  <label>DB_PROGRAM</label>
+  <abstract>The Db2 DB_PROGRAM</abstract>
+  <description>The DB_PROGRAM of the Db2 database</description>
+  <category>DB variables</category>
+  <string />
+</variable>
+
+<variable name="DB_LOCATION" visibility="public">
+  <label>DB_LOCATION</label>
+  <abstract>The Db2 DB_LOCATION</abstract>
+  <description>The location of the Db2 database</description>
+  <category>DB variables</category>
+  <string />
+</variable>
+
+<variable name="DB_PRODUCT_PATH" visibility="private">
+  <label>DB_PRODUCT_PATH</label>
+  <abstract>The Db2 product path</abstract>
+  <description>The HFS path of Db2</description>
+  <category>DB variables</category>
+  <string>
+    <!-- Path validation, has to start with slash, may contain slashes, must not end with slash or whitespace -->
+    <regularExpression>^\/([A-z0-9-_+\.]+\/)*([A-z0-9-_+\.])*[^\/\s]$</regularExpression>
+  </string>
+</variable>
+
+<variable name="DB_LIBPATH" visibility="private">
+  <label>DB_LIBPATH</label>
+  <abstract>The Db2 library path</abstract>
+  <description>The location of the Db2 libraries</description>
+  <category>DB variables</category>
+  <string>
+    <!-- Path validation, has to start with slash, may contain slashes, must not end with slash or whitespace -->
+    <regularExpression>^\/([A-z0-9-_+\.]+\/)*([A-z0-9-_+\.])*[^\/\s]$</regularExpression>
+  </string>
+</variable>
+
+<variable name="DB_CLASSPATH" visibility="private">
+  <label>DB_CLASSPATH</label>
+  <abstract>The Db2 class path</abstract>
+  <description>The location of the Db2 classes</description>
+  <category>DB variables</category>
+  <string>
+    <!-- Path validation, has to start with slash, may contain slashes, must not end with slash or whitespace -->
+    <regularExpression>^\/([A-z0-9-_+\.]+\/)*([A-z0-9-_+\.])*[^\/\s]$</regularExpression>
+  </string>
+</variable>
+
+<variable name="UKO_DB_VERSION" scope="instance" visibility="public">
+  <label>UKO_DB_VERSION</label>
+  <abstract>Database version</abstract>
+  <description>Which version of UKO database is this?</description>
+  <category>DB variables</category>
+  <string />
+</variable>
+
+<!--++++++ workstation DB variables ++++++-->
+<variable name="WORKSTATION_ACCESS_REQUIRED" visibility="public">
+  <label>WORKSTATION_ACCESS_REQUIRED</label>
+  <abstract>Will database and agent be used by EKMF Workstation as well?</abstract>
+  <description>Flag to indicate if the installed database and agent are used by an EKMF Workstation in addition to the UKO server</description>
+  <category>UKO Agent variables</category>
+  <string valueMustBeChoice="true">
+    <choice>true</choice>
+    <choice>false</choice>
+    <default>false</default>
+  </string>
+</variable>
+
+<variable name="DB_AGENT_PLAN" visibility="public">
+  <label>DB_AGENT_PLAN</label>
+  <abstract>The Db2 DB_AGENT_PLAN</abstract>
+  <description>The Db2 plan for configuring EKMF Workstation access</description>
+  <category>UKO Agent variables</category>
+  <string />
+</variable>
+
+<variable name="DB_AGENT_PACKAGE" visibility="public">
+  <label>DB_AGENT_PACKAGE</label>
+  <abstract>The Db2 DB_AGENT_PACKAGE</abstract>
+  <description>The Db2 package for configuring EKMF Workstation access</description>
+  <category>UKO Agent variables</category>
+  <string />
+</variable>
+
+<variable name="DB_JDBC_PORT" visibility="private">
+  <label>DB_JDBC</label>
+  <abstract>The Db2 DB_JDBC</abstract>
+  <description>JDBC port for configuring EKMF Workstation access</description>
+  <category>DB variables</category>
+  <string />
+</variable>
+
+<variable name="DB_JDBC_SECPORT" visibility="private">
+  <label>DB_JDBC_SECPORT</label>
+  <abstract>The Db2 DB_LOCATION</abstract>
+  <description>Secure JDBC port for configuring EKMF Workstation access</description>
+  <category>DB variables</category>
+  <string />
+</variable>
+
+<!--++++++++++++++++++++++++++++++-->
+<!-- Agent variables -->
+<!--++++++++++++++++++++++++++++++-->
+
+<variable name="AGENT_STC_NAME" visibility="public">
+  <label>AGENT_STC_NAME</label>
+  <abstract>Agent STC name</abstract>
+  <description>The started task name of the Agent</description>
+  <category>UKO Agent variables</category>
+  <string />
+</variable>
+
+<variable name="AGENT_EXECLIB" visibility="public">
+  <label>AGENT_EXECLIB</label>
+  <abstract>Agent Rexx execution library</abstract>
+  <description>Library with compiled Rexx, only required to populate dataset dashboard with KMGPEUTL</description>
+  <category>UKO Agent variables</category>
+  <string>
+    <validationType>DSNAME</validationType>
+    <default>KMG.SKMGEXEC</default>
+  </string>
+</variable>
+<variable name="AGENT_SAMPLIB" visibility="public">
+  <label>AGENT_SAMPLIB</label>
+  <abstract>Agent sample library</abstract>
+  <description>Sample library containing samples for the Agent's PARMLIB member and more</description>
+  <category>UKO Agent variables</category>
+  <string>
+    <validationType>DSNAME</validationType>
+    <default>KMG.SKMGSAMP</default>
+  </string>
+</variable>
+<variable name="AGENT_DBRMLIB" visibility="public">
+  <label>AGENT_DBRMLIB</label>
+  <abstract>Agent DBRM library</abstract>
+  <description>Agent DBRM lib, only required if the Agent is to be used by the EKMF Workstation as well</description>
+  <category>UKO Agent variables</category>
+  <string>
+    <validationType>DSNAME</validationType>
+    <default>KMG.SKMGDBRM</default>
+  </string>
+</variable>
+<variable name="AGENT_RUNLIB" visibility="public">
+  <label>AGENT_RUNLIB</label>
+  <abstract>Agent load library</abstract>
+  <description>Libary containing the Agent's load modules</description>
+  <category>UKO Agent variables</category>
+  <string>
+    <validationType>DSNAME</validationType>
+    <default>KMG.SKMGMOD0</default>
+  </string>
+</variable>
+
+<variable name="TCPIP_HLQ" visibility="private">
+  <label>TCPIP_HLQ</label>
+  <abstract>The TCPIP_HLQ dataset</abstract>
+  <description>The HLQ of where TCPIP_HLQ.SEZATCP is installed, required for the Agent STC</description>
+  <category>UKO Agent variables</category>
+  <string>
+    <validationType>DSNAME</validationType>
+  </string>
+</variable>
+
+<!-- agent access confirmation flags   -->
+
+<variable name="SKMGMOD0_APF" visibility="private">
+  <label>SKMGMOD0 APF?</label>
+  <abstract>Confirm below that the SKMGMOD0 library is APF authorized</abstract>
+  <description><![CDATA[The SKMGMOD0 needs to be APF authorized. This is not a part of the workflow.
+  You can check this by issuing a console command like <br>/D PROG APF, DSNAME=your_library_hlq.SKMGMOD0 (default KMG.SKMGMOD0)]]>
+  </description>
+  <category>manual checks</category>
+  <string valueMustBeChoice="true" multiLine="false">
+    <choice>Confirmed!</choice>
+  </string>
+</variable>
+<variable name="AGENT_RUNLIB_READ" visibility="private">
+  <label>Access to AGENT_RUNLIB dataset?</label>
+  <abstract>Confirm below that the AGENT_STC_USER can read the AGENT_RUNLIB dataset</abstract>
+  <description><![CDATA[The AGENT_STC_USER needs READ access to the KMG Agent load library (default KMG.SKMGMOD0). This is not a part of the workflow.]]>
+  </description>
+  <category>manual checks</category>
+  <string valueMustBeChoice="true" multiLine="false">
+    <choice>Confirmed!</choice>
+  </string>
+</variable>
+
+<!--++++++++++++++++++++++++++++++-->
+<!-- CAT -->
+<!--++++++++++++++++++++++++++++++-->
+
+<variable name="CAT_SUPPORT_REQUIRED" visibility="public">
+  <label>CAT_SUPPORT_REQUIRED</label>
+  <abstract>Enable CAT service?</abstract>
+  <description>Should the CAT service be enabled?</description>
+  <category>CAT variables</category>
+  <string valueMustBeChoice="true">
+    <choice>true</choice>
+    <choice>false</choice>
+    <default>false</default>
+  </string>
+</variable>
+
+<variable name="CAT_CORE_DB_URL" visibility="public">
+  <label>CAT_CORE_DB_URL</label>
+  <abstract>CAT PostgreSQL database connection parameters</abstract>
+  <description>Connection to the CAT PostgreSQL database, e.g. jdbc:postgresql://example.com:5432/cat?currentSchema=cccat.
+    The CAT server will create the required tables under the specified schema. 
+    If no schema is specified, the default schema `public` is used, which is not recommended.  
+  </description>
+  <category>CAT variables</category>
+  <string />
+</variable>
+<variable name="CAT_CORE_DB_USER" visibility="public">
+  <label>CAT_CORE_DB_USER</label>
+  <abstract>User ID for CAT DB connection</abstract>
+  <description>The user ID used to connect to the CAT PostgreSQL database</description>
+  <category>CAT variables</category>
+  <string />
+</variable>
+<variable name="CAT_CORE_DB_PASSWORD" visibility="public">
+  <label>CAT_CORE_DB_PASSWORD</label>
+  <abstract>Password for CAT DB connection</abstract>
+  <description>The password used to connect to the CAT PostgreSQL database, use the security utility, described at
+    https://www.ibm.com/docs/en/was-liberty/zos?topic=applications-securityutility-command
+    to encrypt the password </description>
+  <category>CAT variables</category>
+  <string />
+</variable>
+<variable name="CAT_KAFKA_URI" visibility="public">
+  <label>CAT_KAFKA_URI</label>
+  <abstract>URI of the kafka server</abstract>
+  <description>hostname or IP address and port of Kafka server, e.g. example.com:9092</description>
+  <category>CAT variables</category>
+  <string />
+</variable>
+
+<variable name="ZOAU_HOME" visibility="public">
+    <label>ZOAU_HOME</label>
+    <abstract>ZOAU installation location</abstract>
+    <description>Installation location of the Z Open Automation Utility</description>
+    <category>CAT variables</category>
+    <string>
+        <!-- Path validation, has to start with slash, may contain slashes, must not end with slash or whitespace -->
+        <regularExpression>^\/([A-z0-9-_+\.]+\/)*([A-z0-9-_+\.])*[^\/\s]$</regularExpression>
+    </string>
+</variable>
+<variable name="KAFKA_HOME" visibility="public">
+    <label>KAFKA_HOME</label>
+    <abstract>Kafka installation location</abstract>
+    <description>Path to Kafka installation location</description>
+    <category>CAT variables</category>
+    <string>
+        <!-- Path validation, has to start with slash, may contain slashes, must not end with slash or whitespace -->
+        <regularExpression>^\/([A-z0-9-_+\.]+\/)*([A-z0-9-_+\.])*[^\/\s]$</regularExpression>
+    </string>
+</variable>
+
+<!-- CAT agent variables ++++++++++++++-->
+
+<variable name="CAT_AGENT_USER" visibility="public">
+  <label>CAT_AGENT_USER</label>
+  <abstract>User or group running collection</abstract>
+  <description>User or group that will get access to run the CAT collection </description>
+  <category>CAT variables</category>
+  <string>
+  <!-- A validation type of USERID allows for 1-8 alphanumeric (uppercase only)
+  characters, including special characters. -->
+  <regularExpression>^[0-9a-zA-Z$#@]{0,8}$</regularExpression>
+  </string>
+</variable>
+<variable name="CAT_USER_DIR" visibility="public">
+    <label>CAT_USER_DIR</label>
+    <abstract>CAT config directory</abstract>
+    <description>Location where the adjusted CAT configuration files will be placed</description>
+    <category>CAT variables</category>
+    <string>
+        <!-- Path validation, has to start with slash, may contain slashes, must not end with slash or whitespace -->
+        <regularExpression>^\/([A-z0-9-_+\.]+\/)*([A-z0-9-_+\.])*[^\/\s]$</regularExpression>
+    </string>
+</variable>
+<variable name="CAT_INSTALL_DIR" visibility="public">
+    <label>CAT_INSTALL_DIR</label>
+    <abstract>CAT install directory</abstract>
+    <description>Folder where CAT is installed</description>
+    <category>CAT variables</category>
+    <string>
+        <!-- Path validation, has to start with slash, may contain slashes, must not end with slash or whitespace -->
+        <regularExpression>^\/([A-z0-9-_+\.]+\/)*([A-z0-9-_+\.])*[^\/\s]$</regularExpression>
+    </string>
+</variable>
+<variable name="CAT_TEMP_HLQ" visibility="public"> <!-- mapped to cat_dsnqual -->
+  <label>CAT_TEMP_HLQ</label>
+  <abstract>HLQ for CAT work datasets</abstract>
+  <description>High level dataset qualifier of MVS work data sets to be used (created and deleted)</description>
+  <category>CAT variables</category>
+  <string>
+    <validationType>DSNAME</validationType>
+  </string>
+</variable>
+<variable name="CAT_SMF" visibility="public">
+  <label>CAT_SMF</label>
+  <abstract>Collect SMF data?</abstract>
+  <description>If yes then SMF collect is continued after ICSF collect has been done. Otherwise, no SMF data will be collected</description>
+  <category>CAT variables</category>
+  <string valueMustBeChoice="true">
+    <choice>yes</choice>
+    <choice>no</choice>
+    <default>yes</default>
+  </string>
+</variable>
+<variable name="CAT_KAFKA_TRANSACTIONAL_ID" scope="instance" visibility="public">
+  <label>CAT_KAFKA_TRANSACTIONAL_ID</label>
+  <abstract>unique ID for this UKO CAT agent instance</abstract>
+  <description>System wide unique ID of UKO CAT agent instance, each deployed instance must have it's own ID</description>
+  <category>CAT variables</category>
+  <string />
+</variable>
+
+<!-- <variable name="SMFMANDS" visibility="public"> 
+  <label>SMFMANDS</label>
+  <abstract>Active SMF data set</abstract>
+  <description>Name of an active SMF data set for catsmf.conf, Parameter can be specified several times in the config file, but not using this workflow</description>
+  <category>CAT variables</category>
+  <string>
+    <validationType>DSNAME</validationType>
+  </string>
+</variable>
+<variable name="SMFLOGSTREAM" visibility="public"> 
+  <label>SMFLOGSTREAM</label>
+  <abstract>Active SMF logstream</abstract>
+  <description>Name of an active SMF logstream for catsmf.conf, Parameter can be specified several times in the config file, but not using this workflow</description>
+  <category>CAT variables</category>
+  <string>
+    <validationType>DSNAME</validationType>
+  </string>
+</variable> -->
+<variable name="SMFGDGBASE" visibility="public"> 
+  <label>SMFGDGBASE</label>
+  <abstract>GDG base for dumped SMF data sets</abstract>
+  <description>GDG base for dumped SMF data sets for catsmf.conf, if specified, SMFGDGDONE is required</description>
+  <category>CAT variables</category>
+  <string>
+    <validationType>DSNAME</validationType>
+  </string>
+</variable>
+<variable name="SMFGDGDONE" visibility="public"> 
+  <label>SMFGDGDONE</label>
+  <abstract>Latest SMF generation handled, only for SMFGDGBASE</abstract>
+  <description>Name of the latest SMF generation already handled, must be specified with SMFGDGBASE and will be updated in catsmf.conf after each collection </description>
+  <category>CAT variables</category>
+  <string>
+    <validationType>DSNAME</validationType>
+  </string>
+</variable>
+
+<!-- agent access confirmation flags +++-->
+<!-- in addition to the UKO CAT agent ++-->
+
+<variable name="CAT_TEMP_HLQ_ALTER" visibility="private">
+  <label>Access to CAT_TEMP_HLQ dataset?</label>
+  <abstract>Confirm below that the CAT_AGENT_USER id or group can modify datasets under the CAT_TEMP_HLQ</abstract>
+  <description>You have to ensure that the CAT_AGENT_USER id or group can ATLER datasets under the CAT_TEMP_HLQ. This is not part of the workflow
+  </description>
+  <category>manual checks</category>
+  <string valueMustBeChoice="true" multiLine="false">
+    <choice>Confirmed!</choice>
+  </string>
+</variable>
+
+<variable name="CAT_SMF_DATASETS_READ" visibility="private">
+  <label>Access to SMF datasets?</label>
+  <abstract>Confirm below that the CAT_AGENT_USER id or group can read the SMF datasets</abstract>
+  <description>The CAT_AGENT_USER id or group needs READ access to the datasets specified for SMFGDGBASE. This is not part of the workflow
+  </description>
+  <category>manual checks</category>
+  <string valueMustBeChoice="true" multiLine="false">
+    <choice>Confirmed!</choice>
+  </string>
+</variable>
+
+<!--+++++++++++++++++++++++-->
+<!-- Client cert variables -->
+<!--+++++++++++++++++++++++-->
+
+<!-- Client CA variables -->
+
+<variable name="CLIENT_CREATE_CA" visibility="private">
+  <label>CLIENT_CREATE_CA</label>
+  <abstract>Enable CA creation for the client</abstract>
+  <description>Flag to indicate if a CA is to be created for the client</description>
+  <category>Certificate variables</category>
+  <string valueMustBeChoice="true">
+    <choice>true</choice>
+    <choice>false</choice>
+    <default>false</default>
+  </string>
+</variable>
+<variable name="CLIENT_CA_LABEL" scope="instance" visibility="public">
+    <label>CLIENT_CA_LABEL</label>
+    <abstract>CLIENT_CA_LABEL</abstract>
+    <description>Name of the CLIENT_CA_LABEL to use for the client.</description>
+    <category>Certificate variables</category>
+    <string />
+</variable>
+<variable name="CLIENT_CA_CN" scope="instance" visibility="public">
+    <label>CLIENT_CA_CN</label>
+    <abstract> CLIENT_CA_CN</abstract>
+    <description>Name of the CLIENT_CA_CN to use for the client.</description>
+    <category>Certificate variables</category>
+    <string />
+</variable>
+<variable name="CLIENT_CA_OU" scope="instance" visibility="private">
+    <label>CLIENT_CA_OU</label>
+    <abstract>CLIENT_CA_OU</abstract>
+    <description>Name of the CLIENT_CA_OU to use for the client.</description>
+    <category>Certificate variables</category>
+    <string />
+</variable>
+<variable name="CLIENT_CA_O" scope="instance" visibility="private">
+    <label>CLIENT_CA_O</label>
+    <abstract>CLIENT_CA_O</abstract>
+    <description>Name of the CLIENT_CA_O to use for the client.</description>
+    <category>Certificate variables</category>
+    <string />
+</variable>
+
+<!-- Client certificate variables -->
+<variable name="CLIENT_CERT_CN" scope="instance" visibility="public">
+    <label>CLIENT_CERT_CN</label>
+    <abstract> CLIENT_CERT_CN</abstract>
+    <description>Name of the CLIENT_CERT_CN to use for the client.</description>
+    <category>Certificate variables</category>
+    <string />
+</variable>
+<variable name="CLIENT_CERT_OU" scope="instance" visibility="private">
+    <label>CLIENT_CERT_OU</label>
+    <abstract>CLIENT_CERT_OU</abstract>
+    <description>Name of the CLIENT_CERT_OU to use for the client.</description>
+    <category>Certificate variables</category>
+    <string />
+</variable>
+<variable name="CLIENT_CERT_O" scope="instance" visibility="private">
+    <label>CLIENT_CERT_O</label>
+    <abstract>CLIENT_CERT_O</abstract>
+    <description>Name of the CLIENT_CERT_O to use for the client.</description>
+    <category>Certificate variables</category>
+    <string />
+</variable>
+<variable name="CLIENT_CERT_LABEL" scope="instance" visibility="public">
+    <label>CLIENT_CERT_LABEL</label>
+    <abstract>CLIENT_CERT_LABEL</abstract>
+    <description>Name of the CLIENT_CERT_LABEL to use for the client.</description>
+    <category>Certificate variables</category>
+    <string />
+</variable>
+
+<!-- export variables -->
+<variable name="EXPORT_HLQ" scope="instance" visibility="private">
+    <label>EXPORT_HLQ</label>
+    <abstract>HLQ under which the certificates will be exported</abstract>
+    <description>The certificate will be exported to EXPORT_HLQ.GENERIC_CLIENT_USER</description>
+    <category>Certificate variables</category>
+    <string />
+</variable>
+<variable name="EXPORT_PASSWORD" scope="instance" visibility="private">
+    <label>EXPORT_PASSWORD</label>
+    <abstract>Password to extract the certificate with</abstract>
+    <description>Export password for the certificate export</description>
+    <category>Certificate variables</category>
+    <string />
+</variable>
+<variable name="EXPORT_PATH" visibility="private">
+    <label>EXPORT_PATH</label>
+    <abstract>Path to export certificates to</abstract>
+    <description>Path to where the client certificate and the server certificate shall be exported to</description>
+    <category>Certificate variables</category>
+    <string>
+        <!-- Path validation, has to start with slash, may contain slashes, must not end with slash or whitespace -->
+        <regularExpression>^\/([A-z0-9-_+\.]+\/)*([A-z0-9-_+\.])*[^\/\s]$</regularExpression>
+        <default>/tmp</default>
+    </string>
+</variable>
+
+<!--++++++++++++++++++++++++++++++-->
+<!-- Other -->
+<!--++++++++++++++++++++++++++++++-->
+
+<variable name="KEY_PREFIX" visibility="public">
+  <label>KEY_PREFIX</label>
+  <abstract>The KEY_PREFIX for the CSFKEYS class</abstract>
+  <description>The KEY_PREFIX to be used to generate a profile in the CSFKEYS class</description>
+  <category>General variables</category>
+  <string />
+</variable>
+<variable name="UKO_RECOVERY_KEY" visibility="public">
+  <label>UKO_RECOVERY_KEY</label>
+  <abstract>The UKO_RECOVERY_KEY for the CSFKEYS class</abstract>
+  <description>The UKO_RECOVERY_KEY to be used to generate a profile in the CSFKEYS class</description>
+  <category>Server variables</category>
+  <string />
+</variable>
+
+<variable name="SAF_OWNER" visibility="private">
+  <label>SAF_OWNER</label>
+  <abstract>Owner for created SAF profiles</abstract>
+  <description>Default owner to be used when creating SAF resources</description>
+  <category>Server variables</category>
+  <string>
+    <validationType>USERID</validationType>
+  </string>
+</variable>
+
+<variable name="REXX_HLQ" visibility="private">
+  <label>REXX_HLQ</label>
+  <abstract>The REXX_HLQ dataset</abstract>
+  <description>The HLQ of where REXX is installed, namely the SEAGALT dataset, required for loading
+    the pervasive encryption data with KMGUTIL</description>
+  <category>General variables</category>
+  <string>
+    <validationType>DSNAME</validationType>
+  </string>
+</variable>
+
+<variable name="CC_SAMPLIB" visibility="public">
+  <label>CC_SAMPLIB</label>
+  <abstract>CC sample library</abstract>
+  <description>Library containing samples for the CC ACSP PARMLIB member</description>
+  <category>Server variables</category>
+  <string>
+    <validationType>DSNAME</validationType>
+    <default>KMG.SKMGSAMP</default>
+  </string>
+</variable>
+
+<variable name="CC_LPALIB" visibility="public">
+  <label>CC_LPALIB</label>
+  <abstract>CC LPA library</abstract>
+  <description>Library containing the CC ACSP SVC modules</description>
+  <category>Server variables</category>
+  <string>
+    <validationType>DSNAME</validationType>
+    <default>KMG.SKMGLPA</default>
+  </string>
+</variable>
+
+<variable name="ACSP_AUTH_MAP_SVC" scope="instance" visibility="private">
+  <label>ACSP_AUTH_MAP_SVC</label>
+  <abstract>Number of the ACSP Server security extensions SVC</abstract>
+  <description>Number of the ACSP Server security extensions SVC which are used for mapping client certificates to z/OS user IDs. This setting is only used if the authorization feature has been enabled by using the auth.check parameter in the acsp.server.properties. The ACSP security SVC must have been installed and this number been specified as SVCNUMDEC. If nothing is specified, then 255 is the default. 
+  </description>
+  <category>Server variables</category>
+  <string />
+</variable>
+
+<variable name="ICSF_RELEASE" scope="instance" visibility="private">
+  <label>ICSF_RELEASE</label>
+  <abstract>ICSF Release</abstract>
+  <description>Specify the ICSF release in use, you can find it by issuing the /F ICSF command 
+  </description>
+  <category>Server variables</category>
+  <string valueMustBeChoice="false">
+    <choice>HCR77E0</choice>
+    <choice>HCR77D2</choice>
+    <choice>HCR77D1</choice>
+    <default>HCR77E0</default>
+  </string>
+</variable>

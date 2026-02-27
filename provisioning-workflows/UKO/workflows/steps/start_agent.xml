@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>                    
+<!--
+/******************************************************************************/
+/* Copyright Contributors to the zOS-Workflow Project.                        */
+/* SPDX-License-Identifier: Apache-2.0                                        */
+/******************************************************************************/
+-->
+<step name="startAgent">
+    <title>Start the agent</title>
+    <description>Start the agent</description>
+
+    <step name="validateConsoleAPIAgent" optional="false">
+        <title>Validating console commands can be issued</title>
+        <description>Issue a command via the console API to ensure basic commands can be executed.</description>
+        <runAsUser substitution="true">$!{instance-UKO_ADMIN_CONSOLE}</runAsUser>
+        <approver substitution="true">$!{instance-UKO_APPROVER_CONSOLE}</approver>
+        <condition>
+            <expression><![CDATA["1" == "1"]]></expression>
+            <description>Should the step be executed, based on the START_AGENT setting</description>
+            <targetStateSet>
+                <description/>
+                <extendStateExpression>
+                    <description>Skip if START_AGENT == false</description>
+                    <expression><![CDATA[ ${instance-START_AGENT} == "false"]]></expression>
+                    <targetState>Skipped</targetState>
+                </extendStateExpression>
+            </targetStateSet>
+        </condition>
+        <variableValue name="AGENT_STC_NAME" scope="instance" noPromptIfSet="false" required="false"/>
+        <instructions>Execute console API to check if its set up correctly</instructions>
+        <weight>1</weight>
+        <skills>z/OS administration</skills>
+        <autoEnable>true</autoEnable>
+        <rest>
+            <httpMethod>PUT</httpMethod>
+            <uriPath substitution="true">/zosmf/restconsoles/consoles/defcn</uriPath>
+            <requestBody substitution="true">
+                { 
+                    "cmd" : "d a,${instance-AGENT_STC_NAME}",
+                    "sol-key" : "NOT FOUND",
+                    "system" : "${_workflow-systemName}"
+                    
+                }
+            </requestBody>
+            <expectedStatusCode>200</expectedStatusCode>
+            <propertyMapping mapTo="SERVER_REST_STATUS">["sol-key-detected"]</propertyMapping>
+        </rest>
+    </step>    
+
+    <step name="startAgent_console">
+        <title>Start the agent from console</title>
+        <description>Start the agent from the console</description>
+        <runAsUser substitution="true">$!{instance-UKO_ADMIN_CONSOLE}</runAsUser>
+        <approver substitution="true">$!{instance-UKO_APPROVER_CONSOLE}</approver>
+        <condition>
+            <expression><![CDATA["1" == "1"]]></expression>
+            <description>Should the step be executed, based on the START_AGENT setting</description>
+            <targetStateSet>
+                <description/>
+                <extendStateExpression>
+                    <description>Skip if START_AGENT == false</description>
+                    <expression><![CDATA[ ${instance-START_AGENT} == "false"]]></expression>
+                    <targetState>Skipped</targetState>
+                </extendStateExpression>
+            </targetStateSet>
+        </condition>
+        <variableValue name="AGENT_STC_NAME" scope="instance" noPromptIfSet="false" required="false"/>
+        <instructions substitution="false">Submitting script to stop the server.</instructions>
+        <weight>1</weight>
+        <autoEnable>true</autoEnable>
+        <rest>
+            <httpMethod>PUT</httpMethod>
+            <uriPath substitution="true">/zosmf/restconsoles/consoles/defcn</uriPath>
+            <requestBody substitution="true">
+                {
+                "cmd" : "START ${instance-AGENT_STC_NAME}",
+                "unsol-key" : "CONSOLE INTERFACE READY",
+                "unsol-detect-sync" : "Y",
+                "unsol-detect-timeout" : "120",
+                "detect-time" : "120",
+                "system" : "${_workflow-systemName}"
+                
+                }	
+            </requestBody>
+            <expectedStatusCode>200</expectedStatusCode>
+            <propertyMapping mapTo="AGENT_REST_STATUS">["status"]</propertyMapping>
+        </rest>
+    </step>
+    
+    <step name="CheckStartupAgent" optional="false">
+        <title>Checking the rest status from the start command</title>
+        <description>Check the REST Status from the start command</description>
+        <prereqStep name="startAgent_console"/>
+        <runAsUser substitution="true">$!{instance-UKO_ADMIN_TSO}</runAsUser>
+        <approver substitution="true">$!{instance-UKO_APPROVER_TSO}</approver>
+        <condition>
+            <expression><![CDATA[${startAgent_console.stepState} == "Complete" || ${startAgent_console.stepState} == "Skipped"]]></expression>
+            <description>Should the step be executed based on the AGENT_REST_STATUS setting</description>
+            <targetStateSet>
+                <description>Check to see whether this step should be skipped</description>
+                <extendStateExpression>
+                    <description>Only execute it AGENT_REST_STATUS is not detected</description>
+                    <expression><![CDATA[ ${instance-AGENT_REST_STATUS} == "detected"]]></expression>
+                    <targetState>Skipped</targetState>
+                </extendStateExpression>
+                <extendStateExpression>
+                    <description>Skip if START_AGENT == false</description>
+                    <expression><![CDATA[ ${instance-START_AGENT} == "false"]]></expression>
+                    <targetState>Skipped</targetState>
+                </extendStateExpression>
+            </targetStateSet>
+        </condition>
+        <instructions>Execute simple Rexx command to always return a bad returncode</instructions>
+        <weight>1</weight>
+        <skills>z/OS Administration</skills>
+        <autoEnable>true</autoEnable>
+        <template>
+            <inlineTemplate substitution="true">
+                exit 8
+            </inlineTemplate>
+            <submitAs maxRc="0">TSO-REXX-JCL</submitAs>
+        </template>
+    </step> 
+</step>

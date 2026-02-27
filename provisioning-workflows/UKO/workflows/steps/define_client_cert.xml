@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/******************************************************************************/
+/* Copyright Contributors to the zOS-Workflow Project.                        */
+/* SPDX-License-Identifier: Apache-2.0                                        */
+/******************************************************************************/
+-->
+<step name="createClientCert">
+    <title>(Optional) Create and export a client certificate</title>
+    <description>Creates a client certificate, creates client CA and adds it to server trust store and exports the certificates to keystore files</description>
+
+    <step name="createClientCa">
+        <title>Create client CA</title>
+        <description>Create a certificate authority to sign the client certificate with</description>
+        <runAsUser substitution="true">$!{instance-UKO_ADMIN_SECURITY}</runAsUser>
+        <approver substitution="true">$!{instance-UKO_APPROVER_SECURITY}</approver>
+        <condition>
+            <expression><![CDATA["1" == "1"]]></expression>
+            <description>Always perform</description>
+            <targetStateSet>
+                <description>Only create the certificate authority if requested</description>
+                <extendStateExpression>
+                    <description>Skip if SERVER_CREATE_CA is false</description>
+                    <expression><![CDATA[ ${instance-CLIENT_CREATE_CA} == undefined || ${instance-CLIENT_CREATE_CA} != "true"]]></expression>
+                    <targetState>Skipped</targetState>
+                </extendStateExpression>
+            </targetStateSet>
+        </condition> 
+        <variableValue name="CLIENT_CA_LABEL" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="CLIENT_CA_CN" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="CLIENT_CA_OU" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="CLIENT_CA_O" scope="instance" noPromptIfSet="false" required="false"/>
+        <instructions substitution="true">Submit rexx exec to execute step</instructions>
+        <weight>1</weight>
+        <autoEnable>true</autoEnable>
+        <template>
+            <fileTemplate substitution="true">rexx/defineClientCa.rexx</fileTemplate>
+            <submitAs maxRc="0">TSO-REXX-JCL</submitAs>
+            <maxLrecl>1024</maxLrecl>
+        </template>
+    </step>
+
+    <step name="createClientCertificate">
+        <title>Create client certificate</title>
+        <description>Create a certificate for the user</description>
+        <runAsUser substitution="true">$!{instance-UKO_ADMIN_SECURITY}</runAsUser>
+        <approver substitution="true">$!{instance-UKO_APPROVER_SECURITY}</approver>
+        <variableValue name="CLIENT_CA_LABEL" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="GENERIC_CLIENT_USER" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="CLIENT_CERT_LABEL" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="CLIENT_CERT_CN" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="CLIENT_CERT_OU" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="CLIENT_CERT_O" scope="instance" noPromptIfSet="false" required="false"/>
+        <instructions substitution="true">Submit rexx exec to execute step</instructions>
+        <weight>1</weight>
+        <autoEnable>true</autoEnable>
+        <template>
+            <fileTemplate substitution="true">rexx/defineClientCert.rexx</fileTemplate>
+            <submitAs maxRc="0">TSO-REXX-JCL</submitAs>
+            <maxLrecl>1024</maxLrecl>
+        </template>
+    </step>
+
+    <step name="addClientCaToServerTrust">
+        <title>Add client CA to server trust ring</title>
+        <description>Add the client CA to the server trust ring, so that the server accepts certificates signed by that CA, remember to restart the server</description>
+        <runAsUser substitution="true">$!{instance-UKO_ADMIN_SECURITY}</runAsUser>
+        <approver substitution="true">$!{instance-UKO_APPROVER_SECURITY}</approver>
+        <variableValue name="SERVER_STC_USER" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="SERVER_TLS_TRUST_STORE_KEY_RING" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="CLIENT_CA_LABEL" scope="instance" noPromptIfSet="false" required="false"/>
+        <instructions substitution="true">Submit rexx exec to execute step, remember to restart the server afterwards</instructions>
+        <weight>1</weight>
+        <autoEnable>true</autoEnable>
+        <template>
+            <fileTemplate substitution="true">rexx/defineClientCaAddToServerTrust.rexx</fileTemplate>
+            <submitAs maxRc="0">TSO-REXX-JCL</submitAs>
+            <maxLrecl>1024</maxLrecl>
+        </template>
+    </step>
+    
+
+    <step name="exportClientCertificates">
+        <title>Export client certificate and server CA</title>
+        <description>Export the client certificate and the server CA</description>
+        <runAsUser substitution="true">$!{instance-UKO_ADMIN_SECURITY}</runAsUser>
+        <approver substitution="true">$!{instance-UKO_APPROVER_SECURITY}</approver>
+        <variableValue name="SERVER_CA_LABEL" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="CLIENT_CERT_LABEL" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="GENERIC_CLIENT_USER" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="EXPORT_HLQ" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="EXPORT_PASSWORD" scope="instance" noPromptIfSet="false" required="false"/>
+        <instructions substitution="true">Submit rexx exec to execute step</instructions>
+        <weight>1</weight>
+        <autoEnable>true</autoEnable>
+        <template>
+            <fileTemplate substitution="true">rexx/defineClientCertExport.rexx</fileTemplate>
+            <submitAs maxRc="0">TSO-REXX-JCL</submitAs>
+            <maxLrecl>1024</maxLrecl>
+        </template>
+    </step>
+
+    <step name="exportCertificateToUSS">
+        <title>Export certificates to USS</title>
+        <description>Export the client certificate and server CA to USS and create PKCS12 keystores</description>
+        <runAsUser substitution="true">$!{instance-UKO_ADMIN_SERVER}</runAsUser>
+        <approver substitution="true">$!{instance-UKO_APPROVER_SERVER}</approver>
+        <variableValue name="GENERIC_CLIENT_USER" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="EXPORT_HLQ" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="EXPORT_PASSWORD" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="EXPORT_PATH" scope="instance" noPromptIfSet="false" required="false"/>
+        <instructions substitution="true">Submit shell script to execute step</instructions>
+        <weight>1</weight>
+        <autoEnable>true</autoEnable>
+        <template>
+            <inlineTemplate substitution="true">
+                cd ${instance-EXPORT_PATH}
+                
+                echo "copying client certificate to p12 keystore file ${instance-GENERIC_CLIENT_USER}-keystore.p12"
+                cp "//'${instance-EXPORT_HLQ}.${instance-GENERIC_CLIENT_USER}'" ${instance-GENERIC_CLIENT_USER}-keystore.p12
+                echo "copying server certificate to temporary file ${instance-GENERIC_CLIENT_USER}-server.crt"
+                cp "//'${instance-EXPORT_HLQ}.${instance-GENERIC_CLIENT_USER}.SERVERCA'" ${instance-GENERIC_CLIENT_USER}-server.crt
+
+                echo "creating client *.key and *.crt files"
+                openssl pkcs12 -in ${instance-GENERIC_CLIENT_USER}-keystore.p12 -out ${instance-GENERIC_CLIENT_USER}.crt -clcerts -nokeys -passin pass:${instance-EXPORT_PASSWORD}
+                openssl pkcs12 -in ${instance-GENERIC_CLIENT_USER}-keystore.p12 -out ${instance-GENERIC_CLIENT_USER}.key -nocerts -nodes -passin pass:${instance-EXPORT_PASSWORD}
+
+                echo "importing the ${instance-GENERIC_CLIENT_USER}-server.crt file into the p12 truststore file ${instance-GENERIC_CLIENT_USER}-truststore.p12"
+                keytool -importcert -file ${instance-GENERIC_CLIENT_USER}-server.crt -noprompt -keystore ${instance-GENERIC_CLIENT_USER}-truststore.p12 -alias serverca -storepass ${instance-EXPORT_PASSWORD}
+                if [ $? -gt 0 ]; then
+                    echo "Error importing certificate to keystore, keeping temporary server certificate file"
+                else
+                    echo "Server certificate successfully imported"
+                fi
+
+                echo "All files have been exported to ${instance-EXPORT_PATH}"
+            </inlineTemplate>
+            <submitAs>shell-JCL</submitAs>
+        </template>
+    </step>
+
+</step>

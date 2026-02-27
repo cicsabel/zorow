@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Declare external file containing WAS variables referenced in the following steps -->
+<!DOCTYPE workflow [<!ENTITY variables SYSTEM "variable_imports.xml">
+                    <!ENTITY step_stop_agent SYSTEM "steps/stop_agent.xml">
+                    ]> 
+                    
+<!--
+/******************************************************************************/
+/* Copyright Contributors to the zOS-Workflow Project.                        */
+/* SPDX-License-Identifier: Apache-2.0                                        */
+/******************************************************************************/
+-->
+<workflow xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                          xsi:noNamespaceSchemaLocation="../workflow/schemas/workflow_v1.xsd">    
+    <!--  Note: The schema workflow_v1.xsd is shipped with z/OSMF. To use the schema
+          to validate this XML, modify the above schema location to point to the 
+          schema in z/OSMF, or copy the schema to an appropriate location.  -->
+
+<!-- 
+	+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ 
+ 	+  UKO Deprovision: Deprovision a UKO agent                                +
+	+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ 
+-->
+
+  <workflowInfo>
+      <workflowID>ukoagent_Deprovision</workflowID>
+      <workflowDescription>Deprovision a UKO agent</workflowDescription>
+    <workflowVersion>1.0.0.0</workflowVersion>
+        <!-- Build timestamp 2021.05.09.21.03.24 -->
+      <vendor>IBM</vendor>
+      <Provisioning>
+          <productID>5655-EKM</productID>
+          <productName>UKO</productName>
+          <productVersion>V2R1+</productVersion>
+          <softwareType>ukoagent</softwareType>
+      </Provisioning>
+  </workflowInfo>
+
+  <!--+++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+	<!--     Include variables used by the following steps     -->
+	<!--+++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+	&variables;
+
+    <!--++++++++++++++++++++++-->
+    <!--   Deprovision Steps  -->
+    <!--++++++++++++++++++++++-->
+    &step_stop_agent;
+
+    <step name="deleteIcsfAccess">
+	        <title>Delete ICSF Access</title>
+	        <description>Delete access to the ICSF profiles in CSFSERV</description>
+	        <runAsUser substitution="true">$!{instance-UKO_ADMIN_SECURITY}</runAsUser>
+	        <approver substitution="true">$!{instance-UKO_APPROVER_SECURITY}</approver>
+			<condition>
+			    <expression><![CDATA[${stopAgent_console.stepState}=="Complete" || ${stopAgent_console.stepState} == "Skipped"]]></expression>
+			    <description>Check that the issue_stop stepState is Complete</description>
+			</condition>
+        	<instructions>Executes a REXX program to delete the SAF certificate and keyring.</instructions>
+        	<weight>1</weight>
+        	<autoEnable>true</autoEnable>
+        	<template>
+            	<fileTemplate substitution="true">extensions/deleteIcsfAccess.rexx</fileTemplate>
+            	<submitAs maxRc="0">TSO-REXX-JCL</submitAs>
+            	<maxLrecl>1024</maxLrecl>
+        	</template>
+	</step>
+
+    <step name="deleteDsnrAccess">
+        <title>Delete DSNR BATCH access</title>
+        <description>The RACF resource class for Db2 is DSNR, which is contained in the RACF class descriptor table. The profiles in that class help you control access to a Db2 subsystem from another environment. </description>        
+        <runAsUser substitution="true">$!{instance-UKO_ADMIN_SECURITY}</runAsUser>
+        <approver substitution="true">$!{instance-UKO_APPROVER_SECURITY}</approver>
+		<condition>
+			<expression>"1"=="1"</expression>
+			<description>always true</description>
+			<targetStateSet>
+				<description>Only execute for workstation access</description>
+				<extendStateExpression>
+					<description>Skip if no workstation access is required</description>
+					<expression>${instance-WORKSTATION_ACCESS_REQUIRED} == "false"</expression>
+					<targetState>Skipped</targetState>
+				</extendStateExpression>
+			</targetStateSet>
+		</condition>            
+		<variableValue name="DB_JCC_SSID" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="AGENT_STC_USER" scope="instance" noPromptIfSet="false" required="false"/>
+        <instructions substitution="true">Submit jcl to execute step</instructions>
+        <weight>1</weight>
+        <autoEnable>true</autoEnable>
+        <template>
+            <fileTemplate substitution="true">extensions/deleteDsnrAccess.rexx</fileTemplate>
+            <submitAs maxRc="0">TSO-REXX-JCL</submitAs>
+            <maxLrecl>1024</maxLrecl>
+        </template>
+    </step>
+
+
+	<step name="deleteAgentProc">                                                                  
+         <title>Delete Agent Proc</title>                                                           
+         <description>Delete the agent proc</description>   
+         <runAsUser substitution="true">$!{instance-UKO_ADMIN_TSO}</runAsUser>
+	     <approver substitution="true">$!{instance-UKO_APPROVER_TSO}</approver>                   
+     	 <instructions substitution="false">deleteProcs</instructions>                        
+         <weight>5</weight>                                                                     
+         <autoEnable>true</autoEnable>                                                          
+         <template>                                                                             
+           <fileTemplate substitution="true">jcl/delete-agent-proc.jcl</fileTemplate>
+           <submitAs maxRc="12">JCL</submitAs>
+       </template>                                                                            
+    </step>
+
+    <step name="removeSAFSecurityProfiles">
+        <title>Remove SAF security profiles</title>
+        <description>Remove SAF security profiles created by this workflow</description>
+        <runAsUser substitution="true">$!{instance-UKO_ADMIN_SECURITY}</runAsUser>
+	    <approver substitution="true">$!{instance-UKO_APPROVER_SECURITY}</approver>
+        <instructions substitution="true">Delete the appropriate SAF profiles created by this workflow</instructions>
+        <weight>1</weight>
+        <autoEnable>true</autoEnable>
+       	<template>
+           	<fileTemplate substitution="true">extensions/deleteSecurity.rexx</fileTemplate>
+           	<submitAs maxRc="0">TSO-REXX-JCL</submitAs>
+           	<maxLrecl>1024</maxLrecl>
+       	</template>
+    </step>
+
+	<step name="removeKeyAccess">
+		<title>Key prefix deletion</title>
+		<description>Remove entry in CSFKEYS class</description>
+		<runAsUser substitution="true">$!{instance-UKO_ADMIN_SECURITY}</runAsUser>
+		<approver substitution="true">$!{instance-UKO_APPROVER_SECURITY}</approver>
+		<instructions>Executes a REXX program to remove the CSFKEYS profiles.</instructions>
+		<weight>1</weight>
+		<autoEnable>true</autoEnable>
+		<template>
+			<fileTemplate substitution="true">extensions/deleteKeyAccess.rexx</fileTemplate>
+			<submitAs maxRc="8">TSO-REXX-JCL</submitAs>
+			<maxLrecl>1024</maxLrecl>
+		</template>
+	</step>
+
+
+	<step name="deleteLinkEncryption">
+		<title>Delete link encryption</title>
+		<description>Delete link encryption between the agent and clients</description>
+		<runAsUser substitution="true">$!{instance-UKO_ADMIN_SECURITY}</runAsUser>
+		<approver substitution="true">$!{instance-UKO_APPROVER_SECURITY}</approver>
+		<variableValue name="UKO_SERVER_PUBLIC_KEY_HASH" scope="instance" noPromptIfSet="false" required="false"/>
+		<variableValue name="AGENT_STC_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
+		<instructions substitution="true">Submit rexx exec to execute step</instructions>
+		<weight>1</weight>
+		<autoEnable>true</autoEnable>
+		<template>
+			<fileTemplate substitution="true">extensions/deleteLinkEncryption.rexx</fileTemplate>
+			<submitAs maxRc="0">TSO-REXX-JCL</submitAs>
+			<maxLrecl>1024</maxLrecl>
+		</template>
+	</step>
+  
+</workflow>

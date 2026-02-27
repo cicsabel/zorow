@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>                    
+<!--
+/******************************************************************************/
+/* Copyright Contributors to the zOS-Workflow Project.                        */
+/* SPDX-License-Identifier: Apache-2.0                                        */
+/******************************************************************************/
+-->
+<step name="createServerUpdateVariables" optional="false">
+    <title>Create variables for the versions</title>
+    <description>Retrieves the current and the new version and puts the results in variables to be used by later steps</description>
+    <runAsUser substitution="true">$!{instance-UKO_ADMIN_ZFS}</runAsUser>
+    <approver substitution="true">$!{instance-UKO_APPROVER_ZFS}</approver>
+    <variableValue name="SERVER_DIRECTORY" scope="instance" noPromptIfSet="false" required="false"/>
+    <variableValue name="SERVER_INSTALL_DIR" scope="instance" noPromptIfSet="false" required="false"/>
+    <variableValue name="TEMP_DIR" scope="instance" noPromptIfSet="false" required="false"/>
+    <instructions substitution="true">Submit shell script to execute step</instructions>
+    <weight>1</weight>
+    <autoEnable>true</autoEnable>
+    <template>
+        <inlineTemplate substitution="true">
+    
+            # Get the current version
+            currentversion_unfixed=$(iconv -t IBM037 -f utf-8 ${instance-SERVER_DIRECTORY}/EkmfWeb.properties | grep com.ibm.websphere.productVersion | sed -E 's/.*=([^\$])/\1/')
+
+            oldIFS=$IFS
+            IFS=.
+            set -- $currentversion_unfixed
+
+            MAJOR=$1
+            MINOR=$2
+            PATCH=$3
+            BUILD=$4
+
+            echo "old version major=$MAJOR minor=$MINOR patch=$PATCH build=$BUILD"
+
+            if [ ${#BUILD} -eq 1 ]; then
+                echo "minor version is a single digit and needs a zero to be added" 
+                if [ $MAJOR -lt 2 ];then
+                    echo "The current version is a version from the EKMF Web Service:" ${currentversion}
+                    currentversion="2."$MINOR"."$PATCH."0"$BUILD  
+                    echo "The version has been converted to the product version:" ${currentversion}
+                else
+                    currentversion=$MAJOR"."$MINOR"."$PATCH."0"$BUILD
+                fi
+            else 
+                currentversion=$currentversion_unfixed
+            fi
+
+            # Get the new version
+            newversion_unfixed=$(iconv -t IBM037 -f utf-8 ${instance-SERVER_INSTALL_DIR}/EkmfWeb.properties | grep com.ibm.websphere.productVersion | sed -E 's/.*=([^\$])/\1/')
+
+            set -- $newversion_unfixed
+            IFS=$oldIFS
+
+            MAJOR=$1
+            MINOR=$2
+            PATCH=$3
+            BUILD=$4
+
+            echo "new version major=$MAJOR minor=$MINOR patch=$PATCH build=$BUILD"
+
+            if [ ${#BUILD} -eq 1 ]; then
+                echo "minor version is a single digit and needs a zero to be added" 
+                newversion=$MAJOR"."$MINOR"."$PATCH."0"$BUILD
+            else 
+                newversion=$newversion_unfixed
+            fi
+            
+            echo "SERVER_VERSION ${currentversion}" >> ${instance-TEMP_DIR}/zosmf-${_workflow-workflowKey}.properties
+            echo "NEW_SERVER_VERSION ${newversion}" >> ${instance-TEMP_DIR}/zosmf-${_workflow-workflowKey}.properties
+
+            chmod 644 ${instance-TEMP_DIR}/zosmf-${_workflow-workflowKey}.properties
+        </inlineTemplate>
+        <submitAs>shell-JCL</submitAs>
+        <output substitution="true" needResolveConflicts="false">${instance-TEMP_DIR}/zosmf-${_workflow-workflowKey}.properties</output>
+    </template>
+</step>

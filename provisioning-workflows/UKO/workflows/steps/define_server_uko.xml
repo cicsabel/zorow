@@ -1,0 +1,358 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/******************************************************************************/
+/* Copyright Contributors to the zOS-Workflow Project.                        */
+/* SPDX-License-Identifier: Apache-2.0                                        */
+/******************************************************************************/
+-->
+
+<step name="createServer">
+    <title>Creating the Server</title>
+    <description>Creating the server with all resources and security access</description>
+
+    &step_define_server_directories;
+
+    <step name="configureLibertyServer">
+        <title>Configure the Liberty server</title>
+        <description>Configure Liberty server</description>
+
+        &step_define_server_liberty;
+
+        <step name="configureDatabaseConnection">
+            <title>Configure database connection</title>
+            <description>Configure the JDBC connection to the database</description>
+            <runAsUser substitution="true">$!{instance-UKO_ADMIN_SERVER}</runAsUser>
+            <approver substitution="true">$!{instance-UKO_APPROVER_SERVER}</approver>
+            <variableValue name="SERVER_USER_DIR" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="SERVER_STC_NAME" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="SERVER_INSTALL_DIR" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="DB_JCC_SSID" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="DB_LOCATION" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="DB_CURRENT_SCHEMA" scope="instance" noPromptIfSet="false" required="false"/>
+            <!-- <variableValue name="DB_PRODUCT_PATH" scope="instance" noPromptIfSet="false" required="false"/> -->
+            <variableValue name="DB_LIBPATH" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="DB_CLASSPATH" scope="instance" noPromptIfSet="false" required="false"/>
+            <!-- <variableValue name="DB_SSL" scope="instance" noPromptIfSet="false" required="false"/> -->
+            <!-- <variableValue name="DB_JDBC_PORT" scope="instance" noPromptIfSet="false" required="false"/> -->
+            <!-- <variableValue name="DB_JDBC_SECPORT" scope="instance" noPromptIfSet="false" required="false"/> -->
+            <!-- <variableValue name="DB_SERVER_NAME" scope="instance" noPromptIfSet="false" required="false"/> -->
+            <instructions substitution="true">Submit shell script to execute step</instructions>
+            <weight>1</weight>
+            <autoEnable>true</autoEnable>
+            <template>
+                <inlineTemplate substitution="true">
+                    cd ${instance-SERVER_USER_DIR}/servers/${instance-SERVER_STC_NAME}/
+
+                    echo "****************************************"
+                    echo "Adjusting server.env"
+                    mv ./server.env ./server.env.original
+
+                    sedstring=""
+                    sedstring="${sedstring} s#^[ \#]*EKMF_API_DB_NAME=.*#EKMF_API_DB_NAME=${instance-DB_LOCATION}#g;"
+                    sedstring="${sedstring} s#^[ \#]*DATA_SET_DB_NAME=.*#DATA_SET_DB_NAME=${instance-DB_LOCATION}#g;"
+                    sedstring="${sedstring} s#^[ \#]*DB_CURRENT_SCHEMA=.*#DB_CURRENT_SCHEMA=${instance-DB_CURRENT_SCHEMA}#g;"
+                    sedstring="${sedstring} s#^[ \#]*DB_LIBPATH=.*#DB_LIBPATH=${instance-DB_LIBPATH}#g;"
+                    sedstring="${sedstring} s#^[ \#]*DB_CLASSPATH=.*#DB_CLASSPATH=${instance-DB_CLASSPATH}#g;"
+
+                    # legacy property DB2_PRODUCT_PATH and LIBPATH for compatibility with older versions
+                    sedstring="${sedstring} s#^[ \#]*DB2_PRODUCT_PATH=.*#DB2_PRODUCT_PATH=${instance-DB_PRODUCT_PATH}#g;"
+                    sedstring="${sedstring} s#^[ \#]*LIBPATH=.*#LIBPATH=${instance-DB_LIBPATH}#g;"
+                    sed -e "$sedstring" ./server.env.original > ./server.env
+                    if [ $? -gt 0 ]; then
+                        echo "error adjusting file, previous version restored."
+                        mv ./server.env.original ./server.env
+                        rm ./server.env.original
+                        exit "8"; 
+                    else 
+                        rm ./server.env.original
+                        echo "server.env adjusted for database parameters"
+                    fi 
+
+                    # Configuring type 4 connections with workflows still needs to be implemented
+                    #DB_DRIVER_TYPE=
+                    #DB_SSL=true
+                    #DB_SERVER_NAME=db.example.ibm.com
+                    #DB_SERVER_PORT=50000
+                    #DB_USER=dbUser
+                    #DB_PASSWORD=changeme
+                    
+                    echo "****************************************"
+
+                    echo "adjusting jvm.options"
+                    mv ./jvm.options ./jvm.options.original
+                    sed "s#^[ \#]*-Ddb2.jcc.ssid=.*#-Ddb2.jcc.ssid=${instance-DB_JCC_SSID}#g" ./jvm.options.original > ./jvm.options
+                    if [ $? -gt 0 ]; then
+                        echo "error adjusting file, previous version restored."
+                        mv ./jvm.options.original ./jvm.options
+                        rm ./jvm.options.original
+                        exit "8"; 
+                    else 
+                        rm ./jvm.options.original
+                        echo "jvm.options adjusted for database parameters"
+                    fi                     
+                    echo "****************************************"
+
+                </inlineTemplate>
+                <submitAs>shell-JCL</submitAs>
+            </template>
+        </step>
+
+        <step name="substituteServerEnvMsdke">
+            <title>(Optional) Configure server.env for MSDKE</title>
+            <description>Replace values in server.env with the values from the properties file</description>
+            <runAsUser substitution="true">$!{instance-UKO_ADMIN_SERVER}</runAsUser>
+            <approver substitution="true">$!{instance-UKO_APPROVER_SERVER}</approver>
+            <condition>
+                <expression>"1"=="1"</expression>
+                <description>always true</description>
+                <targetStateSet>
+                    <description>Only execute for MSDKE configuration</description>
+                    <extendStateExpression>
+                        <description>Skip if no MSDKE configuration is required</description>
+                        <expression>${instance-MSDKE_SUPPORT_REQUIRED}  == "false"</expression>
+                        <targetState>Skipped</targetState>
+                    </extendStateExpression>
+                </targetStateSet>
+            </condition>
+            <variableValue name="SERVER_USER_DIR" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="SERVER_STC_NAME" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="MSDKE_SUPPORT_REQUIRED" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="MSDKE_RABBIT_URI" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="MSDKE_WRAPPING_KEK_LABEL" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="MSDKE_RABBIT_VIRTUAL_HOST" scope="instance" noPromptIfSet="false" required="false"/>
+            <instructions substitution="true">Submit shell script to execute step</instructions>
+            <weight>1</weight>
+            <autoEnable>true</autoEnable>
+            <template>
+                <inlineTemplate substitution="true">
+                    cd ${instance-SERVER_USER_DIR}/servers/${instance-SERVER_STC_NAME}
+
+                    mv ./server.env ./server.env.original
+
+                    sed "s#MSDKE_RABBIT_URI=.*#MSDKE_RABBIT_URI=${instance-MSDKE_RABBIT_URI}#g;
+                        s#^[ \#]*MSDKE_WRAPPING_KEK_LABEL=.*#MSDKE_WRAPPING_KEK_LABEL=${instance-MSDKE_WRAPPING_KEK_LABEL}#g;
+                        s#^[ \#]*MSDKE_RABBIT_VIRTUAL_HOST=.*#MSDKE_RABBIT_VIRTUAL_HOST=${instance-MSDKE_RABBIT_VIRTUAL_HOST}#g;
+                        s#^[ \#]*MSDKE_RABBIT_ENABLE_CERT_AUTHENTICATION=.*#MSDKE_RABBIT_ENABLE_CERT_AUTHENTICATION=true#g" ./server.env.original > ./server.env
+                    
+                    rm  ./server.env.original 
+
+                    </inlineTemplate>
+                <submitAs>shell-JCL</submitAs>
+            </template>
+        </step>
+
+        &step_set_server_directory_permissions;
+    </step>
+
+    <step name="createServerProc">
+        <title>Create the server procedure</title>
+        <description>Create the server proc</description>
+           <runAsUser substitution="true">$!{instance-UKO_ADMIN_TSO}</runAsUser>
+           <approver substitution="true">$!{instance-UKO_APPROVER_TSO}</approver>
+        <variableValue name="SERVER_STC_NAME" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="ZOS_PROCLIB" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="DB_HLQ" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="WLP_INSTALL_DIR" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="SERVER_USER_DIR" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="JAVA_HOME" scope="instance" noPromptIfSet="false" required="false"/>
+        <instructions substitution="true">Submit JCL to execute step</instructions>
+        <weight>5</weight>
+        <autoEnable>true</autoEnable>
+        <template>
+           <fileTemplate substitution="true">jcl/create-server-proc.jcl</fileTemplate>
+           <submitAs>JCL</submitAs>
+           <maxLrecl>80</maxLrecl>
+      </template>
+    </step>
+
+    <step name="configureSecurity">
+    	<title>Security setup for the Liberty server</title>
+    	<description>Configure security for the server and related resources</description>
+
+        &step_define_server_security_liberty;
+
+        <step name="defineIcsfAccess">
+            <title>Define access to ICSF</title>
+            <description>Define the profiles in the CSFSERV class and grant access</description>
+            <runAsUser substitution="true">$!{instance-UKO_ADMIN_SECURITY}</runAsUser>
+            <approver substitution="true">$!{instance-UKO_APPROVER_SECURITY}</approver>
+            <variableValue name="SERVER_STC_USER" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="SAF_OWNER" scope="instance" noPromptIfSet="false" required="false"/>
+            <instructions>Executes a REXX program to create profiles and grant access</instructions>
+            <weight>1</weight>
+            <autoEnable>true</autoEnable>
+            <template>
+                <fileTemplate substitution="true">rexx/defineServerIcsfAccessUko.rexx</fileTemplate>
+                <submitAs maxRc="4">TSO-REXX-JCL</submitAs>
+                <maxLrecl>1024</maxLrecl>
+            </template>
+        </step>
+
+        <step name="defineKeyAccess">
+            <title>Define access to keys in CSFKEYS</title>
+            <description>Create entry in CSFKEYS class and grant access</description>
+            <runAsUser substitution="true">$!{instance-UKO_ADMIN_SECURITY}</runAsUser>
+            <approver substitution="true">$!{instance-UKO_APPROVER_SECURITY}</approver>
+            <variableValue name="KEY_PREFIX" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="UKO_RECOVERY_KEY" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="SERVER_STC_USER" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="SAF_OWNER" scope="instance" noPromptIfSet="false" required="false"/>
+            <instructions>Executes a REXX program to create the key prefix</instructions>
+            <weight>1</weight>
+            <autoEnable>true</autoEnable>
+            <template>
+                <fileTemplate substitution="true">rexx/defineServerKeyAccessUko.rexx</fileTemplate>
+                <submitAs maxRc="4">TSO-REXX-JCL</submitAs>
+                <maxLrecl>1024</maxLrecl>
+            </template>
+        </step>
+
+        <step name="configureDsnrAccess">
+            <title>Access to Db2 Naming protected access profiles in DSNR class</title>
+            <description>Define access to the DSNR RRSAF and DIST profiles</description>        
+            <runAsUser substitution="true">$!{instance-UKO_ADMIN_SECURITY}</runAsUser>
+            <approver substitution="true">$!{instance-UKO_APPROVER_SECURITY}</approver>
+            <variableValue name="DB_JCC_SSID" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="SERVER_STC_USER" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="SAF_OWNER" scope="instance" noPromptIfSet="false" required="false"/>
+            <instructions substitution="true">Review rexx and execute it to create the required DSNR profiles and grant access</instructions>
+            <weight>1</weight>
+            <autoEnable>true</autoEnable>
+            <template>
+                <fileTemplate substitution="true">rexx/defineServerDsnrAccess.rexx</fileTemplate>
+                <submitAs maxRc="0">TSO-REXX-JCL</submitAs>
+                <maxLrecl>1024</maxLrecl>
+            </template>
+        </step>
+
+        <step name="defineUserAccess">
+            <title>Define user access</title>
+            <description>Define APPL access and required EJB roles</description>
+
+            <step name="configureApplAccessUsers">
+                <title>Grant APPL access to users</title>
+                <description>Grant access to the APPL class for the specific server to all groups</description>
+                <runAsUser substitution="true">$!{instance-UKO_ADMIN_SECURITY}</runAsUser>
+                <approver substitution="true">$!{instance-UKO_APPROVER_SECURITY}</approver>
+                <variableValue name="UKO_VAULT_ADMIN_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
+                <variableValue name="UKO_KEY_ADMIN_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
+                <variableValue name="UKO_KEY_CUSTODIAN1_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
+                <variableValue name="UKO_KEY_CUSTODIAN2_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
+                <variableValue name="UKO_AUDITOR_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
+                <instructions substitution="true">Submit rexx exec to execute step</instructions>
+                <weight>1</weight>
+                <autoEnable>true</autoEnable>
+                <template>
+                    <fileTemplate substitution="true">rexx/defineServerApplAccess.rexx</fileTemplate>
+                    <submitAs maxRc="0">TSO-REXX-JCL</submitAs>
+                    <maxLrecl>1024</maxLrecl>
+                </template>
+            </step>
+            
+            <step name="defineRolesLegacy">
+                <title>Define legacy roles for EKMF V2</title>
+                <description>Legacy, defines roles for EKMF Web Version 2.x before vaults were introduced</description>
+                <runAsUser substitution="true">$!{instance-UKO_ADMIN_SECURITY}</runAsUser>
+                <approver substitution="true">$!{instance-UKO_APPROVER_SECURITY}</approver>
+                <!-- <condition>
+                    <expression><![CDATA["1" == "1"]]></expression>
+                    <description>Should the step be executed, based on the UKO_VAULT_ID setting</description>
+                    <targetStateSet>
+                      <description/>
+                        <extendStateExpression>
+                            <description>Skip if UKO_VAULT_ID != ekmfwebv2</description>
+                          <expression><![CDATA[ ${instance-UKO_VAULT_ID} != "ekmfwebv2"]]></expression>
+                            <targetState>Skipped</targetState>
+                        </extendStateExpression>
+                    </targetStateSet>
+                </condition> -->
+                <variableValue name="UKO_KEY_ADMIN_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
+                <variableValue name="UKO_KEY_CUSTODIAN1_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
+                <variableValue name="UKO_KEY_CUSTODIAN2_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
+                <variableValue name="UKO_AUDITOR_GROUP" scope="instance" noPromptIfSet="false" required="false"/>        
+                <variableValue name="SAF_OWNER" scope="instance" noPromptIfSet="false" required="false"/>
+                <variableValue name="SAF_PROFILE_PREFIX" scope="instance" noPromptIfSet="false" required="false"/>
+                <instructions>Executes a REXX program to create EJB roles and grant access</instructions>
+                <weight>1</weight>
+                <autoEnable>true</autoEnable>
+                <template>
+                    <fileTemplate substitution="true">rexx/defineServerRolesLegacy.rexx</fileTemplate>
+                    <submitAs maxRc="4">TSO-REXX-JCL</submitAs>
+                    <maxLrecl>1024</maxLrecl>
+                </template>
+            </step>
+
+            <step name="defineRolesGeneral">
+                <title>Define general UKO roles</title>
+                <description>Defines the general roles across all vaults</description>
+                <runAsUser substitution="true">$!{instance-UKO_ADMIN_SECURITY}</runAsUser>
+                <approver substitution="true">$!{instance-UKO_APPROVER_SECURITY}</approver>
+                <condition>
+                    <expression><![CDATA["1" == "1"]]></expression>
+                    <description>Should the step be executed, based on the UKO_VAULT_ID setting</description>
+                    <targetStateSet>
+                      <description/>
+                        <extendStateExpression>
+                            <description>Skip if UKO_VAULT_ID == ekmfwebv2</description>
+                          <expression><![CDATA[ ${instance-UKO_VAULT_ID} == "ekmfwebv2"]]></expression>
+                            <targetState>Skipped</targetState>
+                        </extendStateExpression>
+                    </targetStateSet>
+                </condition>
+                <variableValue name="UKO_VAULT_ADMIN_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
+                <variableValue name="UKO_KEY_ADMIN_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
+                <variableValue name="UKO_KEY_CUSTODIAN1_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
+                <variableValue name="UKO_KEY_CUSTODIAN2_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
+                <variableValue name="UKO_AUDITOR_GROUP" scope="instance" noPromptIfSet="false" required="false"/>        
+                <variableValue name="SAF_OWNER" scope="instance" noPromptIfSet="false" required="false"/>
+                <variableValue name="SAF_PROFILE_PREFIX" scope="instance" noPromptIfSet="false" required="false"/>
+                <instructions>Executes a REXX program to create EJB roles and grant access</instructions>
+                <weight>1</weight>
+                <autoEnable>true</autoEnable>
+                <template>
+                    <fileTemplate substitution="true">rexx/defineServerRolesGeneral.rexx</fileTemplate>
+                    <submitAs maxRc="4">TSO-REXX-JCL</submitAs>
+                    <maxLrecl>1024</maxLrecl>
+                </template>
+            </step>
+
+            <step name="defineRolesVault">
+                <title>Define vault-specific UKO roles</title>
+                <description>Defines the vault-specific roles</description>
+                <runAsUser substitution="true">$!{instance-UKO_ADMIN_SECURITY}</runAsUser>
+                <approver substitution="true">$!{instance-UKO_APPROVER_SECURITY}</approver>
+                <condition>
+                    <expression><![CDATA["1" == "1"]]></expression>
+                    <description>Should the step be executed, based on the UKO_VAULT_ID setting</description>
+                    <targetStateSet>
+                      <description/>
+                        <extendStateExpression>
+                            <description>Skip if UKO_VAULT_ID == ekmfwebv2</description>
+                          <expression><![CDATA[ ${instance-UKO_VAULT_ID} == "ekmfwebv2"]]></expression>
+                            <targetState>Skipped</targetState>
+                        </extendStateExpression>
+                    </targetStateSet>
+                </condition>
+                <variableValue name="UKO_VAULT_ID" scope="instance" noPromptIfSet="false" required="false"/>
+                <variableValue name="UKO_VAULT_ADMIN_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
+                <variableValue name="UKO_KEY_ADMIN_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
+                <variableValue name="UKO_KEY_CUSTODIAN1_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
+                <variableValue name="UKO_KEY_CUSTODIAN2_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
+                <variableValue name="UKO_AUDITOR_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
+                <variableValue name="SAF_OWNER" scope="instance" noPromptIfSet="false" required="false"/>
+                <variableValue name="SAF_PROFILE_PREFIX" scope="instance" noPromptIfSet="false" required="false"/>
+                <instructions>Executes a REXX program to create EJB roles and grant access</instructions>
+                <weight>1</weight>
+                <autoEnable>true</autoEnable>
+                <template>
+                    <fileTemplate substitution="true">rexx/defineServerRolesVault.rexx</fileTemplate>
+                    <submitAs maxRc="4">TSO-REXX-JCL</submitAs>
+                    <maxLrecl>1024</maxLrecl>
+                </template>
+            </step>
+
+            
+        </step>
+	</step>
+  
+</step>

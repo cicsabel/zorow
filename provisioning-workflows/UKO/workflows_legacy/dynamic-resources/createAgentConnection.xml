@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- Declare external file containing WAS variables referenced in the following steps -->
+<!DOCTYPE workflow [<!ENTITY variables SYSTEM "variable_imports.xml">
+                    <!ENTITY image_properties SYSTEM "extensions/image_properties.xml">
+                    ]> 
+                    
+<!--
+/******************************************************************************/
+/* Copyright Contributors to the zOS-Workflow Project.                        */
+/* SPDX-License-Identifier: Apache-2.0                                        */
+/******************************************************************************/
+-->
+<workflow xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../workflow/schemas/workflow_v1.xsd">
+    <!--  Note: The schema workflow_v1.xsd is shipped with z/OSMF. To use the schema
+          to validate this XML, modify the above schema location to point to the 
+          schema in z/OSMF, or copy the schema to an appropriate location.  -->
+
+    <!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+    <!-- UKO Provisioning : Provision a new server                   -->
+    <!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+
+  <workflowInfo>
+      <workflowID>uko_TestData</workflowID>
+      <workflowDescription>Create test data</workflowDescription>
+    <workflowVersion>1.0.0.0</workflowVersion>
+        <!-- Build timestamp 2021.05.09.21.03.24 -->
+      <vendor>IBM</vendor>
+      <Provisioning>
+          <productID>5655-EKM</productID>
+          <productName>UKO</productName>
+          <productVersion>V2R1+</productVersion>
+          <softwareType>ukoserver</softwareType>
+      </Provisioning>
+  </workflowInfo>
+  
+  	<!--+++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+	<!--     Include variables used by the following steps     -->
+	<!--+++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+	&variables;
+    <variable name="UKO_AGENT_ATTLS_NAME" visibility="public">
+        <label>UKO_AGENT_ATTLS_NAME</label>
+        <abstract>STC name of additional AT-TLS enabled agent</abstract>
+        <description>Create additional connection to an agent that is enabled with AT-TLS, specify started task name</description>
+        <category>UKO Agent variables</category>
+        <string>
+            <default>UKO05A</default>
+          </string>
+        </variable>
+
+	<atCreate name="UKO_VAULT_ID" scope="instance" prompt="true" required="false"/>
+	<atCreate name="UKO_AGENT_ATTLS_NAME" scope="instance" prompt="true" required="false"/>
+
+    <step name="createAgentConnection" optional="false">
+        <title>create Test Data</title>
+        <description>creates keystore connections and templates</description>
+        <runAsUser substitution="true">$!{instance-UKO_ADMIN_SERVER}</runAsUser>
+        <approver substitution="true">$!{instance-UKO_APPROVER_SERVER}</approver>
+        <variableValue name="SERVER_PORT_TLS" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="KEY_PREFIX" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="SERVER_VERSION" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="AGENT_STC_NAME" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="UKO_AGENT_ATTLS_NAME" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="UKO_ADMIN_SERVER" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="UKO_VAULT_ID" scope="instance" noPromptIfSet="false" required="false"/>
+        <instructions>Execute the script to create keystore connections and templates</instructions>
+        <weight>1</weight>
+        <autoEnable>true</autoEnable>
+        <template>
+            <fileTemplate substitution="true">scripts/createAgentConnection.sh</fileTemplate>
+            <submitAs>shell-JCL</submitAs>
+            <maxLrecl>2048</maxLrecl>
+        </template>
+    </step>
+
+</workflow>

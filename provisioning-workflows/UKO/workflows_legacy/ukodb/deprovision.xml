@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Declare external file containing WAS variables referenced in the following steps -->
+<!DOCTYPE workflow [<!ENTITY variables SYSTEM "variable_imports.xml">
+                    ]> 
+                    
+<!--
+/******************************************************************************/
+/* Copyright Contributors to the zOS-Workflow Project.                        */
+/* SPDX-License-Identifier: Apache-2.0                                        */
+/******************************************************************************/
+-->
+<workflow xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                          xsi:noNamespaceSchemaLocation="../workflow/schemas/workflow_v1.xsd">    
+    <!--  Note: The schema workflow_v1.xsd is shipped with z/OSMF. To use the schema
+          to validate this XML, modify the above schema location to point to the 
+          schema in z/OSMF, or copy the schema to an appropriate location.  -->
+
+<!-- 
+	+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ 
+ 	+  UKO Deprovision: Deprovision the UKO database                        +
+	+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ 
+-->
+
+  <workflowInfo>
+      <workflowID>ukodb_Deprovision</workflowID>
+      <workflowDescription>Deprovision a UKO database</workflowDescription>
+    <workflowVersion>1.0.0.0</workflowVersion>
+        <!-- Build timestamp 2021.05.09.21.03.24 -->
+      <vendor>IBM</vendor>
+      <Provisioning>
+          <productID>5655-EKM</productID>
+          <productName>UKO</productName>
+          <productVersion>V2R1+</productVersion>
+          <softwareType>ukodb</softwareType>
+      </Provisioning>
+  </workflowInfo>
+
+  <!--+++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+	<!--     Include variables used by the following steps     -->
+	<!--+++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+	&variables;
+
+    <!--++++++++++++++++++++++-->
+    <!--   Deprovision Steps  -->
+    <!--++++++++++++++++++++++-->
+
+    <step name="freePlanAndPackages">
+        <title>Free plan and packages</title>
+        <description>Free plan and packages for EKMF Workstation access</description>        
+        <runAsUser substitution="true">$!{instance-UKO_ADMIN_DB}</runAsUser>
+        <approver substitution="true">$!{instance-UKO_APPROVER_DB}</approver>
+        <condition>
+            <expression>"1"=="1"</expression>
+            <description>Skip this step if the DDLs come from files</description>
+            <targetStateSet>
+                <description>Skip this step if the DDLs come from files</description>
+                <extendStateExpression>
+                    <description>Skip the step when file is selected</description>
+                    <expression>${instance-DB_INSTALL_FROM_FILE_OR_DATASET} == "FILE"</expression>
+                    <targetState>skipped</targetState>
+                </extendStateExpression>
+                <extendStateExpression>
+                    <description>Skip if no workstation access is required</description>
+                    <expression>${instance-WORKSTATION_ACCESS_REQUIRED} == "false"</expression>
+                    <targetState>Skipped</targetState>
+                </extendStateExpression>
+            </targetStateSet>
+        </condition>
+        <instructions substitution="true">Submit jcl to execute step</instructions>
+        <weight>1</weight>
+        <autoEnable>true</autoEnable>
+        <template>
+            <fileTemplate substitution="true">jcl/bind-free.jcl</fileTemplate>
+            <submitAs maxRc="8">JCL</submitAs>
+            <maxLrecl>80</maxLrecl>
+        </template>
+    </step>
+
+    <step name="revokeSystableAccess">
+        <title>Revoke access to SYSIBM.SYSTABLES for system status</title>
+        <description>Revoke access to the SYSIBM.SYSTABLES table which is required to run the system status checks</description>
+        <runAsUser substitution="true">$!{instance-UKO_ADMIN_DB}</runAsUser>
+        <approver substitution="true">$!{instance-UKO_APPROVER_DB}</approver>
+        <variableValue name="SERVER_STC_USER" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="DB_HLQ" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="DB_JCC_SSID" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="DB_PROGRAM" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="DB_PLAN" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="DB_RUNLIB" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="DB_CURRENT_SQLID" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="DB_CURRENT_SCHEMA" scope="instance" noPromptIfSet="false" required="false"/>
+        <instructions substitution="true">Submit jcl to execute step</instructions>
+        <weight>1</weight>
+        <autoEnable>true</autoEnable>
+        <template>
+            <fileTemplate substitution="true">jcl/database-revoke-access-systable.jcl</fileTemplate>
+            <submitAs maxRc="8">JCL</submitAs>
+            <maxLrecl>80</maxLrecl>
+        </template>
+    </step>
+        
+    <step name="deleteDatabase">
+        <title>Delete the Db2 database</title>
+        <description>Delete the UKO databases</description>
+        <runAsUser substitution="true">$!{instance-UKO_ADMIN_DB}</runAsUser>
+        <approver substitution="true">$!{instance-UKO_APPROVER_DB}</approver>
+        <instructions substitution="true">Submit jcl to execute step</instructions>
+        <weight>1</weight>
+        <autoEnable>true</autoEnable>
+        <template>
+            <fileTemplate substitution="true">jcl/delete-database.jcl</fileTemplate>
+            <submitAs maxRc="8">JCL</submitAs>
+            <maxLrecl>80</maxLrecl>
+        </template>
+    </step>
+    
+</workflow>

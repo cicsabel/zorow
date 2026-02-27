@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+/******************************************************************************/
+/* Copyright Contributors to the zOS-Workflow Project.                        */
+/* SPDX-License-Identifier: Apache-2.0                                        */
+/******************************************************************************/
+-->
+
+<step name="defineUsersAndGroupsUko">
+    <title>Define UKO users and groups</title>
+    <description>Define users and groups for vault admins, key admins, custodians, vault admins and auditors</description>
+
+    <step name="defineGroupsUko">
+        <title>Define UKO groups</title>
+        <description>Define groups containing vault admins, key admins, custodians, vault admins and auditors</description>
+        <runAsUser substitution="true">$!{instance-UKO_ADMIN_SECURITY}</runAsUser>
+        <approver substitution="true">$!{instance-UKO_APPROVER_SECURITY}</approver>
+        <variableValue name="UKO_VAULT_ADMIN_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="UKO_KEY_ADMIN_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="UKO_KEY_CUSTODIAN1_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="UKO_KEY_CUSTODIAN2_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="UKO_AUDITOR_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="PERSONAL_SUPERIOR_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="SAF_OWNER" scope="instance" noPromptIfSet="false" required="false"/>
+        <instructions substitution="true">Submit rexx exec to execute step. The workflow is using the AUTOGID option to 
+            automatically generate a unique ID value in the OMVS segment of a group. If you cannot use AUTOGID, you 
+            need to replace it with a unique GID(group-identifier) for each ADDGROUP statement. For additional parameters, 
+            refer to the RACF documentation: https://www.ibm.com/docs/en/zos/3.1.0?topic=syntax-addgroup-add-group-profile
+        </instructions>
+        <weight>1</weight>
+        <autoEnable>true</autoEnable>
+        <template>
+            <fileTemplate substitution="true">rexx/defineGroupsUko.rexx</fileTemplate>
+            <submitAs maxRc="0">TSO-REXX-JCL</submitAs>
+            <maxLrecl>1024</maxLrecl>
+        </template>
+    </step>
+
+    <step name="defineUsersUko">
+        <title>Define UKO users</title>
+        <description>Define individual users for key and vault admin, custodian 1 and 2 and auditor</description>
+        <runAsUser substitution="true">$!{instance-UKO_ADMIN_SECURITY}</runAsUser>
+        <approver substitution="true">$!{instance-UKO_APPROVER_SECURITY}</approver>
+        <variableValue name="UKO_VAULT_ADMIN" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="UKO_VAULT_ADMIN_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="UKO_KEY_ADMIN" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="UKO_KEY_ADMIN_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="UKO_KEY_CUSTODIAN1" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="UKO_KEY_CUSTODIAN1_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="UKO_KEY_CUSTODIAN2" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="UKO_KEY_CUSTODIAN2_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="UKO_AUDITOR" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="UKO_AUDITOR_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="USER_TSO_LOGON_PROCEDURE" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="USER_TSO_ACCOUNT_NUMBER" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="USER_TSO_HOLDCLASS" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="USER_TSO_MSGCLASS" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="USER_TSO_SYSOUTCLASS" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="USER_TSO_SIZE" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="USER_TSO_UNIT" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="USER_PASSPHRASE" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="USER_HOME_PARENT_DIR" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="SAF_OWNER" scope="instance" noPromptIfSet="false" required="false"/>
+        <instructions substitution="true">Submit rexx exec to execute step. The workflow is using the
+            AUTOUID option to automatically generate a unique ID value in the OMVS segment of a user.
+            If you cannot use AUTOUID, you need to replace it with a unique UID(user-identifier) for
+            each ADDUSER statement. For additional parameters, refer to the RACF documentation: 
+            https://www.ibm.com/docs/en/zos/3.1.0?topic=syntax-adduser-add-user-profile
+        </instructions>
+        <weight>1</weight>
+        <autoEnable>true</autoEnable>
+        <template>
+            <fileTemplate substitution="true">rexx/defineUsersUko.rexx</fileTemplate>
+            <submitAs maxRc="0">TSO-REXX-JCL</submitAs>
+            <maxLrecl>1024</maxLrecl>
+        </template>
+    </step>
+
+</step>

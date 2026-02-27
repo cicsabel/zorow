@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/******************************************************************************/
+/* Copyright Contributors to the zOS-Workflow Project.                        */
+/* SPDX-License-Identifier: Apache-2.0                                        */
+/******************************************************************************/
+-->
+<step name="defineServerKeyring">
+    <title>Define server keyring and certificates</title>
+    <description>Create server keyrings and certificates</description>
+
+    <step name="createCA">
+        <title>Create CA</title>
+        <description>If requested, create a certificate authority</description>
+        <runAsUser substitution="true">$!{instance-UKO_ADMIN_SECURITY}</runAsUser>
+        <approver substitution="true">$!{instance-UKO_APPROVER_SECURITY}</approver>
+        <condition>
+            <expression><![CDATA["1" == "1"]]></expression>
+            <description>Always perform</description>
+            <targetStateSet>
+                <description>Only create the certificate authority if requested</description>
+                <extendStateExpression>
+                    <description>Skip if SERVER_CREATE_CA is false</description>
+                    <expression><![CDATA[ ${instance-SERVER_CREATE_CA} == undefined || ${instance-SERVER_CREATE_CA} != "true"]]></expression>
+                    <targetState>Skipped</targetState>
+                </extendStateExpression>
+            </targetStateSet>
+        </condition> 
+        <variableValue name="SERVER_CA_LABEL" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="SERVER_CA_CN" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="SERVER_CA_OU" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="SERVER_CA_O" scope="instance" noPromptIfSet="false" required="false"/>
+        <instructions>Executes a REXX program to create a certificate authority</instructions>
+        <weight>1</weight>
+        <autoEnable>true</autoEnable>
+        <template>
+            <fileTemplate substitution="true">rexx/defineKeyringCa.rexx</fileTemplate>
+            <submitAs maxRc="0">TSO-REXX-JCL</submitAs>
+            <maxLrecl>1024</maxLrecl>
+        </template>
+    </step>
+
+    <step name="createCertificates">
+        <title>Create certificates</title>
+        <description>If requested, create a certificates </description>
+        <runAsUser substitution="true">$!{instance-UKO_ADMIN_SECURITY}</runAsUser>
+        <approver substitution="true">$!{instance-UKO_APPROVER_SECURITY}</approver>
+        <condition>
+            <expression><![CDATA["1" == "1"]]></expression>
+            <description>Always perform</description>
+            <targetStateSet>
+                <description>Only create the certificates if requested</description>
+                <extendStateExpression>
+                    <description>Skip if SERVER_CREATE_CERTIFICATES is false</description>
+                    <expression><![CDATA[ ${instance-SERVER_CREATE_CERTIFICATES} == undefined || ${instance-SERVER_CREATE_CERTIFICATES} != "true"]]></expression>
+                    <targetState>Skipped</targetState>
+                </extendStateExpression>
+            </targetStateSet>
+        </condition>
+        <variableValue name="SERVER_STC_USER" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="SERVER_CA_LABEL" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="SERVER_TLS_KEY_STORE_SERVER_CERT" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="SERVER_TLS_KEY_STORE_SERVER_CERT_CN" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="SERVER_TLS_KEY_STORE_SERVER_CERT_OU" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="SERVER_TLS_KEY_STORE_SERVER_CERT_O" scope="instance" noPromptIfSet="false" required="false"/>
+        <instructions>Executes a REXX program to create certificates.
+            Important: adjust the NOTAFTER DATE and TIME parameters and potentially also the RSA SIZE to match your environment needs.
+        </instructions>
+        <weight>1</weight>
+        <autoEnable>true</autoEnable>
+        <template>
+            <fileTemplate substitution="true">rexx/defineKeyringCerts.rexx</fileTemplate>
+            <submitAs maxRc="0">TSO-REXX-JCL</submitAs>
+            <maxLrecl>1024</maxLrecl>
+        </template>
+    </step>
+
+    <step name="createKeyring">
+        <title>Create Keyring</title>
+        <description>If requested, create a key ring and trust ring</description>
+        <runAsUser substitution="true">$!{instance-UKO_ADMIN_SECURITY}</runAsUser>
+        <approver substitution="true">$!{instance-UKO_APPROVER_SECURITY}</approver>
+        <condition>
+            <expression><![CDATA["1" == "1"]]></expression>
+            <description>Always perform</description>
+            <targetStateSet>
+                <description>Only create the key and trust ring if requested</description>
+                <extendStateExpression>
+                    <description>Skip if SERVER_CREATE_KEYRING is NO</description>
+                    <expression><![CDATA[ ${instance-SERVER_CREATE_KEYRING} == undefined || ${instance-SERVER_CREATE_KEYRING} != "true"]]></expression>
+                    <targetState>Skipped</targetState>
+                </extendStateExpression>
+            </targetStateSet>
+        </condition> 
+        <variableValue name="SERVER_STC_USER" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="SERVER_TLS_KEY_STORE_KEY_RING" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="SERVER_TLS_TRUST_STORE_KEY_RING" scope="instance" noPromptIfSet="false" required="false"/>
+        <instructions>Executes a REXX program to create the key ring and potentially trust ring</instructions>
+        <weight>1</weight>
+        <autoEnable>true</autoEnable>
+        <template>
+            <fileTemplate substitution="true">rexx/defineKeyring.rexx</fileTemplate>
+            <submitAs maxRc="0">TSO-REXX-JCL</submitAs>
+            <maxLrecl>1024</maxLrecl>
+        </template>
+    </step>
+
+    <step name="defineKeyringAccess">
+        <title>Define Keyring Access</title>
+        <description>Granting access to the keyring</description>
+        <runAsUser substitution="true">$!{instance-UKO_ADMIN_SECURITY}</runAsUser>
+        <approver substitution="true">$!{instance-UKO_APPROVER_SECURITY}</approver>
+        <variableValue name="SERVER_STC_USER" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="SERVER_TLS_KEY_STORE_KEY_RING" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="SERVER_TLS_TRUST_STORE_KEY_RING" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="SAF_OWNER" scope="instance" noPromptIfSet="false" required="false"/>
+        <instructions>Executes a REXX program to define access to the key ring and potentially trust ring. 
+            This script assumes that you use the RDATALIB class. 
+            It contains an example for using the FACILITY class ass well that by default is not executed. Modify the script to suit your environment. 
+        </instructions>
+        <weight>1</weight>
+        <autoEnable>true</autoEnable>
+        <template>
+            <fileTemplate substitution="true">rexx/defineKeyringAccess.rexx</fileTemplate>
+            <submitAs maxRc="0">TSO-REXX-JCL</submitAs>
+            <maxLrecl>1024</maxLrecl>
+        </template>
+    </step>
+
+    <step name="addToKeyRing">
+        <title>Add certificates and CA to keyring</title>
+        <description>Add certificate(s) and CA to keyring(s) if anything was newly created</description>
+        <runAsUser substitution="true">$!{instance-UKO_ADMIN_SECURITY}</runAsUser>
+        <approver substitution="true">$!{instance-UKO_APPROVER_SECURITY}</approver>
+        <condition>
+            <expression><![CDATA["1" == "1"]]></expression>
+            <description>Always perform</description>
+            <targetStateSet>
+                <description>Skip for existing keyring and certificate</description>
+                <extendStateExpression>
+                    <description>If certificates and key ring are already existing, assume that the certificates have been added to the key ring</description>
+                    <expression><![CDATA[ ${instance-SERVER_CREATE_KEYRING} == "false" && ${instance-SERVER_CREATE_CERTIFICATES} == "false"]]></expression>
+                    <targetState>Skipped</targetState>
+                </extendStateExpression>
+            </targetStateSet>
+        </condition>
+        <variableValue name="SERVER_STC_USER" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="SERVER_CA_LABEL" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="SERVER_TLS_KEY_STORE_SERVER_CERT" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="SERVER_TLS_KEY_STORE_KEY_RING" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="SERVER_TLS_TRUST_STORE_KEY_RING" scope="instance" noPromptIfSet="false" required="false"/>
+        <instructions>Executes a REXX program to add certificates and the CA to the key ring and potentially trust ring</instructions>
+        <weight>1</weight>
+        <autoEnable>true</autoEnable>
+        <template>
+            <fileTemplate substitution="true">rexx/defineKeyringAddCerts.rexx</fileTemplate>
+            <submitAs maxRc="0">TSO-REXX-JCL</submitAs>
+            <maxLrecl>1024</maxLrecl>
+        </template>
+    </step>
+</step>

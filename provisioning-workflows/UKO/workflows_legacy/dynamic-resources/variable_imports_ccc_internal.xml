@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<variable name="manualports" visibility="private">
+    <label>manualports</label>
+    <abstract>allocate ports manually</abstract>
+    <description>allocate ports manually</description>
+    <category>Server variables</category>
+    <string valueMustBeChoice="true">
+        <choice>true</choice>
+        <choice>false</choice>
+        <default>false</default>
+    </string>
+</variable>
+<variable name="DEBUG_STATUS" visibility="public">
+  <label>DEBUG_STATUS</label>
+  <abstract>Server debug status</abstract>
+  <description>Current debug status of the server</description>
+  <category>General variables</category>
+  <string valueMustBeChoice="true">
+    <choice>true</choice>
+    <choice>false</choice>
+    <default>false</default>
+  </string>
+</variable>
+<variable name="CCC_VAULT_ADMIN_GROUP" visibility="public">
+  <label>CCC_VAULT_ADMIN_GROUP</label>
+  <abstract>The group containing the CCC internal UKO Vault Administrator</abstract>
+  <description>Group containing the Valut Administrator who sets up and manages vaults.</description>
+  <category>String Variables</category>
+  <string>
+    <validationType>USERID</validationType>
+    <default>UKOVA</default>
+  </string>
+</variable>
+<variable name="CCC_KEY_ADMIN_GROUP" visibility="public">
+  <label>CCC_KEY_ADMIN_GROUP</label>
+  <abstract>The group containing the CCC internal UKO Key Administrator</abstract>
+  <description>Group containing the Key Administrator who sets up the key hierarchy, and controls
+    keystores and templates, as well as performs special key state actions.</description>
+  <category>String Variables</category>
+  <string>
+    <validationType>USERID</validationType>
+    <default>UKOKA</default>
+  </string>
+</variable>
+<variable name="CCC_KEY_CUSTODIAN1_GROUP" visibility="public">
+  <label>CCC_KEY_CUSTODIAN1_GROUP</label>
+  <abstract>The group holding the first CCC internal UKO Key Custodians</abstract>
+  <description>Group for Key Custodians who can generate keys in PRE-ACTIVATION state, but cannot Activate and
+    Distribute them. Destroy and Compromise actions are also possible.</description>
+  <category>String Variables</category>
+  <string>
+    <validationType>USERID</validationType>
+    <default>UKOKC1</default>
+  </string>
+</variable>
+<variable name="CCC_KEY_CUSTODIAN2_GROUP" visibility="public">
+  <label>CCC_KEY_CUSTODIAN2_GROUP</label>
+  <abstract>The group holding the second CCC internal UKO Key Custodians</abstract>
+  <description>The group holding the Key Custodians who cannot Generate, but can Activate keys bringing them from
+    PRE-ACTIVATION to ACTIVE state (then distributes them). Destroy and Compromise actions are also possible.
+</description>
+  <category>String Variables</category>
+  <string>
+    <validationType>USERID</validationType>
+    <default>UKOKC2</default>
+  </string>
+</variable>
+<variable name="CCC_AUDITOR_GROUP" visibility="public">
+  <label>CCC_AUDITOR_GROUP</label>
+  <abstract>The group holding the CCC internal UKO Auditors</abstract>
+  <description>The group holding the auditors who can view the audit log as well as keystores, templates, keys, and status of dataset encryption.
+</description>
+  <category>String Variables</category>
+  <string>
+    <validationType>USERID</validationType>
+    <default>UKOAUD</default>
+  </string>
+</variable>

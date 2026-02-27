@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/******************************************************************************/
+/* Copyright Contributors to the zOS-Workflow Project.                        */
+/* SPDX-License-Identifier: Apache-2.0                                        */
+/******************************************************************************/
+-->
+
+    <variable name="UKO_ADMIN_SECURITY" visibility="private">
+      <label>"UKO_ADMIN_SECURITY"</label>
+      <abstract>APF authorized user id for security related provisioning tasks</abstract>
+      <description>The APF authorized userid to run SAF certificate creation/deletion and SAF profile creation/deletion</description>
+      <category>String Variables</category>
+   	  <string>
+          	<regularExpression>^[0-9a-zA-Z$#@]{0,8}$</regularExpression>
+      </string>
+    </variable>
+
+    <variable name="UKO_APPROVER_SECURITY" visibility="private">
+      <label>"UKO_APPROVER_SECURITY"</label>
+      <abstract>The user id to approve security related provisioning tasks</abstract>
+      <description>The user id to approve security related provisioning tasks</description>
+      <category>String Variables</category>
+   	  <string>
+            <regularExpression>^[0-9a-zA-Z$#@ ]*$</regularExpression>
+      </string>
+    </variable>
+ 
+    <variable name="SERVER_CA_LABEL" scope="instance" visibility="private">
+        <label>SERVER_CA_LABEL</label>
+        <abstract>SERVER_CA_LABEL</abstract>
+        <description>Name of the SERVER_CA_LABEL to use for the server.</description>
+        <category>String Variables</category>
+        <string>
+            <default>EkmfWebLibertyCA</default>
+        </string>
+    </variable>
+    <variable name="MTLS_USER" visibility="private">
+        <label>MTLS_USER</label>
+        <abstract>The end user that is going to user MTLS</abstract>
+        <description>The id of the user that is going to use a certificate to connect to UKO using mTLS</description>
+        <category>String Variables</category>
+        <string/>
+    </variable>
+    <variable name="MTLS_HLQ" visibility="private">
+        <label>MTLS_HLQ</label>
+        <abstract>Certificate will be at MTLS_HLQ.MTLS_USER.MTLS</abstract>
+        <description>The default is CCC.ZOSMF.CERT, change only if your user and PRVEKM have access</description>
+        <category>String Variables</category>
+        <string>
+            <default>CCC.ZOSMF.CERT</default>
+        </string>
+    </variable>
+    <variable name="MTLS_LOCATION" visibility="public">
+        <label>MTLS_LOCATION</label>
+        <abstract>Certificate location resolved from MTLS_HLQ.MTLS_USER.MTLS</abstract>
+        <description>Location where the certificate had been exported to </description>
+        <category>String Variables</category>
+        <string/>
+    </variable>
+    <variable name="TEMP_DIR" visibility="private">
+        <label>TEMP_DIR</label>
+        <abstract>Temp directory</abstract>
+        <description>The path to a temp directory for files created and removed at runtime</description>
+        <category>String Variables</category>
+        <string>
+            <default>/tmp</default>
+        </string>
+    </variable>
+    <variable name="MTLS_EXPORT_PASSWORD" visibility="private">
+        <label>MTLS_EXPORT_PASSWORD</label>
+        <abstract>Password for exported certificate</abstract>
+        <description>Set to change the default password for the exported MTLS certificate</description>
+        <category>String Variables</category>
+        <string>
+            <default>changeme</default>
+        </string>
+    </variable>
+    <variable name="CERT_FORMAT" visibility="private">
+        <label>CERT_FORMAT</label>
+        <abstract>The format of the certificate</abstract>
+        <description>Specify PKCS12B64 for human readable and PKCS12DER for binary</description>
+        <category>String Variables</category>
+        <string valueMustBeChoice="true">
+            <choice>PKCS12B64</choice>
+            <choice>PKCS12DER</choice>
+            <default>PKCS12DER</default>
+        </string>
+    </variable>
+
+    <variable name="EXPORT_TO_USS" scope="instance" visibility="private">
+        <label>EXPORT_TO_USS</label>
+        <abstract>Specify whether you want to export the certificate to your home directory afterwards</abstract>
+        <description>If set to true, the certificate will be exported to USS after creation and the *.crt and *.key files be created.</description>
+        <category>String Variables</category>
+        <string valueMustBeChoice="true">
+            <choice>YES</choice>
+            <choice>NO</choice>
+            <default>YES</default>
+        </string>
+    </variable>
+
+    <variable name="ACSP_REST_STATUS" scope="instance" visibility="private">
+        <label>ACSP_REST_STATUS</label>
+        <abstract>Holds the status of the server REST request</abstract>
+        <description>Holds the status of the server REST request issued to the console API</description>
+        <category>REST</category>
+        <string />
+    </variable>

@@ -1,0 +1,88 @@
+<!-- Use encoding IBM-1047 if this worflow definition file is to be held 
+    in a z/OS dataset and encoding utf-8 if it is to be held in a UNIX file system -->
+<!DOCTYPE workflow [
+    <!ENTITY variables SYSTEM "variable_imports.xml">
+]>
+<!--
+/***********************************************************************/
+/* Copyright Contributors to the zOS-Workflow Project.                 */
+/* SPDX-License-Identifier: Apache-2.0                                 */
+/***********************************************************************/
+-->
+<workflow xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="../../workflow_v1.xsd">
+    <!--  Note: The schema workflow_v1.xsd is shipped with z/OSMF. To use the schema
+          to validate this XML, modify the above schema location to point to the 
+          schema in z/OSMF, or copy the schema to an appropriate location.  -->
+    <workflowInfo>
+        <workflowID>checkStatus</workflowID>
+        <workflowDescription>Procedure to check if the server is active</workflowDescription>
+        <workflowVersion>1.0.0.0</workflowVersion>
+        <!-- Build timestamp 2021.05.09.21.03.24 -->
+        <vendor>IBM</vendor>
+        <Provisioning>
+            <productID>5655-EKM</productID>
+            <productName>UKO</productName>
+            <productVersion>V2R1+</productVersion>
+            <softwareType>ccserver</softwareType>
+        </Provisioning>
+    </workflowInfo>
+
+    <!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+    <!--     Include variables used by the following steps -->
+    <!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++--> 
+    &variables;
+     <step
+        name="checkStatus" optional="false">
+        <title>Checking if the server is active</title>
+        <description>Check if the server is already active</description>
+        <runAsUser substitution="true">$!{instance-UKO_ADMIN_CONSOLE}</runAsUser>
+        <approver substitution="true">$!{instance-UKO_APPROVER_CONSOLE}</approver>
+        <instructions>Call the console API to check for the job</instructions>
+        <weight>1</weight>
+        <autoEnable>true</autoEnable>
+        <rest>
+            <httpMethod>PUT</httpMethod>
+            <uriPath substitution="true">/zosmf/restconsoles/consoles/defcn</uriPath>
+            <requestBody substitution="true">
+                {
+                "cmd" : "d a,${instance-SERVER_STC_NAME}",
+                "sol-key" : "NOT FOUND",
+                "system" : "${_workflow-systemName}"
+
+                }
+            </requestBody>
+            <expectedStatusCode>200</expectedStatusCode>
+            <propertyMapping mapTo="SERVER_REST_STATUS">["sol-key-detected"]</propertyMapping>
+        </rest>
+    </step>
+
+    <step
+        name="UpdateStateInInstance" optional="false">
+        <title>Update state to indicate if the server is active</title>
+        <description>Make REST API call to update instance variable indicating if the server is active</description>
+        <prereqStep name="checkStatus" />
+        <instructions>Call REST API to update instance variable</instructions>
+        <weight>1</weight>
+        <autoEnable>true</autoEnable>
+        <rest>
+            <httpMethod>PUT</httpMethod>
+            <uriPath substitution="true">
+    /zosmf/provisioning/rest/1.0/scr/${_workflow-parentRegistryID}/variables</uriPath>
+            <requestBody substitution="true">
+                #if(${instance-SERVER_REST_STATUS} == "false")
+                #set ($state = "active")
+                #else
+                #set ($state = "inactive")
+                #end
+                {
+                "variables":[
+                {"name":"INSTANCE_STATUS","value":"${state}","visibility":"public"}
+                ]
+                }
+            </requestBody>
+            <expectedStatusCode>204</expectedStatusCode>
+        </rest>
+    </step>
+
+</workflow>

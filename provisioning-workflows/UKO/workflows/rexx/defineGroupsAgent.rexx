@@ -1,0 +1,30 @@
+/* REXX */
+/*----------------------------------------------------------------*/
+/* Copyright Contributors to the zOS-Workflow Project.            */
+/* PDX-License-Identifier: Apache-2.0                             */
+/*----------------------------------------------------------------*/
+
+AGENT_STC_GROUP="${instance-AGENT_STC_GROUP}"
+AGENT_CLIENT_GROUP="${instance-UKO_AGENT_CLIENT_GROUP}"
+
+SUPERIOR_GROUP="${instance-TECHNICAL_SUPERIOR_GROUP}"
+SAF_OWNER="${instance-SAF_OWNER}"
+
+/***********************************************************************/
+/* Creating required groups                                        */
+/***********************************************************************/
+Say "Creating required groups"
+Say "Creating Agent started task group" AGENT_STC_GROUP
+"ADDGROUP" AGENT_STC_GROUP "SUPGROUP("SUPERIOR_GROUP") ",
+   " OWNER("SAF_OWNER") OMVS(AUTOGID)"
+if RC <> 0 then do
+   Say "Creation failed, exiting"
+   exit RC
+end
+Say "Creating Client group for authentication with agent" AGENT_CLIENT_GROUP
+"ADDGROUP" AGENT_CLIENT_GROUP "SUPGROUP("SUPERIOR_GROUP") ",
+   " OWNER("SAF_OWNER") OMVS(AUTOGID)"
+if RC <> 0 then do
+   Say "Creation failed, exiting"
+   exit RC
+end

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/******************************************************************************/
+/* Copyright Contributors to the zOS-Workflow Project.                        */
+/* SPDX-License-Identifier: Apache-2.0                                        */
+/******************************************************************************/
+-->
+<step name="addMoreCertificatesToTrustRing">
+    <title>Add additional certificates to trust ring </title>
+    <description>Add trusted certificates to the server's trust keyring, for example to connect to cloud keystores</description>
+    <runAsUser substitution="true">$!{instance-UKO_ADMIN_SECURITY}</runAsUser>
+    <approver substitution="true">$!{instance-UKO_APPROVER_SECURITY}</approver>
+    <variableValue name="SERVER_STC_USER" scope="instance" noPromptIfSet="false" required="false"/>
+    <variableValue name="SERVER_TLS_TRUST_STORE_KEY_RING" scope="instance" noPromptIfSet="false" required="false"/>
+    <instructions>Adjust and execute this REXX program to add additional certificates to the trust keyring. 
+        Adjust the names to reflect your own local certificate labels.
+    </instructions>
+    <weight>1</weight>
+    <autoEnable>true</autoEnable>
+    <template>
+        <fileTemplate substitution="true">rexx/defineKeyringAddTrust.rexx</fileTemplate>
+        <submitAs maxRc="0">TSO-REXX-JCL</submitAs>
+        <maxLrecl>1024</maxLrecl>
+    </template>
+</step>

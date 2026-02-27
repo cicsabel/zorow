@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- Declare external file containing WAS variables referenced in the following steps -->
+<!DOCTYPE workflow [<!ENTITY variables SYSTEM "variable_imports.xml">
+                    <!ENTITY image_properties SYSTEM "extensions/image_properties.xml">
+                    ]> 
+                    
+<!--
+/******************************************************************************/
+/* Copyright Contributors to the zOS-Workflow Project.                        */
+/* SPDX-License-Identifier: Apache-2.0                                        */
+/******************************************************************************/
+-->
+<workflow xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../workflow/schemas/workflow_v1.xsd">
+    <!--  Note: The schema workflow_v1.xsd is shipped with z/OSMF. To use the schema
+          to validate this XML, modify the above schema location to point to the 
+          schema in z/OSMF, or copy the schema to an appropriate location.  -->
+
+    <!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+    <!-- UKO Provisioning : Provision a new server                   -->
+    <!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+
+  <workflowInfo>
+      <workflowID>uko_personalUserPasswords</workflowID>
+      <workflowDescription>Initializes the Role users</workflowDescription>
+    <workflowVersion>1.0.0.0</workflowVersion>
+        <!-- Build timestamp 2021.05.09.21.03.24 -->
+      <vendor>IBM</vendor>
+      <Provisioning>
+          <productID>5655-EKM</productID>
+          <productName>UKO</productName>
+          <productVersion>V2R1+</productVersion>
+          <softwareType>dynamicresources</softwareType>
+      </Provisioning>
+  </workflowInfo>
+  
+  	<!--+++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+	<!--     Include variables used by the following steps     -->
+	<!--+++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+	&variables;
+    <variable name="SYS_QUALIFIER" scope="instance" visibility="public">
+        <label>SYS_QUALIFIER</label>
+        <abstract>SYS_QUALIFIER</abstract>
+        <description>internal variable to identify the system that we are running on</description>
+        <category>internal variables</category>
+        <string />
+      </variable>
+	<!-- <atCreate name="UKO_ADMIN_SERVER" scope="instance" prompt="true" required="false"/> -->
+	<!-- <atCreate name="AGENT_STC_NAME" scope="instance" prompt="true" required="false"/> -->
+
+    <step name="addPersonalUsersToAppl">
+        <title>Grant users access appl class</title>
+        <description>Add users to the MS3N profile in the APPL class</description>
+        <runAsUser substitution="true">$!{instance-UKO_ADMIN_SECURITY}</runAsUser>
+	    <approver substitution="true">$!{instance-UKO_APPROVER_SECURITY}</approver>
+        <instructions substitution="true">Submit the script to grant APPL ${_workflow-systemName} access</instructions>
+        <weight>1</weight>
+        <autoEnable>true</autoEnable>
+       	<template>
+           	<fileTemplate substitution="true">extensions/defineUsersApplAccess.rexx</fileTemplate>
+           	<submitAs maxRc="0">TSO-REXX-JCL</submitAs>
+           	<maxLrecl>1024</maxLrecl>
+       	</template>
+    </step>
+
+    <step name="changeUserPasswords" optional="false">
+        <title>Change passwords for the users</title>
+        <description>Change the user passwords so they can be used to log on</description>
+        <runAsUser substitution="true">$!{instance-UKO_ADMIN_SECURITY}</runAsUser>
+        <approver substitution="true">$!{instance-UKO_APPROVER_SECURITY}</approver>
+        <instructions>Execute the script to change the Role user passwords</instructions>
+        <weight>1</weight>
+        <autoEnable>true</autoEnable>
+        <template>
+            <fileTemplate substitution="true">scripts/changePersonalUserPasswords.sh</fileTemplate>
+            <submitAs>shell-JCL</submitAs>
+        </template>
+    </step>
+
+</workflow>

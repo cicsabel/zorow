@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/******************************************************************************/
+/* Copyright Contributors to the zOS-Workflow Project.                        */
+/* SPDX-License-Identifier: Apache-2.0                                        */
+/******************************************************************************/
+-->
+<step name="configureGenericServer">
+    <title>Generic server configuration</title>
+    <description>Configure a generic Liberty server with only the default config dropin files</description>
+    <runAsUser substitution="true">$!{instance-UKO_ADMIN_SERVER}</runAsUser>
+    <approver substitution="true">$!{instance-UKO_APPROVER_SERVER}</approver>
+    <variableValue name="SERVER_INSTALL_DIR" scope="instance" noPromptIfSet="false" required="false"/>
+    <variableValue name="SERVER_OUTPUT_DIR" scope="instance" noPromptIfSet="false" required="false"/>
+    <variableValue name="SERVER_USER_DIR" scope="instance" noPromptIfSet="false" required="false"/>
+    <variableValue name="JAVA_HOME" scope="instance" noPromptIfSet="false" required="false"/>
+    <variableValue name="SERVER_TLS_KEY_STORE_KEY_RING" scope="instance" noPromptIfSet="false" required="false"/>
+    <variableValue name="SERVER_TLS_TRUST_STORE_KEY_RING" scope="instance" noPromptIfSet="false" required="false"/>
+    <variableValue name="SERVER_TLS_KEY_STORE_SERVER_CERT" scope="instance" noPromptIfSet="false" required="false"/>
+    <variableValue name="SERVER_PORT_NOTLS" scope="instance" noPromptIfSet="false" required="false"/>
+    <variableValue name="SERVER_PORT_TLS" scope="instance" noPromptIfSet="false" required="false"/>
+    <variableValue name="ENABLE_MTLS_VIA_HTTPS_PORT" scope="instance" noPromptIfSet="false" required="false"/>
+    <variableValue name="WLP_UNAUTHENTICATED_USER" scope="instance" noPromptIfSet="false" required="false"/>
+    <variableValue name="SERVER_OAUTH_CLIENT_ID" scope="instance" noPromptIfSet="false" required="false"/>
+    <variableValue name="SERVER_OAUTH_CLIENT_ID_OPENAPI" scope="instance" noPromptIfSet="false" required="false"/>
+    <!-- <variableValue name="SERVER_OAUTH_CLIENT_SECRET" scope="instance" noPromptIfSet="false" required="false"/> -->
+    <variableValue name="SERVER_HOSTNAME" scope="instance" noPromptIfSet="false" required="false"/>
+    <variableValue name="SERVER_OIDC_PROVIDER_CERT" scope="instance" noPromptIfSet="false" required="false"/>
+    <variableValue name="SAF_PROFILE_PREFIX" scope="instance" noPromptIfSet="false" required="false"/>
+    <variableValue name="WLP_ANGEL_NAME" scope="instance" noPromptIfSet="false" required="false"/>
+    <instructions substitution="true">Submit shell script to execute step</instructions>
+    <weight>1</weight>
+    <autoEnable>true</autoEnable>
+    <template>
+        <inlineTemplate substitution="true">
+            echo "****************************************"
+            echo "Adjusting server.env from ${instance-SERVER_INSTALL_DIR}/server.env"
+            
+            sedstring="s#JAVA_HOME=.*#JAVA_HOME=${instance-JAVA_HOME}#g;"
+            #if(${instance-SERVER_OUTPUT_DIR} &amp;&amp; ${instance-SERVER_OUTPUT_DIR} != "")
+                sedstring="${sedstring} s#^[ \#]*WLP_OUTPUT_DIR=.*#WLP_OUTPUT_DIR=${instance-SERVER_OUTPUT_DIR}#g;"
+            #else
+                sedstring="${sedstring} s#^[ \#]*WLP_OUTPUT_DIR=.*#WLP_OUTPUT_DIR=${instance-SERVER_USER_DIR}/servers#g;"
+            #end
+            #if(${instance-ENABLE_MTLS_VIA_HTTPS_PORT} &amp;&amp; ${instance-ENABLE_MTLS_VIA_HTTPS_PORT} != "")
+                sedstring="${sedstring} s#^[ \#]*TLS_CLIENT_AUTHENTICATION_SUPPORTED=.*#TLS_CLIENT_AUTHENTICATION_SUPPORTED=${instance-ENABLE_MTLS_VIA_HTTPS_PORT}#g;"
+            #end
+            sedstring="${sedstring} s#^[ \#]*TLS_KEY_STORE_KEY_RING=.*#TLS_KEY_STORE_KEY_RING=${instance-SERVER_TLS_KEY_STORE_KEY_RING}#g;"
+            sedstring="${sedstring} s#^[ \#]*TLS_TRUST_STORE_KEY_RING=.*#TLS_TRUST_STORE_KEY_RING=${instance-SERVER_TLS_TRUST_STORE_KEY_RING}#g;"
+            sedstring="${sedstring} s#^[ \#]*TLS_KEY_STORE_SERVER_CERT=.*#TLS_KEY_STORE_SERVER_CERT=${instance-SERVER_TLS_KEY_STORE_SERVER_CERT}#g;"
+            sedstring="${sedstring} s#^[ \#]*HTTP_PORT=.*#HTTP_PORT=${instance-SERVER_PORT_NOTLS}#g;"
+            sedstring="${sedstring} s#^[ \#]*HTTPS_PORT=.*#HTTPS_PORT=${instance-SERVER_PORT_TLS}#g;"
+            sedstring="${sedstring} s#^[ \#]*SAF_UNAUTHENTICATED_USER_ID=.*#SAF_UNAUTHENTICATED_USER_ID=${instance-WLP_UNAUTHENTICATED_USER}#g;"
+            sedstring="${sedstring} s#^[ \#]*SAF_PROFILE_PREFIX=.*#SAF_PROFILE_PREFIX=${instance-SAF_PROFILE_PREFIX}#g;"
+            #if(${instance-SERVER_OAUTH_CLIENT_ID} &amp;&amp; ${instance-SERVER_OAUTH_CLIENT_ID} != "")
+                sedstring="${sedstring} s#^[ \#]*EKMF_OAUTH_CLIENT_ID=.*#EKMF_OAUTH_CLIENT_ID=${instance-SERVER_OAUTH_CLIENT_ID}#g;"
+            #end
+            #if(${instance-SERVER_OAUTH_CLIENT_ID_OPENAPI} &amp;&amp; ${instance-SERVER_OAUTH_CLIENT_ID_OPENAPI} != "")
+                sedstring="${sedstring} s#^[ \#]*EKMF_OAUTH_CLIENT_ID_OPENAPI=.*#EKMF_OAUTH_CLIENT_ID_OPENAPI=${instance-SERVER_OAUTH_CLIENT_ID_OPENAPI}#g;"
+            #end
+            sedstring="${sedstring} s#^[ \#]*OIDC_PROVIDER_TRUST_ALIAS_NAME=.*#OIDC_PROVIDER_TRUST_ALIAS_NAME=${instance-SERVER_OIDC_PROVIDER_CERT}#g;"
+            sedstring="${sedstring} s#^[ \#]*OIDC_PROVIDER_KEY_ALIAS_NAME=.*#OIDC_PROVIDER_KEY_ALIAS_NAME=${instance-SERVER_OIDC_PROVIDER_CERT}#g;"
+            #if(${instance-SERVER_OAUTH_CLIENT_SECRET} &amp;&amp; ${instance-SERVER_OAUTH_CLIENT_SECRET} != "")
+                sedstring="${sedstring} s#^[ \#]*EKMF_OAUTH_CLIENT_SECRET=.*#EKMF_OAUTH_CLIENT_SECRET=${instance-SERVER_OAUTH_CLIENT_SECRET}#g;"
+            #end
+            sedstring="${sedstring} s#^[ \#]*HOST=.*#HOST=${instance-SERVER_HOSTNAME}#g"
+            sed -e "$sedstring" ${instance-SERVER_INSTALL_DIR}/server.env > ${instance-SERVER_USER_DIR}/servers/${instance-SERVER_STC_NAME}/server.env;
+            if [ $? -gt 0 ]; then
+                echo "error adjusting server.env"
+                exit "8"; 
+            else 
+                echo "server.env adjusted and copied to ${instance-SERVER_USER_DIR}/servers/${instance-SERVER_STC_NAME}/server.env"
+            fi 
+
+            echo "****************************************"
+            echo "adjusting jvm.options from ${instance-SERVER_INSTALL_DIR}/jvm.options"
+            sedstring="s#-Djava.util.prefs.userRoot=.*#-Djava.util.prefs.userRoot=${instance-SERVER_USER_DIR}/servers/${instance-SERVER_STC_NAME}/preferences#g;"
+            sed 
+            #if(${instance-WLP_ANGEL_NAME} &amp;&amp; ${instance-WLP_ANGEL_NAME} != "")
+                sedstring="${sedstring} s#^[ \#]*-Dcom.ibm.ws.zos.core.angelName=.*#-Dcom.ibm.ws.zos.core.angelName=${instance-WLP_ANGEL_NAME}#g;"
+            #end
+            sed -e "$sedstring" ${instance-SERVER_INSTALL_DIR}/jvm.options > ${instance-SERVER_USER_DIR}/servers/${instance-SERVER_STC_NAME}/jvm.options;
+            if [ $? -gt 0 ]; then
+                echo "error adjusting jvm.options"
+                exit "8"; 
+            else 
+                echo "jvm.options adjusted and copied to ${instance-SERVER_USER_DIR}/servers/${instance-SERVER_STC_NAME}/jvm.options"
+            fi   
+
+            echo "****************************************"
+            echo "Setting up symlinks and folder structure"
+            # Create symlinks to the installation folder
+            cd ${instance-SERVER_USER_DIR}/servers/${instance-SERVER_STC_NAME}
+            echo "creating symlink to ${instance-SERVER_INSTALL_DIR}/EkmfWeb.properties"
+            ln -s ${instance-SERVER_INSTALL_DIR}/EkmfWeb.properties EkmfWeb.properties
+            echo "creating symlink to ${instance-SERVER_INSTALL_DIR}/apps"
+            ln -s ${instance-SERVER_INSTALL_DIR}/apps apps
+
+            if [ -d "${instance-SERVER_INSTALL_DIR}/includes" ] 
+            then
+                echo "creating symlink to ${instance-SERVER_INSTALL_DIR}/includes"
+                ln -s ${instance-SERVER_INSTALL_DIR}/includes includes; 
+            fi
+
+            echo "creating symlink to ${instance-SERVER_INSTALL_DIR}/resources"
+            ln -s ${instance-SERVER_INSTALL_DIR}/resources resources
+            echo "creating symlink to ${instance-SERVER_INSTALL_DIR}/server.xml"
+            ln -s ${instance-SERVER_INSTALL_DIR}/server.xml server.xml			    
+
+            #if(${instance-SERVER_OUTPUT_DIR} != "" &amp;&amp; ${instance-SERVER_OUTPUT_DIR})
+                echo "Creating a symlink to the ${instance-SERVER_OUTPUT_DIR}/${instance-SERVER_STC_NAME} output directory for convenience"
+                ln -s ${instance-SERVER_OUTPUT_DIR}/${instance-SERVER_STC_NAME} output
+            #end
+
+            if [ -d "${instance-SERVER_INSTALL_DIR}/configDropins" ] 
+            then
+                echo "configDropins folder found in ${instance-SERVER_INSTALL_DIR}"
+                echo "creating ${instance-SERVER_USER_DIR}/servers/${instance-SERVER_STC_NAME}/configDropins"
+                mkdir configDropins
+                echo "creating ${instance-SERVER_USER_DIR}/servers/${instance-SERVER_STC_NAME}/configDropins/overrides"
+                mkdir configDropins/overrides   
+                                    
+                echo "creating symlinks to the configDropins subfolders"
+
+                echo "creating symlink to ${instance-SERVER_INSTALL_DIR}/configDropins/defaults"
+                ln -s ${instance-SERVER_INSTALL_DIR}/configDropins/defaults configDropins/defaults
+
+                echo "creating symlink to ${instance-SERVER_INSTALL_DIR}/configDropins/options"
+                ln -s ${instance-SERVER_INSTALL_DIR}/configDropins/options configDropins/options
+
+                echo "Finished setting up configDropins:"
+                ls -al configDropins/
+            fi  
+            echo "Symlinks and folder structure set up"
+            echo "****************************************"
+
+        </inlineTemplate>
+        <submitAs>shell-JCL</submitAs>
+    </template>
+</step>

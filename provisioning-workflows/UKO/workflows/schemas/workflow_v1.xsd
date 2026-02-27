@@ -1,0 +1,1835 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Licensed Materials - Property of IBM                             -->
+<!-- 5650-ZOS                                                         -->
+<!-- Copyright IBM Corp. 2013, 2021                                   -->
+<!--                                                                  -->
+<!-- Status = HSMA257                                                 -->
+
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"> 
+
+	<!-- Main workflow definition.  The workflow has 4 possible sections:
+			o - Mandatory workflow info section
+			o - Optional "manifest" of translated text files. If you wish to provide
+				translated text, the manifest is necessary so that z/OSMF knows where to
+				obtain the files.
+			o - Optional variable definitions. Subsequent steps can reference
+				variable values.
+			o - One or more steps, which define the workflow.  Steps can have sub-steps
+				up to 5 levels deep. (Sub)steps can define "wizards" to prompt for values, 
+				update files, submit jobs, etc.
+		 Each section type is expanded below in turn, with sub-types specific to that section.
+		 At the bottom are utility types used throughout.
+	-->
+  
+	<xs:element name="workflow">
+		<xs:complexType> 
+			<xs:sequence>
+				<!-- whether allow user can request assignment by itself skip workflow Owner -->
+				<xs:element name="autoTakeOwnership" type="workflowBooleanType" default="false" minOccurs="0" maxOccurs="1"/>
+				<!--workflow config, used to contain some setting info in one definition file-->
+				<xs:element name ="workflowSettingInfo" type="workflowSettingInfoType" minOccurs="0" maxOccurs="1"/>
+				<!-- Workflow meta data -->
+				<xs:element name="workflowInfo" type="workflowInfoType"/>
+				
+				<!-- Export workflow meta data -->  <!-- export workflow enhancement -->
+				<xs:element name="exportDocMeta" type="exportDocMetaType" minOccurs="0" maxOccurs="1"/>
+				
+				<!-- A "manifest" of translated text files. -->
+				<xs:element name="translatedTextFiles" type="textFileType" minOccurs="0">
+					<!--
+						Bundle names within the translatedTextFiles "manifest" must be
+						unique.
+					-->
+					<xs:unique name="uniqueBundle">
+						<xs:selector xpath="bundle"/>
+						<xs:field xpath="@name"/>
+					</xs:unique>
+				</xs:element>
+				<!-- All variables are defined in the variables section. -->
+				<xs:element name="variable" type="variableType" minOccurs="0" maxOccurs="1500"/>
+				<xs:element name="atCreate" type="atCreateType" minOccurs="0" maxOccurs="1500"/>
+				<xs:element name="categoryEvents" type="categoryEventsType" minOccurs="0" maxOccurs="1"/>
+				<!-- All feedbackItems are defined in the feedbackItem section. -->
+				<xs:element name="feedbackItem" type="feedbackItemType" minOccurs="0" maxOccurs="100"/>
+				<!--
+					A series of steps. This is the whole point. The workflow drives these
+					steps. Note that although the number of steps is unbounded here,
+					the Workflow loader will enforce a maximum of 500 total steps,
+					including all parent and sub-steps.
+				-->
+				<xs:element name="step" type="stepType" maxOccurs="unbounded">
+					<!--
+						Variable references within steps must be unique by name and scope.
+					-->
+					<xs:unique name="uniqueVariableValue">
+						<xs:selector xpath="variableValue"/>
+						<xs:field xpath="@name"/>
+						<xs:field xpath="@scope"/>
+					</xs:unique>
+					<!--
+						setVariable references within steps must be unique across name and scope.
+					-->
+					<xs:unique name="uniqueSetVariable">
+						<xs:selector xpath="setVariable"/>
+						<xs:field xpath="@name"/>
+						<xs:field xpath="@scope"/>
+					</xs:unique>
+				</xs:element>
+				<!-- for previous workflow version upgrade, optional -->
+				<xs:element name="preserveOptions" type="preserveOptionsType" minOccurs="0">
+					<!-- the version to upgrade must be unique -->
+					<xs:unique name="uniqueUpgradeVersion">
+						<xs:selector xpath="version"/>
+						<xs:field xpath="@value"/>
+					</xs:unique>
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+
+		<!--
+			The schema has some referential integrity constraints to which a workflow XML must conform:
+				o Each variable is defined once.
+				o Each variable reference must be to a defined variable.
+				o Each step name must be defined once.
+				o Each step pre-requisite reference must be to a defined step.
+		-->
+
+		<!--
+			Variables must be unique across name and scope. However, a given
+			variable name may be defined in different scopes. Scopes are defined
+			further down.
+		-->
+		<xs:unique name="uniqueVariable">
+			<xs:selector xpath="variable"/>
+			<xs:field xpath="@name"/>
+			<xs:field xpath="@scope"/>
+		</xs:unique>
+
+		<!--
+			atCreate must be unique across name and scope.
+		-->
+		<xs:unique name="uniqueAtCreate">
+			<xs:selector xpath="atCreate"/>
+			<xs:field xpath="@name"/>
+			<xs:field xpath="@scope"/>
+		</xs:unique>
+
+		<!-- All atCreate variable references must be to defined variables -->
+		<xs:keyref name="atCreateVariable" refer="uniqueVariable">
+			<xs:selector xpath=".//atCreate"/>
+			<xs:field xpath="@name"/>
+			<xs:field xpath="@scope"/>
+		</xs:keyref>
+
+		<!-- All variable references must be to defined variables -->
+		<xs:keyref name="definedVariable" refer="uniqueVariable">
+			<xs:selector xpath=".//variableValue"/>
+			<xs:field xpath="@name"/>
+			<xs:field xpath="@scope"/>
+		</xs:keyref>
+		
+		<!-- All setVariable variable references must be to defined variables -->
+		<xs:keyref name="setVariableVariable" refer="uniqueVariable">
+			<xs:selector xpath=".//setVariable"/>
+			<xs:field xpath="@name"/>
+			<xs:field xpath="@scope"/>
+		</xs:keyref>
+		
+		<xs:unique name="uniqueFeedbackItem">
+			<xs:selector xpath="feedbackItem"/>
+			<xs:field xpath="@name"/>
+		</xs:unique>
+
+		<xs:keyref name="definedFeedbackItem" refer="uniqueFeedbackItem">
+			<xs:selector xpath=".//feedback"/>
+			<xs:field xpath="@name"/>
+		</xs:keyref>
+		
+
+		<!-- Step names must be unique -->
+		<xs:unique name="uniqueStep">
+			<xs:selector xpath=".//step"/>
+			<xs:field xpath="@name"/>
+		</xs:unique>
+
+		<!-- Step pre-reqs must point to defined steps -->
+		<xs:keyref name="definedStep" refer="uniqueStep">
+			<xs:selector xpath=".//prereqStep"/>
+			<xs:field xpath="@name"/>
+		</xs:keyref>
+		
+
+
+		<!-- All bundle attributes must match a defined bundle file.
+			Note: the following keyref exposes a xerces bug when no bundle files
+			are defined and no references to them exist! See
+			https://issues.apache.org/jira/browse/XERCESJ-1515
+			This constraint can be added when the bug fix makes its way into the JDK
+			included with WAS.
+		-->
+		<!--
+			<xs:keyref name="definedBundle" refer="uniqueBundle">
+				<xs:selector xpath=".//*"/>
+				<xs:field xpath="@bundle"/>
+			</xs:keyref>
+		-->
+	</xs:element>
+	<!-- End of workflow definition.  -->
+
+	<!-- Start of workflow upgrade -->
+	<xs:complexType name="preserveOptionsType">
+		<xs:sequence>
+			<!-- Workflow version to upgrade -->
+			<xs:element name="version" type="preserveVersionType" minOccurs="1"  maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<!--  -->
+	<xs:complexType name="workflowSettingInfoType">	
+			<xs:sequence>
+				<!-- Specifies additional variables settings for the workflow. -->
+				<xs:element name="variablesSetting" type="variablesSettingType" minOccurs="0" maxOccurs="1"/>
+				<!-- Specified global variable group for all the global variables in the workflow -->
+				<xs:element name="globalVariableGroup" type="globalVariableGroupType" minOccurs="0" maxOccurs="1"/>									
+			</xs:sequence>			
+	</xs:complexType>
+	
+	<xs:complexType name="variablesSettingType">
+		<xs:simpleContent>
+			<xs:extension base="xs:string">
+				<!-- Indicates if instance variable references include the instance- prefix. -->
+				<xs:attribute name="isInstanceVariableWithoutPrefix" type="workflowBooleanType" default="false"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	
+	<!--
+		Global Variable group type: Only contains the attribute "name" for the group
+	-->
+	<xs:complexType name="globalVariableGroupType">
+		<xs:complexContent>
+			<xs:extension base="emptyType">
+				<xs:attribute name="name" type="groupName" use="required"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	
+	<!--
+		Global Variable group name: Simple alphaNumeric national, "-" and "_" string type used
+		for group names.
+	-->
+	<xs:simpleType name="groupName">
+		<xs:restriction base="xs:string">
+			<xs:pattern value="[a-zA-Z][a-zA-Z0-9\-_]*"/>
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:complexType name="preserveVersionType">
+		<xs:sequence>
+			<!-- Workflow variable values to copy to the new created workflow based on the existing one.-->
+			<xs:element name="variableSet" type="variableSetType"  minOccurs="0"/>
+			<!-- Workflow step values to copy to the new created workflow based on the existing one.-->
+			<xs:element name="stepSet" type="stepSetType"  minOccurs="0"/>
+			<!-- Workflow and step attributes to copy to the new created workflow based on the existing one.-->
+			<xs:element name="workflowHistory" type="workflowHistoryAndNotesType"  minOccurs="0"/>
+			<xs:element name="workflowNotes" type="workflowHistoryAndNotesType"  minOccurs="0"/>
+			<!-- Workflow upgrading notes to show to the user.-->
+			<xs:element name="upgradeNotes" type="NonNull1KString"  minOccurs="0"/>
+		</xs:sequence>
+		<xs:attribute name="value" type="nonNullString" use="required"/>
+		<xs:attribute name="type" type="workflowUpgradeType" use="required"/>	
+	</xs:complexType>
+
+	<xs:simpleType name="workflowUpgradeType">
+  		<xs:restriction base='xs:string'>
+  			<xs:enumeration value='refresh'/>
+    		<xs:enumeration value='replace'/>
+  		</xs:restriction>
+	</xs:simpleType>
+		
+	<xs:complexType name="variableSetType">
+		<xs:sequence>
+			<xs:element name="include" type="includeType" minOccurs="1"  maxOccurs="unbounded"/>
+			<xs:element name="exclude" type="excludeType"  minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attribute name="defaultChecked" type="workflowBooleanType" default="false"/>
+	</xs:complexType>
+
+	<xs:complexType name="stepSetType">
+		<xs:sequence>
+			<xs:element name="include" type="includeType" minOccurs="1" maxOccurs="unbounded"/>
+			<xs:element name="exclude" type="excludeType"  minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attribute name="defaultChecked" type="workflowBooleanType" default="false"/>
+	</xs:complexType>
+	
+	<xs:complexType name="workflowHistoryAndNotesType">
+		<xs:attribute name="defaultChecked" type="workflowBooleanType" default="false"/>
+	</xs:complexType>
+ 
+	<xs:complexType name="includeType">
+		<xs:attribute name="regExp" type="nonNullString"/>	
+		<xs:attribute name="name" type="nonNullString"/>		
+		<xs:attribute name="mapTo" type="nonNullString"/>
+	</xs:complexType>
+			
+	<xs:complexType name="excludeType">		
+	    <xs:attribute name="name" type="nonNullString"/>	    
+	</xs:complexType>
+
+	<!-- End of workflow upgrade -->
+	
+	<xs:complexType name="workflowIDType">	
+		<xs:simpleContent>
+			<xs:extension base="nonNullString">
+				<!-- Indicates the singleton scope for the workflow -->
+				<xs:attribute name="scope" type="singletonScopeType" default="none"/>
+				<xs:attribute name="isCallable" type="isCallableType"/>					
+			</xs:extension>		
+		</xs:simpleContent>
+	</xs:complexType>
+	
+	<xs:simpleType name="singletonScopeType">
+		<xs:restriction base="xs:string">
+		    <xs:enumeration value="none"/>
+			<xs:enumeration value="system"/>
+			<xs:enumeration value="sysplex"/>
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:simpleType name="isCallableType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="system"/>
+			<xs:enumeration value="sysplex"/>
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<!--
+		Workflow meta-information:
+		workflowInfo is information about this workflow definition itself. The
+		workflow name and other data might appear on the initial workflow screen.
+	-->
+	<xs:complexType name="workflowInfoType">
+		<xs:sequence>
+			<!-- Workflow contains parallel steps or not -->
+		    <xs:element name ="parallelSteps" type="workflowBooleanType" default="false" minOccurs="0" maxOccurs="1"/>
+			<!-- Workflow information is not optional -->
+			<xs:element name="workflowID" type="workflowIDType"/>
+			<!-- Workflow Default Name is optional -->
+			<xs:element name="workflowDefaultName" type="nonNullString" minOccurs="0"/>
+			<!-- Workflow description.  Displayed on screen. -->
+			<xs:element name="workflowDescription" type="nlsString"/>
+			<!-- Workflow XML document version. Any text. Release/Feature/bug
+				 number if applicable. Displayed on workflow info screen. -->
+			<xs:element name="workflowVersion" type="nonNullString"/>
+			<!-- "vendor" can be anything for a non-configuration workflow. -->
+			<xs:element name="vendor" type="nonNullString"/>
+			<xs:choice>
+				<!-- A (software) Configuration workflow has additional product info  -->
+				<xs:element name="Configuration" type="configType"/>
+				<!-- A provisioning workflow has additional product info relating to provisioning -->
+				<xs:element name="Provisioning" type="provisioningType"/>
+				<!-- A general workflow could be anything. For example, a
+					 new-hire check-list, an apple pie recipe, or driving directions. -->
+				<xs:element name="General" type="emptyType" minOccurs="0"/>
+			</xs:choice>
+			<!-- Jobs output directory is optional -->
+			<xs:element name="jobsOutputDirectory" type="nonNullString" minOccurs="0" maxOccurs="1"/>
+		</xs:sequence>
+	</xs:complexType>
+
+	<!-- 
+		exportDocMeta is the element that control what information will appear 
+		in the exported workflow HTML file.
+	-->
+	<xs:complexType name="exportDocMetaType">      <!-- export workflow enhancement -->
+		<xs:sequence>
+			<!-- The cover of the exported workflow HTML file -->
+			<xs:element name = "cover" type = "coverType" minOccurs="0" maxOccurs="1" />
+			<!-- The frontmatter of the exported workflow HTML file -->
+			<xs:element name = "frontmatter" type = "frontmatterType" minOccurs="0" maxOccurs="1" />
+			<!-- The backmatter of the exported workflow HTML file -->
+			<xs:element name = "backmatter" type = "backmatterType"  minOccurs="0" maxOccurs="1"/>
+			<!-- The back cover of the exported workflow HTML file -->
+			<xs:element name = "backCover" type = "backCoverType" minOccurs="0" maxOccurs="1" />
+		</xs:sequence>
+	</xs:complexType>
+	
+	<!-- 
+		Definition of cover.
+	-->
+	<xs:complexType name="coverType">   <!-- export workflow enhancement -->
+		<xs:sequence>
+			<!-- Specifies the relative path of an image file, such as a company logo. -->
+			<xs:element name = "logo" type = "fileTemplateType"  minOccurs="0" maxOccurs="1"/>
+			<!-- Specifies the primary title information for the workflow print file. -->
+			<xs:element name = "mainTitle" type = "NonNull1KString" minOccurs="0" maxOccurs="1" />
+			<!-- Specifies the alternative title, subtitle, or short title for the
+				 workflow print file. -->
+			<xs:element name = "shortTitle" type = "NonNull1KString"  minOccurs="0" maxOccurs="1"/>
+			<!-- Specifies information about the series, library, or collection of
+		         workflows to which the workflow belongs. -->
+			<xs:element name = "collection" type = "nlsRichString"  minOccurs="0" maxOccurs="1"/>
+			<!-- Specifies the copyright year. Can be one value or two (first year 
+				 and last year).  -->
+			<xs:element name = "copyright" type = "nlsRichString"  minOccurs="0" maxOccurs="1"/>
+			<!-- Specifies the contact information for the workflow author, such as
+			     a name and an email address. -->
+			<xs:element name = "contactInfo" type = "nlsRichString"  minOccurs="0" maxOccurs="1"/>
+		</xs:sequence>
+	</xs:complexType>
+	
+	<!-- 
+		Definition of frontmatter.
+	-->
+	<xs:complexType name="frontmatterType">   <!-- export workflow enhancement -->
+		<xs:sequence>
+			<!-- Contains the edition notice for the document, which includes any 
+				 legally required statements about intended use, updates, and so on. -->
+			<xs:element name = "editionNotice" type = "nlsRichString"  minOccurs="0" maxOccurs="1"/>
+			<!-- A place for the workflow author to provide introductory information
+				 to the intended users of the workflow. -->
+			<xs:element name = "preface" type = "nlsRichString"  minOccurs="0" maxOccurs="1"/>
+			<!-- Specifies a paragraph or two that briefly describes the purpose of
+				 the workflow. -->
+			<xs:element name = "abstract" type = "nlsRichString" minOccurs="0" maxOccurs="1"/>
+			<!-- Provides a place for the workflow author to list the latest changes
+				 to the workflow. -->
+			<xs:element name = "whatsNew" type = "nlsRichString"  minOccurs="0" maxOccurs="1"/>
+		</xs:sequence>
+	</xs:complexType>
+	
+	<!--
+		Definition of backmatter.
+	-->
+	<xs:complexType name="backmatterType">    <!-- export workflow enhancement -->
+		<xs:sequence>
+			<!-- Some notices for the workflow.  -->
+			<xs:element name = "notices" type = "nlsRichString"  minOccurs="0" maxOccurs="1"/>
+			<!-- Some trademarks for the workflow. -->
+			<xs:element name = "trademarks" type = "nlsRichString"  minOccurs="0" maxOccurs="1"/>
+			<!-- A list of terms that are important to understanding how to perform
+				 the workflow. -->
+			<xs:element name = "glossary" type = "nlsRichString"  minOccurs="0" maxOccurs="1"/>
+		</xs:sequence>
+	</xs:complexType>
+	
+	<!-- 
+		Definition of back cover.
+	-->
+	<xs:complexType name="backCoverType">     <!-- export workflow enhancement -->
+		<xs:sequence>
+			<!-- Specifies relative path of an image file that represents
+				 the bar code for the printed output.  --> 
+			<xs:element name = "barcode" type = "fileTemplateType"  minOccurs="0" maxOccurs="1"/>
+		</xs:sequence>
+	</xs:complexType>
+
+	<!-- 
+		Additional product information is required for a provisioning workflow
+	-->
+	<xs:complexType name="provisioningType">
+		<xs:sequence>
+			<!-- Product Identifier -->
+			<xs:element name="productID" type="nonNullString"/>
+			<!-- Product name name in human terms. Displayed on screen. -->
+			<xs:element name="productName" type="nonNullString"/>
+			<!-- Product version, for example 7.0.0.0 -->
+			<xs:element name="productVersion" type="nonNullString"/>
+			<!-- Software type - A value that will be used as the prefix for the
+			object-name / external-name of an instance in the Software Configuration
+			Registry. This value is displayed in the Software Type column of the
+			Configuration Catalog and Configuration Registry tables. -->
+			<xs:element name="softwareType" type="softwareTypeString"/>
+		</xs:sequence>
+	</xs:complexType>
+
+	<!--
+		Additional product information is required for a software configuration workflow.
+	-->
+	<xs:complexType name="configType">
+		<xs:sequence>
+			<!-- Product Identifier -->
+			<xs:element name="productID" type="nonNullString"/>
+			<!-- Product name name in human terms. Displayed on screen. -->
+			<xs:element name="productName" type="nonNullString"/>
+			<!-- Product version, for example 7.0.0.0 -->
+			<xs:element name="productVersion" type="nonNullString"/>
+		</xs:sequence>
+	</xs:complexType>
+
+	<!--
+		Translated text files: This is a manifest of translated text files the
+		provider wishes to associate with the workflow. These files are
+		essentially java properties files containing identifiers and their
+		associated text.
+	-->
+	<xs:complexType name="textFileType">
+		<xs:sequence>
+			<xs:element name="bundle" type="bundleType" maxOccurs="500" minOccurs="1">
+				<!-- Language names within a single bundle definition must be unique. -->
+				<xs:unique name="uniqueLanguage">
+					<xs:selector xpath="language"/>
+					<xs:field xpath="@name"/>
+				</xs:unique>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<!-- Bundle definition -->
+	<xs:complexType name="bundleType">
+		<xs:sequence>
+			<xs:element name="language" type="langType" maxOccurs="10" minOccurs="1"/>
+		</xs:sequence>
+		<xs:attribute name="name" type="xs:NMTOKEN" use="required"/>
+	</xs:complexType>
+	<!-- Language definition -->
+	<xs:complexType name="langType">
+		<xs:attribute name="name" type="xs:language" use="required"/>
+		<xs:attribute name="path" type="nonNullString" use="required"/>
+	</xs:complexType>
+
+
+	<!--
+		Definition of a variable:
+		Multiple variables may be defined in the workflow. They are all
+		defined at the top of the workflow separately from the steps where
+		they are used. A variable is uniquely identified by its name and scope
+		which are represented as attributes defined at the bottom of this
+		variableType. XSD requires attributes to go at the end.
+		
+		A variable definition consists of a number of common elements, followed by
+		elements and attributes specific to a given variable type, of which there are three:
+		boolean, string, and number.
+	-->
+	<xs:complexType name="variableType">
+		<xs:sequence>
+			<!-- Input box label.  Very short name. -->
+			<xs:element name="label" type="nlsString"/>
+			<!-- One sentence abstract. -->
+			<xs:element name="abstract" type="nlsString"/>
+			<!-- Longer description about this variable. -->
+			<xs:element name="description" type="nlsRichString"/>
+			<!-- Mark this variable as exposed to workflow users. -->
+			<xs:element name="exposeToUser" type="exposeToUserType" minOccurs="0"/>
+			<!-- Category for this variable (for UI grouping) -->
+			<xs:element name="category" type="nlsString" default="General"/>
+			<!--  Datastore specification.  Default is zOSMF, and does not need to be supplied.
+				  This refers to where the variable value is stored.  Right now, the z/OSMF 
+				  persistence directory is the only supported option.                         -->
+			<xs:element name="datastore" type="datastoreSpecification" minOccurs="0"/>
+			<!-- And now the type-specific information -->
+			<xs:choice>
+				<!-- A check-box will be displayed for a boolean -->
+				<xs:element name="boolean" type="booleanVarType"/>
+				<!-- A text box will be displayed for string and number types. -->
+				<xs:element name="string" type="stringVarType">
+					<!--
+						Choice values within a string variable must be unique.
+					-->
+					<xs:unique name="uniqueVariableChoiceValue">
+						<xs:selector xpath="choice"/>
+						<xs:field xpath="."/>
+					</xs:unique>
+				</xs:element>
+				<xs:element name="integer" type="integerVarType"/>
+				<xs:element name="decimal" type="decimalVarType"/>
+				<xs:element name="time" type="timeVarType"/>
+				<xs:element name="date" type="dateVarType"/>
+				<xs:element name="password" type="passwordVarType"/>
+				<xs:element name="array" type="arrayVarType"/>
+			</xs:choice>
+			<xs:element name="readOnlyAt" type="readOnlyAtType" minOccurs="0"/>
+		</xs:sequence>
+		<!-- Variable name. This is used to reference the variable elsewhere in the
+			 workflow. Variable name and scope are both required to identify a variable. -->
+		<xs:attribute name="name" type="varName" use="required"/>
+		<!-- Variable scope. Explained below. -->
+		<xs:attribute name="scope" type="zosmfConfigScopeType" default="instance"/>		
+		<!-- Visibility. Specifies whether a variable is publicly accessible or not. Currently can be 'public' or 'private'. Defaults to private. -->
+		<xs:attribute name="visibility" type="workflowVisibilityType" default="private"/>
+	</xs:complexType>
+	
+	<xs:complexType name ="readOnlyAtType">
+		<xs:simpleContent>
+			<xs:extension base="xs:string">
+				<!-- Indicates substitution variables are present. -->
+				<xs:attribute name="substitution" type="workflowBooleanType" default="false"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<!-- indicate this variable is allowed to expose to end users when customizing a JOB Statement -->
+	<xs:complexType name ="exposeToUserType">
+		<xs:sequence>
+			<xs:element name="usage" type="nlsRichString"/>
+		</xs:sequence>
+	</xs:complexType>
+	
+	<!-- Elements and attributes specific to booleans -->
+	<xs:complexType name="booleanVarType">
+		<xs:sequence>
+			<!-- default value for this variable, optional -->
+			<xs:element name="default" type="workflowBooleanType" default="true" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	
+	<!-- Elements and attributes specific to strings -->
+	<xs:complexType name="stringVarType">
+		<xs:sequence>
+			<!-- You can optionally choose either a minimum and/or maximum string length,
+			     a built-in validation type, or a regular expression that you write.     -->
+			<xs:choice>
+				<xs:sequence>
+					<!-- A minimum and/or maximum length may be specified.   -->
+					<xs:element name="minLength" type="xs:positiveInteger" minOccurs="0"/>
+					<xs:element name="maxLength" type="xs:positiveInteger" minOccurs="0"/>
+				</xs:sequence>
+				<xs:sequence minOccurs="0">
+					<!-- The validation type provides a set of values which you can select to validate
+					     a given string value without having to write your own regular expressions.    -->
+					<xs:element name="validationType" minOccurs="0">
+						<xs:simpleType>
+							<xs:restriction base="xs:string">
+								<xs:enumeration value="ALPHA"/> <!-- Alphabetic with nationals -->
+								<!-- ALPHA: A-Z, a-z, #, $, or @ 
+							         regexp: ^[a-zA-Z#$@]+$      
+							    -->
+								<xs:enumeration value="ALPHAB"/> <!-- Alphabetic -->
+								<!-- ALPHAB: A-Z or a-z 
+							         regexp: ^[a-zA-Z]+$         
+							    -->
+								<xs:enumeration value="ALPHANUM"/> <!-- Alphanumeric with nationals -->
+								<!-- ALPHANUM: 0-9, A-Z, a-z, #, $, or @
+							         regexp: ^[0-9a-zA-Z#$@]+$   
+							    -->
+								<xs:enumeration value="BIT"/> <!-- bit string -->
+								<!-- BIT: 0-1
+							         regexp: ^[01]+$   
+							    -->
+								<xs:enumeration value="DSMEMBERNAME"/> <!-- PDS member name -->
+								<!-- DSMEMBERNAME: A-Z, #, $, @, { or 0-9
+							         regexp: ^[A-Z$#@]{1}[0-9A-Z$#@{]{0,7}$   
+							    -->
+								<xs:enumeration value="DSNAME"/>   <!-- MVS data set name -->
+								<!-- DSNAME: A-Z, #, $, @, }, - or 0-9
+							         regexp: ^(?=.{1,44}$)[A-Z#$@][A-Z0-9\}#$@-]{0,7}([.][A-Z#$@][A-Z0-9\}#$@-]{0,7}){0,21}$   
+							    -->
+								<xs:enumeration value="DSQUAL"/> <!-- Single data set qualifier. -->
+								<!-- DSQUAL: A-Z, #, $, @, - or 0-9
+							         regexp: ^[A-Z$#@]{1}[0-9A-Z$#@-]{0,7}$   
+							    -->
+								<xs:enumeration value="GROUP"/> <!-- SAF group name. This also works for job names -->
+								<!-- GROUP: A-Z, #, $, @, or 0-9
+							         regexp: ^[A-Z$#@]{1}[0-9A-Z$#@]{0,7}$   
+							    -->
+								<xs:enumeration value="HEX"/> <!-- Hexadecimal string -->
+								<!-- HEX: 0-9, A-F, a-f
+							         regexp: ^[0-9a-fA-F]+$   
+							    -->
+								<xs:enumeration value="IPADDR4"/> <!-- IPV4 address -->
+								<!-- IPADDR4: 0-255.0-255.0-255.0-255
+							         regexp: ^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$   
+							    -->
+								<xs:enumeration value="IPADDR6"/> <!-- IPV6 address -->
+								<!-- IPADDR6: hex-quartet:hex-quartet:hex-quartet:hex-quartet:hex-quartet:hex-quartet:hex-quartet:hex-quartet
+							         regexp: ((([0-9A-Fa-f]{1,4}:){7}([0-9A-Fa-f]{1,4}|:))|(([0-9A-Fa-f]{1,4}:){6}(:[0-9A-Fa-f]{1,4}|((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){5}(((:[0-9A-Fa-f]{1,4}){1,2})|:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){4}(((:[0-9A-Fa-f]{1,4}){1,3})|((:[0-9A-Fa-f]{1,4})?:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){3}(((:[0-9A-Fa-f]{1,4}){1,4})|((:[0-9A-Fa-f]{1,4}){0,2}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){2}(((:[0-9A-Fa-f]{1,4}){1,5})|((:[0-9A-Fa-f]{1,4}){0,3}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){1}(((:[0-9A-Fa-f]{1,4}){1,6})|((:[0-9A-Fa-f]{1,4}){0,4}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(:(((:[0-9A-Fa-f]{1,4}){1,7})|((:[0-9A-Fa-f]{1,4}){0,5}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:)))(%.+)?$   
+							    -->
+							    <xs:enumeration value="IPADDR"/> <!-- IP address of either version -->
+								<!-- IPADDR: IPADDR4 or IPADDR6
+							         regexp: IPADDR4 | IPADDR6   
+							    -->
+								<xs:enumeration value="TSOUSERID"/> <!-- TSO user Id -->
+								<!-- TSOUSERID: A-Z, #, $, @, or 0-9
+							         regexp: ^[A-Z$#@]{1}[0-9A-Z$#@]{0,7}$   
+							    -->
+								<xs:enumeration value="UNIXID"/> <!-- z/OS UNIX UID or GID -->
+								<!-- UNIXID: 0-2147483647
+							         regexp: ^([0-9]|[1-9][0-9]{1,8}|1[0-9]{9}|2[0][0-9]{8}|21[0-3][0-9]{7}|214[0-6][0-9]{6}|2147[0-3][0-9]{5}|21474[0-7][0-9]{4}|214748[0-2][0-9]{3}|2147483[0-5][0-9]{2}|21474836[0-3][0-9]|214748364[0-7])$   
+							    -->
+								<xs:enumeration value="USERID"/>  <!-- SAF user Id -->
+								<!-- USERID: 8 chars (0-9, A-Z, #, $, or @)
+							         regexp: ^[0-9A-Z$#@]{1,8}$   
+							    -->
+								<xs:enumeration value="VOLSER"/>  <!-- Volume serial -->
+								<!-- VOLSER: 6 alphanum characters (0-9, A-Z, #, $, or @)
+							         regexp: ^[0-9A-Z#$@]{1,6}$
+							    -->
+							</xs:restriction>
+						</xs:simpleType>
+					</xs:element>
+				</xs:sequence>
+				<xs:sequence>
+					<!-- When none of the validation types meet your needs, you can supply your 
+						 own JavaScript regular expression.                                    -->
+					<xs:element name="regularExpression" type="bigNonNullString" minOccurs="0"/>
+					<!-- Custom error message if an invalid value is entered in the UI -->
+					<xs:element name="errorMessage" type="nlsString" minOccurs="0" />
+				</xs:sequence>
+			</xs:choice>
+			<!-- A series of choices that will be primed in a pull-down for the text box. -->
+			<xs:element name="choice" type="nlsUnboundedString" minOccurs="0" maxOccurs="1337"/>
+			<!-- default value for this variable, optional -->
+			<xs:element name="default" type="nlsUnboundedString" minOccurs="0"/>
+		</xs:sequence>
+		<!-- Indicate how to behave when choices are specified, and the user enters a 
+			 value that is not one of the choices.                                          -->
+		<xs:attribute name="valueMustBeChoice" type="workflowBooleanType" default="false"/>
+		<!-- Indicate whether the input box should be multi-line. -->
+		<xs:attribute name="multiLine" type="workflowBooleanType" default="false"/>
+	</xs:complexType>
+
+	<!-- Elements and attributes specific to password types -->
+	<xs:complexType name="passwordVarType">
+		<xs:sequence>
+			<!-- You can optionally choose either a minimum and/or maximum string length
+			     or a regular expression that you write.     -->
+			<xs:choice minOccurs="0">
+				<xs:sequence>
+					<!-- A minimum and/or maximum length may be specified.   -->
+					<xs:element name="minLength" type="xs:positiveInteger" minOccurs="0"/>
+					<xs:element name="maxLength" type="xs:positiveInteger" minOccurs="0"/>
+				</xs:sequence>
+				<xs:sequence>
+					<!-- When none of the validation types meet your needs, you can supply your 
+						 own JavaScript regular expression.                                    -->
+					<xs:element name="regularExpression" type="bigNonNullString" minOccurs="0"/>
+					<!-- Custom error message if an invalid value is entered in the UI -->
+					<xs:element name="errorMessage" type="nlsString" minOccurs="0" />
+				</xs:sequence>
+			</xs:choice>
+		</xs:sequence>
+	</xs:complexType>
+	
+	<!-- Elements and attributes specific to array -->
+	<!-- Note that the array variable does not have default value -->
+	<xs:complexType name="arrayVarType">
+	</xs:complexType>
+
+	<!-- Elements and attributes specific to integers -->
+	<xs:complexType name="integerVarType">
+		<xs:sequence>
+			<!-- Note that using type xs:int instead of xs:integer here 
+				 constrains the value to a signed fullword (31 bit) value. -->
+			<xs:element name="minValue" type="xs:int" minOccurs="0"/>
+			<xs:element name="maxValue" type="xs:int" minOccurs="0"/>
+			<!-- default value for this variable, optional -->
+			<xs:element name="default" type="xs:int" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	
+	<!-- Elements and attributes specific to decimal numbers -->
+	<xs:complexType name="decimalVarType">
+		<xs:sequence>
+			<xs:element name="minValue" type="workflowDecimalType" minOccurs="0"/>
+			<xs:element name="maxValue" type="workflowDecimalType" minOccurs="0"/>
+			<!-- default value for this variable, optional -->
+			<xs:element name="default" type="workflowDecimalType" minOccurs="0"/>
+		</xs:sequence>
+		<!-- For a decimal type variable, the number of decimal places. -->
+		<xs:attribute name="decimalPlaces" type="decimalPlacesType" default="1"/>
+	</xs:complexType>
+	<!-- Due to vagaries of the UI, we restrict the number of decimal places to 6. -->
+	<xs:simpleType name="decimalPlacesType">
+  		<xs:restriction base='xs:positiveInteger'>
+    		<xs:maxInclusive value='6'/>
+  		</xs:restriction>
+	</xs:simpleType>
+	<!-- We must restrict the decimal value to the largest integer on the left of
+		 the decimal point, with the maximum value in six decimal places on the right. -->
+	<xs:simpleType name="workflowDecimalType">
+  		<xs:restriction base='xs:decimal'>
+  			<xs:minInclusive value='-2147483648.999999'/>
+    		<xs:maxInclusive value='2147483647.999999'/>
+  		</xs:restriction>
+	</xs:simpleType> 
+	
+	<!-- Elements and attributes specific to times -->
+	<xs:complexType name="timeVarType">
+		<xs:sequence>
+			<xs:element name="minValue" type="xs:time" minOccurs="0"/>
+			<xs:element name="maxValue" type="xs:time" minOccurs="0"/>
+			<!-- default value for this variable, optional -->
+			<xs:element name="default" type="xs:time" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	
+	<!-- Elements and attributes specific to dates -->
+	<xs:complexType name="dateVarType">
+		<xs:sequence>
+			<xs:element name="minValue" type="workflowDateType" minOccurs="0"/>
+			<xs:element name="maxValue" type="workflowDateType" minOccurs="0"/>
+			<!-- default value for this variable, optional -->
+			<xs:element name="default" type="workflowDateType" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+
+	<!--
+		This is used to support the boolean type varible, if any varible of these categories are checked, the UI will do something.
+		-->		
+	<xs:complexType name = "categoryEventsType">
+		<xs:sequence>
+			<xs:element name="category" type="categoryType" minOccurs="0" maxOccurs="1000"/>
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="categoryType">
+		<xs:simpleContent>
+			<xs:extension base="xs:string">
+				<!--  -->
+				<xs:attribute name="event" type="nonNullString" use="required"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+    <!--  The only supported datastore is zOSMF at this time. -->
+    <!--  Presumably, other datastores will require sub elements to describe how to access them -->
+	<xs:complexType name="datastoreSpecification">
+	  <xs:choice>
+	    <xs:element name="zOSMF" type="emptyType"/>	
+	  </xs:choice>
+	</xs:complexType>
+
+	<!-- Variable scope definitions:
+			instance: This variable has a value only in the current workflow
+				instance. All users share this variable.
+			global: This variable has one value globally throughout all instances
+				of all workflows. All users share this variable.
+	-->
+	<xs:simpleType name="zosmfConfigScopeType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="instance"/>
+			<xs:enumeration value="global"/>
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<!-- The atCreate variables must be instance scope. -->
+	<xs:simpleType name="atCreateScopeType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="instance"/>
+		</xs:restriction>
+	</xs:simpleType>
+
+	<!-- The setVariable variables must be instance scope. -->
+	<xs:simpleType name="setVariableScopeType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="instance"/>
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="workflowVisibilityType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="public"/>
+			<xs:enumeration value="private"/>
+		</xs:restriction>
+	</xs:simpleType>
+
+	
+
+	<!--
+		Now we define workflow steps. First, we define all of the attributes
+		and elements that are common for any type of step.
+	-->
+	<xs:complexType name="commonStepType">
+		<xs:sequence>
+			<xs:element name="title" type="nlsString"/>
+			<xs:element name="description" type="nlsRichString"/>		
+			<xs:group ref="prereqGroup"/>	 					
+		</xs:sequence>
+		<!-- We envision the step name eventually supported as a variable, so keep
+			 the naming syntax common.                                             -->
+		<xs:attribute name="name" type="varName" use="required"/>
+		<!-- An optional step need not be performed by the user.                   -->
+		<xs:attribute name="optional" type="workflowBooleanType" default="false"/>
+		<!-- An user define step can be edit and delete by user.                   -->
+		<xs:attribute name="userDefined" type="workflowBooleanType" default="false"/>
+	</xs:complexType>
+	
+	<xs:group name="prereqGroup">
+		<xs:sequence>
+			<xs:element name="prereqStep" minOccurs="0" maxOccurs="499">
+				<xs:complexType>
+					<xs:attribute name="name" type="nonNullString" use="required"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="prereqDescription" type="nlsRichString" minOccurs="0" maxOccurs="1"/>
+			<xs:choice>
+				<xs:element name="prereqTargetStateSet" type="targetStateSetType" minOccurs="0" maxOccurs="1"/>
+				<xs:element name="prereqTargetState" type="stateType" minOccurs="0" maxOccurs="1"/>
+			</xs:choice>		
+		</xs:sequence>
+	</xs:group>
+
+	<xs:complexType name="targetStateSetType">
+		<xs:sequence>
+			<xs:element name="description" type="nlsRichString" minOccurs="0" maxOccurs="1"/>
+			<xs:choice>
+				<xs:element name="stateExpression" type="stateExpressionType" minOccurs="0" maxOccurs="12"/>
+				<xs:element name="extendStateExpression" type="extendStateExpressionType" minOccurs="0" maxOccurs="12"/>
+			</xs:choice>
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="stateExpressionType">
+		<xs:simpleContent>
+			<xs:extension base="xs:string">
+				<!--  -->
+				<xs:attribute name="state" type="stateType" default="Ready"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+
+	
+	<xs:complexType name="extendStateExpressionType">
+		<xs:sequence>
+			<xs:element name="description" type="nlsRichString" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="expression" type="NonNull1KString"/>	
+			<xs:element name="targetState" type="stateType"/>						
+		</xs:sequence>
+	</xs:complexType>
+	
+	<!--Target state type when stateExpression equals to true:
+		Ready:
+		Skipped:
+		Failed (Override):
+		Complete (Override);
+	-->
+	<xs:simpleType name="stateType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Ready"/>
+			<xs:enumeration value="ready"/>
+			<xs:enumeration value="READY"/>
+			<xs:enumeration value="Skipped"/>
+			<xs:enumeration value="skipped"/>
+			<xs:enumeration value="SKIPPED"/>	
+			<xs:enumeration value="Complete (Override)"/>
+			<xs:enumeration value="complete (override)"/>
+			<xs:enumeration value="COMPLETE (OVERRIDE)"/>			
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<!-- Now we differentiate between a parent step and a leaf step.  -->               
+	<xs:complexType name="stepType">
+		<xs:complexContent>
+			<xs:extension base="commonStepType">
+				<xs:choice>
+					<!--
+						A parent step may not be performed. It is a container for sub-steps.
+						Note that although the number of steps is unbounded here, the Workflow
+						loader will enforce a maximum of 500 total steps, including all parent
+						and sub-steps. The schema allows for an infinite level of step
+						nesting. However, the level will be bounded at 5 by the validation
+						code when a workflow is loaded.
+					-->
+					    <xs:element name="step" type="stepType" maxOccurs="unbounded"/>
+						<xs:sequence>
+							<!--
+								The next two optional elements apply to all non-parent step types.
+								Together, they provide for automation of a step that needs to be
+								performed by a user ID with appropriate privileges. The runAsUser
+								element specifies the user ID under which the step is to be
+								performed. The approver element specifies who must approve that the
+								step is allowed	to performed by a user other than the runAsUser.
+							-->
+							<xs:choice>
+								<xs:sequence>
+									<!--
+										The runAsUser element specifies the user ID under which the
+										step is to be performed. This need not be the owner of the step.
+										The minOccurs is set to 1 here to force this element when the
+										approver element is specified. The empty xs:sequence that
+										follows allows for the omission of both runAsUser and approver.
+									-->
+									<xs:element name="runAsUser" type="runAsUserType" minOccurs="1"/>
+									<!--
+										This element specifies a list of blank separated user IDs, one
+										of which must approve the step being performed on behalf of the
+										runAsUser. Multiple required approvers can be accomplished by
+										using multiple approver elements (up to 12).
+										This element is not required. If it is specified, then runAsUser
+										is also required.
+									-->
+									<xs:element name="approver" type="approverType" minOccurs="0" maxOccurs="12"/>
+								</xs:sequence>
+								<xs:sequence>
+									<!-- intentionally left blank (to allow omission of both) -->
+								</xs:sequence>
+							</xs:choice>
+							<xs:element name="condition" type="conditionType" minOccurs="0"/>
+							<xs:element name="suspend" type="suspendType" minOccurs="0"/>
+							<xs:choice>
+								<xs:sequence>								
+									<xs:element name="variableValue" type="variableSpecification" minOccurs="0" maxOccurs="1500"/>	
+									<xs:element name="feedback" type="feedbackSpecification" minOccurs="0" maxOccurs="100"/>
+									<xs:element name="instructions" type="nlsRichVelocityString"/>
+									<!-- Relative difficulty.  1=easy.  12=12x harder than 1 -->
+									<xs:element name="weight" type="max1K"/>
+									<xs:element name="skills" type="nlsString" minOccurs="0"/>
+									<!-- An autoEnable attribute indicates if the step can be automatically performed, default is false. -->
+									<xs:element name="autoEnable" type="workflowBooleanType" default="false" minOccurs="0"/>	
+									<!-- The element canMarkAsFailed indicates if the step can be marked as Failed even it is a simple instruction workflow step. This element can only work on leaf steps. -->
+									<xs:element name="canMarkAsFailed" type="workflowBooleanType" default="false" minOccurs="0"/>
+									<xs:choice>
+										<xs:sequence>
+											<!-- File template for this step -->
+											<xs:element name="template" type="wizardTemplateType" minOccurs="0"/>	
+										</xs:sequence>
+										<xs:sequence>
+											<!-- REST API step -->
+											<xs:element name="rest" type="wizardRESTType" minOccurs="0"/>	
+										</xs:sequence>
+									</xs:choice>
+								</xs:sequence>
+								<xs:sequence>	
+									<!--This variable mapping is used to transfer variables value between master workflow and referenced workflow-->								
+									<xs:element name="variableMapping" type="variableMappingType" minOccurs="0"/>
+									<!-- Relative difficulty.  1=easy.  12=12x harder than 1 -->
+									<xs:element name="callingStepWeight" type="max1K"/>
+									<xs:element name="callingStepSkills" type="nlsString" minOccurs="0"/>
+									<!-- Indicates if we can automate the call to the referenced workflow. Default is false. -->
+									<xs:element name="callingStepAutoEnable" type="workflowBooleanType" default="false" minOccurs="0"/>	
+									<!-- Indicates if the step can be marked as Failed. Default is false. -->
+									<xs:element name="canCallingStepMarkAsFailed" type="workflowBooleanType" default="false" minOccurs="0"/>
+									<xs:element name="calledWorkflowDefinitionFile" type="velocityFileString" minOccurs="0" maxOccurs="1"/>
+									<xs:element name="calledWorkflowVariableInputFile" type="velocityFileString" minOccurs="0" maxOccurs="1"/>
+									<xs:element name="calledWorkflowDescription" type="nonNullString" minOccurs="1" maxOccurs="1"/>
+									<xs:choice>
+										<xs:sequence>	
+											<xs:element name="calledWorkflowID" type="nonNullString"/>	
+											<xs:element name="calledWorkflowVersion" type="nonNullString" minOccurs="0"/>	
+										</xs:sequence>																					
+										<xs:element name="calledWorkflowMD5" type="nonNullString"/>	
+									</xs:choice>										
+								</xs:sequence>
+							</xs:choice>
+							<xs:element name="setVariable" type="setVariableType" minOccurs="0" maxOccurs="1500"/>
+						</xs:sequence>
+					
+				</xs:choice>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	
+	<!-- REST API Step definitions -->
+	<xs:complexType name="wizardRESTType">
+		<xs:sequence>
+			<!-- This is used to specify the HTTP method -->
+			<xs:element name="httpMethod" type="httpMethodValues"/>
+			<!-- This is the scheme name of the URL -->
+			<xs:element name="schemeName" type="velocityString" minOccurs="0" />
+			<!-- This is the hostname of the URL -->
+			<xs:element name="hostname" type="velocityString" minOccurs="0" />
+			<!-- This is the port of the URL -->
+			<xs:element name="port" type="velocityString" minOccurs="0" />
+			<!-- This is used to specify the URI path -->
+			<xs:element name="uriPath" type="velocityString"/>
+			<!-- This is used to specify the query parameters (only used for GET or POST requests) -->
+			<xs:element name="queryParameters" type="velocityString" minOccurs="0"/>
+			<!-- This is used to specify the request body content -->
+			<xs:element name="requestBody" type="velocityString" minOccurs="0"/>
+			<!--
+				This is the expected HTTP status code returned in the response.
+				If does not match, the step will failed.
+			-->
+			<xs:element name="expectedStatusCode" type="xs:int"/>
+			<!-- This is the "actual" status code received from the REST call.
+				 The value will be stored in the workflow variable specified in the "mapTo" attribute -->
+			<xs:element name="actualStatusCode" type="statusCodeType" minOccurs="0" />
+			<!-- This is used to transfer a scalar property from response body to an instance variable -->
+			<xs:element name="propertyMapping" type="variableNameType" minOccurs="0" maxOccurs="unbounded"/>
+			<!-- This is the user name to use for the request -->
+			<xs:element name="username" type="velocityString" minOccurs="0" maxOccurs="1"/>
+			<!-- This is the password to use for the request -->
+			<xs:element name="password" type="velocityString" minOccurs="0" maxOccurs="1"/>
+			<!-- These are the certificates to be used for HTTPS request -->
+			<xs:element name="certificates" type="velocityString" minOccurs="0" maxOccurs="1"/>
+			<!-- These are the request header properties to use for the request -->
+			<xs:element name="requestHeaders" type="velocityString" minOccurs="0" maxOccurs="1"/>
+			<!-- This is the number of times to poll when making the REST call -->
+			<xs:element name="pollCountMaximum" type="velocityString" minOccurs="0" maxOccurs="1"/>
+			<!-- This is the time (in seconds) to wait in between polls when making the REST call -->
+			<xs:element name="pollWaitTime" type="velocityString" minOccurs="0" maxOccurs="1"/>
+			<!-- This is the the expected property/value to check for when making the polling REST call -->
+			<xs:element name="pollExitCondition" type="pollExitConditionType" minOccurs="0" maxOccurs="1"/>
+		</xs:sequence>
+	</xs:complexType>
+	
+	<!-- Supported HTTP method types -->
+	<xs:simpleType name="httpMethodValues" >
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="GET"/>
+			<xs:enumeration value="POST"/>
+			<xs:enumeration value="PUT"/>
+			<xs:enumeration value="DELETE"/>
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<!-- Actual status code received from REST call -->
+	<xs:complexType name="statusCodeType" >
+		<xs:attribute name="mapTo" type="nonNullString" use="required" />
+	</xs:complexType>
+	
+	<!--  Poll exit condition to determine when to exit REST step polling -->
+	<xs:complexType name="pollExitConditionType">
+		<xs:simpleContent>
+			<xs:extension base="NonNull1KString">
+				<!-- This is the expected value -->
+				<xs:attribute name="expectedValue" type="NonNull1KString"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	
+	<!--
+		* fromCallingToCalled contains all variable name need to transfer value from master to referenced wowrkflow when the step starts perform
+		* fromCalledToCalling contains all variable name need to transfer value from referenced workflow to master workflow
+	-->	
+	<xs:complexType name="variableMappingType">
+		<xs:sequence>
+			<xs:element name="fromCallingToCalled" type="fromCallingToCalledType" minOccurs="0"/>
+			<xs:element name="fromCalledToCalling" type="fromCalledToCallingType" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	
+	<!--User can specify the variable name, which want to map, and specify the destination variable by the mapTo attribute .
+	 If the variables can be cover by some regular expression, user can also only five some regular expression-->
+	<xs:complexType name="fromCallingToCalledType">	
+		<xs:sequence>
+			<xs:element name="regExpression" type="nonNullString" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="variableName" type="variableNameType" minOccurs="0" maxOccurs="unbounded"/>			
+		</xs:sequence>
+	</xs:complexType>
+		
+	<!-- One attribute more than fromcallingtocalled, if the override attriubte is true, the called var value will override the calling var value-->
+	<xs:complexType name="fromCalledToCallingType">			
+		<xs:sequence>
+			<xs:element name="regExpression" type="nonNullString" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="variableName" type="variableNameType" minOccurs="0" maxOccurs="unbounded"/>					
+		</xs:sequence>		
+		<!--  -->
+		<xs:attribute name="override" type="workflowBooleanType" default="false"/>				
+	</xs:complexType>
+	
+	<xs:complexType name="variableNameType">				
+		<xs:simpleContent>
+			<xs:extension base="NonNull1KString">
+				<!--  -->
+				<xs:attribute name="mapTo" type="NonNull1KString"/>
+			</xs:extension>
+		</xs:simpleContent>		
+	</xs:complexType>
+	
+	<!-- runAsUserType definition -->  
+	<xs:complexType name="runAsUserType">
+		<xs:simpleContent>		
+			<xs:extension base="nonNullString">		    
+				<!-- Indicates substitution variables are present. -->
+				<xs:attribute name= "substitution" type="workflowBooleanType" default="false"/>
+			</xs:extension>		
+		</xs:simpleContent>		
+	</xs:complexType>
+
+	<!-- approverType definition -->
+	<xs:complexType name="approverType">
+		<xs:simpleContent>
+			<xs:extension base="nonNullString">
+				<!-- Indicates substitution variables are present. -->
+				<xs:attribute name="substitution" type="workflowBooleanType" default="false"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	
+	<!-- Condition Type for Conditional Step Definition
+		If the "condition" element is specified in a step, the sub-elements "expression" and "description" are mondatory, 
+		but the targetState is optional because it has "Complete" as its default value. The targetState supports:
+		o - Complete        
+		o - Skipped        
+		o - Failed        
+		o - Complete(Override)
+	-->
+	<xs:complexType name="conditionType">
+		<xs:sequence>
+			<!-- normal condition expression -->
+			<xs:element name="expression" type="NonNull1KString"/>
+			<xs:element name="description" type="nlsRichString"/>
+			<xs:choice>
+				<xs:element name="targetState" type="stateType" default="Ready" minOccurs="0" maxOccurs="1"/>
+				<xs:element name="targetStateSet" type="targetStateSetType" minOccurs="0"  maxOccurs="1"/>
+			</xs:choice>
+		</xs:sequence>
+	</xs:complexType>
+	
+
+	<!-- File wizard.  A file wizard can be used to update a file, such as a configuration file.
+		 It can also update and execute a JCL job, REXX exec, or shell script.  The wizard refers
+		 to workflow variables, and substitutes strings in the target file based on velocity
+		 format. The file will indicate the strings that need to be replaced with the appropriate
+		 variable value. The variable names specified in the replacement strings within the file template
+		 must match variable names as defined in the workflow, or it will not work. This cannot be
+		 enforced by the schema.
+
+		 Of course, there need be no replacement strings in an executable.  It can simply be executed.
+	-->
+	<xs:complexType name="wizardTemplateType">
+		<xs:sequence>
+			<xs:choice>
+				<!-- Specify an in-line template -->
+				<xs:element name="inlineTemplate" type="velocityString"/>
+				<!-- Specify an external template as:
+			  		o An absolute UNIX path name 
+					o An absolute data set (sequential or PDS) path name
+				        (a fully-qualified name starting with "//")  
+					o A relative path name, which is relative to the main
+						XML file container. This can be a UNIX directory or a PDS.
+		 				For a PDS, a relative path is simply the name of a member
+		 				within the PDS. It is illegal to specify a relative path when
+		   				the container is a sequential data set.
+				-->
+				<xs:element name="fileTemplate" type="fileTemplateType"/>
+			</xs:choice>
+			
+			<!--begin to change immediate rexx/shell execution -->
+			<xs:element name="submitAs" type="submitTemplateType" minOccurs="0"/>
+			<xs:choice>
+				<!-- JCL execution -->
+			    <xs:sequence>
+					<!-- Max reader record length for input JES file when submitting a JCL job, need set to 80 when use IEBUPDTE program in JCL, the default value is 1024. -->
+					<xs:element name="maxLrecl" type="maxLreclType" minOccurs="0"/>
+					<!--An output attribute indicate the default name and location of the generated property file-->
+					<xs:element name="output" type="resolveConflictsType" minOccurs="0"/>
+				</xs:sequence>
+				
+				<!-- immediate script execution -->
+				<xs:sequence>
+					<!-- successPattern is the symbol, which stands for script execution successfully -->
+					<xs:element name="successPattern" type="nonNullString" minOccurs="1" maxOccurs="1" />
+					<!-- failedPattern is the symbol, which stands for script execution failed -->
+					<xs:element name="failedPattern" type="nonNullString" minOccurs="0" maxOccurs="100" />
+					<!-- The prefix stands for that it is a variable, which will be returned along with the execution result -->
+					<xs:element name="outputVariablesPrefix" type="outputVariablesPrefixType" minOccurs="0"/>
+					<!-- scriptParameters is the parameters to execute the script -->
+					<xs:element name="scriptParameters" type="parameterType" minOccurs="0"/>
+					<!-- Name of the TSO/E logon procedure to use to log onto the TSO/E address space -->
+					<xs:element name="procName" type="procNameType" minOccurs="0"/>
+					<!-- regionSize is used to start TSO/E address space -->
+					<xs:element name="regionSize" type="regionSizeType" minOccurs="0"/>
+					<!-- timeout stands for the max execution time of rexx/shell script -->
+					<xs:element name="timeout" type="timeoutType" minOccurs="0"/> 
+				</xs:sequence>
+			</xs:choice>
+			<!-- end -->			
+			
+			<!-- Specify whether an option to save as a UNIX file should be offered, with or 
+				 without a default value.                                                    -->
+			<xs:element name="saveAsUnixFile" type="velocityFileString" minOccurs="0"/>
+			<!-- Specify whether an option to save as a data set should be offered, with or 
+				 without a default value.                                                    -->
+			<xs:element name="saveAsDataset" type="velocityFileString" minOccurs="0"/>
+			<xs:element name="predefinedVariable" type="predefinedVariableType" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="predefinedVariableType">
+		<xs:simpleContent>
+			<xs:extension base="nonNullString">
+				<xs:attribute name="name" type="nonNullString"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<!--
+		This type contains information required for the workflow engine to know understand how to process the output
+		element of the schema.
+	-->
+	<xs:complexType name="resolveConflictsType">
+		<xs:simpleContent>
+			<xs:extension base="velocityFileString">
+				<!--
+					The new attribute "needResolveConflicts" is used to decide if workflow step has to 
+					display the "Input Variables" tab when variable conflict happen.
+					If needResolveConflicts="false", workflow will directly load variables from output 
+					file and override existing variable values in workflow variable pool, but global
+					variables will keep unchange for the safety sake.
+					Extends from velocityFileString and its default value is set to true.
+				-->
+				<xs:attribute name="needResolveConflicts" type="workflowBooleanType" default="true"/>
+				
+				<!--Boolean indicating that output is referring to a spool file, rather than a file on disk.
+					When set to true, the format of the output element should be "JCLstepName.sysoutDDName". 
+					JCLStepName is optional, if it is not provided we will look for the most recently created
+					sysoutDDName that matches the provided value. 
+				-->
+				<xs:attribute name="sysoutDD" type="workflowBooleanType" default="false"/>
+				
+				<!--
+					The attribute "loadOutputFileArrayValue" is used to decide if the value of array variables 
+					will change when variable conflict happens.
+					If loadOutputFileArrayValue="true", which is the default, workflow will directly load the 
+					value of array variables from output file and override existing variable values in workflow 
+					variable pool.
+					If loadOutputFileArrayValue="false", the value of array variables will keep unchanged.
+				-->
+				<xs:attribute name="loadOutputFileArrayValue" type="workflowBooleanType" default="true"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	
+	<!--
+		File wizard destination types:
+			o JCL : Submit as JCL
+			o TSO-REXX-JCL : Execute as a Rexx exec via JCL
+			o shell-JCL : Execute as a shell script (sh) via JCL (works for shell REXX also)
+			o TSO-REXX : Directly execute Rexx via TSO address space service
+			o TSO-UNIX-REXX : Directly execute UNIX Rexx via TSO address space service
+			o TSO-UNIX-shell : Directly execute shell via TSO address space service
+	-->
+	<xs:simpleType name="submitTemplateValues">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="JCL"/>
+			<xs:enumeration value="TSO-REXX-JCL"/>
+			<xs:enumeration value="shell-JCL"/>
+			<xs:enumeration value="TSO-REXX"/>
+			<xs:enumeration value="TSO-UNIX-REXX"/>
+			<xs:enumeration value="TSO-UNIX-shell"/>
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="maxLreclType">
+		<xs:restriction base="xs:integer">
+			<xs:minInclusive value="80"></xs:minInclusive>
+			<xs:maxInclusive value="2048"></xs:maxInclusive>
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:complexType name="submitTemplateType">
+		<xs:simpleContent>
+			<xs:extension base="submitTemplateValues">
+				<!-- The maximum allowable return code for the step to be considered complete. It only applies to the JCL execution.-->
+				<xs:attribute name="maxRc" type="maxRcType" use="optional" default="0"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	
+	<xs:simpleType name="maxRcType">
+		<xs:restriction base="xs:nonNegativeInteger">
+			<xs:maxInclusive value="4095"></xs:maxInclusive>
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<!--
+		atCreateType
+		
+		Use this to define the list of variables that are either
+		requiredAtCreate, promptAtCreate, or both. Only instance
+		variables are permitted. Not specifying	either prompt or
+		required as true is somewhat meaningless, but it is not
+		prevented.
+	-->
+	<xs:complexType name="atCreateType">
+		<xs:attribute name="name" type="varName" use="required"/>
+		<xs:attribute name="scope" type="atCreateScopeType" default="instance"/>
+		<xs:attribute name="required" type="workflowBooleanType" default="false"/>
+		<xs:attribute name="prompt" type="workflowBooleanType" default="false"/>
+	</xs:complexType>
+
+	<!--
+		variableSpecification is used to reference a variableType from a step.
+	-->
+	<xs:complexType name="variableSpecification">
+		<xs:attribute name="name" type="varName" use="required"/>
+		<xs:attribute name="scope" type="zosmfConfigScopeType" default="instance"/>
+		<!-- Indicate if re-prompt desired for a variable that already has a value.  
+			 If so, the variable widget will be primed with the existing value
+			 and displayed in the UI. Otherwise, it will not be displayed.       -->
+		<xs:attribute name="noPromptIfSet" type="workflowBooleanType" default="false"/>
+		<!-- Required or not. This impacts how the field is rendered by the UI.  -->
+        <xs:attribute name="required" type="workflowBooleanType" default="false" />
+	</xs:complexType>
+
+    <!--
+		feedbackSpecification is used to reference a feedback item from a step.
+	-->
+	<xs:complexType name="feedbackSpecification">
+		<xs:attribute name="name" type="xs:string"/>
+		<xs:attribute name="required" type="workflowBooleanType" default="false"/>
+	</xs:complexType>
+
+	<!--
+		setVariableType is used to reference setVariable from a step 
+ 	-->
+	<xs:complexType name="setVariableType">
+		<xs:simpleContent>
+			<xs:extension base="velocityString">
+				<!-- Indicates name of variable -->
+				<xs:attribute name="name" type="varName" use="required"/>
+				<!-- Indicates scope of variable -->
+				<xs:attribute name="scope" type="setVariableScopeType" default="instance"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	
+	<!--
+		suspendType is used to reference suspend from a step 
+ 	-->
+	<xs:complexType name="suspendType">
+		<xs:sequence>
+				<xs:element name="toRecipients" type="velocityString" minOccurs="0"/>
+				<xs:element name="subject" type="velocityString" minOccurs="0"/>
+				<xs:element name="content" type="velocityString" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	
+	<!--
+		Variable name: Simple alphaNumeric national and "_" string type used
+		for variable names. This restriction allows us to specify variable
+		names with their scope as a string with colon delimiter. scope:name.
+		If the ":" could appear as part of the variable name it increases the
+		chance for error.
+	-->
+	<xs:simpleType name="varName">
+		<xs:restriction base="xs:string">
+			<xs:pattern value="[a-zA-Z][a-zA-Z0-9\-_]*"/>
+		</xs:restriction>
+	</xs:simpleType>
+
+
+	<!--
+		Following are various utility types used throughout the type
+		definitions defined above.
+	-->
+
+	<!--
+		The following type enforces that no text may be specified for an
+		element (by virtue of unspecified content).
+	-->
+	<xs:complexType name="emptyType"/>
+
+	<!--
+		nlsString is a simple string which can be overridden by a localized
+		(translated) text in a bundle file based on the browser language. If
+		the bundle/bundleKey is not found, the text specified in the XML is
+		displayed. The nlsString type simply adds two attributes to a
+		nonNullString that are used to locate the translated text.
+	-->
+	<xs:complexType name="nlsString">
+		<xs:simpleContent>
+			<!-- The following attributes identify the bundle name, and the key
+				 within the bundle file from which to retrieve translated text
+			 	 for the language being used in the browser.  The Workflow
+			 	 loader will validate that the specified bundle was defined in
+			 	 the <translatedTextFiles> area, and that if either of these
+			 	 attributes are specified, then the other must also be specified. -->
+			<xs:extension base="nonNullString">
+				<!-- The name of the bundle in the translatedTextFiles area. -->
+				<xs:attribute name="bundle" type="xs:NMTOKEN" use="optional"/>
+				<!-- The identifier within the file containing the translated text. -->
+				<xs:attribute name="bundleKey" type="nonNullString" use="optional"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	
+	<!--
+		nlsUnboundedString is like nlsString, with no maximum length. 
+	-->
+	<xs:complexType name="nlsUnboundedString">
+		<xs:simpleContent>
+			<xs:extension base="unboundedNonNullString">
+				<!-- The name of the bundle in the translatedTextFiles area. -->
+				<xs:attribute name="bundle" type="xs:NMTOKEN" use="optional"/>
+				<!-- The identifier within the file containing the translated text. -->
+				<xs:attribute name="bundleKey" type="nonNullString" use="optional"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+
+	<!--
+		nlsRichString is like nlsString, but also accepts a subset of html tags. 
+	-->
+	<xs:complexType name="nlsRichString" mixed="true">
+		<xs:choice minOccurs="0" maxOccurs="unbounded">
+			<xs:group ref="htmlTags"/>
+		</xs:choice>
+		<!-- The name of the bundle in the translatedTextFiles area. -->
+		<xs:attribute name="bundle" type="xs:NMTOKEN" use="optional"/>
+		<!-- The identifier within the file containing the translated text. -->
+		<xs:attribute name="bundleKey" type="nonNullString" use="optional"/>
+	</xs:complexType>
+	
+	<!--
+		nlsRichVelocityString extends nlsRichString to add a "substitution=" attribute
+	-->
+	<xs:complexType name="nlsRichVelocityString" mixed="true">
+		<xs:complexContent>
+			<xs:extension base="nlsRichString">
+				<!-- Indicates substitution variables are present. -->
+				<xs:attribute name="substitution" type="workflowBooleanType" default="false"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	
+	<!--
+		All of the acceptable tags in the nlsRichString may be nested
+		arbitrarily in any combination and depth.
+	-->
+	<xs:complexType name="nestedHtml" mixed="true">
+		<xs:choice minOccurs="0" maxOccurs="unbounded">
+			<xs:group ref="htmlTags"/>
+		</xs:choice>
+	</xs:complexType>
+
+	<!--
+		Supported html tags within descriptions and other text areas. Note
+		that we probably will not allow options and attributes for the above.
+		At least not yet. Not trying to get too fancy, don't want to give
+		people the ability to specify scripting inline. Stuff like
+		'onclick="{script code}".
+	-->
+	<xs:group name="htmlTags">
+		<xs:choice>
+			<!-- Headings -->
+			<xs:element name="h1" type="nestedHtml"/>
+			<xs:element name="h2" type="nestedHtml"/>
+			<xs:element name="h3" type="nestedHtml"/>
+			<xs:element name="h4" type="nestedHtml"/>
+			<xs:element name="h5" type="nestedHtml"/>
+			<xs:element name="h6" type="nestedHtml"/>
+			<!-- Lists -->
+			<xs:element name="ol" type="nestedHtml"/>
+			<xs:element name="ul" type="nestedHtml"/>
+			<xs:element name="dl" type="nestedHtml"/>
+			<xs:element name="dt" type="nestedHtml"/>
+			<xs:element name="dd" type="nestedHtml"/>
+			<xs:element name="li" type="nestedHtml"/>
+			<!-- Paragraphs and line breaks -->
+			<xs:element name="br" type="nestedHtml"/>
+			<xs:element name="p" type="nestedHtml"/>
+			<xs:element name="hr" type="nestedHtml"/>
+			<!-- Text highlighting -->
+			<xs:element name="i" type="nestedHtml"/>
+			<xs:element name="b" type="nestedHtml"/>
+			<xs:element name="u" type="nestedHtml"/>
+			<xs:element name="em" type="nestedHtml"/>
+			<xs:element name="strong" type="nestedHtml"/>
+			<xs:element name="cite" type="nestedHtml"/>
+			<xs:element name="code" type="nestedHtml"/>
+			<xs:element name="samp" type="nestedHtml"/>
+			<xs:element name="kbd" type="nestedHtml"/>
+			<xs:element name="pre" type="nestedHtml"/>
+			<xs:element name="tt" type="nestedHtml"/>
+			<xs:element name="sub" type="nestedHtml"/>
+			<xs:element name="sup" type="nestedHtml"/>
+			<xs:element name="big" type="nestedHtml"/>
+			<xs:element name="small" type="nestedHtml"/>
+			<!-- Hyperlinks -->
+			<xs:element name="a" type="hyperLink"/>
+			<!-- Tables -->
+			<xs:element name="table" type="tableType"/>
+			<xs:element name="th" type="cellType"/>
+			<xs:element name="tr" type="nestedHtml"/>
+			<xs:element name="td" type="cellType"/>
+			<xs:element name="caption" type="nestedHtml"/>
+			<xs:element name="colgroup" type="nestedHtml"/>
+			<xs:element name="col" type="nestedHtml"/>
+			<xs:element name="thead" type="nestedHtml"/>
+			<xs:element name="tbody" type="nestedHtml"/>
+			<xs:element name="tfoot" type="nestedHtml"/>
+		</xs:choice>
+	</xs:group>
+
+	<!--  Allow for hyperlink to point to online documentation. -->
+	<xs:complexType name="hyperLink" mixed="true">
+		<xs:choice maxOccurs="unbounded" minOccurs="0">
+			<xs:group ref="htmlTags"/>
+		</xs:choice>
+		<!-- In the href attribute, specify the protocol with the URL. 
+		 	 For example, "http://www.ibm.com" (and not "www.ibm.com"). -->
+		<xs:attribute name="href" type="url"/>
+		<!-- Link will be opened in new browser tab or window.          -->
+		<xs:attribute name="target" fixed="_blank"/>
+	</xs:complexType>
+
+	<!--  Allow for certain HTML table attributes.                      -->
+	<xs:complexType name="tableType" mixed="true">
+		<xs:choice maxOccurs="unbounded" minOccurs="0">
+			<xs:group ref="htmlTags"/>
+		</xs:choice>
+		<!-- Support the HTML rules attribute for inside borders        --> 
+		<xs:attribute name="rules" type="rulesValues" default="all"/>
+		<!-- Support the HTML frame attribute for outside borders       -->
+		<xs:attribute name="frame" type="frameValues" default="box"/>
+		<!-- Support the HTML width attribute                           -->
+		<xs:attribute name="width" type="xs:string" default="75%"/>
+	</xs:complexType>
+	
+	<!--  Allow for width attribute on cell tags.                     -->
+	<xs:complexType name="cellType" mixed="true">
+		<xs:choice maxOccurs="unbounded" minOccurs="0">
+			<xs:group ref="htmlTags"/>
+		</xs:choice>
+		<!-- Support the HTML width attribute                           -->
+		<xs:attribute name="width" type="xs:string"/>
+	</xs:complexType>
+	
+	<!-- Valid values for rules attribute 	-->
+	<xs:simpleType name="rulesValues">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="none"/>
+			<xs:enumeration value="groups"/>
+			<xs:enumeration value="rows"/>
+			<xs:enumeration value="cols"/>
+			<xs:enumeration value="all"/>
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<!-- Valid values for frame attribute 	-->
+	<xs:simpleType name="frameValues">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="void"/>
+			<xs:enumeration value="above"/>
+			<xs:enumeration value="below"/>
+			<xs:enumeration value="hsides"/>
+			<xs:enumeration value="lhs"/>
+			<xs:enumeration value="rhs"/>
+			<xs:enumeration value="vsides"/>
+			<xs:enumeration value="box"/>
+			<xs:enumeration value="border"/>
+		</xs:restriction>
+	</xs:simpleType>
+
+	<!--
+		This type prevents a null value, or one that contains only whitespace,
+		and establishes a maximum length of 100 characters.
+	-->
+	<xs:simpleType name="nonNullString">
+		<xs:restriction base="xs:string">
+			<xs:minLength value="1" />
+			<xs:maxLength value="100" />
+			<xs:whiteSpace value="collapse" />
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<!--
+		This type prevents a null value, or one that contains only whitespace,
+		and establishes a maximum length of 4000 characters.
+	-->
+	<xs:simpleType name="url">
+		<xs:restriction base="xs:string">
+			<xs:minLength value="1" />
+			<xs:maxLength value="4000" />
+			<xs:whiteSpace value="collapse" />
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<!--
+		This type prevents a null value, or one that contains only whitespace,
+		and establishes a maximum length of 1,000 characters.
+	-->
+	<xs:simpleType name="NonNull1KString">
+		<xs:restriction base="xs:string">
+			<xs:minLength value="1" />
+			<xs:maxLength value="1000" />
+			<xs:whiteSpace value="collapse" />
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<!--
+		This type prevents a null value, or one that contains only whitespace,
+		and establishes a maximum length of 1,000,000 characters.
+	-->
+	<xs:simpleType name="bigNonNullString">
+		<xs:restriction base="xs:string">
+			<xs:minLength value="1" />
+			<xs:maxLength value="1000000" />
+			<xs:whiteSpace value="collapse" />
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<!--
+		This type prevents a null value	and has no maximum length.
+	-->
+	<xs:simpleType name="unboundedNonNullString">
+		<xs:restriction base="xs:string">
+			<xs:minLength value="1" />
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<!--
+		This type allows a null value, preserves whitespace,
+		and establishes a maximum length of 1,000,000 characters.
+	-->
+	<xs:simpleType name="bigString">
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="1000000" />
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<!--
+		velocityString extends xs:string (via the intermediary bigString) to add a 
+		"substitution=" attribute.  It's important that this type allow a null string.
+	-->
+	<xs:complexType name="velocityString" mixed="true">
+		<xs:simpleContent>
+			<xs:extension base="bigString">
+				<!-- Indicates substitution variables are present. -->
+				<xs:attribute name="substitution" type="workflowBooleanType" default="false"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	
+	<!-- 
+	fileTemplateType extends velocityString to add a 
+	"filePathSubstitution=" attribute.  It's important that this type allow a null string.
+	 -->
+	
+	<xs:complexType name="fileTemplateType" mixed="true">
+		<xs:simpleContent>
+			<xs:extension base="velocityString">
+				<!-- Indicates substitution variables are present. -->
+				<xs:attribute name="filePathSubstitution" type="workflowBooleanType" default="false"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	
+	<!--
+		velocityFileString extends velocityString with an additional encoding 
+		attribute for saving a file.
+	--> 
+	<xs:complexType name="velocityFileString" mixed="true">
+		<xs:simpleContent>
+			<xs:extension base="velocityString">
+				<!-- Indicates encoding for saved file. -->
+				<xs:attribute name="codePage" type="xs:NMTOKEN" fixed="IBM-1047"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	 
+	<xs:simpleType name="max1K">
+  		<xs:restriction base='xs:integer'>
+  			<xs:minInclusive value='1'/>
+    		<xs:maxInclusive value='1000'/>
+  		</xs:restriction>
+	</xs:simpleType> 
+	
+	<!-- We define our own boolean type to protect against values of "0" and "1". --> 
+	<xs:simpleType name="workflowBooleanType">
+  		<xs:restriction base='xs:string'>
+  			<xs:enumeration value='true'/>
+    		<xs:enumeration value='false'/>
+  		</xs:restriction>
+	</xs:simpleType>
+	
+	<!-- We define our own date type to cap it at 9999, to be consistent with the UI. --> 
+	<xs:simpleType name="workflowDateType">
+  		<xs:restriction base='xs:date'>
+  			<xs:maxInclusive value='9999-12-31'/>
+  		</xs:restriction>
+	</xs:simpleType>
+	
+	<!-- A string that follows the typical restriction of a typical variable name
+	      -> must start with upper or lowercase letter (A-Z, a-z)
+	      -> all other characters must be alphanumeric or any of the following symbols: ( - ) ( _ )
+	      -> 1-16 characters 
+	 -->
+	<xs:simpleType name="softwareTypeString">
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="16"/>
+			<xs:pattern value="[a-zA-Z]{1}[a-zA-Z0-9_\-]*"/>
+		</xs:restriction>
+	</xs:simpleType>
+
+	<!-- Add in 2.2SPE -->
+	<!-- We restrict the value of region size for starting the TSO/E address space -->
+    <xs:simpleType name="regionSizeType">
+		<xs:restriction base="xs:integer">
+			<xs:minInclusive value="50000"></xs:minInclusive>
+			<xs:maxInclusive value="2096128"></xs:maxInclusive>
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<!-- We restrict the value of timeout when execute the script file -->
+	<xs:simpleType name="timeoutType">
+		<xs:restriction base="xs:integer">
+			<xs:minInclusive value="60"></xs:minInclusive>
+			<xs:maxInclusive value="3600"></xs:maxInclusive>
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<!-- The type of script file parameters  -->
+	<xs:complexType name="parameterType">
+	   <xs:sequence>
+	     <!-- The description about this script parameters. -->
+		 <xs:element name="description" type="nlsRichString"/>
+		 <!-- The value of script parameters --> 
+		 <xs:element name="value" type="nlsString"/>
+	   </xs:sequence>
+	</xs:complexType>	
+	
+	<!-- The type of proc name, support substitution -->	
+	<xs:complexType name="procNameType" mixed="true">
+		<xs:simpleContent>
+			<xs:extension base="nonNullString">
+				<!-- Indicates substitution variables are present. -->
+				<xs:attribute name="substitution" type="workflowBooleanType" default="false"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	
+	
+	<!-- The attribute "needResolveConflicts" is similar to that in the type of "resolveConflictsType",
+	it is used to decide if workflow step has to display the "Input Variables" tab when variable conflict happen.
+	If needResolveConflicts="false", workflow will directly load variables from output 
+	file and override existing variable values in workflow variable pool, but global
+	variables will keep unchange for the safety sake.
+	Extends from nonNullString and its default value is set to true. -->	
+	<xs:complexType name="outputVariablesPrefixType">
+		<xs:simpleContent>
+			<xs:extension base="nonNullString">
+				<xs:attribute name="needResolveConflicts" type="workflowBooleanType" default="true"/>
+				<!--
+					The attribute "loadOutputFileArrayValue" is used to decide if the value of array variables 
+					will change when variable conflict happens.
+					If loadOutputFileArrayValue="true", which is the default, workflow will directly load the 
+					value of array variables from output file and override existing variable values in workflow 
+					variable pool.
+					If loadOutputFileArrayValue="false", the value of array variables will keep unchanged.
+				-->
+				<xs:attribute name="loadOutputFileArrayValue" type="workflowBooleanType" default="true"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	
+		<!--Feedback section--> 
+	<xs:complexType name="feedbackItemType">
+		<xs:sequence>
+			<xs:element name="question" type="nlsRichVelocityString"/>
+			<xs:element name="answers" type="answersType" />
+		</xs:sequence>
+		<xs:attribute name="name" type="xs:string" use="required" />
+	</xs:complexType>
+
+	<xs:complexType name="answersType">
+		<xs:sequence>
+			<xs:choice>
+				<!-- single choice -->
+				<xs:element name="singleSelect" type="selectType"/>
+				<!-- multiple choice -->
+				<xs:element name="multipleSelect" type="selectType"/>
+				<!-- text -->
+				<xs:element name="text" type="xs:string"/>
+			</xs:choice>
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="selectType">
+		<xs:sequence>
+			<xs:choice>
+			    <xs:element name="lable" type="labelType" minOccurs="1" maxOccurs="50" />
+	 		    <xs:element name="label" type="labelType" minOccurs="1" maxOccurs="50" /> 
+		    </xs:choice>
+		</xs:sequence>
+		<xs:attribute name="hasOtherAnswer" type="workflowBooleanType" default="false"/>
+	</xs:complexType>
+	
+	<xs:complexType name="labelType" mixed="true">
+		<xs:complexContent>
+			<xs:extension base="nlsRichString">
+				<xs:attribute name="value" type="xs:string" use="optional"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	
+</xs:schema>

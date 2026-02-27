@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/******************************************************************************/
+/* Copyright Contributors to the zOS-Workflow Project.                        */
+/* SPDX-License-Identifier: Apache-2.0                                        */
+/******************************************************************************/
+-->
+<step name="setServerDirectoryPermissions">
+    <title>Change directory ownership and permissions</title>
+    <description>Remove read and execute access for all users to the zFS file system and set group access if required</description>
+    <runAsUser substitution="true">$!{instance-UKO_ADMIN_SERVER}</runAsUser>
+    <approver substitution="true">$!{instance-UKO_APPROVER_SERVER}</approver>
+    <variableValue name="SERVER_USER_DIR" scope="instance" noPromptIfSet="false" required="false"/>
+    <variableValue name="SERVER_OUTPUT_DIR" scope="instance" noPromptIfSet="false" required="false"/>
+    <variableValue name="SERVER_STC_NAME" scope="instance" noPromptIfSet="false" required="false"/>
+    <variableValue name="SERVER_STC_USER" scope="instance" noPromptIfSet="false" required="false"/>
+    <variableValue name="SERVER_STC_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
+    <instructions substitution="true">Remove access to all users from ${instance-SERVER_USER_DIR}/servers/${instance-SERVER_STC_NAME}</instructions>
+    <weight>1</weight>
+    <autoEnable>true</autoEnable>
+    <template>
+        <inlineTemplate substitution="true">
+
+    #if(${instance-SERVER_STC_GROUP} != "" &amp;&amp; ${instance-SERVER_STC_GROUP})               
+        ownership="${instance-SERVER_STC_USER}:${instance-SERVER_STC_GROUP}"
+        dirflag=750
+        fileflag=640
+    #else
+        ownership="${instance-SERVER_STC_USER}"
+        dirflag=700
+        fileflag=600
+    #end
+
+    #if(${instance-SERVER_OUTPUT_DIR} != "" &amp;&amp; ${instance-SERVER_OUTPUT_DIR})
+        echo "Changing ownership of ${instance-SERVER_OUTPUT_DIR}/${instance-SERVER_STC_NAME} to $ownership"
+        chown -R $ownership ${instance-SERVER_OUTPUT_DIR}/${instance-SERVER_STC_NAME}
+        echo "Ensure read and write access to ${instance-SERVER_OUTPUT_DIR}/${instance-SERVER_STC_NAME}"
+        chmod -R u+rw ${instance-SERVER_OUTPUT_DIR}/${instance-SERVER_STC_NAME}
+    #end
+
+    echo "Transfer ownership of ${instance-SERVER_USER_DIR}/servers/${instance-SERVER_STC_NAME} to $ownership"
+    chown $ownership ${instance-SERVER_USER_DIR}/servers/${instance-SERVER_STC_NAME}
+    chown $ownership ${instance-SERVER_USER_DIR}/servers/${instance-SERVER_STC_NAME}/server.env
+    chown $ownership ${instance-SERVER_USER_DIR}/servers/${instance-SERVER_STC_NAME}/jvm.options
+    echo "Change file access to $fileflag"
+    chmod $fileflag ${instance-SERVER_USER_DIR}/servers/${instance-SERVER_STC_NAME}/server.env
+    chmod $fileflag ${instance-SERVER_USER_DIR}/servers/${instance-SERVER_STC_NAME}/jvm.options
+    echo "Change directory access to $dirflag"
+    chmod $dirflag ${instance-SERVER_USER_DIR}/servers/${instance-SERVER_STC_NAME}
+    if [ -d "${instance-SERVER_USER_DIR}/servers/${instance-SERVER_STC_NAME}/configDropins" ] 
+    then
+        chown $ownership ${instance-SERVER_USER_DIR}/servers/${instance-SERVER_STC_NAME}/configDropins
+        chown $ownership ${instance-SERVER_USER_DIR}/servers/${instance-SERVER_STC_NAME}/configDropins/overrides
+        chmod $dirflag ${instance-SERVER_USER_DIR}/servers/${instance-SERVER_STC_NAME}/configDropins
+        chmod $dirflag ${instance-SERVER_USER_DIR}/servers/${instance-SERVER_STC_NAME}/configDropins/overrides
+    fi
+        </inlineTemplate>
+    <submitAs>shell-JCL</submitAs>
+    </template>
+</step>

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+/******************************************************************************/
+/* Copyright Contributors to the zOS-Workflow Project.                        */
+/* SPDX-License-Identifier: Apache-2.0                                        */
+/******************************************************************************/
+-->
+
+<step name="defineUsersAndGroupsAgent">
+    <title>Define Agent users and groups</title>
+    <description>Define the technical users and groups required for a KMG Agent</description>
+
+    <step name="defineGroupsAgent">
+        <title>Define Agent groups</title>
+        <description>Define groups required for the KMG Agent</description>
+        <runAsUser substitution="true">$!{instance-UKO_ADMIN_SECURITY}</runAsUser>
+        <approver substitution="true">$!{instance-UKO_APPROVER_SECURITY}</approver>
+        <variableValue name="AGENT_STC_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="UKO_AGENT_CLIENT_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="TECHNICAL_SUPERIOR_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="SAF_OWNER" scope="instance" noPromptIfSet="false" required="false"/>
+        <instructions substitution="true">Submit rexx exec to execute step. The workflow is using the AUTOGID option to 
+            automatically generate a unique ID value in the OMVS segment of a group. If you cannot use AUTOGID, you 
+            need to replace it with a unique GID(group-identifier) for each ADDGROUP statement. For additional parameters, 
+            refer to the RACF documentation: https://www.ibm.com/docs/en/zos/3.1.0?topic=syntax-addgroup-add-group-profile
+        </instructions>
+        <weight>1</weight>
+        <autoEnable>true</autoEnable>
+        <template>
+            <fileTemplate substitution="true">rexx/defineGroupsAgent.rexx</fileTemplate>
+            <submitAs maxRc="0">TSO-REXX-JCL</submitAs>
+            <maxLrecl>1024</maxLrecl>
+        </template>
+    </step>
+
+    <step name="defineUsersAgent">
+        <title>Define Agent users</title>
+        <description>Define users required for the KMG Agent</description>
+        <runAsUser substitution="true">$!{instance-UKO_ADMIN_SECURITY}</runAsUser>
+        <approver substitution="true">$!{instance-UKO_APPROVER_SECURITY}</approver>
+        <variableValue name="AGENT_STC_USER" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="AGENT_STC_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="UKO_AGENT_CLIENT_USER" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="UKO_AGENT_CLIENT_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="USER_HOME_PARENT_DIR" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="SAF_OWNER" scope="instance" noPromptIfSet="false" required="false"/>
+        <instructions substitution="true">Submit rexx exec to execute step. The workflow is using the
+            AUTOUID option to automatically generate a unique ID value in the OMVS segment of a user.
+            If you cannot use AUTOUID, you need to replace it with a unique UID(user-identifier) for
+            each ADDUSER statement. For additional parameters, refer to the RACF documentation: 
+            https://www.ibm.com/docs/en/zos/3.1.0?topic=syntax-adduser-add-user-profile
+        </instructions>
+        <weight>1</weight>
+        <autoEnable>true</autoEnable>
+        <template>
+            <fileTemplate substitution="true">rexx/defineUsersAgent.rexx</fileTemplate>
+            <submitAs maxRc="0">TSO-REXX-JCL</submitAs>
+            <maxLrecl>1024</maxLrecl>
+        </template>
+    </step>
+
+</step>

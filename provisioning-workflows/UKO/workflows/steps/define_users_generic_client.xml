@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+/******************************************************************************/
+/* Copyright Contributors to the zOS-Workflow Project.                        */
+/* SPDX-License-Identifier: Apache-2.0                                        */
+/******************************************************************************/
+-->
+
+<step name="defineUsersAndGroupsGenericClient">
+    <title>Define generic client user and group</title>
+    <description>Define a generic client with no password and group</description>
+
+    <step name="defineGroupsGenericClient">
+        <title>Define generic client group</title>
+        <description>Define a generic client group that can be used to grant acess to</description>
+        <runAsUser substitution="true">$!{instance-UKO_ADMIN_SECURITY}</runAsUser>
+        <approver substitution="true">$!{instance-UKO_APPROVER_SECURITY}</approver>
+        <variableValue name="GENERIC_CLIENT_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="PERSONAL_SUPERIOR_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="SAF_OWNER" scope="instance" noPromptIfSet="false" required="false"/>
+        <instructions substitution="true">Submit rexx exec to execute step. The workflow is using the AUTOGID option to 
+            automatically generate a unique ID value in the OMVS segment of a group. If you cannot use AUTOGID, you 
+            need to replace it with a unique GID(group-identifier) for each ADDGROUP statement. For additional parameters, 
+            refer to the RACF documentation: https://www.ibm.com/docs/en/zos/3.1.0?topic=syntax-addgroup-add-group-profile
+        </instructions>
+        <weight>1</weight>
+        <autoEnable>true</autoEnable>
+        <template>
+            <fileTemplate substitution="true">rexx/defineGroupsGenericClient.rexx</fileTemplate>
+            <submitAs maxRc="0">TSO-REXX-JCL</submitAs>
+            <maxLrecl>1024</maxLrecl>
+        </template>
+    </step>
+
+    <step name="defineUsersGenericClient">
+        <title>Define generic client users</title>
+        <description>Define a generic client user with no password that can be used for generating a client certificate</description>
+        <runAsUser substitution="true">$!{instance-UKO_ADMIN_SECURITY}</runAsUser>
+        <approver substitution="true">$!{instance-UKO_APPROVER_SECURITY}</approver>
+        <variableValue name="GENERIC_CLIENT_USER" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="GENERIC_CLIENT_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="USER_HOME_PARENT_DIR" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="SAF_OWNER" scope="instance" noPromptIfSet="false" required="false"/>
+        <instructions substitution="true">Submit rexx exec to execute step. The workflow is using the
+            AUTOUID option to automatically generate a unique ID value in the OMVS segment of a user.
+            If you cannot use AUTOUID, you need to replace it with a unique UID(user-identifier) for
+            each ADDUSER statement. For additional parameters, refer to the RACF documentation: 
+            https://www.ibm.com/docs/en/zos/3.1.0?topic=syntax-adduser-add-user-profile
+        </instructions>
+        <weight>1</weight>
+        <autoEnable>true</autoEnable>
+        <template>
+            <fileTemplate substitution="true">rexx/defineUsersGenericClient.rexx</fileTemplate>
+            <submitAs maxRc="0">TSO-REXX-JCL</submitAs>
+            <maxLrecl>1024</maxLrecl>
+        </template>
+    </step>
+
+</step>

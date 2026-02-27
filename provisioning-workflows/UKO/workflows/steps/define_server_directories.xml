@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/******************************************************************************/
+/* Copyright Contributors to the zOS-Workflow Project.                        */
+/* SPDX-License-Identifier: Apache-2.0                                        */
+/******************************************************************************/
+-->
+<step name="createDirectories">
+    <title>Create and mount directories</title>
+    <description>Create the directories required by the new server</description>
+
+    <step name="createZFS">
+        <title>Create zFS datasets</title>
+        <description>If requested, create and mount a new ZFS</description>
+        <runAsUser substitution="true">$!{instance-UKO_ADMIN_ZFS}</runAsUser>
+        <approver substitution="true">$!{instance-UKO_APPROVER_ZFS}</approver>
+        <variableValue name="SERVER_STC_NAME" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="SERVER_USER_DIR" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="ZOS_VSAM_VOLUME" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="ZOS_ZFS_DATACLASS" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="SERVER_FILE_SYSTEM_HLQ" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="SERVER_OUTPUT_DIR" scope="instance" noPromptIfSet="false" required="false"/>
+        <instructions substitution="true">Submit JCL to execute step</instructions>
+        <weight>1</weight>
+        <autoEnable>true</autoEnable>
+        <template>
+        <fileTemplate substitution="true">jcl/create-server-zfs.jcl</fileTemplate>
+        <submitAs>JCL</submitAs>
+        </template>
+    </step>
+    
+    <step name="MountZFS" optional="false">
+        <title>Mount zFS filesystem</title>
+        <description>This step runs a script to mount the zFS dataset within the directory specified by the templates SERVER_USER_DIR property. The job is run under the userid specified by the templates UKO_ADMIN_ZFS property.</description>
+        <prereqStep name="createZFS"/>
+        <runAsUser substitution="true">$!{instance-UKO_ADMIN_ZFS}</runAsUser>
+        <approver substitution="true">$!{instance-UKO_APPROVER_ZFS}</approver>
+        <variableValue name="SERVER_USER_DIR" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="SERVER_OUTPUT_DIR" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="SERVER_STC_NAME" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="SERVER_STC_USER" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="SERVER_STC_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="SERVER_FILE_SYSTEM_HLQ" scope="instance" noPromptIfSet="false" required="false"/>
+        <instructions>Execute the mount zFS script to mount the zFS dataset (MountZFS.sh)</instructions>
+        <weight>1</weight>
+        <autoEnable>true</autoEnable>
+        <template>
+            <fileTemplate substitution="true">scripts/mount-zfs.sh</fileTemplate>
+            <submitAs>shell-JCL</submitAs>
+        </template>
+    </step>  
+
+</step>

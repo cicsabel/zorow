@@ -1,0 +1,12 @@
+cp variable_imports.xml ../ukoagent/variable_imports.xml
+cp variable_imports.xml ../ukoangel/variable_imports.xml
+cp variable_imports.xml ../ukodb/variable_imports.xml
+cp variable_imports.xml ../ukokeyring/variable_imports.xml
+cp variable_imports.xml ../ukoserver/variable_imports.xml
+cp variable_imports.xml ../ukousers/variable_imports.xml
+cp variable_imports.xml ../ccusers/variable_imports.xml
+cp variable_imports.xml ../cc-dynamic-resources/variable_imports.xml
+cp variable_imports.xml ../ccserver/variable_imports.xml
+cp variable_imports.xml ../cckeyring/variable_imports.xml
+cp variable_imports.xml ../ccagent/variable_imports.xml
+cp variable_imports_ccc_internal.xml ../cc-dynamic-resources/variable_imports_ccc_internal.xml

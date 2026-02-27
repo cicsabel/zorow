@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- Declare external file containing WAS variables referenced in the following steps -->
+<!DOCTYPE workflow [<!ENTITY variables SYSTEM "variable_imports.xml">
+                    <!ENTITY variables_users SYSTEM "variable_imports_users.xml">
+                    <!ENTITY step_define_users_generic_client SYSTEM "steps/define_users_generic_client.xml">
+                    <!ENTITY step_define_users_liberty SYSTEM "steps/define_users_liberty.xml">
+                    <!ENTITY step_define_users_server SYSTEM "steps/define_users_server.xml">
+                    <!ENTITY step_define_users_uko SYSTEM "steps/define_users_uko.xml">
+                    <!ENTITY step_define_keyring SYSTEM "steps/define_keyring.xml">
+                    <!ENTITY step_define_keyring_oidc SYSTEM "steps/define_keyring_oidc.xml">
+                    <!ENTITY step_define_keyring_trust SYSTEM "steps/define_keyring_trust.xml">
+                    <!ENTITY step_define_keyring_msdke SYSTEM "steps/define_keyring_msdke.xml">
+                    <!ENTITY step_define_client_cert SYSTEM "steps/define_client_cert.xml">
+                    <!ENTITY step_define_database SYSTEM "steps/define_database.xml">
+                    <!ENTITY step_define_server_directories SYSTEM "steps/define_server_directories.xml">
+                    <!ENTITY step_define_server_liberty SYSTEM "steps/define_server_liberty.xml">
+                    <!ENTITY step_set_server_directory_permissions SYSTEM "steps/set_server_directory_permissions.xml">
+                    <!ENTITY step_define_server_security_liberty SYSTEM "steps/define_server_security_liberty.xml">
+                    <!ENTITY step_define_server SYSTEM "steps/define_server_cc.xml">
+                    <!ENTITY step_start_server SYSTEM "steps/start_server.xml">
+                    ]> 
+                    
+<!--
+/******************************************************************************/
+/* Copyright Contributors to the zOS-Workflow Project.                        */
+/* SPDX-License-Identifier: Apache-2.0                                        */
+/******************************************************************************/
+-->
+<workflow xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="schemas/workflow_v1.xsd">
+    <!--  Note: The schema workflow_v1.xsd is shipped with z/OSMF. To use the schema
+          to validate this XML, modify the above schema location to point to the 
+          schema in z/OSMF, or copy the schema to an appropriate location.  -->
+
+    <!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+    <!-- CC Provisioning : Provision a CC server                              -->
+    <!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+
+  <workflowInfo>
+      <workflowID>ccserver_Provision</workflowID>
+      <workflowDescription>Provision a CC server</workflowDescription>
+    <workflowVersion>1.0.0.0</workflowVersion>
+      <vendor>IBM</vendor>
+      <Provisioning>
+          <productID>5655-EKM</productID>
+          <productName>UKO</productName>
+          <productVersion>V2R1+</productVersion>
+          <softwareType>ccserver</softwareType>
+      </Provisioning>
+  </workflowInfo>
+  
+  	<!--+++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+	<!--     Include variables used by the following steps     -->
+	<!--+++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+	&variables;
+    &variables_users;
+
+    <step name="defineUsersAndGroups">
+        <title>Define users and groups</title>
+        <description>Define users and groups</description>
+
+        &step_define_users_liberty;
+        &step_define_users_generic_client;
+
+    </step>
+
+    <step name="defineKeyring">
+        <title>Define key rings and certificates</title>
+        <description>Create key rings, create certificates and add them to key rings</description>
+
+        &step_define_keyring;
+        &step_define_keyring_oidc;
+        <!-- UKO trust certificates are not required -->
+        <!-- &step_define_keyring_trust; -->
+        &step_define_keyring_msdke;
+        &step_define_client_cert;
+     
+    </step>
+
+    <!-- Define the server -->
+    &step_define_server;
+
+    <!-- Start the server -->
+    &step_start_server;
+
+</workflow>

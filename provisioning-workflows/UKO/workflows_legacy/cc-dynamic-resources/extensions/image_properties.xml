@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/******************************************************************************/
+/* Copyright Contributors to the zOS-Workflow Project.                        */
+/* SPDX-License-Identifier: Apache-2.0                                        */
+/******************************************************************************/
+
+-->
+
+<atCreate name="START_SERVER" scope="instance" prompt="true" required="false"/>
+<atCreate name="SERVER_INSTALL_DIR" scope="instance" prompt="true" required="false"/>
+<atCreate name="JAVA_HOME" scope="instance" prompt="true" required="false"/>
+<atCreate name="ENABLE_MTLS_VIA_HTTPS_PORT" scope="instance" prompt="true" required="false"/>
+
+<atCreate name="MSDKE_UKO_SERVER_NAME" scope="instance" prompt="true" required="false"/>
+<atCreate name="MSDKE_SUPPORT_REQUIRED" scope="instance" prompt="true" required="false"/>
+<atCreate name="CRYPTO_CONNECT_SUPPORT_REQUIRED" scope="instance" prompt="true" required="false"/>

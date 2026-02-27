@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/******************************************************************************/
+/* Copyright Contributors to the zOS-Workflow Project.                        */
+/* SPDX-License-Identifier: Apache-2.0                                        */
+/******************************************************************************/
+-->
+
+
+
+<step name="configureSAFSecurityProfiles">
+    <title>General security definitions</title>
+    <description>Configure the new server for z/OS authentication to the angel</description>
+    <runAsUser substitution="true">$!{instance-UKO_ADMIN_SECURITY}</runAsUser>
+    <approver substitution="true">$!{instance-UKO_APPROVER_SECURITY}</approver>
+    <variableValue name="SERVER_STC_USER" scope="instance" noPromptIfSet="false" required="false"/>
+    <variableValue name="SERVER_STC_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
+    <variableValue name="WLP_UNAUTHENTICATED_USER" scope="instance" noPromptIfSet="false" required="false"/>
+    <variableValue name="WLP_UNAUTHENTICATED_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
+    <variableValue name="SAF_OWNER" scope="instance" noPromptIfSet="false" required="false"/>
+    <variableValue name="WLP_ANGEL_NAME" scope="instance" noPromptIfSet="false" required="false"/>
+    <variableValue name="SAF_PROFILE_PREFIX" scope="instance" noPromptIfSet="false" required="false"/>
+    <instructions substitution="true">Submit rexx exec to execute step</instructions>
+    <weight>1</weight>
+    <autoEnable>true</autoEnable>
+    <template>
+        <fileTemplate substitution="true">rexx/defineServerSecurity.rexx</fileTemplate>
+        <submitAs maxRc="0">TSO-REXX-JCL</submitAs>
+        <maxLrecl>1024</maxLrecl>
+    </template>
+</step>

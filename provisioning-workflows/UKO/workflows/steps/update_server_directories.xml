@@ -1,0 +1,315 @@
+<?xml version="1.0" encoding="UTF-8"?>                    
+<!--
+/******************************************************************************/
+/* Copyright Contributors to the zOS-Workflow Project.                        */
+/* SPDX-License-Identifier: Apache-2.0                                        */
+/******************************************************************************/
+-->
+<step name="updateDirectories">
+    <title>Update config files and directories</title>
+    <description>Update files and directories required by the new server</description>
+
+    <step name="backupServerDir">
+        <title>Backup server directory</title>
+        <description>Submit script to backup the server directory</description>
+        <runAsUser substitution="true">$!{instance-UKO_ADMIN_SERVER}</runAsUser>
+        <approver substitution="true">$!{instance-UKO_APPROVER_SERVER}</approver>
+        <variableValue name="SERVER_DIRECTORY" scope="instance" noPromptIfSet="false" required="false"/>
+        <instructions substitution="true">Submit shell script to execute step</instructions>
+        <weight>1</weight>
+        <autoEnable>true</autoEnable>
+        <template>
+            <inlineTemplate substitution="true">
+                # Get the current version
+                currentversion=${instance-SERVER_VERSION}
+
+                # create backup directory
+                echo "Creating backup directory called ${instance-SERVER_DIRECTORY}/backup_${_workflow-workflowKey}"
+                mkdir ${instance-SERVER_DIRECTORY}/backup_${_workflow-workflowKey};
+                echo "everything else will now be logged in ${instance-SERVER_DIRECTORY}/backup_${_workflow-workflowKey}/migration.log"
+
+                # move everything into backup directory
+                echo "backing up EkmfWeb.properties" >> ${instance-SERVER_DIRECTORY}/backup_${_workflow-workflowKey}/migration.log;
+                mv ${instance-SERVER_DIRECTORY}/EkmfWeb.properties ${instance-SERVER_DIRECTORY}/backup_${_workflow-workflowKey}/EkmfWeb.properties;
+                echo "backing up apps directory" >> ${instance-SERVER_DIRECTORY}/backup_${_workflow-workflowKey}/migration.log;
+                mv ${instance-SERVER_DIRECTORY}/apps ${instance-SERVER_DIRECTORY}/backup_${_workflow-workflowKey}/apps;
+
+                if [ -d "${instance-SERVER_DIRECTORY}/includes" ] 
+                then
+                    echo "includes folder found, backing up" >> ${instance-SERVER_DIRECTORY}/backup_${_workflow-workflowKey}/migration.log;
+                    mv ${instance-SERVER_DIRECTORY}/includes ${instance-SERVER_DIRECTORY}/backup_${_workflow-workflowKey}/includes; 
+                fi
+                
+                if [ -d "${instance-SERVER_DIRECTORY}/configDropins" ] 
+                then
+                    echo "configDropins found, backing up" >> ${instance-SERVER_DIRECTORY}/backup_${_workflow-workflowKey}/migration.log;
+                    mv ${instance-SERVER_DIRECTORY}/configDropins ${instance-SERVER_DIRECTORY}/backup_${_workflow-workflowKey}/configDropins; 
+                fi
+
+
+                mv ${instance-SERVER_DIRECTORY}/resources ${instance-SERVER_DIRECTORY}/backup_${_workflow-workflowKey}/resources;
+                mv ${instance-SERVER_DIRECTORY}/server.xml ${instance-SERVER_DIRECTORY}/backup_${_workflow-workflowKey}/server.xml;		    
+                mv ${instance-SERVER_DIRECTORY}/server.env ${instance-SERVER_DIRECTORY}/backup_${_workflow-workflowKey}/server.env;			    
+                mv ${instance-SERVER_DIRECTORY}/jvm.options ${instance-SERVER_DIRECTORY}/backup_${_workflow-workflowKey}/jvm.options;			    
+
+                # Create a migration log
+                echo "Current UKO Version is: $currentversion" > ${instance-SERVER_DIRECTORY}/backup_${_workflow-workflowKey}/migration.log;
+            </inlineTemplate>
+            <submitAs>shell-JCL</submitAs>
+        </template>
+    </step>
+
+    <step name="migrateJvmOptions">
+        <title>Migrate jvm.options</title>
+        <description>replace values in jvm.options with the values from the properties file</description>
+        <runAsUser substitution="true">$!{instance-UKO_ADMIN_SERVER}</runAsUser>
+        <approver substitution="true">$!{instance-UKO_APPROVER_SERVER}</approver>
+        <variableValue name="SERVER_INSTALL_DIR" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="TEMP_DIR" scope="instance" noPromptIfSet="false" required="false"/>
+        <instructions substitution="true">Submit shell script to execute step</instructions>
+        <weight>1</weight>
+        <autoEnable>true</autoEnable>
+        <template>
+                <inlineTemplate substitution="true">
+
+                #extract all name=value pairs that are not commented out from old file
+                sed '/^[[:blank:]]*#/d;/^$/d' ${instance-SERVER_DIRECTORY}/backup_${_workflow-workflowKey}/jvm.options > ${instance-TEMP_DIR}/zosmf-${_workflow-workflowKey}_jvm.options; 
+
+                echo "********************************************" >> ${instance-SERVER_DIRECTORY}/backup_${_workflow-workflowKey}/migration.log;
+                echo "Parameters from jvm.options to be migrated: " >> ${instance-SERVER_DIRECTORY}/backup_${_workflow-workflowKey}/migration.log;
+                cat ${instance-TEMP_DIR}/zosmf-${_workflow-workflowKey}_jvm.options >> ${instance-SERVER_DIRECTORY}/backup_${_workflow-workflowKey}/migration.log;
+                # set the number of lines
+                lines=$(sed -n '$='  ${instance-TEMP_DIR}/zosmf-${_workflow-workflowKey}_jvm.options; ); 
+                echo "********************************************" >> ${instance-SERVER_DIRECTORY}/backup_${_workflow-workflowKey}/migration.log;
+                echo "Number of parameters to be transferred:" ${lines} >> ${instance-SERVER_DIRECTORY}/backup_${_workflow-workflowKey}/migration.log;
+                sedstring="";
+                nottransfered="";
+                transferred="";
+
+                i=0;
+                while  [ $i -lt ${lines} ] 
+                do
+                    let i=i+1;
+                    # echo "i:$i";
+                    ukovariable=$(sed "${i}q;d"  ${instance-TEMP_DIR}/zosmf-${_workflow-workflowKey}_jvm.options   | sed -E 's/([^=]*)=(.*)/\1/');
+                    ukovalue=$(sed "${i}q;d"  ${instance-TEMP_DIR}/zosmf-${_workflow-workflowKey}_jvm.options   | sed -E 's/([^=]*)=(.*)/\2/');
+                    echo  "$ukovariable is $ukovalue";
+                    sedstring="${sedstring} s#^[ \#]*${ukovariable}=.*#${ukovariable}=${ukovalue}#g;";
+                
+                    # remove leading -D so grep command does not break
+                    grepstring=$(echo $ukovariable | cut -c3-);
+
+                    #check whether the extracted variable is contained in the latest jvm.options
+                    if !(grep -Fq "${grepstring}=" ${instance-SERVER_INSTALL_DIR}/jvm.options)
+                    then
+                        nottransfered="${nottransfered}\n${ukovariable}=${ukovalue}";
+                    else
+                        transfered="${transfered}\n$ukovariable";
+                        # create rest string to update variables
+                        # echo "{\"name\":\"$ukovariable\",\"value\":\"$ukovalue\",\"visibility\":\"public\"}," >> ${instance-TEMP_DIR}/zosmf-${_workflow-workflowKey}.properties;
+                    fi
+
+                done
+                
+                # do the actual replacement
+                # echo "sedstring: $sedstring";
+                sed -e "$sedstring" ${instance-SERVER_INSTALL_DIR}/jvm.options > ${instance-SERVER_DIRECTORY}/jvm.options;
+                echo "The following variable(s) have been transferred: $transfered\n" >> ${instance-SERVER_DIRECTORY}/backup_${_workflow-workflowKey}/migration.log;
+
+                if ["$nottransfered" = ""]
+                then
+                    echo "All parameters were transferred" >> ${instance-SERVER_DIRECTORY}/backup_${_workflow-workflowKey}/migration.log;
+                else
+                    echo "The following variable(s) can NOT be transferred automatically: ${nottransfered} \nVerify whether they still exist in the new version." >> ${instance-SERVER_DIRECTORY}/backup_${_workflow-workflowKey}/migration.log;
+                    echo "# The following parameters might have been deprecated:\n${nottransfered}" >> ${instance-SERVER_DIRECTORY}/jvm.options;
+                fi     
+
+            </inlineTemplate>
+            <submitAs>shell-JCL</submitAs>
+        </template>
+    </step>
+
+    <step name="migrateServerEnv">
+        <title>Migrate server.env</title>
+        <description>replace values in server.env with the values from the properties file</description>
+        <runAsUser substitution="true">$!{instance-UKO_ADMIN_SERVER}</runAsUser>
+        <approver substitution="true">$!{instance-UKO_APPROVER_SERVER}</approver>
+        <instructions substitution="true">Submit shell script to execute step</instructions>
+        <weight>1</weight>
+        <autoEnable>true</autoEnable>
+        <template>
+                <inlineTemplate substitution="true">
+
+                #extract all name=value pairs that are not commented out from old file
+                sed '/^[[:blank:]]*#/d;/^$/d' ${instance-SERVER_DIRECTORY}/backup_${_workflow-workflowKey}/server.env > ${instance-TEMP_DIR}/zosmf-${_workflow-workflowKey}_server.env; 
+                chmod 644 ${instance-TEMP_DIR}/zosmf-${_workflow-workflowKey}_server.env;
+
+                echo "********************************************" >> ${instance-SERVER_DIRECTORY}/backup_${_workflow-workflowKey}/migration.log;
+                echo "Parameters from server.env to be migrated: " >> ${instance-SERVER_DIRECTORY}/backup_${_workflow-workflowKey}/migration.log;
+                cat ${instance-TEMP_DIR}/zosmf-${_workflow-workflowKey}_server.env >> ${instance-SERVER_DIRECTORY}/backup_${_workflow-workflowKey}/migration.log;
+
+                # set the number of lines
+                lines=$(sed -n '$='  ${instance-TEMP_DIR}/zosmf-${_workflow-workflowKey}_server.env; ); 
+                echo "********************************************" >> ${instance-SERVER_DIRECTORY}/backup_${_workflow-workflowKey}/migration.log;
+                echo "Number of parameters to be transferred:" ${lines} >> ${instance-SERVER_DIRECTORY}/backup_${_workflow-workflowKey}/migration.log;
+                sedstring="";
+                nottransfered="";
+                transferred="";
+
+
+                i=0;
+                while  [ $i -lt ${lines} ] 
+                do
+                    let i=i+1;
+                    # echo "i:$i";
+                    ukovariable=$(sed "${i}q;d"  ${instance-TEMP_DIR}/zosmf-${_workflow-workflowKey}_server.env  | sed -E 's/([^=]*)=(.*)/\1/');
+                    ukovalue=$(sed "${i}q;d"  ${instance-TEMP_DIR}/zosmf-${_workflow-workflowKey}_server.env  | sed -E 's/([^=]*)=(.*)/\2/');
+                    sedstring="${sedstring} s#^[ \#]*${ukovariable}=.*#${ukovariable}=${ukovalue}#g;";
+                
+                    #check whether the extracted variable is contained in the latest server.env
+                    if !(grep -Fq "${ukovariable}=" ${instance-SERVER_INSTALL_DIR}/server.env)
+                    then
+                        nottransfered="${nottransfered}\n${ukovariable}=${ukovalue}";
+                    else
+                        transfered="${transfered}\n$ukovariable";
+                        # create rest string to update variables
+                        # echo "{\"name\":\"$ukovariable\",\"value\":\"$ukovalue\",\"visibility\":\"public\"}," >> ${instance-TEMP_DIR}/zosmf-${_workflow-workflowKey}.properties;
+                    fi
+                done
+                
+                # echo "sedstring: $sedstring";
+                sed -e "$sedstring" ${instance-SERVER_INSTALL_DIR}/server.env > ${instance-SERVER_DIRECTORY}/server.env;
+                echo "The following variable(s) have been transferred: $transfered\n" >> ${instance-SERVER_DIRECTORY}/backup_${_workflow-workflowKey}/migration.log;
+
+                if ["$nottransfered" = ""]
+                then
+                    echo "All parameters were transferred" >> ${instance-SERVER_DIRECTORY}/backup_${_workflow-workflowKey}/migration.log;
+                else
+                    echo "The following variable(s) can NOT be transferred automatically: $nottransfered \nVerify whether they still exist in the new version." >> ${instance-SERVER_DIRECTORY}/backup_${_workflow-workflowKey}/migration.log;
+                    echo "# The following parameters might have been deprecated:\n${nottransfered}" >> ${instance-SERVER_DIRECTORY}/server.env;
+                fi     
+
+                </inlineTemplate>
+            <submitAs>shell-JCL</submitAs>
+        </template>
+    </step>
+
+    <step name="setDirectoryPermissions">
+        <title>Set Directory Permissions</title>
+        <description>Ensure the new jvm.options and server.env files can be accessed</description>
+        <runAsUser substitution="true">$!{instance-UKO_ADMIN_SERVER}</runAsUser>
+        <approver substitution="true">$!{instance-UKO_APPROVER_SERVER}</approver>
+        <variableValue name="SERVER_STC_USER" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="SERVER_STC_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
+        <instructions substitution="true">Execute the script to transfer ownership of jvm.options and server.env in ${instance-SERVER_DIRECTORY} to ${instance-SERVER_STC_USER}</instructions>
+        <weight>1</weight>
+        <autoEnable>true</autoEnable>
+        <template>
+            <inlineTemplate substitution="true">
+                
+            #if(${instance-SERVER_STC_GROUP} != "" &amp;&amp; ${instance-SERVER_STC_GROUP})
+                echo "Ensure that ${instance-SERVER_STC_GROUP} has read access to ${instance-SERVER_DIRECTORY}/server.env and jvm.options"
+                chown ${instance-SERVER_STC_USER}:${instance-SERVER_STC_GROUP} ${instance-SERVER_DIRECTORY}/server.env
+                chmod 640 ${instance-SERVER_DIRECTORY}/server.env
+                chown ${instance-SERVER_STC_USER}:${instance-SERVER_STC_GROUP} ${instance-SERVER_DIRECTORY}/jvm.options
+                chmod 640 ${instance-SERVER_DIRECTORY}/jvm.options
+            #else
+                echo "Ensure that ${instance-SERVER_STC_USER} has read access to ${instance-SERVER_DIRECTORY}/server.env and jvm.options"
+                chown ${instance-SERVER_STC_USER} ${instance-SERVER_DIRECTORY}/server.env
+                chmod 600 ${instance-SERVER_DIRECTORY}/server.env
+                chown ${instance-SERVER_STC_USER} ${instance-SERVER_DIRECTORY}/jvm.options
+                chmod 600 ${instance-SERVER_DIRECTORY}/jvm.options
+            #end
+
+            if [ $? -gt 1 ]; then 
+                echo "ERROR: Could not chmod directory" >&amp;2;
+                exit "8"; 
+            fi
+
+            </inlineTemplate>
+            <submitAs>shell-JCL</submitAs>
+            </template>
+    </step>
+
+    <step name="createSymLinks">
+        <title>Create SymLinks to server install directory</title>
+        <description>Submit script to create symbolig links to the server installation diretory. </description>
+        <runAsUser substitution="true">$!{instance-UKO_ADMIN_SERVER}</runAsUser>
+        <approver substitution="true">$!{instance-UKO_APPROVER_SERVER}</approver>
+        <instructions substitution="true">Submit shell script to execute step</instructions>
+        <weight>1</weight>
+        <autoEnable>true</autoEnable>
+        <template>
+            <inlineTemplate substitution="true">
+
+                # Create symlinks to the updated installation folder
+                cd ${instance-SERVER_DIRECTORY}
+                ln -s ${instance-SERVER_INSTALL_DIR}/EkmfWeb.properties EkmfWeb.properties
+                ln -s ${instance-SERVER_INSTALL_DIR}/apps apps
+
+                if [ -d "${instance-SERVER_INSTALL_DIR}/includes" ] 
+                then
+                    ln -s ${instance-SERVER_INSTALL_DIR}/includes includes; 
+                fi
+                if [ -d "${instance-SERVER_INSTALL_DIR}/configDropins" ] 
+                then
+                    echo "configDropins folder found in ${instance-SERVER_INSTALL_DIR}"
+                    echo "creating ${instance-SERVER_DIRECTORY}/configDropins"
+                    mkdir configDropins
+
+                    echo "creating symlinks to the configDropins subfolders"
+
+                    echo "creating symlink to ${instance-SERVER_INSTALL_DIR}/configDropins/defaults"
+                    ln -s ${instance-SERVER_INSTALL_DIR}/configDropins/defaults configDropins/defaults
+
+                    echo "creating symlink to ${instance-SERVER_INSTALL_DIR}/configDropins/options"
+                    ln -s ${instance-SERVER_INSTALL_DIR}/configDropins/options configDropins/options
+
+                    echo "creating ${instance-SERVER_DIRECTORY}/configDropins/overrides"
+                    mkdir configDropins/overrides  
+                    echo "configDropins is set up: "
+                    ls -al configDropins/
+
+                    if [ -d "${instance-SERVER_DIRECTORY}/backup_${_workflow-workflowKey}/configDropins/overrides" ] 
+                    then
+                        echo "migrating overrides, details in ${instance-SERVER_DIRECTORY}/backup_${_workflow-workflowKey}/migration.log"
+                        echo "********************************************" >> ${instance-SERVER_DIRECTORY}/backup_${_workflow-workflowKey}/migration.log;
+                        echo "configDropins/overrides found, starting migration" >> ${instance-SERVER_DIRECTORY}/backup_${_workflow-workflowKey}/migration.log;
+                        for i in `ls ${instance-SERVER_DIRECTORY}/backup_${_workflow-workflowKey}/configDropins/overrides | xargs echo`; do 
+                            if [[ -L ${instance-SERVER_DIRECTORY}/backup_${_workflow-workflowKey}/configDropins/overrides/$i ]]; then 
+                                echo "$i is a symbolic link, trying to relink to the new target folder" >> ${instance-SERVER_DIRECTORY}/backup_${_workflow-workflowKey}/migration.log;
+                                if [ -f "${instance-SERVER_INSTALL_DIR}/configDropins/options/${i}" ]; then
+                                    echo "$i found in the new options folder and relinked" >> ${instance-SERVER_DIRECTORY}/backup_${_workflow-workflowKey}/migration.log;
+                                    ln -s ${instance-SERVER_INSTALL_DIR}/configDropins/options/${i} configDropins/overrides/${i}
+                                elif [ -f "${instance-SERVER_INSTALL_DIR}/configDropins/defaults/${i}" ]; then
+                                    echo "$i was found in the defaults folder and does not need to get overridden. The file is not copied." >> ${instance-SERVER_DIRECTORY}/backup_${_workflow-workflowKey}/migration.log;
+                                else
+                                    echo "$i was not found in the options folder. The link is preserved but needs to be verified" >> ${instance-SERVER_DIRECTORY}/backup_${_workflow-workflowKey}/migration.log;
+                                    cp -av ${instance-SERVER_DIRECTORY}/backup_${_workflow-workflowKey}/configDropins/overrides/${i} configDropins/overrides/${i} 
+                                fi
+                            else 
+                                echo "$i will be copied to new overrides" >> ${instance-SERVER_DIRECTORY}/backup_${_workflow-workflowKey}/migration.log;
+                                cp ${instance-SERVER_DIRECTORY}/backup_${_workflow-workflowKey}/configDropins/overrides/${i} configDropins/overrides/${i} 
+                            fi    
+                        done;            
+                        echo "overrides is set up: "
+                        ls -al configDropins/overrides                
+                    fi
+
+                    chown ${instance-SERVER_STC_USER} configDropins
+                    chown ${instance-SERVER_STC_USER} configDropins/overrides
+
+                    echo "Finished setting up configDropins"
+
+
+                fi
+                
+                ln -s ${instance-SERVER_INSTALL_DIR}/resources resources
+                ln -s ${instance-SERVER_INSTALL_DIR}/server.xml server.xml			    
+
+            </inlineTemplate>
+            <submitAs>shell-JCL</submitAs>
+        </template>
+    </step>
+
+</step>
