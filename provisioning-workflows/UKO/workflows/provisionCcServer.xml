@@ -18,8 +18,7 @@
                     <!ENTITY step_set_server_directory_permissions SYSTEM "steps/set_server_directory_permissions.xml">
                     <!ENTITY step_define_server_security_liberty SYSTEM "steps/define_server_security_liberty.xml">
                     <!ENTITY step_define_server SYSTEM "steps/define_server_cc.xml">
-                    <!ENTITY step_start_server SYSTEM "steps/start_server.xml">
-                    ]> 
+                    ]>
                     
 <!--
 /******************************************************************************/
@@ -29,7 +28,7 @@
 -->
 <workflow xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="schemas/workflow_v1.xsd">
     <!--  Note: The schema workflow_v1.xsd is shipped with z/OSMF. To use the schema
-          to validate this XML, modify the above schema location to point to the 
+          to validate this XML, modify the above schema location to point to the
           schema in z/OSMF, or copy the schema to an appropriate location.  -->
 
     <!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
@@ -49,10 +48,10 @@
       </Provisioning>
   </workflowInfo>
   
-  	<!--+++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
-	<!--     Include variables used by the following steps     -->
-	<!--+++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
-	&variables;
+   <!--+++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+ <!--     Include variables used by the following steps     -->
+ <!--+++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+ &variables;
     &variables_users;
 
     <step name="defineUsersAndGroups">
@@ -80,7 +79,49 @@
     <!-- Define the server -->
     &step_define_server;
 
-    <!-- Start the server -->
-    &step_start_server;
+
+    <step name="startServer" optional="false">
+        <title>Use the provided start command to bring up the server</title>
+        <description>This step provides the start command to bring up the provisioned server on z/OS using started task.
+            You have to manually issue this command on the z/OS console to bring up the provisioned server.</description>
+        <instructions substitution="true"><p>
+            Start the server with the following start z/OS console command:
+            </p>
+            <pre>
+
+            START ${instance-SERVER_STC_NAME}
+
+            </pre>
+            #if(${instance-CAT_SUPPORT_REQUIRED} &amp;&amp; ${instance-CAT_SUPPORT_REQUIRED} == "true")
+            <p>
+            <b>CAT Testing:</b> The CAT address for testing is:
+            </p>
+            <pre>
+
+            https://${instance-SERVER_HOSTNAME}:${instance-SERVER_PORT_TLS}/graphiql?path=/graphql
+
+            </pre>
+            <p>
+            Sample query to test:
+            </p>
+            <pre>
+
+            query {
+                getKeystores(limit: 10, offset: 0){
+                    keystores{
+                        id
+                        type
+                    }
+                }
+            }
+
+            #end
+            </pre>
+        </instructions>
+        <weight>1</weight>
+        <skills>System</skills>
+        <autoEnable>true</autoEnable>
+        <canMarkAsFailed>false</canMarkAsFailed>
+    </step>
 
 </workflow>

@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/******************************************************************************/
+/* Copyright Contributors to the zOS-Workflow Project.                        */
+/* SPDX-License-Identifier: Apache-2.0                                        */
+/******************************************************************************/
+-->
+
+<step name="startServer">
+    <title>Start the server</title>
+    <description>Start the server and optionally test CAT interface</description>
+
+    <step name="startServerCommand" optional="false">
+        <title>Use the provided start command to bring up the server</title>
+        <description>This step provides the start command to bring up the provisioned server on z/OS using started task.
+          You have to manually issue this command on the z/OS console to bring up the provisioned server.</description>
+        <instructions substitution="true"><p>
+            Start the server with the following start z/OS console command:
+            </p>
+            <pre>
+
+            START ${instance-SERVER_STC_NAME}
+
+            </pre>
+        </instructions>
+        <weight>1</weight>
+        <skills>System</skills>
+        <autoEnable>true</autoEnable>
+        <canMarkAsFailed>false</canMarkAsFailed>
+    </step>
+
+    <step name="testCATInterface" optional="false">
+        <title>Test CAT Interface</title>
+        <description>Test the CAT GraphQL interface</description>
+        <condition>
+            <expression><![CDATA["1" == "1"]]></expression>
+            <description>Should the step be executed, based on the CAT_SUPPORT_REQUIRED setting</description>
+            <targetStateSet>
+                <description/>
+                <extendStateExpression>
+                    <description>Skip if CAT_SUPPORT_REQUIRED != true</description>
+                    <expression><![CDATA[ ${instance-CAT_SUPPORT_REQUIRED} != "true"]]></expression>
+                    <targetState>Skipped</targetState>
+                </extendStateExpression>
+            </targetStateSet>
+        </condition>
+        <instructions substitution="true"><p>
+            <b>CAT Testing:</b> The CAT address for testing is:
+            </p>
+            <pre>
+
+            https://${instance-SERVER_HOSTNAME}:${instance-SERVER_PORT_TLS}/graphiql?path=/graphql
+
+            </pre>
+            <p>
+            Sample query to test:
+            </p>
+            <pre>
+
+            query {
+              getKeystores(limit: 10, offset: 0){
+                keystores{
+                  id
+                  type
+                }
+              }
+            }
+
+            </pre>
+        </instructions>
+        <weight>1</weight>
+        <skills>System</skills>
+        <autoEnable>true</autoEnable>
+        <canMarkAsFailed>false</canMarkAsFailed>
+    </step>
+
+</step>
+
+<!-- Made with Bob -->

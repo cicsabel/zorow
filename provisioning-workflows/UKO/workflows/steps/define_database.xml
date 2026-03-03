@@ -66,6 +66,7 @@
             <variableValue name="DB_BUFFERPOOL_TABLESPACE_8K" scope="instance" noPromptIfSet="false" required="false"/>
             <variableValue name="DB_BUFFERPOOL_TABLESPACE_32K" scope="instance" noPromptIfSet="false" required="false"/>
             <variableValue name="DB_STOGROUP" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="TEMP_DIR" scope="instance" noPromptIfSet="false" required="false"/>
             <instructions substitution="true">Legacy - Only execute this step if you are installing EKMF Web V2 and not UKO V3</instructions>
             <weight>1</weight>
             <autoEnable>true</autoEnable>

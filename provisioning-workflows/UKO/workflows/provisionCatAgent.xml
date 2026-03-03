@@ -71,7 +71,7 @@
                         echo "Creating cat user directory ${instance-CAT_USER_DIR} because it does not exist"
                         mkdir -p ${instance-CAT_USER_DIR}
                         if [ $? -gt 0 ]; then 
-                            echo "ERROR: Could not create directory" >&2;
+                            echo "ERROR: Could not create directory" >&amp;2;
                             exit "2"; 
                         fi
                         echo "changing access to 755"
