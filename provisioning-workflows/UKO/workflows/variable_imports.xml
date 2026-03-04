@@ -1411,9 +1411,9 @@
 
 <variable name="SKMGMOD0_APF" visibility="private">
   <label>SKMGMOD0 APF?</label>
-  <abstract>Confirm below that the SKMGMOD0 library is APF authorized</abstract>
-  <description><![CDATA[The SKMGMOD0 needs to be APF authorized. This is not a part of the workflow.
-  You can check this by issuing a console command like <br>/D PROG APF, DSNAME=your_library_hlq.SKMGMOD0 (default KMG.SKMGMOD0)]]>
+  <abstract>Confirm below that the agent load library is APF authorized</abstract>
+  <description><![CDATA[The agent load library (AGENT_RUNLIB or CC_RUNLIB) needs to be APF authorized. This is not a part of the workflow.
+  You can check this by issuing a console command like <br>/D PROG APF, DSNAME=your_library_hlq.SKMGMOD0 (default KMG.SKMGMOD0 or DPLMF.JKMG31A.XSMP.SKMGMOD0)]]>
   </description>
   <category>manual checks</category>
   <string valueMustBeChoice="true" multiLine="false">
@@ -1421,9 +1421,9 @@
   </string>
 </variable>
 <variable name="AGENT_RUNLIB_READ" visibility="private">
-  <label>Access to AGENT_RUNLIB dataset?</label>
-  <abstract>Confirm below that the AGENT_STC_USER can read the AGENT_RUNLIB dataset</abstract>
-  <description><![CDATA[The AGENT_STC_USER needs READ access to the KMG Agent load library (default KMG.SKMGMOD0). This is not a part of the workflow.]]>
+  <label>Access to agent load library dataset?</label>
+  <abstract>Confirm below that the agent user has READ access to the agent load library dataset</abstract>
+  <description><![CDATA[The agent user (AGENT_STC_USER or CAT_AGENT_USER) needs READ access to the agent load library (AGENT_RUNLIB or CC_RUNLIB, default KMG.SKMGMOD0). This is not a part of the workflow.]]>
   </description>
   <category>manual checks</category>
   <string valueMustBeChoice="true" multiLine="false">
@@ -1542,6 +1542,16 @@
   <category>CAT variables</category>
   <string>
     <validationType>DSNAME</validationType>
+  </string>
+</variable>
+<variable name="CC_RUNLIB" visibility="public">
+  <label>CC_RUNLIB</label>
+  <abstract>CAT agent load library</abstract>
+  <description>Library containing the CAT Agent's load modules (usually the same as AGENT_RUNLIB)</description>
+  <category>CAT variables</category>
+  <string>
+    <validationType>DSNAME</validationType>
+    <default>KMG.SKMGMOD0</default>
   </string>
 </variable>
 <variable name="CAT_SMF" visibility="public">

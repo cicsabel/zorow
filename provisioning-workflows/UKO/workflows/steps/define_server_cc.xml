@@ -121,7 +121,7 @@
 
                 <step name="configureDatabaseAccess">
                     <title>Configure access to the UKO Server key database</title>
-                    <description>Configure the new server to be able to access the required view in a UKO instance</description>        
+                    <description>Configure the new server to be able to access the required view in a UKO instance</description>
                     <runAsUser substitution="true">$!{instance-UKO_ADMIN_DB}</runAsUser>
                     <approver substitution="true">$!{instance-UKO_APPROVER_DB}</approver>
                     <condition>
@@ -137,8 +137,13 @@
                         </targetStateSet>
                     </condition>
                     <variableValue name="SERVER_STC_USER" scope="instance" noPromptIfSet="false" required="false"/>
+                    <variableValue name="DB_HLQ" scope="instance" noPromptIfSet="false" required="false"/>
                     <variableValue name="DB_CURRENT_SQLID" scope="instance" noPromptIfSet="false" required="false"/>
                     <variableValue name="DB_CURRENT_SCHEMA" scope="instance" noPromptIfSet="false" required="false"/>
+                    <variableValue name="DB_JCC_SSID" scope="instance" noPromptIfSet="false" required="false"/>
+                    <variableValue name="DB_PROGRAM" scope="instance" noPromptIfSet="false" required="false"/>
+                    <variableValue name="DB_PLAN" scope="instance" noPromptIfSet="false" required="false"/>
+                    <variableValue name="DB_RUNLIB" scope="instance" noPromptIfSet="false" required="false"/>
                     <instructions substitution="true">Submit jcl to execute step</instructions>
                     <weight>1</weight>
                     <autoEnable>true</autoEnable>
@@ -293,7 +298,6 @@
            <approver substitution="true">$!{instance-UKO_APPROVER_TSO}</approver>
         <variableValue name="SERVER_STC_NAME" scope="instance" noPromptIfSet="false" required="false"/>
         <variableValue name="ZOS_PROCLIB" scope="instance" noPromptIfSet="false" required="false"/>
-        <variableValue name="DB_HLQ" scope="instance" noPromptIfSet="false" required="false"/>
         <variableValue name="WLP_INSTALL_DIR" scope="instance" noPromptIfSet="false" required="false"/>
         <variableValue name="SERVER_USER_DIR" scope="instance" noPromptIfSet="false" required="false"/>
         <variableValue name="JAVA_HOME" scope="instance" noPromptIfSet="false" required="false"/>

@@ -42,19 +42,19 @@
     <atCreate name="ZOAU_HOME" scope="instance" prompt="true" required="false"/>
     <atCreate name="CAT_INSTALL_DIR" scope="instance" prompt="true" required="false"/>
     <atCreate name="CAT_USER_DIR" scope="instance" prompt="true" required="false"/>
-    <atCreate name="AGENT_RUNLIB" scope="instance" prompt="true" required="false"/>
+    <atCreate name="CC_RUNLIB" scope="instance" prompt="true" required="false"/>
     
     <step name="runCatCollection">
         <title>Run CAT collection</title>
         <description>Run the CAT collection</description>
         <runAsUser substitution="true">$!{instance-UKO_ADMIN_SECURITY}</runAsUser>
-        <approver substitution="true">$!{instance-UKO_APPROVER_SECURITY}</approver>     
+        <approver substitution="true">$!{instance-UKO_APPROVER_SECURITY}</approver>
         <variableValue name="JAVA_HOME" scope="instance" noPromptIfSet="false" required="false"/>
         <variableValue name="KAFKA_HOME" scope="instance" noPromptIfSet="false" required="false"/>
         <variableValue name="CAT_INSTALL_DIR" scope="instance" noPromptIfSet="false" required="false"/>
         <variableValue name="CAT_USER_DIR" scope="instance" noPromptIfSet="false" required="false"/>
         <variableValue name="ZOAU_HOME" scope="instance" noPromptIfSet="false" required="false"/>
-        <variableValue name="AGENT_RUNLIB" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="CC_RUNLIB" scope="instance" noPromptIfSet="false" required="false"/>
         <instructions substitution="true">Submit JCL to collect</instructions>
         <weight>5</weight>
         <autoEnable>true</autoEnable>
