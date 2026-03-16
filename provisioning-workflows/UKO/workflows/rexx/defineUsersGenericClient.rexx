@@ -6,8 +6,8 @@
 
 address tso
 
-GENERIC_CLIENT_USER="${instance-GENERIC_CLIENT_USER}"
-GENERIC_CLIENT_GROUP="${instance-GENERIC_CLIENT_GROUP}"
+CERT_CLIENT_USER="${instance-CERT_CLIENT_USER}"
+CLIENT_ACCESS_GROUP="${instance-CLIENT_ACCESS_GROUP}"
 
 SAF_OWNER="${instance-SAF_OWNER}"
 
@@ -15,11 +15,11 @@ SAF_OWNER="${instance-SAF_OWNER}"
 /* Creating all required user ids                                      */
 /***********************************************************************/
 
-Say "Creating generic client user ID" GENERIC_CLIENT_USER
-"ADDUSER" GENERIC_CLIENT_USER "NOPASSWORD",
-   " DFLTGRP("GENERIC_CLIENT_GROUP") NAME('GENERIC CLIENT')",
+Say "Creating certificate client user ID" CERT_CLIENT_USER
+"ADDUSER" CERT_CLIENT_USER "NOPASSWORD",
+   " DFLTGRP("CLIENT_ACCESS_GROUP") NAME('CERT CLIENT')",
    " OWNER("SAF_OWNER") OMVS(AUTOUID ",
-   " HOME('${instance-USER_HOME_PARENT_DIR}/"GENERIC_CLIENT_USER"'))"
+   " HOME('${instance-USER_HOME_PARENT_DIR}/"CERT_CLIENT_USER"'))"
 if RC <> 0 then do
    Say "Creation failed, exiting"
    exit RC

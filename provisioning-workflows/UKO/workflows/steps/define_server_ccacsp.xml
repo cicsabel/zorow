@@ -194,12 +194,12 @@
 
         <step name="createClientConfig">
             <title>(Optional) Create test client config</title>
-            <description>Create the server configuration file and folder in case you used the sample flow to create the generic client keystore and truststore</description>
+            <description>Create the server configuration file and folder in case you used the sample flow to create the certificate client keystore and truststore</description>
             <runAsUser substitution="true">$!{instance-UKO_ADMIN_SERVER}</runAsUser>
             <approver substitution="true">$!{instance-UKO_APPROVER_SERVER}</approver>
             <variableValue name="SERVER_USER_DIR" scope="instance" noPromptIfSet="false" required="false"/>
             <variableValue name="SERVER_STC_NAME" scope="instance" noPromptIfSet="false" required="false"/>
-            <variableValue name="GENERIC_CLIENT_USER" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="CERT_CLIENT_USER" scope="instance" noPromptIfSet="false" required="false"/>
             <variableValue name="EXPORT_PASSWORD" scope="instance" noPromptIfSet="false" required="false"/>
             <variableValue name="EXPORT_PATH" scope="instance" noPromptIfSet="false" required="false"/>
             <instructions substitution="true">Submit shell script to execute step</instructions>
@@ -218,8 +218,8 @@
                     sedstring="${sedstring} s#^[ \#]*client.connect.host=.*#client.connect.host=localhost:${instance-SERVER_PORT_TLS}#g;"
                     sedstring="${sedstring} s#^[ \#]*ssl.keyStorePassword=.*#ssl.keyStorePassword=${instance-EXPORT_PASSWORD}#g;"
                     sedstring="${sedstring} s#^[ \#]*ssl.trustStorePassword=.*#ssl.trustStorePassword=${instance-EXPORT_PASSWORD}#g;"
-                    sedstring="${sedstring} s#^[ \#]*ssl.trustStore=.*#ssl.trustStore=${instance-EXPORT_PATH}/${instance-GENERIC_CLIENT_USER}-truststore.p12#g;"
-                    sedstring="${sedstring} s#^[ \#]*ssl.keyStore=.*#ssl.keyStore=${instance-EXPORT_PATH}/${instance-GENERIC_CLIENT_USER}-keystore.p12#g;"
+                    sedstring="${sedstring} s#^[ \#]*ssl.trustStore=.*#ssl.trustStore=${instance-EXPORT_PATH}/${instance-CERT_CLIENT_USER}-truststore.p12#g;"
+                    sedstring="${sedstring} s#^[ \#]*ssl.keyStore=.*#ssl.keyStore=${instance-EXPORT_PATH}/${instance-CERT_CLIENT_USER}-keystore.p12#g;"
                     sedstring="${sedstring} s#^[ \#]*client.transport=.*#client.transport=tls#g"                
                     # !!! remember to remove the last semicolon
 
@@ -362,7 +362,7 @@
             <description>Configure access for the client group to access this server</description>
             <runAsUser substitution="true">$!{instance-UKO_ADMIN_SECURITY}</runAsUser>
             <approver substitution="true">$!{instance-UKO_APPROVER_SECURITY}</approver>
-            <variableValue name="GENERIC_CLIENT_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="CLIENT_ACCESS_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
             <variableValue name="SAF_OWNER" scope="instance" noPromptIfSet="false" required="false"/>
             <variableValue name="SAF_PROFILE_PREFIX" scope="instance" noPromptIfSet="false" required="false"/>
             <instructions substitution="true">Submit rexx exec to execute step</instructions>
@@ -380,7 +380,7 @@
             <description>Configure access to keys that are used by the allverbs or sunshine test</description>
             <runAsUser substitution="true">$!{instance-UKO_ADMIN_SECURITY}</runAsUser>
             <approver substitution="true">$!{instance-UKO_APPROVER_SECURITY}</approver>
-            <variableValue name="GENERIC_CLIENT_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
+            <variableValue name="CLIENT_ACCESS_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
             <variableValue name="SAF_OWNER" scope="instance" noPromptIfSet="false" required="false"/>
             <instructions substitution="true">Submit rexx exec to execute step</instructions>
             <weight>1</weight>

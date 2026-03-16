@@ -115,7 +115,7 @@ The old workflow structure is preserved in `workflows_legacy/` for reference and
 
 - add ACSP provisionCcacsp.xml workflow and related scripts
 - optional creation of GENERIC_CLIENT user and group
-- optional client certificate setup for generic client (currently cc workflows only)
+- optional client certificate setup for certificate client (currently cc workflows only)
 - variable rename and refactoring to remove UKO_ and CC_ prefix where it could be generic, migrateProps shell script available for existing properties files
 - rename port variables
 - add keystore checking profiles  CSF-PKDS-DEFAULT  

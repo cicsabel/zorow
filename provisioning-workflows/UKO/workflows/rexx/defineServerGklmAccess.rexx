@@ -6,7 +6,7 @@
 
 address tso
 
-GKLM_GROUP="${instance-GENERIC_CLIENT_GROUP}"
+GKLM_GROUP="${instance-CLIENT_ACCESS_GROUP}"
 SAFPREFIX="${instance-SAF_PROFILE_PREFIX}"
 VAULT_ID="${instance-UKO_VAULT_ID}"
 SAF_OWNER="${instance-SAF_OWNER}"

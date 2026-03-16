@@ -866,10 +866,10 @@
   </string>
 </variable>
 
-<variable name="GENERIC_CLIENT_GROUP" visibility="public">
-  <label>GENERIC_CLIENT_GROUP</label>
-  <abstract>Generic group containing the user ids representing clients to connect to the server</abstract>
-  <description>Generic group containing the client user(s) that are connecting to this server, can be used for granting access</description>
+<variable name="CLIENT_ACCESS_GROUP" visibility="public">
+  <label>CLIENT_ACCESS_GROUP</label>
+  <abstract>Group for granting client access permissions</abstract>
+  <description>Group containing client users that need access to the server. Used for granting API access, CSFSERV permissions, and other client access rights. Clients can authenticate via bearer token or mTLS certificates.</description>
   <category>Server variables</category>
   <string>
     <validationType>USERID</validationType>
@@ -929,10 +929,10 @@
   </string>
 </variable>
 
-<variable name="GENERIC_CLIENT_USER" visibility="public">
-  <label>GENERIC_CLIENT_USER</label>
-  <abstract>Generic client user id connecting to this server</abstract>
-  <description>This is a generic client user that you can use to create client certificates</description>
+<variable name="CERT_CLIENT_USER" visibility="public">
+  <label>CERT_CLIENT_USER</label>
+  <abstract>Client user for certificate-based authentication</abstract>
+  <description>Passwordless user for certificate-based authentication (mTLS). This user owns client certificates and should be a member of CLIENT_ACCESS_GROUP to inherit access permissions.</description>
   <category>Server variables</category>
   <string>
     <validationType>USERID</validationType>
@@ -1715,7 +1715,7 @@
 <variable name="EXPORT_HLQ" scope="instance" visibility="private">
     <label>EXPORT_HLQ</label>
     <abstract>HLQ under which the certificates will be exported</abstract>
-    <description>The certificate will be exported to EXPORT_HLQ.GENERIC_CLIENT_USER</description>
+    <description>The certificate will be exported to EXPORT_HLQ.CERT_CLIENT_USER</description>
     <category>Certificate variables</category>
     <string />
 </variable>

@@ -56,7 +56,7 @@
 
     <step name="defineUsersAndGroups">
         <title>Define users and groups</title>
-        <description>Define users and groups</description>
+        <description>Create the required z/OS user IDs and groups for Crypto Connect server operation. This includes technical users for Liberty server processes and optionally a certificate client user for testing Crypto Connect, MSDKE (Microsoft Double Key Encryption), or CAT (Crypto Analytics Tool) services.</description>
 
         &step_define_users_liberty;
         &step_define_users_generic_client;
@@ -65,7 +65,7 @@
 
     <step name="defineKeyring">
         <title>Define key rings and certificates</title>
-        <description>Create key rings, create certificates and add them to key rings</description>
+        <description>Set up the security infrastructure by creating SAF key rings and digital certificates. This includes the server certificate for TLS communication, OpenID Connect (OIDC) certificate for authentication, MSDKE certificates if Microsoft Double Key Encryption support is required, and optionally client certificates for mutual TLS authentication.</description>
 
         &step_define_keyring;
         &step_define_keyring_oidc;

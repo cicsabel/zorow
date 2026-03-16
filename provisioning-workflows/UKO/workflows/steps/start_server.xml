@@ -75,7 +75,7 @@
                 </extendStateExpression>
             </targetStateSet>
         </condition>
-        <instructions substitution="false">Submitting script to stop the server.</instructions>
+        <instructions substitution="false">Submitting script to start the server.</instructions>
         <weight>1</weight>
         <autoEnable>true</autoEnable>
         <rest>

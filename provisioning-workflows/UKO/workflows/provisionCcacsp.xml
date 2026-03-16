@@ -52,7 +52,7 @@
 
     <step name="defineUsersAndGroups">
         <title>Define users and groups</title>
-        <description>Define users and groups</description>
+        <description>Create the required z/OS user IDs and groups for ACSP (Application Cryptographic Service Provider) server operation. This includes the technical user for the ACSP server process and optionally a certificate client user for testing cryptographic services.</description>
 
         &step_define_users_server;
         &step_define_users_generic_client;
@@ -61,7 +61,7 @@
 
     <step name="defineKeyring">
         <title>Define key rings and certificates</title>
-        <description>Create key rings, create certificates and add them to key rings</description>
+        <description>Set up the security infrastructure by creating SAF key rings and digital certificates for the ACSP server. This includes the server certificate for TLS-protected communication and optionally client certificates for mutual TLS authentication.</description>
 
         &step_define_keyring;
         <!-- UKO trust certificates are not required -->

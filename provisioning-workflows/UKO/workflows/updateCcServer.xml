@@ -25,8 +25,8 @@
     <!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
 
   <workflowInfo>
-      <workflowID>uko_Update</workflowID>
-      <workflowDescription>Update a UKO server.</workflowDescription>
+      <workflowID>ccserver_Update</workflowID>
+      <workflowDescription>Update a CC server.</workflowDescription>
     <workflowVersion>1.0.0.0</workflowVersion>
         <!-- Build timestamp 2021.05.09.21.03.24 -->
       <vendor>IBM</vendor>

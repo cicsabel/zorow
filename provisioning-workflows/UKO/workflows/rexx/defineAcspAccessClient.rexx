@@ -4,7 +4,7 @@
 /* PDX-License-Identifier: Apache-2.0                             */
 /*----------------------------------------------------------------*/
 
-CLIENT_GROUP="${instance-GENERIC_CLIENT_GROUP}"
+CLIENT_GROUP="${instance-CLIENT_ACCESS_GROUP}"
 SAF_OWNER="${instance-SAF_OWNER}"
 SAFPREFIX="${instance-SAF_PROFILE_PREFIX}"
 

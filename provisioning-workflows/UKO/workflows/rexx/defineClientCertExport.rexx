@@ -8,7 +8,7 @@ address tso
 
 SERVER_CA_LABEL="${instance-SERVER_CA_LABEL}"
 CERT_LABEL="${instance-CLIENT_CERT_LABEL}"
-CLIENT_USER="${instance-GENERIC_CLIENT_USER}"
+CLIENT_USER="${instance-CERT_CLIENT_USER}"
 EXPORT_HLQ="${instance-EXPORT_HLQ}"
 
 PASSWORD="${instance-EXPORT_PASSWORD}"

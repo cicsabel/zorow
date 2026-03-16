@@ -21,7 +21,7 @@
 
   <workflowInfo>
       <workflowID>ccagent_RunCollection</workflowID>
-      <workflowDescription>Run the CAT (Crypto Analytics Tool) collection</workflowDescription>
+      <workflowDescription>Execute a CAT (Crypto Analytics Tool) collection to gather cryptographic usage data</workflowDescription>
     <workflowVersion>1.0.0.0</workflowVersion>
       <vendor>IBM</vendor>
       <Provisioning>

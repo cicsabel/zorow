@@ -21,7 +21,7 @@
 
   <workflowInfo>
       <workflowID>uko_setupGklm</workflowID>
-      <workflowDescription>Setting up for GKLM integration</workflowDescription>
+      <workflowDescription>Configure security access for IBM Guardium Key Lifecycle Manager (GKLM) integration with UKO</workflowDescription>
     <workflowVersion>1.0.0.0</workflowVersion>
       <vendor>IBM</vendor>
       <Provisioning>
@@ -37,14 +37,14 @@
 	<!--+++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
 	&variables;
   
-	<atCreate name="GENERIC_CLIENT_GROUP" scope="instance" prompt="true" required="false"/>
+	<atCreate name="CLIENT_ACCESS_GROUP" scope="instance" prompt="true" required="false"/>
 
-    <step name="defineGklmAccess">
-        <title>Define security access for GKLM</title>
-        <description>Grant access to EJB roles and APPL profile</description>
-        <runAsUser substitution="true">$!{instance-UKO_ADMIN_SECURITY}</runAsUser>
-        <approver substitution="true">$!{instance-UKO_APPROVER_SECURITY}</approver>
-        <variableValue name="GENERIC_CLIENT_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
+	   <step name="defineGklmAccess">
+	       <title>Define security access for GKLM</title>
+	       <description>Grant access to EJB roles and APPL profile for GKLM API clients</description>
+	       <runAsUser substitution="true">$!{instance-UKO_ADMIN_SECURITY}</runAsUser>
+	       <approver substitution="true">$!{instance-UKO_APPROVER_SECURITY}</approver>
+	       <variableValue name="CLIENT_ACCESS_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
         <variableValue name="UKO_VAULT_ID" scope="instance" noPromptIfSet="false" required="false"/>
         <variableValue name="SAF_PROFILE_PREFIX" scope="instance" noPromptIfSet="false" required="false"/>
         <instructions>Executes a REXX program to access EJB roles</instructions>

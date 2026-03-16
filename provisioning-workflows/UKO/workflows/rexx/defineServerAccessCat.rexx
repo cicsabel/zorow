@@ -6,7 +6,7 @@
 
 address tso
 
-CAT_GROUP="${instance-GENERIC_CLIENT_GROUP}"
+CAT_GROUP="${instance-CLIENT_ACCESS_GROUP}"
 SAFPREFIX="${instance-SAF_PROFILE_PREFIX}"
 SAF_OWNER="${instance-SAF_OWNER}"
 

@@ -8,7 +8,7 @@ address tso
 
 CA_LABEL="${instance-CLIENT_CA_LABEL}"
 
-CLIENT_USER="${instance-GENERIC_CLIENT_USER}"
+CLIENT_USER="${instance-CERT_CLIENT_USER}"
 CERT_LABEL="${instance-CLIENT_CERT_LABEL}"
 CERT_CN="${instance-CLIENT_CERT_CN}"
 CERT_OU="${instance-CLIENT_CERT_OU}"

@@ -25,8 +25,8 @@
     <!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
 
   <workflowInfo>
-      <workflowID>uko_Update</workflowID>
-      <workflowDescription>Update a UKO server.</workflowDescription>
+      <workflowID>ukoserver_Update</workflowID>
+      <workflowDescription>Migrate a UKO server to the latest version by updating server directories and configuration</workflowDescription>
     <workflowVersion>1.0.0.0</workflowVersion>
         <!-- Build timestamp 2021.05.09.21.03.24 -->
       <vendor>IBM</vendor>

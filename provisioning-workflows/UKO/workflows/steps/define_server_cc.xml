@@ -427,7 +427,7 @@
                         </extendStateExpression>
                     </targetStateSet>
                 </condition>
-                <variableValue name="GENERIC_CLIENT_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
+                <variableValue name="CLIENT_ACCESS_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
                 <variableValue name="SAF_PROFILE_PREFIX" scope="instance" noPromptIfSet="false" required="false"/>        
                 <instructions>Executes a REXX program to create EJB roles and grant access</instructions>
                 <weight>1</weight>
@@ -456,7 +456,7 @@
                         </extendStateExpression>
                     </targetStateSet>
                 </condition>
-                <variableValue name="GENERIC_CLIENT_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
+                <variableValue name="CLIENT_ACCESS_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
                 <variableValue name="SAF_PROFILE_PREFIX" scope="instance" noPromptIfSet="false" required="false"/>        
                 <variableValue name="SAF_OWNER" scope="instance" noPromptIfSet="false" required="false"/>        
                 <instructions>Executes a REXX program to create EJB roles and grant access</instructions>

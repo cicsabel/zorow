@@ -21,7 +21,7 @@
                 <description>Only create the OIDC certificate if requested and different from TLS cert</description>
                 <extendStateExpression>
                     <description>Skip if SERVER_CREATE_CERTIFICATES is false or OIDC cert equals TLS cert</description>
-                    <expression><![CDATA[ ${instance-SERVER_CREATE_CERTIFICATES} == undefined || ${instance-SERVER_CREATE_CERTIFICATES} != "true" || ${instance-SERVER_TLS_KEY_STORE_SERVER_CERT} == ${instance-SERVER_OIDC_PROVIDER_CERT}]]></expression>
+                    <expression><![CDATA[ ${instance-SERVER_CREATE_CERTIFICATES} != "true" ]]></expression>
                     <targetState>Skipped</targetState>
                 </extendStateExpression>
             </targetStateSet>
@@ -57,7 +57,7 @@
                 <description>Skip if OIDC certificate was not created</description>
                 <extendStateExpression>
                     <description>Skip if certificates were not created or OIDC cert equals TLS cert</description>
-                    <expression><![CDATA[ ${instance-SERVER_CREATE_CERTIFICATES} == "false" || ${instance-SERVER_TLS_KEY_STORE_SERVER_CERT} == ${instance-SERVER_OIDC_PROVIDER_CERT}]]></expression>
+                    <expression><![CDATA[ ${instance-SERVER_CREATE_CERTIFICATES} != "true" ]]></expression>
                     <targetState>Skipped</targetState>
                 </extendStateExpression>
             </targetStateSet>

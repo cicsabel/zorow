@@ -42,7 +42,7 @@
 
     <step name="createCertificates">
         <title>Create certificates</title>
-        <description>If requested, create a certificates </description>
+        <description>If requested, create certificates for the server</description>
         <runAsUser substitution="true">$!{instance-UKO_ADMIN_SECURITY}</runAsUser>
         <approver substitution="true">$!{instance-UKO_APPROVER_SECURITY}</approver>
         <condition>

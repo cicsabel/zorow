@@ -6,7 +6,7 @@
 
 address tso
 
-ZKEY_GROUP="${instance-GENERIC_CLIENT_GROUP}"
+ZKEY_GROUP="${instance-CLIENT_ACCESS_GROUP}"
 SAFPREFIX="${instance-SAF_PROFILE_PREFIX}"
 SAF_OWNER="${instance-SAF_OWNER}"
 VAULT_ID="${instance-UKO_VAULT_ID}"

@@ -46,7 +46,7 @@
         <runAsUser substitution="true">$!{instance-UKO_ADMIN_SECURITY}</runAsUser>
         <approver substitution="true">$!{instance-UKO_APPROVER_SECURITY}</approver>
         <variableValue name="CLIENT_CA_LABEL" scope="instance" noPromptIfSet="false" required="false"/>
-        <variableValue name="GENERIC_CLIENT_USER" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="CERT_CLIENT_USER" scope="instance" noPromptIfSet="false" required="false"/>
         <variableValue name="CLIENT_CERT_LABEL" scope="instance" noPromptIfSet="false" required="false"/>
         <variableValue name="CLIENT_CERT_CN" scope="instance" noPromptIfSet="false" required="false"/>
         <variableValue name="CLIENT_CERT_OU" scope="instance" noPromptIfSet="false" required="false"/>
@@ -87,7 +87,7 @@
         <approver substitution="true">$!{instance-UKO_APPROVER_SECURITY}</approver>
         <variableValue name="SERVER_CA_LABEL" scope="instance" noPromptIfSet="false" required="false"/>
         <variableValue name="CLIENT_CERT_LABEL" scope="instance" noPromptIfSet="false" required="false"/>
-        <variableValue name="GENERIC_CLIENT_USER" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="CERT_CLIENT_USER" scope="instance" noPromptIfSet="false" required="false"/>
         <variableValue name="EXPORT_HLQ" scope="instance" noPromptIfSet="false" required="false"/>
         <variableValue name="EXPORT_PASSWORD" scope="instance" noPromptIfSet="false" required="false"/>
         <instructions substitution="true">Submit rexx exec to execute step</instructions>
@@ -105,7 +105,7 @@
         <description>Export the client certificate and server CA to USS and create PKCS12 keystores</description>
         <runAsUser substitution="true">$!{instance-UKO_ADMIN_SERVER}</runAsUser>
         <approver substitution="true">$!{instance-UKO_APPROVER_SERVER}</approver>
-        <variableValue name="GENERIC_CLIENT_USER" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="CERT_CLIENT_USER" scope="instance" noPromptIfSet="false" required="false"/>
         <variableValue name="EXPORT_HLQ" scope="instance" noPromptIfSet="false" required="false"/>
         <variableValue name="EXPORT_PASSWORD" scope="instance" noPromptIfSet="false" required="false"/>
         <variableValue name="EXPORT_PATH" scope="instance" noPromptIfSet="false" required="false"/>
@@ -116,17 +116,17 @@
             <inlineTemplate substitution="true">
                 cd ${instance-EXPORT_PATH}
                 
-                echo "copying client certificate to p12 keystore file ${instance-GENERIC_CLIENT_USER}-keystore.p12"
-                cp "//'${instance-EXPORT_HLQ}.${instance-GENERIC_CLIENT_USER}'" ${instance-GENERIC_CLIENT_USER}-keystore.p12
-                echo "copying server certificate to temporary file ${instance-GENERIC_CLIENT_USER}-server.crt"
-                cp "//'${instance-EXPORT_HLQ}.${instance-GENERIC_CLIENT_USER}.SERVERCA'" ${instance-GENERIC_CLIENT_USER}-server.crt
+                echo "copying client certificate to p12 keystore file ${instance-CERT_CLIENT_USER}-keystore.p12"
+                cp "//'${instance-EXPORT_HLQ}.${instance-CERT_CLIENT_USER}'" ${instance-CERT_CLIENT_USER}-keystore.p12
+                echo "copying server certificate to temporary file ${instance-CERT_CLIENT_USER}-server.crt"
+                cp "//'${instance-EXPORT_HLQ}.${instance-CERT_CLIENT_USER}.SERVERCA'" ${instance-CERT_CLIENT_USER}-server.crt
 
                 echo "creating client *.key and *.crt files"
-                openssl pkcs12 -in ${instance-GENERIC_CLIENT_USER}-keystore.p12 -out ${instance-GENERIC_CLIENT_USER}.crt -clcerts -nokeys -passin pass:${instance-EXPORT_PASSWORD}
-                openssl pkcs12 -in ${instance-GENERIC_CLIENT_USER}-keystore.p12 -out ${instance-GENERIC_CLIENT_USER}.key -nocerts -nodes -passin pass:${instance-EXPORT_PASSWORD}
+                openssl pkcs12 -in ${instance-CERT_CLIENT_USER}-keystore.p12 -out ${instance-CERT_CLIENT_USER}.crt -clcerts -nokeys -passin pass:${instance-EXPORT_PASSWORD}
+                openssl pkcs12 -in ${instance-CERT_CLIENT_USER}-keystore.p12 -out ${instance-CERT_CLIENT_USER}.key -nocerts -nodes -passin pass:${instance-EXPORT_PASSWORD}
 
-                echo "importing the ${instance-GENERIC_CLIENT_USER}-server.crt file into the p12 truststore file ${instance-GENERIC_CLIENT_USER}-truststore.p12"
-                keytool -importcert -file ${instance-GENERIC_CLIENT_USER}-server.crt -noprompt -keystore ${instance-GENERIC_CLIENT_USER}-truststore.p12 -alias serverca -storepass ${instance-EXPORT_PASSWORD}
+                echo "importing the ${instance-CERT_CLIENT_USER}-server.crt file into the p12 truststore file ${instance-CERT_CLIENT_USER}-truststore.p12"
+                keytool -importcert -file ${instance-CERT_CLIENT_USER}-server.crt -noprompt -keystore ${instance-CERT_CLIENT_USER}-truststore.p12 -alias serverca -storepass ${instance-EXPORT_PASSWORD}
                 if [ $? -gt 0 ]; then
                     echo "Error importing certificate to keystore, keeping temporary server certificate file"
                 else

@@ -7,16 +7,16 @@
 /******************************************************************************/
 -->
 
-<step name="defineUsersAndGroupsGenericClient">
-    <title>Define generic client user and group</title>
-    <description>Define a generic client with no password and group</description>
+<step name="defineCertClientUserAndAccessGroup">
+    <title>Define certificate client user and access group</title>
+    <description>Define a certificate client user with no password and client access group for authentication and authorization</description>
 
-    <step name="defineGroupsGenericClient">
-        <title>Define generic client group</title>
-        <description>Define a generic client group that can be used to grant acess to</description>
+    <step name="defineClientAccessGroup">
+        <title>Define client access group</title>
+        <description>Define a client access group that can be used to grant access rights to clients</description>
         <runAsUser substitution="true">$!{instance-UKO_ADMIN_SECURITY}</runAsUser>
         <approver substitution="true">$!{instance-UKO_APPROVER_SECURITY}</approver>
-        <variableValue name="GENERIC_CLIENT_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="CLIENT_ACCESS_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
         <variableValue name="PERSONAL_SUPERIOR_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
         <variableValue name="SAF_OWNER" scope="instance" noPromptIfSet="false" required="false"/>
         <instructions substitution="true">Submit rexx exec to execute step. The workflow is using the AUTOGID option to 
@@ -33,13 +33,13 @@
         </template>
     </step>
 
-    <step name="defineUsersGenericClient">
-        <title>Define generic client users</title>
-        <description>Define a generic client user with no password that can be used for generating a client certificate</description>
+    <step name="defineCertClientUser">
+        <title>Define certificate client user</title>
+        <description>Define a certificate client user with no password that can be used for generating a client certificate for mTLS authentication</description>
         <runAsUser substitution="true">$!{instance-UKO_ADMIN_SECURITY}</runAsUser>
         <approver substitution="true">$!{instance-UKO_APPROVER_SECURITY}</approver>
-        <variableValue name="GENERIC_CLIENT_USER" scope="instance" noPromptIfSet="false" required="false"/>
-        <variableValue name="GENERIC_CLIENT_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="CERT_CLIENT_USER" scope="instance" noPromptIfSet="false" required="false"/>
+        <variableValue name="CLIENT_ACCESS_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
         <variableValue name="USER_HOME_PARENT_DIR" scope="instance" noPromptIfSet="false" required="false"/>
         <variableValue name="SAF_OWNER" scope="instance" noPromptIfSet="false" required="false"/>
         <instructions substitution="true">Submit rexx exec to execute step. The workflow is using the
