@@ -82,4 +82,31 @@
     <!-- Define the server -->
     &step_define_server;
 
+    <step name="startServer" optional="false">
+        <title>Use the provided start command to bring up the server</title>
+        <description>This step provides the start command to bring up the provisioned server on z/OS using started task.
+            You have to manually issue this command on the z/OS console to bring up the provisioned server.</description>
+        <instructions substitution="true"><p>
+            Start the server with the following start z/OS console command:
+            </p>
+            <pre>
+
+            START ${instance-SERVER_STC_NAME}
+
+            </pre>
+            <p>
+            <b>Verification</b> After start, the address of your server is:
+            </p>
+            <pre>
+
+            https://${instance-SERVER_HOSTNAME}:${instance-SERVER_PORT_TLS}
+
+            </pre>
+        </instructions>
+        <weight>1</weight>
+        <skills>System</skills>
+        <autoEnable>true</autoEnable>
+        <canMarkAsFailed>false</canMarkAsFailed>
+    </step>    
+
 </workflow>
