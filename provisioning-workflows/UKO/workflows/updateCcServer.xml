@@ -27,8 +27,7 @@
   <workflowInfo>
       <workflowID>ccserver_Update</workflowID>
       <workflowDescription>Update a CC server.</workflowDescription>
-    <workflowVersion>1.0.0.0</workflowVersion>
-        <!-- Build timestamp 2021.05.09.21.03.24 -->
+    <workflowVersion>3.1.0.10</workflowVersion>
       <vendor>IBM</vendor>
       <Provisioning>
           <productID>5655-EKM</productID>

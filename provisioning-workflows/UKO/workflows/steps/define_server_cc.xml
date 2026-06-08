@@ -156,42 +156,218 @@
 
             </step>
 
-            <step name="loadConfigDropinsCryptoConnect">
-                <title>Configure Crypto Connect support</title>
-                <description>Configure the configDropins folder to load the Crypto Connect related code</description>
-                <runAsUser substitution="true">$!{instance-UKO_ADMIN_SERVER}</runAsUser>
-                <approver substitution="true">$!{instance-UKO_APPROVER_SERVER}</approver>
-                <condition>
-                    <expression>"1"=="1"</expression>
-                    <description>always true</description>
-                    <targetStateSet>
-                        <description>Only execute for Crypto Connect configuration</description>
-                        <extendStateExpression>
-                            <description>Skip if no Crypto Connect configuration is required</description>
-                            <expression>${instance-CRYPTO_CONNECT_SUPPORT_REQUIRED}  == "false"</expression>
-                            <targetState>Skipped</targetState>
-                        </extendStateExpression>
-                    </targetStateSet>
-                </condition>
-                <instructions substitution="true">Submit shell script to execute step</instructions>
-                <weight>1</weight>
-                <autoEnable>true</autoEnable>
-                <template>
-                    <inlineTemplate substitution="true">
+            <step name="configureCryptoConnect">
+                <title>Configure Crypto Connect Support</title>
+                <description>Configure the new server for Crypto Connect including optional database access and configDropins</description>
 
-                        cd ${instance-SERVER_USER_DIR}/servers/${instance-SERVER_STC_NAME}
+                <step name="configureServerForCryptoConnect">
+                    <title>Configure server for Crypto Connect</title>
+                    <description>Configure server.env with optional database parameters and link required configDropins for Crypto Connect. Database configuration is optional - if DB parameters are provided, all four (DB_LOCATION, DB_CURRENT_SCHEMA, DB_LIBPATH, DB_CLASSPATH) must be set.</description>
+                    <runAsUser substitution="true">$!{instance-UKO_ADMIN_SERVER}</runAsUser>
+                    <approver substitution="true">$!{instance-UKO_APPROVER_SERVER}</approver>
+                    <condition>
+                        <expression>"1"=="1"</expression>
+                        <description>always true</description>
+                        <targetStateSet>
+                            <description>Only execute for Crypto Connect configuration</description>
+                            <extendStateExpression>
+                                <description>Skip if no Crypto Connect configuration is required</description>
+                                <expression>${instance-CRYPTO_CONNECT_SUPPORT_REQUIRED}  == "false"</expression>
+                                <targetState>Skipped</targetState>
+                            </extendStateExpression>
+                        </targetStateSet>
+                    </condition>
+                    <variableValue name="DB_LOCATION" scope="instance" noPromptIfSet="false" required="false"/>
+                    <variableValue name="DB_CURRENT_SCHEMA" scope="instance" noPromptIfSet="false" required="false"/>
+                    <variableValue name="DB_LIBPATH" scope="instance" noPromptIfSet="false" required="false"/>
+                    <variableValue name="DB_CLASSPATH" scope="instance" noPromptIfSet="false" required="false"/>
+                    <variableValue name="DB_JCC_SSID" scope="instance" noPromptIfSet="false" required="false"/>
+                    <variableValue name="SERVER_INSTALL_DIR" scope="instance" noPromptIfSet="false" required="false"/>
+                    <instructions substitution="true">Submit shell script to execute step</instructions>
+                    <weight>1</weight>
+                    <autoEnable>true</autoEnable>
+                    <template>
+                        <inlineTemplate substitution="true">
+                            echo "****************************************"
+                            echo "Checking database configuration parameters"
+                            
+                            # Check if database parameters are set
+                            DB_PARAMS_SET=0
+                            if [ -n "${instance-DB_LOCATION}" ]; then DB_PARAMS_SET=$((DB_PARAMS_SET + 1)); fi
+                            if [ -n "${instance-DB_CURRENT_SCHEMA}" ]; then DB_PARAMS_SET=$((DB_PARAMS_SET + 1)); fi
+                            if [ -n "${instance-DB_LIBPATH}" ]; then DB_PARAMS_SET=$((DB_PARAMS_SET + 1)); fi
+                            if [ -n "${instance-DB_CLASSPATH}" ]; then DB_PARAMS_SET=$((DB_PARAMS_SET + 1)); fi
+                            
+                            # Validate: either all 4 parameters are set or none
+                            if [ $DB_PARAMS_SET -ne 0 ] &amp;&amp; [ $DB_PARAMS_SET -ne 4 ]; then
+                                echo "ERROR: Database configuration incomplete!"
+                                echo "If database integration is required, all four parameters must be set:"
+                                echo "  - DB_LOCATION"
+                                echo "  - DB_CURRENT_SCHEMA"
+                                echo "  - DB_LIBPATH"
+                                echo "  - DB_CLASSPATH"
+                                echo "Currently set: $DB_PARAMS_SET out of 4"
+                                exit "8"
+                            fi
+                            
+                            CONFIGURE_DB2=false
+                            if [ $DB_PARAMS_SET -eq 4 ]; then
+                                echo "Database parameters detected - will configure DB2 integration"
+                                CONFIGURE_DB2=true
+                            else
+                                echo "No database parameters - configuring Crypto Connect without DB2 integration"
+                            fi
+                            
+                            echo "****************************************"
+                            echo "Adjusting server.env for Crypto Connect"
+                            
+                            cd ${instance-SERVER_USER_DIR}/servers/${instance-SERVER_STC_NAME}
+            
+                            if [ "$CONFIGURE_DB2" = true ]; then
+                                mv ./server.env ./server.env.original
+                                if [ $? -gt 0 ]; then
+                                    echo "ERROR: Original server.env not found, make sure you executed base setup";
+                                    exit "8";
+                                fi
+                                echo "Configuring database parameters in server.env"
+                                sedstring="s#^[ \#]*EKMF_API_DB_NAME=.*#EKMF_API_DB_NAME=${instance-DB_LOCATION}#g;"
+                                sedstring="${sedstring} s#^[ \#]*DB_CURRENT_SCHEMA=.*#DB_CURRENT_SCHEMA=${instance-DB_CURRENT_SCHEMA}#g;"
+                                sedstring="${sedstring} s#^[ \#]*DB_LIBPATH=.*#DB_LIBPATH=${instance-DB_LIBPATH}#g;"
+                                sedstring="${sedstring} s#^[ \#]*DB_CLASSPATH=.*#DB_CLASSPATH=${instance-DB_CLASSPATH}#g"
+                                sed -e "$sedstring" ./server.env.original > ./server.env
+                                if [ $? -gt 0 ]; then
+                                    echo "error adjusting file, previous version restored."
+                                    mv ./server.env.original ./server.env
+                                    rm ./server.env.original
+                                    exit "8";
+                                else
+                                    rm ./server.env.original
+                                    echo "server.env adjusted"
+                                fi
+                            else
+                                echo "Skipping database configuration in server.env"
+                            fi
 
-                        echo "linking crypto-connect-core.xml into overrides folder"
-                        ln -s ${instance-SERVER_INSTALL_DIR}/configDropins/options/crypto-connect-core.xml configDropins/overrides/crypto-connect-core.xml
-                        echo "linking open-id-provider.xml into overrides folder"
-                        ln -s ${instance-SERVER_INSTALL_DIR}/configDropins/options/open-id-provider.xml configDropins/overrides/open-id-provider.xml
+                            echo "****************************************"
+                            echo "Adjusting jvm.options for Crypto Connect"
+                            
+                            if [ "$CONFIGURE_DB2" = true ]; then
+                                mv ./jvm.options ./jvm.options.original
+                                if [ $? -gt 0 ]; then
+                                    echo "ERROR: Original jvm.options not found";
+                                    exit "8";
+                                fi
+                                echo "Configuring -Ddb2.jcc.ssid in jvm.options"
+                                sed "s#^[ \#]*-Ddb2.jcc.ssid=.*#-Ddb2.jcc.ssid=${instance-DB_JCC_SSID}#g" ./jvm.options.original > ./jvm.options
+                                if [ $? -gt 0 ]; then
+                                    echo "error adjusting jvm.options, previous version restored."
+                                    mv ./jvm.options.original ./jvm.options
+                                    rm ./jvm.options.original
+                                    exit "8";
+                                else
+                                    rm ./jvm.options.original
+                                    echo "jvm.options adjusted"
+                                fi
+                            else
+                                echo "Skipping jvm.options configuration (no database configuration)"
+                            fi
 
-                        echo "Finished setting up configDropins:"
-                        ls -al configDropins/overrides
+                            echo "****************************************"
+                            echo "adjusting configDropins"
 
-                    </inlineTemplate>
-                    <submitAs>shell-JCL</submitAs>
-                </template>
+                            # Check for crypto-connect-v2.xml first (new version), fall back to crypto-connect-core.xml
+                            if [ -f ${instance-SERVER_INSTALL_DIR}/configDropins/options/crypto-connect-v2.xml ]; then
+                                echo "linking crypto-connect-v2.xml into overrides folder"
+                                ln -s ${instance-SERVER_INSTALL_DIR}/configDropins/options/crypto-connect-v2.xml configDropins/overrides/crypto-connect-v2.xml
+                            else
+                                echo "linking crypto-connect-core.xml into overrides folder"
+                                ln -s ${instance-SERVER_INSTALL_DIR}/configDropins/options/crypto-connect-core.xml configDropins/overrides/crypto-connect-core.xml
+                            fi
+                            
+                            echo "linking open-id-provider.xml into overrides folder"
+                            ln -s ${instance-SERVER_INSTALL_DIR}/configDropins/options/open-id-provider.xml configDropins/overrides/open-id-provider.xml
+                            
+                            if [ "$CONFIGURE_DB2" = true ]; then
+                                echo "linking db2-zos-type2.xml into overrides folder"
+                                ln -s ${instance-SERVER_INSTALL_DIR}/configDropins/options/db2-zos-type2.xml configDropins/overrides/db2-zos-type2.xml
+                            else
+                                echo "Skipping db2-zos-type2.xml (no database configuration)"
+                            fi
+
+                            echo "Finished setting up configDropins:"
+                            ls -al configDropins/overrides
+
+                        </inlineTemplate>
+                        <submitAs>shell-JCL</submitAs>
+                        <maxLrecl>2048</maxLrecl>
+                    </template>
+                </step>
+
+                <step name="configureDatabaseAccessCryptoConnect">
+                    <title>Configure Crypto Connect access to UKO database</title>
+                    <description>Grant Crypto Connect server access to UKO database views for key management integration. Skip this step if UKO database integration is not required for your Crypto Connect deployment.</description>
+                    <runAsUser substitution="true">$!{instance-UKO_ADMIN_DB}</runAsUser>
+                    <approver substitution="true">$!{instance-UKO_APPROVER_DB}</approver>
+                    <condition>
+                        <expression>"1"=="1"</expression>
+                        <description>always true</description>
+                        <targetStateSet>
+                            <description>Only execute for Crypto Connect configuration</description>
+                            <extendStateExpression>
+                                <description>Skip if no Crypto Connect configuration is required</description>
+                                <expression>${instance-CRYPTO_CONNECT_SUPPORT_REQUIRED}  == "false"</expression>
+                                <targetState>Skipped</targetState>
+                            </extendStateExpression>
+                        </targetStateSet>
+                    </condition>
+                    <variableValue name="SERVER_STC_USER" scope="instance" noPromptIfSet="false" required="false"/>
+                    <variableValue name="DB_HLQ" scope="instance" noPromptIfSet="false" required="false"/>
+                    <variableValue name="DB_CURRENT_SQLID" scope="instance" noPromptIfSet="false" required="false"/>
+                    <variableValue name="DB_CURRENT_SCHEMA" scope="instance" noPromptIfSet="false" required="false"/>
+                    <variableValue name="DB_JCC_SSID" scope="instance" noPromptIfSet="false" required="false"/>
+                    <variableValue name="DB_PROGRAM" scope="instance" noPromptIfSet="false" required="false"/>
+                    <variableValue name="DB_PLAN" scope="instance" noPromptIfSet="false" required="false"/>
+                    <variableValue name="DB_RUNLIB" scope="instance" noPromptIfSet="false" required="false"/>
+                    <instructions substitution="true">Submit jcl to execute step</instructions>
+                    <weight>1</weight>
+                    <autoEnable>true</autoEnable>
+                    <template>
+                        <fileTemplate substitution="true">jcl/db-database-grant-access-cryptoconnect.jcl</fileTemplate>
+                        <submitAs maxRc="8">JCL</submitAs>
+                        <maxLrecl>80</maxLrecl>
+                    </template>
+                </step>
+
+                <step name="configureDsnrAccessCryptoConnect">
+                    <title>Access to Db2 RRSAF protected access profiles in DSNR class for Crypto Connect</title>
+                    <description>Define access to the DSNR RRSAF and DIST profiles for Crypto Connect database integration. Skip this step if UKO database integration is not required for your Crypto Connect deployment.</description>
+                    <runAsUser substitution="true">$!{instance-UKO_ADMIN_SECURITY}</runAsUser>
+                    <approver substitution="true">$!{instance-UKO_APPROVER_SECURITY}</approver>
+                    <condition>
+                        <expression>"1"=="1"</expression>
+                        <description>always true</description>
+                        <targetStateSet>
+                            <description>Only execute for Crypto Connect configuration</description>
+                            <extendStateExpression>
+                                <description>Skip if no Crypto Connect configuration is required</description>
+                                <expression>${instance-CRYPTO_CONNECT_SUPPORT_REQUIRED}  == "false"</expression>
+                                <targetState>Skipped</targetState>
+                            </extendStateExpression>
+                        </targetStateSet>
+                    </condition>
+                    <variableValue name="DB_JCC_SSID" scope="instance" noPromptIfSet="false" required="false"/>
+                    <variableValue name="SERVER_STC_USER" scope="instance" noPromptIfSet="false" required="false"/>
+                    <variableValue name="SAF_OWNER" scope="instance" noPromptIfSet="false" required="false"/>
+                    <instructions substitution="true">Review rexx and execute it to create the required DSNR profiles and grant access for Crypto Connect</instructions>
+                    <weight>1</weight>
+                    <autoEnable>true</autoEnable>
+                    <template>
+                        <fileTemplate substitution="true">rexx/defineServerDsnrAccess.rexx</fileTemplate>
+                        <submitAs maxRc="0">TSO-REXX-JCL</submitAs>
+                        <maxLrecl>1024</maxLrecl>
+                    </template>
+                </step>
+
             </step>
 
             <step name="configureCat">

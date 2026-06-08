@@ -10,7 +10,7 @@
 //SYSUT1 DD DATA,DLM='@@'
 //${instance-SERVER_STC_NAME} PROC ARGS=,
 //   JAVACLS='com.ibm.acsp.server.main.Server',
-//   VERSION='17',
+//   VERSION='21',
 //   LOGLVL='+D',
 //   REGSIZE='0M',
 //   LEPARM=''

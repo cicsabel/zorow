@@ -25,7 +25,6 @@
       <workflowID>ukodb_Deprovision</workflowID>
       <workflowDescription>Deprovision a UKO database</workflowDescription>
     <workflowVersion>1.0.0.0</workflowVersion>
-        <!-- Build timestamp 2021.05.09.21.03.24 -->
       <vendor>IBM</vendor>
       <Provisioning>
           <productID>5655-EKM</productID>

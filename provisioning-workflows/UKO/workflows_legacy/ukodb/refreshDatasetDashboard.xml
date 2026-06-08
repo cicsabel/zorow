@@ -23,7 +23,6 @@
       <workflowID>ukodb_refreshDatasetDashboard</workflowID>
       <workflowDescription>Load data set info into databas</workflowDescription>
     <workflowVersion>1.0.0.0</workflowVersion>
-        <!-- Build timestamp 2021.05.09.21.03.24 -->
       <vendor>IBM</vendor>
       <Provisioning>
           <productID>5655-EKM</productID>

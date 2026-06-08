@@ -1,6 +1,6 @@
 # Workflows for Unified Key Orchestrator for IBM z/OS
 
-A detailed documentation of how to use the installation workflows can be found in the [UKO for z/OS installation documentation](https://www.ibm.com/docs/en/ukofz/3.1?topic=installation). 
+A detailed documentation of how to use the installation workflows can be found in the [UKO for z/OS installation documentation](https://www.ibm.com/docs/en/ukofz/3.1?topic=installation).
 
 ## Workflow Structure
 
@@ -104,6 +104,19 @@ For example, if you've already created users manually, you can skip the "Define 
 #### Legacy Workflows
 
 The old workflow structure is preserved in `workflows_legacy/` for reference and backward compatibility. However, we recommend migrating to the new consolidated workflows for easier maintenance and better integration.
+
+### 3.1.0.10
+
+**Crypto Connect UKO Integration:**
+- Enhanced Crypto Connect with optional UKO database integration for accessing UKO-managed keys
+- Added 5 new EJB roles for Crypto Connect: `certificates:read`, `operations:data:sign`, `operations:data:verify`, `operations:data:encrypt`, `operations:data:decrypt`
+- Created `db-database-grant-access-cryptoconnect.jcl` for Crypto Connect database grants
+- Updated `configureServerForCryptoConnect` workflow step with optional DB2 configuration
+  - Validates that all 4 database parameters (DB_LOCATION, DB_CURRENT_SCHEMA, DB_LIBPATH, DB_CLASSPATH) are set together or none are set
+  - Conditionally links `db2-zos-type2.xml` only when database integration is configured
+  - Supports both standalone and UKO-integrated deployment modes
+- Added database grants for UKO server: `EKMF_WEB_KEY_ALL_TAGS`
+- Updated `defineServerAccessCryptoConnect.rexx` to define all 5 EJB roles
 
 ### 3.1.0.9
 - re-introduce HOST variable as SERVER_HOSTNAME, also in update flow

@@ -24,7 +24,6 @@
       <workflowID>ukoagent_Provision</workflowID>
       <workflowDescription>Provision a UKO agent</workflowDescription>
     <workflowVersion>1.0.0.0</workflowVersion>
-        <!-- Build timestamp 2021.05.09.21.03.24 -->
       <vendor>IBM</vendor>
       <Provisioning>
           <productID>5655-EKM</productID>

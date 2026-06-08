@@ -24,7 +24,6 @@
       <workflowID>cc_Update</workflowID>
       <workflowDescription>Update a server.</workflowDescription>
     <workflowVersion>1.0.0.0</workflowVersion>
-        <!-- Build timestamp 2021.05.09.21.03.24 -->
       <vendor>IBM</vendor>
       <Provisioning>
           <productID>5655-EKM</productID>
@@ -444,7 +443,7 @@
                     <description>Skip this step if we are on a high enough version</description>
                     <extendStateExpression>
                         <description>Skip if the current version is already 2.1.0.4 or higher</description>
-                        <expression>${instance-SERVER_VERSION} >= "2.1.0.4"</expression>
+                        <expression>${instance-SERVER_VERSION} >= "2.1.0.04"</expression>
                         <targetState>skipped</targetState>
                     </extendStateExpression>
                 </targetStateSet>
@@ -480,7 +479,7 @@
                     <description>Skip this step if we are on a high enough version</description>
                     <extendStateExpression>
                         <description>Skip if the current version is already 2.1.0.4 or higher</description>
-                        <expression>${instance-SERVER_VERSION} >= "2.1.0.4"</expression>
+                        <expression>${instance-SERVER_VERSION} >= "2.1.0.04"</expression>
                         <targetState>skipped</targetState>
                     </extendStateExpression>
                 </targetStateSet>
@@ -519,7 +518,7 @@
                     <description>Skip this step if we are on V3 or higher</description>
                     <extendStateExpression>
                         <description>Skip if the current version is already V3 or higher</description>
-                        <expression>${instance-SERVER_VERSION} >= "3.1.0.0"</expression>
+                        <expression>${instance-SERVER_VERSION} >= "3.1.0.00"</expression>
                         <targetState>skipped</targetState>
                     </extendStateExpression>
                 </targetStateSet>
@@ -555,12 +554,12 @@
                     <description>Skip this step if we are on 3.1.0.2 or higher</description>
                     <extendStateExpression>
                         <description>Skip if the current version is already 3.1.0.2 or higher</description>
-                        <expression>${instance-SERVER_VERSION} >= "3.1.0.2"</expression>
+                        <expression>${instance-SERVER_VERSION} >= "3.1.0.02"</expression>
                         <targetState>skipped</targetState>
                     </extendStateExpression>
                     <extendStateExpression>
                         <description>Skip if you are upgrading to version lower than 3.1.0.2</description>
-                        <expression>${instance-NEW_SERVER_VERSION} &lt; "3.1.0.2"</expression>
+                        <expression>${instance-NEW_SERVER_VERSION} &lt; "3.1.0.02"</expression>
                         <targetState>skipped</targetState>
                     </extendStateExpression>
                 </targetStateSet>
@@ -600,12 +599,12 @@
                     <description>Skip this step if we are on 3.1.0.9 or higher</description>
                     <extendStateExpression>
                         <description>Skip if the current version is already 3.1.0.9 or higher</description>
-                        <expression>${instance-SERVER_VERSION} >= "3.1.0.9"</expression>
+                        <expression>${instance-SERVER_VERSION} >= "3.1.0.09"</expression>
                         <targetState>skipped</targetState>
                     </extendStateExpression>
                     <extendStateExpression>
                         <description>Skip if you are upgrading to version lower than 3.1.0.9</description>
-                        <expression>${instance-NEW_SERVER_VERSION} &lt; "3.1.0.9"</expression>
+                        <expression>${instance-NEW_SERVER_VERSION} &lt; "3.1.0.09"</expression>
                         <targetState>skipped</targetState>
                     </extendStateExpression>
                 </targetStateSet>

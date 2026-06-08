@@ -2,7 +2,6 @@
 
 <!-- Declare external file containing WAS variables referenced in the following steps -->
 <!DOCTYPE workflow [<!ENTITY variables SYSTEM "variable_imports.xml">
-                    <!ENTITY image_properties SYSTEM "extensions/image_properties.xml">
                     ]> 
                     
 <!--
@@ -23,8 +22,7 @@
   <workflowInfo>
       <workflowID>uko_grantVaultAccess</workflowID>
       <workflowDescription>Grant security access to a specific vault in a UKO server for key management roles</workflowDescription>
-    <workflowVersion>1.0.0.0</workflowVersion>
-        <!-- Build timestamp 2021.05.09.21.03.24 -->
+    <workflowVersion>3.1.0.10</workflowVersion>
       <vendor>IBM</vendor>
       <Provisioning>
           <productID>5655-EKM</productID>
@@ -72,7 +70,7 @@
         <weight>1</weight>
         <autoEnable>true</autoEnable>
         <template>
-            <fileTemplate substitution="true">extensions/defineRolesVault.rexx</fileTemplate>
+            <fileTemplate substitution="true">rexx/defineServerRolesVault.rexx</fileTemplate>
             <submitAs maxRc="4">TSO-REXX-JCL</submitAs>
             <maxLrecl>1024</maxLrecl>
         </template>
@@ -103,7 +101,7 @@
         <weight>1</weight>
         <autoEnable>true</autoEnable>
         <template>
-            <fileTemplate substitution="true">extensions/defineRolesLegacy.rexx</fileTemplate>
+            <fileTemplate substitution="true">rexx/defineServerRolesGeneral.rexx</fileTemplate>
             <submitAs maxRc="4">TSO-REXX-JCL</submitAs>
             <maxLrecl>1024</maxLrecl>
         </template>
@@ -134,7 +132,7 @@
             <weight>1</weight>
             <autoEnable>true</autoEnable>
             <template>
-                <fileTemplate substitution="true">extensions/defineRolesGeneral.rexx</fileTemplate>
+                <fileTemplate substitution="true">rexx/defineServerRolesGeneral.rexx</fileTemplate>
                 <submitAs maxRc="4">TSO-REXX-JCL</submitAs>
                 <maxLrecl>1024</maxLrecl>
             </template>
@@ -149,7 +147,7 @@
             <weight>1</weight>
             <autoEnable>true</autoEnable>
             <template>
-                <fileTemplate substitution="true">extensions/defineApplAccess.rexx</fileTemplate>
+                <fileTemplate substitution="true">rexx/defineServerRolesGeneral.rexx</fileTemplate>
                 <submitAs maxRc="0">TSO-REXX-JCL</submitAs>
                 <maxLrecl>1024</maxLrecl>
             </template>

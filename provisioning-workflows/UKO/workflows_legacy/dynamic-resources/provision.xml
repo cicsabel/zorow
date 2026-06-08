@@ -351,6 +351,20 @@
                     echo "SERVER_HOSTNAME ${host}" >> ${instance-TEMP_DIR}/zosmf-${_workflow-workflowKey}.properties
 
                     currentversion=$(iconv -t IBM037 -f utf-8 ${instance-SERVER_INSTALL_DIR}/EkmfWeb.properties | grep com.ibm.websphere.productVersion | sed -E 's/.*=([^\$])/\1/')
+
+                    # Pad version if needed
+                    oldIFS=$IFS
+                    IFS=.
+                    set -- $currentversion
+                    MAJOR=$1
+                    MINOR=$2
+                    PATCH=$3
+                    BUILD=$4
+                    IFS=$oldIFS
+                    if [ ${#BUILD} -eq 1 ]; then
+                        currentversion="${MAJOR}.${MINOR}.${PATCH}.0${BUILD}"
+                        echo "Padded version to: $currentversion"
+                    fi
                     echo "SERVER_VERSION ${currentversion}" >> ${instance-TEMP_DIR}/zosmf-${_workflow-workflowKey}.properties
     
                     #if(${instance-UKO_WELCOME_MESSAGE} &amp;&amp; ${instance-UKO_WELCOME_MESSAGE} != "")
@@ -359,7 +373,7 @@
                         echo "UKO_WELCOME_MESSAGE \"This instance ${_workflow-softwareServiceInstanceName} for ${currentversion} testing\" " >> ${instance-TEMP_DIR}/zosmf-${_workflow-workflowKey}.properties
                     #end 
 
-                    requiredversion="3.1.0.2"
+                    requiredversion="3.1.0.02"
                     # version compare according to https://unix.stackexchange.com/questions/285924/how-to-compare-a-programs-version-in-a-shell-script
                     if [ "$(printf '%s\n' "$requiredversion" "$currentversion" | sort -V | head -n1)" = "$requiredversion" ]; then 
                         # echo "Greater than or equal to ${requiredver}"

@@ -46,6 +46,7 @@ export CLASSPATH="$CP":
 IJO="-Xms16m -Xmx128m --add-exports=java.base/com.ibm.misc=ALL-UNNAMED"
 # Uncomment the following to aid in debugging "Class Not Found" problems
 #IJO="$IJO -verbose:class"
+IJO="$IJO -Dfile.encoding=IBM1047"
 # Uncomment the following if you want to run with Ascii file encoding..
 #IJO="$IJO -Dfile.encoding=ISO8859-1"
 export IBM_JAVA_OPTIONS="$IJO "

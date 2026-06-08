@@ -48,8 +48,13 @@ SAF_OWNER="${instance-SAF_OWNER}"
 "RDEFINE EJBROLE" SAFPREFIX".ekmf-rest-api.meta:get-analytics-run OWNER("SAF_OWNER") UACC(NONE)"
 "RDEFINE EJBROLE" SAFPREFIX".ekmf-rest-api.meta:stop-analytics-run OWNER("SAF_OWNER") UACC(NONE)"
 
+/* Batch job roles */
+"RDEFINE EJBROLE" SAFPREFIX".ekmf-rest-api.meta:read-batch-jobs OWNER("SAF_OWNER") UACC(NONE)"
+"RDEFINE EJBROLE" SAFPREFIX".ekmf-rest-api.meta:set-batch-jobs-settings OWNER("SAF_OWNER") UACC(NONE)"
+"RDEFINE EJBROLE" SAFPREFIX".ekmf-rest-api.meta:get-batch-jobs-settings OWNER("SAF_OWNER") UACC(NONE)"
+
 "RDEFINE EJBROLE" SAFPREFIX".ekmf-rest-api.user:passcode:create OWNER("SAF_OWNER") UACC(NONE)"
-"RDEFINE EJBROLE" SAFPREFIX".ekmf-rest-api.user:passcode:delete OWNER("SAF_OWNER") UACC(NONE)" 
+"RDEFINE EJBROLE" SAFPREFIX".ekmf-rest-api.user:passcode:delete OWNER("SAF_OWNER") UACC(NONE)"
 
 /* ACSP integration */
 "RDEFINE EJBROLE" SAFPREFIX".crypto-connect.servers:list OWNER("SAF_OWNER") UACC(NONE)"
@@ -64,6 +69,7 @@ SAF_OWNER="${instance-SAF_OWNER}"
 
 Say "Grant Permissions to Vault Administrator"
 "PERMIT" SAFPREFIX".ekmf-rest-api.datasets:read CLASS(EJBROLE) ACCESS(READ) ID("VAULT_ADMIN")"
+"PERMIT" SAFPREFIX".ekmf-rest-api.auditlog:read CLASS(EJBROLE) ACCESS(READ) ID("VAULT_ADMIN")"
 "PERMIT" SAFPREFIX".ekmf-rest-api.meta:cache-rebuild CLASS(EJBROLE) ACCESS(READ) ID("VAULT_ADMIN")"
 "PERMIT" SAFPREFIX".ekmf-rest-api.meta:logs-download CLASS(EJBROLE) ACCESS(READ) ID("VAULT_ADMIN")"
 "PERMIT" SAFPREFIX".ekmf-rest-api.settings:write CLASS(EJBROLE) ACCESS(READ) ID("VAULT_ADMIN")"
@@ -82,6 +88,11 @@ Say "Grant Permissions to Vault Administrator"
 
 "PERMIT" SAFPREFIX".ekmf-rest-api.user:passcode:create CLASS(EJBROLE) ACCESS(READ) ID("VAULT_ADMIN")"
 "PERMIT" SAFPREFIX".ekmf-rest-api.user:passcode:delete CLASS(EJBROLE) ACCESS(READ) ID("VAULT_ADMIN")"
+
+/* Batch job roles */
+"PERMIT" SAFPREFIX".ekmf-rest-api.meta:read-batch-jobs CLASS(EJBROLE) ACCESS(READ) ID("VAULT_ADMIN")"
+"PERMIT" SAFPREFIX".ekmf-rest-api.meta:set-batch-jobs-settings CLASS(EJBROLE) ACCESS(READ) ID("VAULT_ADMIN")"
+"PERMIT" SAFPREFIX".ekmf-rest-api.meta:get-batch-jobs-settings CLASS(EJBROLE) ACCESS(READ) ID("VAULT_ADMIN")"
 
 Say "Grant Permissions to Key Administrator"
 "PERMIT" SAFPREFIX".ekmf-rest-api.datasets:read CLASS(EJBROLE) ACCESS(READ) ID("KEY_ADMIN")"
@@ -109,6 +120,10 @@ Say "Grant Permissions to Key Administrator"
 "PERMIT" SAFPREFIX".ekmf-rest-api.user:passcode:create CLASS(EJBROLE) ACCESS(READ) ID("KEY_ADMIN")"
 "PERMIT" SAFPREFIX".ekmf-rest-api.user:passcode:delete CLASS(EJBROLE) ACCESS(READ) ID("KEY_ADMIN")"
 
+/* Batch job roles */
+"PERMIT" SAFPREFIX".ekmf-rest-api.meta:read-batch-jobs CLASS(EJBROLE) ACCESS(READ) ID("KEY_ADMIN")"
+"PERMIT" SAFPREFIX".ekmf-rest-api.meta:get-batch-jobs-settings CLASS(EJBROLE) ACCESS(READ) ID("KEY_ADMIN")"
+
 /* ACSP integration */
 "PERMIT" SAFPREFIX".crypto-connect.servers:list CLASS(EJBROLE) ACCESS(READ) ID("KEY_ADMIN")"
 "PERMIT" SAFPREFIX".crypto-connect.servers:read CLASS(EJBROLE) ACCESS(READ) ID("KEY_ADMIN")"
@@ -117,6 +132,12 @@ Say "Grant Permissions to Key Administrator"
 
 Say "Grant Permissions to Key Custodian1"
 "PERMIT" SAFPREFIX".ekmf-rest-api.datasets:read CLASS(EJBROLE) ACCESS(READ) ID("KEY_CUSTODIAN1")"
+
+/* Batch job roles */
+"PERMIT" SAFPREFIX".ekmf-rest-api.meta:read-batch-jobs CLASS(EJBROLE) ACCESS(READ) ID("KEY_CUSTODIAN1")"
+"PERMIT" SAFPREFIX".ekmf-rest-api.meta:get-batch-jobs-settings CLASS(EJBROLE) ACCESS(READ) ID("KEY_CUSTODIAN1")"
+
+/* Key management list roles */
 "PERMIT" SAFPREFIX".ekmf-rest-api.keystores:list CLASS(EJBROLE) ACCESS(READ) ID("KEY_CUSTODIAN1")"
 "PERMIT" SAFPREFIX".ekmf-rest-api.keys:list CLASS(EJBROLE) ACCESS(READ) ID("KEY_CUSTODIAN1")"
 "PERMIT" SAFPREFIX".ekmf-rest-api.templates:list CLASS(EJBROLE) ACCESS(READ) ID("KEY_CUSTODIAN1")"
@@ -137,6 +158,12 @@ Say "Grant Permissions to Key Custodian1"
 
 Say "Grant Permissions to Key Custodian2"
 "PERMIT" SAFPREFIX".ekmf-rest-api.datasets:read CLASS(EJBROLE) ACCESS(READ) ID("KEY_CUSTODIAN2")"
+
+/* Batch job roles */
+"PERMIT" SAFPREFIX".ekmf-rest-api.meta:read-batch-jobs CLASS(EJBROLE) ACCESS(READ) ID("KEY_CUSTODIAN2")"
+"PERMIT" SAFPREFIX".ekmf-rest-api.meta:get-batch-jobs-settings CLASS(EJBROLE) ACCESS(READ) ID("KEY_CUSTODIAN2")"
+
+/* Key management list roles */
 "PERMIT" SAFPREFIX".ekmf-rest-api.keystores:list CLASS(EJBROLE) ACCESS(READ) ID("KEY_CUSTODIAN2")"
 "PERMIT" SAFPREFIX".ekmf-rest-api.keys:list CLASS(EJBROLE) ACCESS(READ) ID("KEY_CUSTODIAN2")"
 "PERMIT" SAFPREFIX".ekmf-rest-api.templates:list CLASS(EJBROLE) ACCESS(READ) ID("KEY_CUSTODIAN2")"
@@ -153,6 +180,7 @@ Say "Grant Permissions to Key Custodian2"
 
 /* ACSP integration */
 "PERMIT" SAFPREFIX".crypto-connect.servers:list CLASS(EJBROLE) ACCESS(READ) ID("KEY_CUSTODIAN2")"
+
 "PERMIT" SAFPREFIX".crypto-connect.servers:read CLASS(EJBROLE) ACCESS(READ) ID("KEY_CUSTODIAN2")"
 
 Say "Grant Permissions to Auditor"
@@ -165,6 +193,10 @@ Say "Grant Permissions to Auditor"
 
 "PERMIT" SAFPREFIX".ekmf-rest-api.user:passcode:create CLASS(EJBROLE) ACCESS(READ) ID("UKO_AUDITOR")"
 "PERMIT" SAFPREFIX".ekmf-rest-api.user:passcode:delete CLASS(EJBROLE) ACCESS(READ) ID("UKO_AUDITOR")"
+
+/* Batch job roles */
+"PERMIT" SAFPREFIX".ekmf-rest-api.meta:read-batch-jobs CLASS(EJBROLE) ACCESS(READ) ID("UKO_AUDITOR")"
+"PERMIT" SAFPREFIX".ekmf-rest-api.meta:get-batch-jobs-settings CLASS(EJBROLE) ACCESS(READ) ID("UKO_AUDITOR")"
 
 /* Refresh */
 "SETROPTS RACLIST(EJBROLE) REFRESH"

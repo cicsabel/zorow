@@ -54,9 +54,9 @@
         <title>Populate server user directory</title>
         <description>Populate the directory for the server</description>
 
-        <step name="linkFilesAndFolders">
-            <title>Link installation files and folders</title>
-            <description>Link to the installation folders and the correct versions of the JCCA libraries. You need to chose the correct jcca libraries according to your ICSF release</description>
+        <step name="setupServerEnvironment">
+            <title>Setup server environment and configuration</title>
+            <description>Link to the installation folders and the correct versions of the JCCA libraries, then create the server configuration. ICSF release is automatically detected from the system using the D ICSF operator command.</description>
             <runAsUser substitution="true">$!{instance-UKO_ADMIN_SERVER}</runAsUser>
             <approver substitution="true">$!{instance-UKO_APPROVER_SERVER}</approver>
             <variableValue name="SERVER_USER_DIR" scope="instance" noPromptIfSet="false" required="false"/>
@@ -66,128 +66,18 @@
             <variableValue name="SERVER_STC_USER" scope="instance" noPromptIfSet="false" required="false"/>
             <variableValue name="SERVER_STC_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
             <variableValue name="ICSF_RELEASE" scope="instance" noPromptIfSet="false" required="false"/>
-            <instructions substitution="true">Submit shell script to execute step</instructions>
-            <weight>1</weight>
-            <autoEnable>true</autoEnable>
-            <template>
-                <inlineTemplate substitution="true">
-                    cd ${instance-SERVER_USER_DIR}/${instance-SERVER_STC_NAME}
-
-                    echo "creating new bin folder"
-                    mkdir bin
-                    echo "Changing ownership of the bin folder to the server user and group"
-                    chown ${instance-SERVER_STC_USER}:${instance-SERVER_STC_GROUP} bin
-
-                    cd bin
-
-                    echo "creating symbolic links"
-                    ln -s ${instance-SERVER_INSTALL_DIR}/bin/libjcca-${instance-ICSF_RELEASE}.so.1.6.8.5 libjcca.so
-                    ln -s ${instance-SERVER_INSTALL_DIR}/bin/lib${instance-ICSF_RELEASE}.so lib${instance-ICSF_RELEASE}.so
-                    ln -s ${instance-SERVER_INSTALL_DIR}/bin/libacspzsec6.so libacspzsec6.so
-
-                    echo "symbolic links created, result:"
-                    ls -al 
-
-                    echo "Linking to the lib and libmon installation folders"
-                    ln -s ${instance-SERVER_INSTALL_DIR}/lib ${instance-SERVER_USER_DIR}/${instance-SERVER_STC_NAME}/lib
-                    ln -s ${instance-SERVER_INSTALL_DIR}/libmon ${instance-SERVER_USER_DIR}/${instance-SERVER_STC_NAME}/libmon
-                    
-                </inlineTemplate>
-                <submitAs>shell-JCL</submitAs>
-            </template>
-        </step>
-
-        <step name="createServerConfig">
-            <title>Create the server config</title>
-            <description>Create the server configuration</description>
-            <runAsUser substitution="true">$!{instance-UKO_ADMIN_SERVER}</runAsUser>
-            <approver substitution="true">$!{instance-UKO_APPROVER_SERVER}</approver>
-            <variableValue name="SERVER_USER_DIR" scope="instance" noPromptIfSet="false" required="false"/>
-            <variableValue name="SERVER_OUTPUT_DIR" scope="instance" noPromptIfSet="false" required="false"/>
-            <variableValue name="SERVER_INSTALL_DIR" scope="instance" noPromptIfSet="false" required="false"/>
             <variableValue name="SERVER_TLS_KEY_STORE_KEY_RING" scope="instance" noPromptIfSet="false" required="false"/>
             <variableValue name="SERVER_TLS_KEY_STORE_OWNER" scope="instance" noPromptIfSet="false" required="false"/>
-            <variableValue name="SERVER_STC_USER" scope="instance" noPromptIfSet="false" required="false"/>
-            <variableValue name="SERVER_STC_GROUP" scope="instance" noPromptIfSet="false" required="false"/>
             <variableValue name="SERVER_PORT_NOTLS" scope="instance" noPromptIfSet="false" required="false"/>
             <variableValue name="SERVER_PORT_TLS" scope="instance" noPromptIfSet="false" required="false"/>
             <variableValue name="CONFIGURATION_PORT" scope="instance" noPromptIfSet="false" required="false"/>
             <variableValue name="SAF_PROFILE_PREFIX" scope="instance" noPromptIfSet="false" required="false"/>
-            <variableValue name="ICSF_RELEASE" scope="instance" noPromptIfSet="false" required="false"/>
             <variableValue name="ACSP_AUTH_MAP_SVC" scope="instance" noPromptIfSet="false" required="false"/>
-            <instructions substitution="true">Submit shell script to execute step</instructions>
+            <instructions substitution="true">Execute shell script to setup server environment. ICSF release is automatically detected from z/OS system (D ICSF command). ICSF_RELEASE variable is only used as fallback if auto-detection fails.</instructions>
             <weight>1</weight>
             <autoEnable>true</autoEnable>
             <template>
-                <inlineTemplate substitution="true">
-
-                    echo "Creating the config directory"
-                    mkdir ${instance-SERVER_USER_DIR}/${instance-SERVER_STC_NAME}/config
-
-                    echo "Copying log4j2.properties"
-                    cp ${instance-SERVER_INSTALL_DIR}/config/log4j2.properties ${instance-SERVER_USER_DIR}/${instance-SERVER_STC_NAME}/config/log4j2.properties
-
-                    sedstring=""
-                    # remove unused entries
-                    #port.tcp-dir.9997 = tcp:acp,cca,ccc
-                    #port.tls-dir.9994 = tls:acp,cca,ccc    
-                    #sedstring="${sedstring} s#^[ \#]*port.tcp-dir.9997.*##g;"
-                    #sedstring="${sedstring} s#^[ \#]*port.tls-dir.9994.*##g;"
-
-                    # remove unused services
-                    #service.all = tcp-dir,tls-dir,tcp-all,tls-all 
-                    sedstring="${sedstring} s#^[ \#]*service.all.*#service.all = tcp-all,tls-all#g;"
-
-                    #if(${instance-SERVER_PORT_NOTLS} &amp;&amp; ${instance-SERVER_PORT_NOTLS} != "")
-                        sedstring="${sedstring} s#^[ \#]*port.tcp-all.*#port.tcp-all.${instance-SERVER_PORT_NOTLS}=tcp:acp,cca,ccc#g;"
-                    #end 
-                    #if(${instance-SERVER_PORT_TLS} &amp;&amp; ${instance-SERVER_PORT_TLS} != "")
-                        sedstring="${sedstring} s#^[ \#]*port.tls-all.*#port.tls-all.${instance-SERVER_PORT_TLS}=tls:acp,cca,ccc#g;"
-                    #end 
-
-                    #monitor.agent.port=9050
-                    #if(${instance-CONFIGURATION_PORT} &amp;&amp; ${instance-CONFIGURATION_PORT} != "")
-                        sedstring="${sedstring} s#^[ \#]*monitor.agent.port=.*#monitor.agent.port=${instance-CONFIGURATION_PORT}#g;"
-                    #end 
-                    
-                    # select jCCA JNI Library to use 
-                    # hsm.cca.jccalib=HCR77D2         
-                    #if(${instance-ICSF_RELEASE} &amp;&amp; ${instance-ICSF_RELEASE} != "")
-                        sedstring="${sedstring} s#^[ \#]*hsm.cca.jccalib=.*#hsm.cca.jccalib=${instance-ICSF_RELEASE}#g;"
-                    #end
-
-                    # ssl.keyring.name=ACSP-IVP-KEYRING
-                    sedstring="${sedstring} s#^[ \#]*ssl.keyring.name=.*#ssl.keyring.name=${instance-SERVER_TLS_KEY_STORE_KEY_RING}#g;"
-                    # setting the key ring user name
-                    #if(${instance-SERVER_TLS_KEY_STORE_OWNER} &amp;&amp; ${instance-SERVER_TLS_KEY_STORE_OWNER} != "")
-                        sedstring="${sedstring} s#^[ \#]*ssl.keyring.user=.*#ssl.keyring.user=${instance-SERVER_TLS_KEY_STORE_OWNER}#g;"
-                    #else
-                        sedstring="${sedstring} s#^[ \#]*ssl.keyring.user=.*#ssl.keyring.user=${instance-SERVER_STC_USER}#g;"
-                    #end
-
-                    #server.persistent.data.path = /var/acsp 
-                    sedstring="${sedstring} s#^[ \#]*server.persistent.data.path.*#server.persistent.data.path=${instance-SERVER_OUTPUT_DIR}/${instance-SERVER_STC_NAME}#g;"
-                    sedstring="${sedstring} s#^[ \#]*log4j2.configuration=.*#log4j2.configuration=${instance-SERVER_USER_DIR}/${instance-SERVER_STC_NAME}/config/log4j2.properties#g;"
-                    
-                    # define application id for ACSP, default is ACSPPROD 
-                    sedstring="${sedstring} s#^[ \#]*auth.map.applid=.*#auth.map.applid=${instance-SAF_PROFILE_PREFIX}#g;"
-                    #if(${instance-ACSP_AUTH_MAP_SVC} &amp;&amp; ${instance-ACSP_AUTH_MAP_SVC} != "")
-                        sedstring="${sedstring} s#^[ \#]*auth.map.svc=.*#auth.map.svc=${instance-ACSP_AUTH_MAP_SVC}#g;"
-                    #end 
-
-                    # set the default instance to JCECCARACFKS
-                    sedstring="${sedstring} s#^[ \#]*ssl.keystore.instance=.*#ssl.keystore.instance=JCECCARACFKS#g;"
-                    # keep the original hardware provider for now
-                    sedstring="${sedstring} s#^[ \#]*ssl.keystore.provider=.*#ssl.keystore.provider=com.ibm.crypto.hdwrCCA.provider.IBMJCECCA,2#g"
-                    # !!! remember to remove the last semicolon
-
-                    echo "Copying acsp.server.properties and replacing values"
-                    sed -e "$sedstring" ${instance-SERVER_INSTALL_DIR}/config/acsp.server.properties > ${instance-SERVER_USER_DIR}/${instance-SERVER_STC_NAME}/config/acsp.server.properties;
-
-                    echo "Changing ownership of the server config directory and its content"
-                    chown -R ${instance-SERVER_STC_USER}:${instance-SERVER_STC_GROUP} ${instance-SERVER_USER_DIR}/${instance-SERVER_STC_NAME}/config
-
-                </inlineTemplate>
+                <fileTemplate substitution="true">scripts/setup-acsp-server.sh</fileTemplate>
                 <submitAs>shell-JCL</submitAs>
             </template>
         </step>

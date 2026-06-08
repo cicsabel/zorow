@@ -24,7 +24,7 @@
   <workflowInfo>
       <workflowID>angel_Provision</workflowID>
       <workflowDescription>Provision an angel process for UKO.</workflowDescription>
-    <workflowVersion>1.0.0.0</workflowVersion>
+    <workflowVersion>3.1.0.10</workflowVersion>
       <vendor>IBM</vendor>
       <Provisioning>
           <productID>5655-EKM</productID>

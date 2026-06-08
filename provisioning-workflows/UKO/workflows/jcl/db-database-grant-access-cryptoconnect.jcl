@@ -3,11 +3,12 @@
 //* SPDX-License-Identifier: Apache-2.0                                */
 //**********************************************************************/
 //*******************************************************
-//* GRANT access to the database
+//* GRANT Crypto Connect access to UKO database views
+//* This allows Crypto Connect to access UKO-managed keys
 //*******************************************************
 //CCSQL  EXEC PGM=IKJEFT01,REGION=0M               
 //         EXPORT SYMLIST=*
-//         SET WEBUSER='${instance-SERVER_STC_USER}'
+//         SET CCUSER='${instance-SERVER_STC_USER}'
 //STEPLIB  DD DISP=SHR,DSN=${instance-DB_HLQ}.SDSNLOAD               
 //SYSTSPRT DD SYSOUT=*,DCB=BLKSIZE=131                         
 //SYSPRINT DD SYSOUT=*                                         
@@ -28,10 +29,13 @@ SET CURRENT SQLID = '${_step-stepOwnerUpper}';
 #end
 SET CURRENT SCHEMA = '${instance-DB_CURRENT_SCHEMA}' ;
 
+-- Crypto Connect UKO Integration Grants
+-- These grants allow Crypto Connect to access UKO-managed keys and templates
 
-GRANT SELECT ON MSDKE_KEYS TO &WEBUSER;
-
-GRANT SELECT ON MSDKE_KEYS_USERS TO &WEBUSER;
-
+GRANT SELECT ON EKMF_WEB_CERTIFICATES TO &CCUSER;
+GRANT SELECT ON EKMF_WEB_KEY_MATERIALS TO &CCUSER;
+GRANT SELECT ON EKMF_WEB_KEY_TEMPLATES TO &CCUSER;
+GRANT SELECT ON EKMF_WEB_KEYS TO &CCUSER;
+GRANT SELECT ON EKMF_WEB_KEY_ALL_TAGS TO &CCUSER;
 
 /*

@@ -10,20 +10,37 @@ CC_GROUP="${instance-CLIENT_ACCESS_GROUP}"
 SAFPREFIX="${instance-SAF_PROFILE_PREFIX}"
 SAF_OWNER="${instance-SAF_OWNER}"
 
+
 /***********************************************************************/
 /* Creating Crypto Connect EJB Roles */
 /***********************************************************************/
 
-Say "Defining crypto connect roles, as they might not have been defined yet"
+Say "Defining basic crypto connect roles"
 "RDEFINE EJBROLE" SAFPREFIX".crypto-connect.operations:data:encrypt ",
    " OWNER("SAF_OWNER") UACC(NONE)"
 "RDEFINE EJBROLE" SAFPREFIX".crypto-connect.operations:data:decrypt ",
    " OWNER("SAF_OWNER") UACC(NONE)"
 
-Say "Granting access to crypto connect roles"
+Say "Defining crypto connect roles (new format for v3.1.0.10+)"
+"RDEFINE EJBROLE" SAFPREFIX".crypto-connect.certificates:read ",
+   " OWNER("SAF_OWNER") UACC(NONE)"
+"RDEFINE EJBROLE" SAFPREFIX".crypto-connect.operations:data:sign ",
+   " OWNER("SAF_OWNER") UACC(NONE)"
+"RDEFINE EJBROLE" SAFPREFIX".crypto-connect.operations:data:verify ",
+   " OWNER("SAF_OWNER") UACC(NONE)"
+
+Say "Granting access to basic crypto connect roles"
 "PERMIT" SAFPREFIX".crypto-connect.operations:data:encrypt",
    " CLASS(EJBROLE) ACCESS(READ) ID("CC_GROUP")"
 "PERMIT" SAFPREFIX".crypto-connect.operations:data:decrypt",
+   " CLASS(EJBROLE) ACCESS(READ) ID("CC_GROUP")"
+
+Say "Granting access to new crypto connect roles"
+"PERMIT" SAFPREFIX".crypto-connect.certificates:read",
+   " CLASS(EJBROLE) ACCESS(READ) ID("CC_GROUP")"
+"PERMIT" SAFPREFIX".crypto-connect.operations:data:sign",
+   " CLASS(EJBROLE) ACCESS(READ) ID("CC_GROUP")"
+"PERMIT" SAFPREFIX".crypto-connect.operations:data:verify",
    " CLASS(EJBROLE) ACCESS(READ) ID("CC_GROUP")"
 
 Say "Refreshing EJBROLE class"

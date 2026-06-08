@@ -236,6 +236,20 @@
                     echo "SERVER_HOSTNAME ${host}" >> ${instance-TEMP_DIR}/zosmf-${_workflow-workflowKey}.properties
 
                     currentversion=$(iconv -t IBM037 -f utf-8 ${instance-SERVER_INSTALL_DIR}/EkmfWeb.properties | grep com.ibm.websphere.productVersion | sed -E 's/.*=([^\$])/\1/')
+
+                    # Pad version if needed
+                    oldIFS=$IFS
+                    IFS=.
+                    set -- $currentversion
+                    MAJOR=$1
+                    MINOR=$2
+                    PATCH=$3
+                    BUILD=$4
+                    IFS=$oldIFS
+                    if [ ${#BUILD} -eq 1 ]; then
+                        currentversion="${MAJOR}.${MINOR}.${PATCH}.0${BUILD}"
+                        echo "Padded version to: $currentversion"
+                    fi
                     echo "SERVER_VERSION ${currentversion}" >> ${instance-TEMP_DIR}/zosmf-${_workflow-workflowKey}.properties
     
                     echo "SAF_PROFILE_PREFIX ${_workflow-softwareServiceInstanceName}" >> ${instance-TEMP_DIR}/zosmf-${_workflow-workflowKey}.properties

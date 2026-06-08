@@ -25,7 +25,6 @@
       <workflowID>cc_Provision</workflowID>
       <workflowDescription>Provision a server.</workflowDescription>
     <workflowVersion>1.0.0.0</workflowVersion>
-        <!-- Build timestamp 2021.05.09.21.03.24 -->
       <vendor>IBM</vendor>
       <Provisioning>
           <productID>5655-EKM</productID>
@@ -463,6 +462,20 @@
                 fi 
 
                 currentversion=$(iconv -t IBM037 -f utf-8 ${instance-SERVER_USER_DIR}/${instance-SERVER_STC_NAME}/EkmfWeb.properties | grep com.ibm.websphere.productVersion | sed -E 's/.*=([^\$])/\1/')
+
+                # Pad version if needed
+                oldIFS=$IFS
+                IFS=.
+                set -- $currentversion
+                MAJOR=$1
+                MINOR=$2
+                PATCH=$3
+                BUILD=$4
+                IFS=$oldIFS
+                if [ ${#BUILD} -eq 1 ]; then
+                    currentversion="${MAJOR}.${MINOR}.${PATCH}.0${BUILD}"
+                    echo "Padded version to: $currentversion"
+                fi
 
                 echo "SERVER_VERSION $currentversion" >> ${instance-TEMP_DIR}/${instance-SERVER_STC_NAME}
 

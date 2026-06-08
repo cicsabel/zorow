@@ -22,7 +22,7 @@
   <workflowInfo>
       <workflowID>uko_setupGklm</workflowID>
       <workflowDescription>Configure security access for IBM Guardium Key Lifecycle Manager (GKLM) integration with UKO</workflowDescription>
-    <workflowVersion>1.0.0.0</workflowVersion>
+    <workflowVersion>3.1.0.10</workflowVersion>
       <vendor>IBM</vendor>
       <Provisioning>
           <productID>5655-EKM</productID>

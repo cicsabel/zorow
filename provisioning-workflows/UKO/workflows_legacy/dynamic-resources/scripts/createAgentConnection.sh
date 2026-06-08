@@ -8,7 +8,7 @@ currentversion=${instance-SERVER_VERSION}
 echo "ekmf version:" $currentversion
 agentprefix=${instance-AGENT_STC_NAME}
 echo "agent started task name:" $agentprefix
-requiredversion="3.1.0.0"
+requiredversion="3.1.0.00"
 
 userid=${instance-UKO_ADMIN_SERVER}
 #userid=${_step-stepOwnerUpper}

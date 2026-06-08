@@ -3,7 +3,7 @@ echo "ekmf port:" $ekmfport
 keyprefix=${instance-KEY_PREFIX}
 echo "ekmf keyprefix:" $keyprefix
 currentversion=${instance-SERVER_VERSION}
-requiredversion="3.1.0.0"
+requiredversion="3.1.0.00"
 
 userid=${instance-UKO_ADMIN_SERVER}
 #userid=${_step-stepOwnerUpper}

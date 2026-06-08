@@ -54,6 +54,15 @@ Say "Defing roles for the vauld ID:" VAULT_ID
 "RDEFINE EJBROLE" SAFPREFIX".ekmf-rest-api."VAULT_ID".vaults:delete OWNER("SAF_OWNER") UACC(NONE)"
 "RDEFINE EJBROLE" SAFPREFIX".ekmf-rest-api."VAULT_ID".vaults:read OWNER("SAF_OWNER") UACC(NONE)"
 "RDEFINE EJBROLE" SAFPREFIX".ekmf-rest-api."VAULT_ID".vaults:write OWNER("SAF_OWNER") UACC(NONE)"
+/* Batch job roles */
+"RDEFINE EJBROLE" SAFPREFIX".ekmf-rest-api."VAULT_ID".meta:read-batch-jobs OWNER("SAF_OWNER") UACC(NONE)"
+"RDEFINE EJBROLE" SAFPREFIX".ekmf-rest-api."VAULT_ID".meta:get-batch-job OWNER("SAF_OWNER") UACC(NONE)"
+"RDEFINE EJBROLE" SAFPREFIX".ekmf-rest-api."VAULT_ID".meta:get-batch-job-items OWNER("SAF_OWNER") UACC(NONE)"
+"RDEFINE EJBROLE" SAFPREFIX".ekmf-rest-api."VAULT_ID".meta:create-batch-job OWNER("SAF_OWNER") UACC(NONE)"
+"RDEFINE EJBROLE" SAFPREFIX".ekmf-rest-api."VAULT_ID".meta:delete-batch-job OWNER("SAF_OWNER") UACC(NONE)"
+"RDEFINE EJBROLE" SAFPREFIX".ekmf-rest-api."VAULT_ID".meta:stop-batch-job OWNER("SAF_OWNER") UACC(NONE)"
+"RDEFINE EJBROLE" SAFPREFIX".ekmf-rest-api."VAULT_ID".meta:resume-batch-job OWNER("SAF_OWNER") UACC(NONE)"
+
 
 /* roles that have been removed in the transition from v2 to v4, replaced with keys:write */
 /* "RDEFINE EJBROLE" SAFPREFIX".ekmf-rest-api."VAULT_ID".keys:distribute OWNER("SAF_OWNER") UACC(NONE)" */
@@ -68,6 +77,13 @@ Say "Defing roles for the vauld ID:" VAULT_ID
 Say "Grant Permissions to Vault Administrator" VAULT_ADMIN
 "PERMIT" SAFPREFIX".ekmf-rest-api."VAULT_ID".vaults:read CLASS(EJBROLE) ACCESS(READ) ID("VAULT_ADMIN")"
 "PERMIT" SAFPREFIX".ekmf-rest-api."VAULT_ID".vaults:write CLASS(EJBROLE) ACCESS(READ) ID("VAULT_ADMIN")"
+
+/* Batch job roles - read and stop only */
+"PERMIT" SAFPREFIX".ekmf-rest-api."VAULT_ID".meta:read-batch-jobs CLASS(EJBROLE) ACCESS(READ) ID("VAULT_ADMIN")"
+"PERMIT" SAFPREFIX".ekmf-rest-api."VAULT_ID".meta:get-batch-job CLASS(EJBROLE) ACCESS(READ) ID("VAULT_ADMIN")"
+"PERMIT" SAFPREFIX".ekmf-rest-api."VAULT_ID".meta:get-batch-job-items CLASS(EJBROLE) ACCESS(READ) ID("VAULT_ADMIN")"
+"PERMIT" SAFPREFIX".ekmf-rest-api."VAULT_ID".meta:delete-batch-job CLASS(EJBROLE) ACCESS(READ) ID("VAULT_ADMIN")"
+"PERMIT" SAFPREFIX".ekmf-rest-api."VAULT_ID".meta:stop-batch-job CLASS(EJBROLE) ACCESS(READ) ID("VAULT_ADMIN")"
 "PERMIT" SAFPREFIX".ekmf-rest-api."VAULT_ID".vaults:delete CLASS(EJBROLE) ACCESS(READ) ID("VAULT_ADMIN")"
 
 
@@ -87,6 +103,13 @@ Say "Grant Permissions to Key Administrator" KEY_ADMIN
 "PERMIT" SAFPREFIX".ekmf-rest-api."VAULT_ID".vaults:write CLASS(EJBROLE) ACCESS(READ) ID("KEY_ADMIN")"
 "PERMIT" SAFPREFIX".ekmf-rest-api."VAULT_ID".vaults:delete CLASS(EJBROLE) ACCESS(READ) ID("KEY_ADMIN")"
 /* legacy role for importing keys using the v2 import API on the default vault*/
+
+/* Batch job roles - read and stop only */
+"PERMIT" SAFPREFIX".ekmf-rest-api."VAULT_ID".meta:read-batch-jobs CLASS(EJBROLE) ACCESS(READ) ID("KEY_ADMIN")"
+"PERMIT" SAFPREFIX".ekmf-rest-api."VAULT_ID".meta:get-batch-job CLASS(EJBROLE) ACCESS(READ) ID("KEY_ADMIN")"
+"PERMIT" SAFPREFIX".ekmf-rest-api."VAULT_ID".meta:get-batch-job-items CLASS(EJBROLE) ACCESS(READ) ID("KEY_ADMIN")"
+"PERMIT" SAFPREFIX".ekmf-rest-api."VAULT_ID".meta:delete-batch-job CLASS(EJBROLE) ACCESS(READ) ID("KEY_ADMIN")"
+"PERMIT" SAFPREFIX".ekmf-rest-api."VAULT_ID".meta:stop-batch-job CLASS(EJBROLE) ACCESS(READ) ID("KEY_ADMIN")"
 "PERMIT" SAFPREFIX".ekmf-rest-api."VAULT_ID".keys:non_existing:import CLASS(EJBROLE) ACCESS(READ) ID("KEY_ADMIN")"
 
 Say "Grant Permissions to Key Custodian1" KEY_CUSTODIAN1
@@ -104,6 +127,15 @@ Say "Grant Permissions to Key Custodian1" KEY_CUSTODIAN1
 "PERMIT" SAFPREFIX".ekmf-rest-api."VAULT_ID".keys:pre_activation:mark_compromised CLASS(EJBROLE) ACCESS(READ) ID("KEY_CUSTODIAN1")"
 "PERMIT" SAFPREFIX".ekmf-rest-api."VAULT_ID".keys:pre_activation:uninstall CLASS(EJBROLE) ACCESS(READ) ID("KEY_CUSTODIAN1")"
 /* "PERMIT" SAFPREFIX".ekmf-rest-api."VAULT_ID".keys:distribute CLASS(EJBROLE) ACCESS(READ) ID("KEY_CUSTODIAN1")" */
+
+/* Batch job roles */
+"PERMIT" SAFPREFIX".ekmf-rest-api."VAULT_ID".meta:read-batch-jobs CLASS(EJBROLE) ACCESS(READ) ID("KEY_CUSTODIAN1")"
+"PERMIT" SAFPREFIX".ekmf-rest-api."VAULT_ID".meta:get-batch-job CLASS(EJBROLE) ACCESS(READ) ID("KEY_CUSTODIAN1")"
+"PERMIT" SAFPREFIX".ekmf-rest-api."VAULT_ID".meta:get-batch-job-items CLASS(EJBROLE) ACCESS(READ) ID("KEY_CUSTODIAN1")"
+"PERMIT" SAFPREFIX".ekmf-rest-api."VAULT_ID".meta:create-batch-job CLASS(EJBROLE) ACCESS(READ) ID("KEY_CUSTODIAN1")"
+"PERMIT" SAFPREFIX".ekmf-rest-api."VAULT_ID".meta:delete-batch-job CLASS(EJBROLE) ACCESS(READ) ID("KEY_CUSTODIAN1")"
+"PERMIT" SAFPREFIX".ekmf-rest-api."VAULT_ID".meta:stop-batch-job CLASS(EJBROLE) ACCESS(READ) ID("KEY_CUSTODIAN1")"
+"PERMIT" SAFPREFIX".ekmf-rest-api."VAULT_ID".meta:resume-batch-job CLASS(EJBROLE) ACCESS(READ) ID("KEY_CUSTODIAN1")"
 
 "PERMIT" SAFPREFIX".ekmf-rest-api."VAULT_ID".keys:read CLASS(EJBROLE) ACCESS(READ) ID("KEY_CUSTODIAN1")"
 "PERMIT" SAFPREFIX".ekmf-rest-api."VAULT_ID".keys:write CLASS(EJBROLE) ACCESS(READ) ID("KEY_CUSTODIAN1")"
@@ -126,6 +158,15 @@ Say "Grant Permissions to Key Custodian2" KEY_CUSTODIAN2
 "PERMIT" SAFPREFIX".ekmf-rest-api."VAULT_ID".keys:active:mark_compromised CLASS(EJBROLE) ACCESS(READ) ID("KEY_CUSTODIAN2")"
 "PERMIT" SAFPREFIX".ekmf-rest-api."VAULT_ID".keys:active:uninstall CLASS(EJBROLE) ACCESS(READ) ID("KEY_CUSTODIAN2")"
 "PERMIT" SAFPREFIX".ekmf-rest-api."VAULT_ID".keys:compromised:destroy CLASS(EJBROLE) ACCESS(READ) ID("KEY_CUSTODIAN2")"
+
+/* Batch job roles */
+"PERMIT" SAFPREFIX".ekmf-rest-api."VAULT_ID".meta:read-batch-jobs CLASS(EJBROLE) ACCESS(READ) ID("KEY_CUSTODIAN2")"
+"PERMIT" SAFPREFIX".ekmf-rest-api."VAULT_ID".meta:get-batch-job CLASS(EJBROLE) ACCESS(READ) ID("KEY_CUSTODIAN2")"
+"PERMIT" SAFPREFIX".ekmf-rest-api."VAULT_ID".meta:get-batch-job-items CLASS(EJBROLE) ACCESS(READ) ID("KEY_CUSTODIAN2")"
+"PERMIT" SAFPREFIX".ekmf-rest-api."VAULT_ID".meta:create-batch-job CLASS(EJBROLE) ACCESS(READ) ID("KEY_CUSTODIAN2")"
+"PERMIT" SAFPREFIX".ekmf-rest-api."VAULT_ID".meta:delete-batch-job CLASS(EJBROLE) ACCESS(READ) ID("KEY_CUSTODIAN2")"
+"PERMIT" SAFPREFIX".ekmf-rest-api."VAULT_ID".meta:stop-batch-job CLASS(EJBROLE) ACCESS(READ) ID("KEY_CUSTODIAN2")"
+"PERMIT" SAFPREFIX".ekmf-rest-api."VAULT_ID".meta:resume-batch-job CLASS(EJBROLE) ACCESS(READ) ID("KEY_CUSTODIAN2")"
 "PERMIT" SAFPREFIX".ekmf-rest-api."VAULT_ID".keys:compromised:uninstall CLASS(EJBROLE) ACCESS(READ) ID("KEY_CUSTODIAN2")"
 "PERMIT" SAFPREFIX".ekmf-rest-api."VAULT_ID".keys:compromised:unmark_compromised CLASS(EJBROLE) ACCESS(READ) ID("KEY_CUSTODIAN2")"
 "PERMIT" SAFPREFIX".ekmf-rest-api."VAULT_ID".keys:deactivated:destroy CLASS(EJBROLE) ACCESS(READ) ID("KEY_CUSTODIAN2")"

@@ -344,13 +344,6 @@
   </string>
 </variable>
 
-<variable name="MSDKE_UKO_SERVER_NAME" visibility="public">
-    <label>MSDKE_UKO_SERVER_NAME</label>
-    <abstract>Name of UKO Server for keystore services</abstract>
-    <description>The name of the UKO Server that this CC instance is supposed to work together with</description>
-    <category>MSDKE variables</category>
-    <string />
-</variable>
 
 <variable name="MSDKE_RABBIT_URI" visibility="public">
   <label>MSDKE_RABBIT_URI</label>
@@ -1811,14 +1804,14 @@
 
 <variable name="ICSF_RELEASE" scope="instance" visibility="private">
   <label>ICSF_RELEASE</label>
-  <abstract>ICSF Release</abstract>
-  <description>Specify the ICSF release in use, you can find it by issuing the /F ICSF command 
+  <abstract>ICSF Release (optional - auto-detected)</abstract>
+  <description>The workflow automatically detects the ICSF release from your z/OS system using the D ICSF operator command. This variable is only used as a fallback if auto-detection fails (e.g., if the user running the workflow is not authorized to execute the operator command). The default value is provided as a fallback, but you can change it if needed (e.g., HCR77F0, HCR77E0, HCR77D2, HCR77D1).
   </description>
   <category>Server variables</category>
   <string valueMustBeChoice="false">
+    <choice>HCR77F0</choice>
     <choice>HCR77E0</choice>
     <choice>HCR77D2</choice>
     <choice>HCR77D1</choice>
-    <default>HCR77E0</default>
   </string>
 </variable>
